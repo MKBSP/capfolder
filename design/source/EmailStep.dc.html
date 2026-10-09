@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Capfolder — Email (optional)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column; align-items: center; padding: 40px 24px; box-sizing: border-box">
+  <ol aria-label="Setup steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">1 · Lock ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #16181D; color: #fff">2 · Email</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">3 · Company</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">4 · Start</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">5 · Documents</li>
+  </ol>
+
+  <div style="width: 100%; max-width: 560px; margin-top: 56px; display: flex; flex-direction: column; gap: 20px">
+    <div>
+      <h1 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.01em">Your email <span style="color: #5B606B; font-weight: 400">(optional)</span></h1>
+      <p style="margin: 10px 0 0 0; font-size: 16px; line-height: 1.55; color: #3A3E46">Used only when you send something for signature, so investors see it comes from you. Everything else works without it.</p>
+    </div>
+
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; color: #3A3E46">Email
+      <input type="email" value="mads@acme.com" style="font: inherit; font-size: 16px; font-weight: 400; padding: 12px 14px; min-height: 48px; box-sizing: border-box; border: 1px solid #D9DAD6; border-radius: 6px; background: #fff; color: #16181D">
+    </label>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; padding: 18px; border: 1px solid #E6E6E3; border-radius: 10px; background: #fff">
+      <span style="font-size: 14px">We sent a 6-digit code to <b style="font-weight: 500">mads@acme.com</b></span>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5B606B">Code
+        <input class="num" inputmode="numeric" value="482 9" style="font-size: 22px; letter-spacing: .3em; padding: 10px 14px; min-height: 52px; box-sizing: border-box; border: 1px solid #1F6F4A; border-radius: 6px; width: 220px; color: #16181D">
+      </label>
+      <a href="#" style="font-size: 13px">Resend code</a>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px">
+      <a href="CreateCompany.dc.html" style="font-size: 15px; padding: 12px 4px; text-decoration: none; color: #3A3E46">Skip for now</a>
+      <a href="CreateCompany.dc.html" style="font-size: 15px; font-weight: 500; padding: 12px 22px; border-radius: 6px; background: #1F6F4A; color: #fff; text-decoration: none">Verify &amp; continue</a>
+    </div>
+    <p style="margin: 0; font-size: 13px; color: #5B606B">Skip, and we'll ask the first time you send a document.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

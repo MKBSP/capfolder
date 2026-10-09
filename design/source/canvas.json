@@ -1,0 +1,194 @@
+{
+ "v": 3,
+ "attachments": {},
+ "boards": {
+  "AiConnect.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 Connect your AI",
+   "w": 1280,
+   "x": 4080,
+   "y": 1020
+  },
+  "Documents.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 Documents checklist",
+   "w": 1280,
+   "x": 0,
+   "y": 1020
+  },
+  "ImportReview.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 Review a sorted document",
+   "w": 1280,
+   "x": 2720,
+   "y": 0
+  },
+  "Main.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 Home (cap table)",
+   "w": 1280,
+   "x": 0,
+   "y": 0
+  },
+  "NewSafe.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 New SAFE",
+   "w": 1280,
+   "x": 4080,
+   "y": 0
+  },
+  "Onboarding.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 Onboarding (drop your folder)",
+   "w": 1280,
+   "x": 1360,
+   "y": 0
+  },
+  "Person.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 Person (vesting)",
+   "w": 1280,
+   "x": 2720,
+   "y": 1020
+  },
+  "Signing.dc.html": {
+   "expand": "fill",
+   "h": 900,
+   "title": "App \u00b7 Signatures",
+   "w": 1280,
+   "x": 1360,
+   "y": 1020
+  },
+  "SystemDesign.dc.html": {
+   "h": 880,
+   "title": "System design",
+   "w": 1600,
+   "x": 0,
+   "y": 2340
+  },
+  "Website.dc.html": {
+   "expand": "fill",
+   "h": 7000,
+   "is_interactive": true,
+   "title": "Website \u00b7 Landing",
+   "w": 1440,
+   "x": 0,
+   "y": 3640
+  },
+  "Welcome.dc.html": {
+   "x": 0,
+   "y": -1320,
+   "w": 1280,
+   "h": 900,
+   "title": "First run \u00b7 1 Welcome + app lock",
+   "expand": "fill"
+  },
+  "EmailStep.dc.html": {
+   "x": 1360,
+   "y": -1320,
+   "w": 1280,
+   "h": 900,
+   "title": "First run \u00b7 2 Email (optional)",
+   "expand": "fill"
+  },
+  "CreateCompany.dc.html": {
+   "x": 2720,
+   "y": -1320,
+   "w": 1280,
+   "h": 900,
+   "title": "First run \u00b7 3 Create company",
+   "expand": "fill"
+  },
+  "StartChoice.dc.html": {
+   "x": 4080,
+   "y": -1320,
+   "w": 1280,
+   "h": 900,
+   "title": "First run \u00b7 4 Import or start from zero",
+   "expand": "fill"
+  },
+  "FlowSetup.dc.html": {
+   "x": 1680,
+   "y": 2340,
+   "w": 1600,
+   "h": 880,
+   "title": "Flow \u00b7 Setup (F-01 to F-09)"
+  },
+  "FlowChanges.dc.html": {
+   "x": 3360,
+   "y": 2340,
+   "w": 1600,
+   "h": 880,
+   "title": "Flow \u00b7 Changes (F-18 to F-27)"
+  }
+ },
+ "createdOnFiles": {
+  "at": "2026-10-07T15:00:00Z",
+  "v": 1
+ },
+ "designSystems": [],
+ "launch": {
+  "view": "canvas"
+ },
+ "notes": {
+  "apptitle": {
+   "kind": "title1",
+   "maxW": 5360,
+   "text": "Desktop app",
+   "w": 240,
+   "x": 0,
+   "y": -300
+  },
+  "systitle": {
+   "kind": "title1",
+   "maxW": 4960,
+   "text": "System design & flows",
+   "w": 240,
+   "x": 0,
+   "y": 2040
+  },
+  "webtitle": {
+   "kind": "title1",
+   "maxW": 1440,
+   "text": "Website",
+   "w": 240,
+   "x": 0,
+   "y": 3340
+  },
+  "firstrun": {
+   "kind": "title1",
+   "maxW": 5360,
+   "text": "First run",
+   "w": 240,
+   "x": 0,
+   "y": -1620
+  }
+ },
+ "order": [
+  "Welcome.dc.html",
+  "EmailStep.dc.html",
+  "CreateCompany.dc.html",
+  "StartChoice.dc.html",
+  "Main.dc.html",
+  "Onboarding.dc.html",
+  "ImportReview.dc.html",
+  "NewSafe.dc.html",
+  "Documents.dc.html",
+  "Signing.dc.html",
+  "Person.dc.html",
+  "AiConnect.dc.html",
+  "SystemDesign.dc.html",
+  "Website.dc.html",
+  "FlowSetup.dc.html",
+  "FlowChanges.dc.html"
+ ],
+ "pages": [],
+ "title": "Capfolder \u2014 App & Website"
+}

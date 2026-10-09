@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Capfolder — Create company</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.lbl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:#3A3E46}
+.inp{font:inherit;font-size:15px;font-weight:400;padding:11px 12px;min-height:46px;box-sizing:border-box;border:1px solid #D9DAD6;border-radius:6px;background:#fff;color:#16181D;width:100%}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column; align-items: center; padding: 40px 24px; box-sizing: border-box">
+  <ol aria-label="Setup steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">1 · Lock ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">2 · Email ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #16181D; color: #fff">3 · Company</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">4 · Start</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">5 · Documents</li>
+  </ol>
+
+  <form style="width: 100%; max-width: 600px; margin-top: 48px; display: flex; flex-direction: column; gap: 18px">
+    <h1 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.01em">Your company</h1>
+    <label class="lbl">Legal name<input class="inp" value="Acme Inc."></label>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+      <label class="lbl">Type
+        <select class="inp"><option>Delaware C-corp</option><option>Other (track only)</option></select>
+      </label>
+      <label class="lbl">Incorporated<input class="inp" type="date" value="2021-09-14"></label>
+    </div>
+
+    <div class="lbl">Where should the folder live?
+      <div style="display: flex; gap: 8px; align-items: center">
+        <span class="inp num" style="display: flex; align-items: center; font-size: 14px">~/Library/Mobile Documents/iCloud Drive/Acme</span>
+        <button type="button" style="font: inherit; font-size: 14px; padding: 11px 14px; min-height: 46px; border: 1px solid #D9DAD6; border-radius: 6px; background: #fff; color: #16181D; cursor: pointer; flex-shrink: 0">Change…</button>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 8px; background: #E8F3EC; color: #16543A; font-size: 14px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      Backed up by iCloud Drive
+    </div>
+    <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 8px; background: #FFFBF4; color: #8A3E05; font-size: 14px; line-height: 1.5">
+      <span style="font-weight: 600">If it weren't:</span> "This folder isn't backed up. If this laptop dies, the cap table goes with it." with a list of your synced folders.
+    </div>
+
+    <div style="padding: 16px; border: 1px solid #E6E6E3; border-radius: 10px; background: #fff">
+      <div style="font-size: 13px; color: #5B606B; margin-bottom: 8px">We'll create</div>
+      <pre class="num" style="margin: 0; font-size: 13px; line-height: 1.7">Acme/
+├── README.txt
+├── events.jsonl
+├── captable.csv
+└── docs/</pre>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end">
+      <a href="StartChoice.dc.html" style="font-size: 15px; font-weight: 500; padding: 12px 22px; border-radius: 6px; background: #1F6F4A; color: #fff; text-decoration: none">Create folder</a>
+    </div>
+  </form>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

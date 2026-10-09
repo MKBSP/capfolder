@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Capfolder — Cap table</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.th{font-size:12px;font-weight:500;color:#5B606B;text-align:left;padding:10px 12px;border-bottom:1px solid #E6E6E3;white-space:nowrap}
+.td{padding:12px;border-bottom:1px solid #EFEFEC;font-size:14px;color:#16181D;white-space:nowrap;vertical-align:middle}
+.r{text-align:right}
+.bar{width:140px;height:8px;border-radius:4px;background:#E9ECE8;overflow:hidden}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 8px;border-radius:999px}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 24px; border-bottom: 1px solid #E6E6E3; background: #FFFFFF">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>
+      <span style="font-weight: 600; font-size: 16px">Acme Inc.</span>
+      <span class="num" style="font-size: 12px; color: #5B606B">~/Documents/Acme</span>
+    </div>
+    <span class="chip" style="background: #E8F3EC; color: #16543A">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      Backed up · iCloud
+    </span>
+    <nav aria-label="Sections" style="display: flex; gap: 4px; margin-left: 12px">
+      <a href="#" style="font-size: 14px; font-weight: 500; padding: 8px 12px; border-radius: 6px; background: #F0F1EE; color: #16181D; text-decoration: none">Cap table</a>
+      <a href="#" style="font-size: 14px; padding: 8px 12px; border-radius: 6px; color: #5B606B; text-decoration: none">People</a>
+      <a href="#" style="font-size: 14px; padding: 8px 12px; border-radius: 6px; color: #5B606B; text-decoration: none">Documents</a>
+    </nav>
+    <div style="margin-left: auto; display: flex; gap: 8px; align-items: center">
+      <label style="font-size: 13px; color: #5B606B; display: flex; align-items: center; gap: 6px">As of
+        <input type="date" value="2026-10-07" style="font: inherit; font-size: 13px; padding: 7px 8px; border: 1px solid #D9DAD6; border-radius: 6px; background: #fff; color: #16181D">
+      </label>
+      <button style="font: inherit; font-size: 14px; padding: 9px 14px; min-height: 40px; border: 1px solid #D9DAD6; background: #fff; border-radius: 6px; cursor: pointer; color: #16181D">Export .xlsx</button>
+      <a href="NewSafe.dc.html" style="font-size: 14px; font-weight: 500; padding: 10px 16px; min-height: 40px; box-sizing: border-box; border-radius: 6px; background: #1F6F4A; color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 6px">+ New <span style="opacity: .75; font-size: 12px">SAFE · Grant · Shares</span></a>
+    </div>
+  </header>
+
+  <main style="display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; align-items: flex-start">
+
+    <section style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 14px 16px">
+          <div style="font-size: 12px; color: #5B606B">Fully diluted</div>
+          <div class="num" style="font-size: 22px; margin-top: 4px">8,000,000</div>
+        </div>
+        <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 14px 16px">
+          <div style="font-size: 12px; color: #5B606B">Founders</div>
+          <div class="num" style="font-size: 22px; margin-top: 4px">87.50%</div>
+        </div>
+        <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 14px 16px">
+          <div style="font-size: 12px; color: #5B606B">Pool available</div>
+          <div class="num" style="font-size: 22px; margin-top: 4px">920,000</div>
+        </div>
+        <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 14px 16px">
+          <div style="font-size: 12px; color: #5B606B">SAFEs outstanding</div>
+          <div class="num" style="font-size: 22px; margin-top: 4px">$900,000</div>
+        </div>
+      </div>
+
+      <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; min-width: 760px">
+          <thead>
+            <tr><th class="th">Name</th><th class="th">Type</th><th class="th r">Shares</th><th class="th r">%</th><th class="th">Vesting</th><th class="th">Document</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td" style="font-weight: 500">Mads Petersen</td><td class="td" style="color: #5B606B">Founder · Common</td>
+              <td class="td r num">4,000,000</td><td class="td r num">50.00%</td>
+              <td class="td"><div style="display: flex; align-items: center; gap: 10px"><div class="bar"><div style="width: 75%; height: 100%; background: #1F6F4A"></div></div><span class="num" style="font-size: 12px; color: #5B606B">75%</span></div></td>
+              <td class="td"><span class="chip" style="background: #E8F3EC; color: #16543A">Signed · SPA</span></td>
+            </tr>
+            <tr>
+              <td class="td" style="font-weight: 500">Ana Ribeiro</td><td class="td" style="color: #5B606B">Founder · Common</td>
+              <td class="td r num">3,000,000</td><td class="td r num">37.50%</td>
+              <td class="td"><div style="display: flex; align-items: center; gap: 10px"><div class="bar"><div style="width: 75%; height: 100%; background: #1F6F4A"></div></div><span class="num" style="font-size: 12px; color: #5B606B">75%</span></div></td>
+              <td class="td"><span class="chip" style="background: #FDF1E3; color: #8A3E05">83(b) missing</span></td>
+            </tr>
+            <tr style="background: #F7F8F5">
+              <td class="td" style="font-weight: 500">Lisa Moreau</td><td class="td" style="color: #5B606B">Employee · Option</td>
+              <td class="td r num">40,000</td><td class="td r num">0.50%</td>
+              <td class="td"><div style="display: flex; align-items: center; gap: 10px"><div class="bar"><div style="width: 25%; height: 100%; background: #1F6F4A"></div></div><span class="num" style="font-size: 12px; color: #5B606B">25%</span></div></td>
+              <td class="td"><span class="chip" style="background: #E8F3EC; color: #16543A">Signed · Grant</span></td>
+            </tr>
+            <tr style="background: #F7F8F5">
+              <td colspan="6" style="padding: 4px 12px 16px 12px; border-bottom: 1px solid #EFEFEC">
+                <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; font-size: 13px; color: #3A3E46; padding: 12px 14px; background: #fff; border: 1px solid #E6E6E3; border-radius: 6px">
+                  <span><span class="num">10,000</span> of <span class="num">40,000</span> vested</span>
+                  <span>Next: <span class="num">833</span> on Nov 7, 2026</span>
+                  <span>4 years · 1-year cliff (passed Oct 7, 2026) · monthly</span>
+                  <span>Strike <span class="num">$0.12</span></span>
+                  <a href="#" style="margin-left: auto; font-size: 13px">How is this calculated?</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="td" style="font-weight: 500">João Silva</td><td class="td" style="color: #5B606B">Employee · Option</td>
+              <td class="td r num">40,000</td><td class="td r num">0.50%</td>
+              <td class="td"><div style="display: flex; align-items: center; gap: 10px"><div class="bar"><div style="width: 0%; height: 100%; background: #1F6F4A"></div></div><span style="font-size: 12px; color: #5B606B">Cliff Mar 2027</span></div></td>
+              <td class="td"><span class="chip" style="background: #FDF1E3; color: #8A3E05">IP assignment missing</span></td>
+            </tr>
+            <tr>
+              <td class="td" style="color: #5B606B">Option pool (available)</td><td class="td" style="color: #5B606B">Pool</td>
+              <td class="td r num">920,000</td><td class="td r num">11.50%</td><td class="td"></td>
+              <td class="td"><span class="chip" style="background: #E8F3EC; color: #16543A">Signed · Plan</span></td>
+            </tr>
+            <tr>
+              <td colspan="6" style="padding: 18px 12px 8px 12px; font-size: 12px; font-weight: 500; color: #5B606B; border-bottom: 1px solid #E6E6E3">SAFEs · as-converted, not in fully diluted</td>
+            </tr>
+            <tr>
+              <td class="td" style="font-weight: 500">Y Combinator</td><td class="td" style="color: #5B606B">Post-money SAFE</td>
+              <td class="td r num">$500,000</td><td class="td r num">≈5.00%</td><td class="td num" style="color: #5B606B; font-size: 13px">Cap $10M</td>
+              <td class="td"><span class="chip" style="background: #E8F3EC; color: #16543A">Signed</span></td>
+            </tr>
+            <tr>
+              <td class="td" style="font-weight: 500">Fund X</td><td class="td" style="color: #5B606B">Post-money SAFE</td>
+              <td class="td r num">$250,000</td><td class="td r num">≈2.50%</td><td class="td num" style="color: #5B606B; font-size: 13px">Cap $10M</td>
+              <td class="td"><span class="chip" style="background: #FDE8E6; color: #A1261A">No signed doc</span></td>
+            </tr>
+            <tr>
+              <td class="td" style="font-weight: 500">Angel A</td><td class="td" style="color: #5B606B">Post-money SAFE</td>
+              <td class="td r num">$150,000</td><td class="td r num">≈1.88%</td><td class="td num" style="color: #5B606B; font-size: 13px">Cap $8M · 20%</td>
+              <td class="td"><span class="chip" style="background: #E8F3EC; color: #16543A">Signed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 18px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <h2 style="margin: 0; font-size: 15px; font-weight: 600">What's missing</h2>
+          <span class="num" style="font-size: 13px; color: #8A3E05">3 gaps</span>
+        </div>
+        <ul style="list-style: none; margin: 14px 0 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+          <li style="display: flex; gap: 10px; font-size: 14px; line-height: 1.4">
+            <span style="flex: none; width: 8px; height: 8px; border-radius: 50%; background: #C0392B; margin-top: 6px"></span>
+            <span>Fund X SAFE is on the cap table but has no signed document. <a href="#">Attach PDF</a></span>
+          </li>
+          <li style="display: flex; gap: 10px; font-size: 14px; line-height: 1.4">
+            <span style="flex: none; width: 8px; height: 8px; border-radius: 50%; background: #D97706; margin-top: 6px"></span>
+            <span>Ana Ribeiro: 83(b) election not on file. <a href="#">Attach</a></span>
+          </li>
+          <li style="display: flex; gap: 10px; font-size: 14px; line-height: 1.4">
+            <span style="flex: none; width: 8px; height: 8px; border-radius: 50%; background: #D97706; margin-top: 6px"></span>
+            <span>João Silva: IP assignment (CIIAA) missing. <a href="#">Send for signature</a></span>
+          </li>
+        </ul>
+      </div>
+
+      <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 18px">
+        <h2 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 600">Waiting for signature</h2>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px solid #EFEFEC"><span>Board consent · 2 grants</span><span style="color: #5B606B">1 of 2</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0"><span>João Silva · CIIAA</span><span style="color: #5B606B">Sent 2d ago</span></div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #3A3E46; padding: 12px 14px; border: 1px solid #E6E6E3; border-radius: 8px; background: #fff">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F6F4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Vault verified · <span class="num">214</span> events · totals add to 100.00%</span>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

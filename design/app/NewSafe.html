@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capfolder — New SAFE</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Serif:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.lbl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:#3A3E46}
+.inp{font:inherit;font-size:15px;font-weight:400;padding:10px 12px;min-height:44px;box-sizing:border-box;border:1px solid #D9DAD6;border-radius:6px;background:#fff;color:#16181D;width:100%}
+</style>
+</head>
+<body>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column">
+
+  <header style="display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid #E6E6E3; background: #fff">
+    <a href="Main.html" style="font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 8px 4px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      Cap table
+    </a>
+    <span style="color: #B5B7B2">/</span>
+    <span style="font-size: 14px; font-weight: 600">New SAFE</span>
+  </header>
+
+  <main style="display: flex; flex-wrap: wrap; gap: 32px; padding: 32px 24px; align-items: flex-start; max-width: 1200px; width: 100%; box-sizing: border-box; margin: 0 auto">
+
+    <form style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <div style="font-size: 13px; color: #5B606B">Template: YC post-money SAFE (valuation cap)</div>
+      <label class="lbl">Investor name<input class="inp" value="Fund Y"></label>
+      <label class="lbl">Investor email<input class="inp" type="email" value="partners@fundy.vc"></label>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+        <label class="lbl">Amount (USD)<input class="inp num" value="200,000"></label>
+        <label class="lbl">Valuation cap (USD)<input class="inp num" value="10,000,000"></label>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+        <label class="lbl">Discount (optional)<input class="inp num" placeholder="e.g. 20%"></label>
+        <label class="lbl">Date<input class="inp" type="date" value="2026-10-07"></label>
+      </div>
+      <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; min-height: 44px">
+        <input type="checkbox" style="width: 18px; height: 18px; accent-color: #1F6F4A">
+        Most favored nation (MFN)
+      </label>
+
+      <div style="padding: 14px 16px; border-radius: 8px; background: #fff; border: 1px solid #E6E6E3; font-size: 14px; line-height: 1.6">
+        <div style="font-weight: 500">On the cap table</div>
+        <div>Fund Y ≈ <span class="num">2.00%</span> as-converted (<span class="num">$200k</span> ÷ <span class="num">$10M</span>)</div>
+        <div style="color: #5B606B">SAFEs outstanding: <span class="num">$900k</span> → <span class="num">$1.1M</span></div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 10px">
+        <button type="button" style="font: inherit; font-size: 15px; font-weight: 500; padding: 12px 20px; min-height: 44px; border: none; border-radius: 6px; background: #1F6F4A; color: #fff; cursor: pointer">Send for signature</button>
+        <button type="button" style="font: inherit; font-size: 15px; padding: 12px 18px; min-height: 44px; border: 1px solid #D9DAD6; border-radius: 6px; background: #fff; color: #16181D; cursor: pointer">Investor sent their own paper</button>
+      </div>
+      <p style="margin: 0; font-size: 13px; color: #5B606B; line-height: 1.5">Fund Y gets a link and signs in the browser, no account. You countersign here. The signed PDF lands in <span class="num">docs/safes/</span> and the relay deletes its copy.</p>
+    </form>
+
+    <section aria-label="Document preview" style="flex: 1 1 420px; min-width: 0; background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 40px 44px; font-family: 'IBM Plex Serif', Georgia, serif; font-size: 14px; line-height: 1.7; color: #23262C; box-shadow: 0 1px 2px rgba(0,0,0,.04)">
+      <div style="text-align: center; font-weight: 500; letter-spacing: .04em; font-size: 13px">SAFE</div>
+      <div style="text-align: center; font-size: 12px; color: #5B606B; margin-bottom: 24px">(Simple Agreement for Future Equity)</div>
+      <p style="margin: 0 0 14px 0">THIS CERTIFIES THAT in exchange for the payment by <span style="background: #E8F3EC; padding: 0 3px">Fund Y</span> (the "Investor") of <span style="background: #E8F3EC; padding: 0 3px" class="num">$200,000</span> (the "Purchase Amount") on or about <span style="background: #E8F3EC; padding: 0 3px">October 7, 2026</span>, <span style="background: #E8F3EC; padding: 0 3px">Acme Inc.</span>, a Delaware corporation (the "Company"), issues to the Investor the right to certain shares of the Company's Capital Stock…</p>
+      <p style="margin: 0 0 14px 0">The "Post-Money Valuation Cap" is <span style="background: #E8F3EC; padding: 0 3px" class="num">$10,000,000</span>.</p>
+      <div style="height: 10px; background: #F0F1EE; border-radius: 3px; margin: 10px 0; width: 92%"></div>
+      <div style="height: 10px; background: #F0F1EE; border-radius: 3px; margin: 10px 0; width: 86%"></div>
+      <div style="height: 10px; background: #F0F1EE; border-radius: 3px; margin: 10px 0; width: 90%"></div>
+      <div style="height: 10px; background: #F0F1EE; border-radius: 3px; margin: 10px 0 28px 0; width: 60%"></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; color: #5B606B">
+        <div style="border-top: 1px solid #C9CBC6; padding-top: 8px">Company · Mads Petersen, CEO<br><span style="color: #8A3E05">Countersign after investor</span></div>
+        <div style="border-top: 1px solid #C9CBC6; padding-top: 8px">Investor · Fund Y<br><span>Signs via link</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+</body>
+</html>

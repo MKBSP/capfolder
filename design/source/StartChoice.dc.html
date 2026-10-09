@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Capfolder — How do you want to start?</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.ch{display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid #E6E6E3;border-radius:12px;background:#fff;text-decoration:none;color:#16181D;transition:transform 160ms cubic-bezier(0.23,1,0.32,1),border-color 200ms ease}
+.ch:active{transform:scale(0.98)}
+@media (hover:hover) and (pointer:fine){.ch:hover{border-color:#1F6F4A;color:#16181D}}
+.ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#E8F3EC;color:#16543A}
+.st{font-size:13px;color:#5B606B;line-height:1.5;margin:0;padding-left:18px}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column; align-items: center; padding: 40px 24px; box-sizing: border-box">
+  <ol aria-label="Setup steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">1 · Lock ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">2 · Email ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">3 · Company ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #16181D; color: #fff">4 · Start</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">5 · Documents</li>
+  </ol>
+
+  <div style="width: 100%; max-width: 1040px; margin-top: 48px">
+    <h1 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.01em; text-align: center">How do you want to start?</h1>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 32px">
+      <a href="Onboarding.dc.html" class="ch" style="border-color: #1F6F4A">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg></span>
+        <b style="font-size: 18px; font-weight: 600">Import from Pulley or Carta</b>
+        <span style="font-size: 14px; color: #3A3E46">You have a cap table somewhere. About 2 minutes.</span>
+        <ol class="st"><li>Export a CSV there</li><li>Drop it here, check the columns</li><li>Totals must match before saving</li><li>Then drop your signed documents</li></ol>
+      </a>
+      <a href="#" class="ch">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+        <b style="font-size: 18px; font-weight: 600">Start from zero</b>
+        <span style="font-size: 14px; color: #3A3E46">New company, or you only have a spreadsheet.</span>
+        <ol class="st"><li>Authorized shares + par value</li><li>Add founders and vesting</li><li>Optional: option pool, SAFEs already signed</li></ol>
+      </a>
+      <a href="Onboarding.dc.html" class="ch">
+        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></span>
+        <b style="font-size: 18px; font-weight: 600">I only have documents</b>
+        <span style="font-size: 14px; color: #3A3E46">Your old tool is gone. Build it from PDFs.</span>
+        <ol class="st"><li>Drop the folder</li><li>Each document becomes a row</li><li>You confirm each one</li></ol>
+      </a>
+    </div>
+    <p style="margin: 24px 0 0 0; text-align: center; font-size: 14px; color: #5B606B">You can always import more later. Nothing is final until you confirm.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

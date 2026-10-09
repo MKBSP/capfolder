@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capfolder — Welcome and app lock</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.opt{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid #E6E6E3;border-radius:10px;background:#fff;font-size:15px;cursor:pointer}
+</style>
+</head>
+<body>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column; align-items: center; padding: 40px 24px; box-sizing: border-box">
+  <ol aria-label="Setup steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+    <li style="padding: 6px 12px; border-radius: 999px; background: #16181D; color: #fff">1 · Lock</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">2 · Email</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">3 · Company</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">4 · Start</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #F0F1EE; color: #5B606B">5 · Documents</li>
+  </ol>
+
+  <div style="width: 100%; max-width: 560px; margin-top: 56px; display: flex; flex-direction: column; gap: 20px">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>
+    <div>
+      <h1 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.01em">Welcome to Capfolder</h1>
+      <p style="margin: 10px 0 0 0; font-size: 16px; line-height: 1.55; color: #3A3E46">Your cap table will live in a folder on this computer. No account needed.</p>
+    </div>
+
+    <h2 style="margin: 12px 0 0 0; font-size: 16px; font-weight: 600">Lock the app when it opens?</h2>
+    <label class="opt" style="border-color: #1F6F4A; box-shadow: 0 0 0 1px #1F6F4A">
+      <input type="radio" name="lock" checked style="width: 18px; height: 18px; accent-color: #1F6F4A">
+      <span style="display: flex; flex-direction: column; gap: 2px"><b style="font-weight: 500">Touch ID or your Mac password</b><span style="font-size: 13px; color: #5B606B">Recommended</span></span>
+    </label>
+    <label class="opt">
+      <input type="radio" name="lock" style="width: 18px; height: 18px; accent-color: #1F6F4A">
+      <span style="display: flex; flex-direction: column; gap: 2px"><b style="font-weight: 500">A separate app password</b><span style="font-size: 13px; color: #5B606B">Stored in your keychain</span></span>
+    </label>
+    <label class="opt">
+      <input type="radio" name="lock" style="width: 18px; height: 18px; accent-color: #1F6F4A">
+      <span><b style="font-weight: 500">No lock</b></span>
+    </label>
+
+    <label style="display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 15px">Lock after
+      <select style="font: inherit; font-size: 14px; padding: 9px 10px; min-height: 40px; border: 1px solid #D9DAD6; border-radius: 6px; background: #fff; color: #16181D">
+        <option>15 minutes idle</option><option>5 minutes idle</option><option>1 hour idle</option><option>Only when I quit</option>
+      </select>
+    </label>
+
+    <div style="display: flex; gap: 10px; padding: 14px 16px; border-radius: 8px; background: #F3F4F1; font-size: 14px; line-height: 1.5; color: #3A3E46">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+      <span>This locks the app, not the files. Your folder stays readable so it can never be locked away from you. File encryption is coming later as an option.</span>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 8px">
+      <a href="EmailStep.html" style="font-size: 15px; font-weight: 500; padding: 12px 22px; border-radius: 6px; background: #1F6F4A; color: #fff; text-decoration: none">Continue</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "vault_id": "vlt_acme_fixture",
+  "format_version": 1,
+  "created_at": "2026-10-07T09:00:00Z",
+  "issuer_id": "iss_acme",
+  "ocf_version": "1.2.0"
+}

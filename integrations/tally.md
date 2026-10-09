@@ -1,0 +1,24 @@
+# Tally — website download form
+
+- **Account:** madskbsp@gmail.com, workspace `wAQeRl`
+- **Form:** "Download Capfolder", id **`rjxQjR`**. Status: draft, not published yet.
+- **Edit:** https://tally.so/forms/rjxQjR/edit
+
+## Fields
+| Field | Type | Required |
+|---|---|---|
+| Email | email | yes |
+| Which computer? | macOS / Windows / Linux | yes |
+| Hidden: `utm_source`, `ref` | URL params | — |
+
+**Thank-you page:** "Your download is ready", with download links per OS (placeholders `[download link]`; replace with GitHub Releases URLs), then "Capfolder is free. If it saves you a headache, pay what you want." linking to https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df
+
+## Wiring the website
+- Replace the mock gate in `design/website/index.html` (`#getdl` click handler) with Tally's popup embed:
+```html
+<script async src="https://tally.so/widgets/embed.js"></script>
+<button data-tally-open="rjxQjR" data-tally-layout="modal" data-tally-emoji-text="" data-tally-hide-title="1">Get the download</button>
+```
+- Optional: listen for Tally's form-submitted event and reveal the site's own `#dlthanks` panel (OS buttons + Buy me a coffee) instead of Tally's thank-you page. [Verify the event name in Tally's embed docs.]
+- Pass `?utm_source=hn` / `?ref=bookface` in launch links so the hidden fields capture the source.
+- Publish the form only when real download links exist.

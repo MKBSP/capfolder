@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capfolder — Import your documents</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid #EFEFEC;font-size:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 8px;border-radius:999px}
+</style>
+</head>
+<body>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column; align-items: center; padding: 40px 24px; box-sizing: border-box">
+
+  <ol aria-label="Setup steps" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">1 · Lock ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">2 · Email ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">3 · Company ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #E8F3EC; color: #16543A">4 · Import ✓</li>
+    <li style="padding: 6px 12px; border-radius: 999px; background: #16181D; color: #fff">5 · Documents</li>
+  </ol>
+
+  <div style="width: 100%; max-width: 880px; margin-top: 32px; display: flex; flex-direction: column; gap: 20px">
+    <div>
+      <h1 style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em">Drop your messy folder in. We'll sort it.</h1>
+      <p style="margin: 8px 0 0 0; font-size: 15px; color: #3A3E46; line-height: 1.5">SAFEs, grants, consents, 83(b)s: anything signed in Pulley, by email or on the investor's own paper. Each file is matched to a row on your cap table.</p>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 8px; background: #E8F3EC; color: #16543A; font-size: 14px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      <span>Pulley import matches: <span class="num">8,000,000</span> shares · <span class="num">100.00%</span> · <span class="num">7</span> stakeholders</span>
+    </div>
+
+    <label style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 36px; border: 2px dashed #B9C4BC; border-radius: 10px; background: #fff; cursor: pointer; text-align: center">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1F6F4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+      <span style="font-size: 15px; font-weight: 500">Drag a folder or PDFs here</span>
+      <span style="font-size: 13px; color: #5B606B">or choose files · stays on this computer</span>
+      <input type="file" multiple style="position: absolute; width: 1px; height: 1px; opacity: 0">
+    </label>
+
+    <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px">
+      <div style="display: flex; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #E6E6E3; font-size: 13px; color: #5B606B">
+        <span>Sorted <span class="num">31</span> of <span class="num">34</span> files</span>
+        <span><span class="num">3</span> need you</span>
+      </div>
+      <div class="row">
+        <span class="num" style="flex: 1 1 240px; min-width: 0; color: #3A3E46">SAFE_YC_signed.pdf</span>
+        <span style="flex: 2 1 280px">SAFE · Y Combinator · <span class="num">$500k</span> · cap <span class="num">$10M</span></span>
+        <span class="chip" style="background: #E8F3EC; color: #16543A">Matched</span>
+      </div>
+      <div class="row">
+        <span class="num" style="flex: 1 1 240px; min-width: 0; color: #3A3E46">Lisa_option_grant.pdf</span>
+        <span style="flex: 2 1 280px">Option grant · Lisa Moreau · <span class="num">40,000</span> @ <span class="num">$0.12</span></span>
+        <span class="chip" style="background: #E8F3EC; color: #16543A">Matched</span>
+      </div>
+      <div class="row" style="background: #FFFBF4">
+        <span class="num" style="flex: 1 1 240px; min-width: 0; color: #3A3E46">scan_0042.pdf</span>
+        <span style="flex: 2 1 280px">Looks like a SAFE · Fund X · <span class="num">$250k</span> · cap unclear</span>
+        <a href="#" style="font-size: 13px; font-weight: 500; padding: 8px 12px; border: 1px solid #D9DAD6; border-radius: 6px; text-decoration: none; color: #16181D">Review</a>
+      </div>
+      <div class="row" style="background: #FFFBF4">
+        <span class="num" style="flex: 1 1 240px; min-width: 0; color: #3A3E46">Re_ docs - FINAL v3.pdf</span>
+        <span style="flex: 2 1 280px">Investor's own form · Angel A · amount <span class="num">$150k</span></span>
+        <a href="#" style="font-size: 13px; font-weight: 500; padding: 8px 12px; border: 1px solid #D9DAD6; border-radius: 6px; text-decoration: none; color: #16181D">Review</a>
+      </div>
+      <div class="row" style="border-bottom: none; background: #FFFBF4">
+        <span class="num" style="flex: 1 1 240px; min-width: 0; color: #3A3E46">IMG_2231.jpg</span>
+        <span style="flex: 2 1 280px; color: #5B606B">Not an equity document</span>
+        <a href="#" style="font-size: 13px; font-weight: 500; padding: 8px 12px; border: 1px solid #D9DAD6; border-radius: 6px; text-decoration: none; color: #16181D">Skip</a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+      <span style="font-size: 13px; color: #5B606B">Originals are copied into <span class="num">~/Documents/Acme/docs</span>. Nothing is uploaded.</span>
+      <a href="Main.html" style="font-size: 14px; font-weight: 500; padding: 12px 20px; border-radius: 6px; background: #1F6F4A; color: #fff; text-decoration: none">Continue</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

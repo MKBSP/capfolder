@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capfolder — Review a sorted document</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Serif:wght@400&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.fld{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #EFEFEC;font-size:14px}
+.k{color:#5B606B;font-size:13px}
+.step{display:flex;gap:10px;font-size:13px;line-height:1.45;padding:8px 0}
+.dot{flex:none;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid #E6E6E3; background: #fff">
+    <a href="Onboarding.html" style="font-size: 14px; text-decoration: none; padding: 8px 4px">← Import</a>
+    <span style="color: #B5B7B2">/</span>
+    <span style="font-size: 14px; font-weight: 600">Needs you · 1 of 3</span>
+    <span style="margin-left: auto; font-size: 13px; color: #5B606B">Sorting with <b style="font-weight: 500; color: #16181D">Ollama · [local model]</b> · nothing leaves this computer</span>
+  </header>
+
+  <main style="display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; align-items: flex-start">
+
+    <section aria-label="Original document" style="flex: 1 1 420px; min-width: 0; background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; overflow: hidden">
+      <div style="display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #E6E6E3; font-size: 13px">
+        <span class="num">scan_0042.pdf</span><span style="color: #5B606B">page 1 of 6 · scanned</span>
+      </div>
+      <div style="padding: 36px 40px; font-family: 'IBM Plex Serif', Georgia, serif; font-size: 14px; line-height: 1.75; color: #33363C; background: #FDFCF9; filter: contrast(.95)">
+        <div style="text-align: center; font-size: 13px; letter-spacing: .05em">SIMPLE AGREEMENT FOR FUTURE EQUITY</div>
+        <p style="margin: 18px 0 0 0">THIS CERTIFIES THAT in exchange for the payment by <mark style="background: #FDF1E3; padding: 0 2px">Fund X Ventures I, L.P.</mark> (the "Investor") of <mark style="background: #E8F3EC; padding: 0 2px">$250,000</mark> (the "Purchase Amount") on or about <mark style="background: #E8F3EC; padding: 0 2px">March 14, 2023</mark>, Acme Inc., a Delaware corporation…</p>
+        <p style="margin: 14px 0 0 0">The "Post-Money Valuation Cap" is <mark style="background: #FDE8E6; padding: 0 2px">$1[illegible],000,000</mark>.</p>
+        <div style="height: 9px; background: #EEEDE8; border-radius: 3px; margin: 18px 0 10px 0; width: 94%"></div>
+        <div style="height: 9px; background: #EEEDE8; border-radius: 3px; margin: 10px 0; width: 88%"></div>
+        <div style="height: 9px; background: #EEEDE8; border-radius: 3px; margin: 10px 0; width: 91%"></div>
+        <div style="height: 9px; background: #EEEDE8; border-radius: 3px; margin: 10px 0 0 0; width: 70%"></div>
+      </div>
+    </section>
+
+    <section style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 18px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <h1 style="margin: 0; font-size: 18px; font-weight: 600">Post-money SAFE · Fund X</h1>
+          <span style="font-size: 12px; padding: 3px 8px; border-radius: 999px; background: #FDF1E3; color: #8A3E05">1 field unsure</span>
+        </div>
+        <div style="margin-top: 10px">
+          <div class="fld"><span class="k">Investor</span><span>Fund X Ventures I, L.P.</span><span style="font-size: 12px; color: #8A3E05">matched to "Fund X"?</span></div>
+          <div class="fld"><span class="k">Amount</span><span class="num">$250,000</span><span style="font-size: 12px; color: #16543A">matches Pulley</span></div>
+          <div class="fld"><span class="k">Date</span><span>Mar 14, 2023</span><span style="font-size: 12px; color: #16543A">found p.1</span></div>
+          <div class="fld"><span class="k">Valuation cap</span><label style="display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Valuation cap</span><input class="num" value="10,000,000" style="font: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid #E0A458; border-radius: 6px; width: 100%; box-sizing: border-box; background: #FFFBF4"></label><span style="font-size: 12px; color: #8A3E05">unreadable, from Pulley</span></div>
+          <div class="fld" style="border-bottom: none"><span class="k">Signatures</span><span>Company ✓ · Investor ✓</span><span style="font-size: 12px; color: #16543A">p.6</span></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
+          <button type="button" style="font: inherit; font-size: 14px; font-weight: 500; padding: 11px 18px; min-height: 44px; border: none; border-radius: 6px; background: #1F6F4A; color: #fff; cursor: pointer">Confirm &amp; file</button>
+          <button type="button" style="font: inherit; font-size: 14px; padding: 11px 16px; min-height: 44px; border: 1px solid #D9DAD6; border-radius: 6px; background: #fff; color: #16181D; cursor: pointer">Not a SAFE</button>
+        </div>
+        <label style="display: flex; gap: 10px; align-items: center; margin-top: 12px; font-size: 13px; color: #3A3E46; min-height: 32px">
+          <input type="checkbox" checked style="width: 16px; height: 16px; accent-color: #1F6F4A">
+          Remember: "Fund X Ventures I, L.P." is Fund X
+        </label>
+      </div>
+
+      <div style="background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; padding: 16px 18px">
+        <h2 style="margin: 0 0 6px 0; font-size: 14px; font-weight: 600">How this was sorted</h2>
+        <div class="step"><span class="dot" style="background: #E8F3EC; color: #16543A">1</span><span><b style="font-weight: 500">Read.</b> No text layer, so OCR ran locally (Tesseract).</span></div>
+        <div class="step"><span class="dot" style="background: #E8F3EC; color: #16543A">2</span><span><b style="font-weight: 500">Type.</b> Title and clauses match the YC post-money SAFE template.</span></div>
+        <div class="step"><span class="dot" style="background: #E8F3EC; color: #16543A">3</span><span><b style="font-weight: 500">Fields.</b> Local model filled amount, date, cap and parties into a fixed schema.</span></div>
+        <div class="step"><span class="dot" style="background: #FDF1E3; color: #8A3E05">4</span><span><b style="font-weight: 500">Match.</b> Amount equals the Fund X row from Pulley. Name differs, so it's asking you.</span></div>
+        <div class="step"><span class="dot" style="background: #F0F1EE; color: #5B606B">5</span><span><b style="font-weight: 500">File.</b> Saved as <span class="num">docs/safes/2023-03-14_fund-x.pdf</span>, original kept.</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+</body>
+</html>

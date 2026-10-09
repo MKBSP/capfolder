@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capfolder — Connect your AI</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBFBFA}
+a{color:#1F6F4A}a:hover{color:#16543A}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.card{background:#fff;border:1px solid #E6E6E3;border-radius:8px;padding:18px 20px}
+.prov{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #EFEFEC;font-size:14px}
+.tag{font-size:12px;padding:3px 8px;border-radius:999px}
+.btn{font:inherit;font-size:14px;padding:9px 14px;min-height:40px;border:1px solid #D9DAD6;border-radius:6px;background:#fff;color:#16181D;cursor:pointer;margin-left:auto}
+</style>
+</head>
+<body>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #16181D; background: #FBFBFA; min-height: 900px; display: flex; flex-direction: column">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid #E6E6E3; background: #fff">
+    <a href="Main.html" style="font-size: 14px; text-decoration: none; padding: 8px 4px">← Cap table</a>
+    <span style="color: #B5B7B2">/</span>
+    <span style="font-size: 14px; font-weight: 600">Settings · AI</span>
+  </header>
+
+  <main style="display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; align-items: flex-start; max-width: 1240px; width: 100%; box-sizing: border-box; margin: 0 auto">
+    <section style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <div>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 600">Bring your own AI</h1>
+        <p style="margin: 6px 0 0 0; font-size: 15px; color: #3A3E46; line-height: 1.5">Optional. AI helps sort documents with odd names and formats, and lets you ask questions about your vault. Rules and matching run without it.</p>
+      </div>
+
+      <div class="card" style="padding-top: 14px; padding-bottom: 6px">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: .06em; color: #16543A">ON THIS COMPUTER · NOTHING LEAVES</div>
+        <div class="prov"><b style="font-weight: 500">Ollama</b><span class="tag" style="background: #E8F3EC; color: #16543A">found ✓ · in use</span><span class="num" style="font-size: 12px; color: #5B606B">localhost:11434 · [model]</span><button class="btn">Change model</button></div>
+        <div class="prov"><b style="font-weight: 500">LM Studio</b><span style="font-size: 13px; color: #5B606B">not running</span><button class="btn">Connect</button></div>
+
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: .06em; color: #3D3170; margin-top: 16px">YOUR SUBSCRIPTION · NO API KEY</div>
+        <div class="prov"><b style="font-weight: 500">Claude Code</b><span class="tag" style="background: #F4F1FA; color: #3D3170">found ✓ · signed in</span><span class="num" style="font-size: 12px; color: #5B606B">claude -p</span><button class="btn">Use this</button></div>
+        <div class="prov"><b style="font-weight: 500">Codex CLI (ChatGPT)</b><span class="tag" style="background: #F4F1FA; color: #3D3170">found ✓</span><span class="num" style="font-size: 12px; color: #5B606B">codex exec</span><button class="btn">Use this</button></div>
+        <div class="prov"><b style="font-weight: 500">Gemini CLI</b><span style="font-size: 13px; color: #5B606B">not installed</span><button class="btn">How to install</button></div>
+
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: .06em; color: #5B606B; margin-top: 16px">API KEY</div>
+        <div class="prov" style="border-bottom: none"><b style="font-weight: 500">Claude or OpenAI key</b><span style="font-size: 13px; color: #5B606B">pay per use</span><button class="btn">Add key</button></div>
+      </div>
+
+      <div class="card" style="display: flex; flex-direction: column; gap: 14px">
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 14px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F6F4A">Use AI when sorting imported documents</label>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 14px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: #1F6F4A">Allow cloud models to read document text</label>
+        <p style="margin: 0; font-size: 13px; color: #5B606B">Off: only local models see your documents. Every AI answer is checked against the cap table before anything is saved.</p>
+      </div>
+
+      <div class="card">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 600">Use Capfolder from Claude Desktop or ChatGPT</h2>
+        <p style="margin: 6px 0 12px 0; font-size: 14px; color: #3A3E46; line-height: 1.5">Turn on the local MCP server and your AI app can read your vault. Read-only by default.</p>
+        <pre class="num" style="margin: 0; background: #16181D; color: #E8EAE6; border-radius: 6px; padding: 14px 16px; font-size: 13px; line-height: 1.6; overflow-x: auto">"capfolder": {
+  "command": "capfolder",
+  "args": ["mcp", "--vault", "~/Documents/Acme", "--read-only"]
+}</pre>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; margin-top: 12px"><input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #1F6F4A">MCP server on</label>
+      </div>
+    </section>
+
+    <section aria-label="Ask your vault" style="flex: 1 1 400px; min-width: 0; background: #fff; border: 1px solid #E6E6E3; border-radius: 8px; display: flex; flex-direction: column; min-height: 640px">
+      <div style="padding: 14px 18px; border-bottom: 1px solid #E6E6E3; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between"><span>Ask your vault</span><span style="font-weight: 400; font-size: 12px; color: #5B606B">Ollama · local</span></div>
+      <div style="flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 14px; font-size: 14px; line-height: 1.5">
+        <div style="align-self: flex-end; max-width: 80%; background: #F0F1EE; border-radius: 10px; padding: 10px 14px">Who still hasn't signed an IP assignment?</div>
+        <div style="max-width: 90%">João Silva. It was sent for signature 2 days ago and opened once. Everyone else on the cap table has one filed. <a href="Signing.html">Open signature</a></div>
+        <div style="align-self: flex-end; max-width: 80%; background: #F0F1EE; border-radius: 10px; padding: 10px 14px">Which SAFEs have a discount?</div>
+        <div style="max-width: 90%">One: Angel A, <span class="num">$150,000</span>, cap <span class="num">$8M</span>, <span class="num">20%</span> discount. Source: <a href="#">docs/safes/2023-02_angel-a.pdf</a>, page 1.</div>
+      </div>
+      <label style="display: flex; gap: 8px; padding: 14px 18px; border-top: 1px solid #E6E6E3">
+        <span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Question</span>
+        <input placeholder="Ask about your cap table or documents" style="flex: 1; font: inherit; font-size: 14px; padding: 10px 12px; min-height: 44px; box-sizing: border-box; border: 1px solid #D9DAD6; border-radius: 6px">
+      </label>
+    </section>
+  </main>
+</div>
+
+</body>
+</html>
