@@ -8,6 +8,8 @@ import { NewGrant } from "./NewGrant";
 import { NewPerson } from "./NewPerson";
 import { NewSafe } from "./NewSafe";
 import { NewShares } from "./NewShares";
+import { People } from "./People";
+import { Person } from "./Person";
 import { Pool } from "./Pool";
 import { StartChoice } from "./StartChoice";
 import { Welcome } from "./Welcome";
@@ -39,6 +41,10 @@ export function Screen() {
       return <Pool />;
     case "newPerson":
       return <NewPerson />;
+    case "people":
+      return <People />;
+    case "person":
+      return <Person id={route.id} />;
     case "comingSoon":
       return (
         <>

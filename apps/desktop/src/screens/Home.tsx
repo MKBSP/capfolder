@@ -136,7 +136,18 @@ export function Home() {
                         const chip = docChip(state, r, gaps);
                         return (
                           <tr key={r.securityId} className={chip?.tone === "red" ? "attn" : ""}>
-                            <td className="td">{r.stakeholder}</td>
+                            <td className="td">
+                              <button
+                                type="button"
+                                className="btn link"
+                                onClick={() => {
+                                  const x = state.securities.get(r.securityId);
+                                  if (x) app.go({ name: "person", id: x.stakeholderId });
+                                }}
+                              >
+                                {r.stakeholder}
+                              </button>
+                            </td>
                             <td className="td muted">{typeLabel(state, r)}</td>
                             <td className="td num right">{usd(r.safeAmount)}</td>
                             <td className="td num right" title={r.math.as_converted}>
