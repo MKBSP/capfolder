@@ -1,0 +1,39 @@
+// App settings live in the OS app-data folder, never in the vault (docs/01).
+import { builders } from "@capfolder/core";
+import { type Fs, join } from "./fs/types";
+
+export interface Settings {
+  deviceId: string;
+  lock: "password" | "none";
+  idleMinutes: 0 | 5 | 15 | 60; // 0 = only when I quit
+  telemetry: boolean; // stored now; the anonymous ping is wired in M8 (docs/11)
+  recentVaults: { name: string; root: string }[];
+}
+
+const defaults = (): Settings => ({
+  deviceId: builders.newId("dev"),
+  lock: "none",
+  idleMinutes: 15,
+  telemetry: true,
+  recentVaults: [],
+});
+
+export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {
+  const path = join(dir, "settings.json");
+  try {
+    if (await fs.exists(path)) return { ...defaults(), ...JSON.parse(await fs.readText(path)) };
+  } catch {
+    // unreadable settings: start from defaults rather than locking the founder out
+  }
+  const s = defaults();
+  await saveSettings(fs, dir, s);
+  return s;
+}
+
+export async function saveSettings(fs: Fs, dir: string, s: Settings): Promise<void> {
+  await fs.mkdir(dir);
+  await fs.writeText(join(dir, "settings.json"), `${JSON.stringify(s, null, 2)}\n`);
+}
+
+export const addRecent = (list: Settings["recentVaults"], v: { name: string; root: string }) =>
+  [v, ...list.filter((x) => x.root !== v.root)].slice(0, 5);
