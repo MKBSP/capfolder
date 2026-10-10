@@ -12,11 +12,13 @@ import { NewShares } from "./NewShares";
 import { People } from "./People";
 import { Person } from "./Person";
 import { Pool } from "./Pool";
+import { Settings } from "./Settings";
+import { Signatures } from "./Signatures";
 import { StartChoice } from "./StartChoice";
 import { Welcome } from "./Welcome";
 import { Wizard } from "./Wizard";
 
-/** Route → screen. Screens not built yet show a placeholder. */
+/** Route → screen. */
 export function Screen() {
   const { route } = useApp();
   switch (route.name) {
@@ -42,6 +44,10 @@ export function Screen() {
       return <Pool />;
     case "newPerson":
       return <NewPerson />;
+    case "signatures":
+      return <Signatures />;
+    case "settings":
+      return <Settings />;
     case "documents":
       return <Documents />;
     case "people":
@@ -57,11 +63,9 @@ export function Screen() {
           </main>
         </>
       );
-    default:
-      return (
-        <main className="medium">
-          <ComingSoon milestone="M3">{route.name}</ComingSoon>
-        </main>
-      );
+    default: {
+      const unhandled: never = route; // every route has a screen; the compiler checks this
+      return unhandled;
+    }
   }
 }
