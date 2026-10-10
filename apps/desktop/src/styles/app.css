@@ -340,12 +340,16 @@ tr.click {
   display: flex;
   gap: 4px;
 }
-.nav a {
+.nav button {
   padding: 6px 10px;
   border-radius: 6px;
   color: var(--ink-2);
+  border: 0;
+  background: none;
+  font: 14px var(--font);
+  cursor: pointer;
 }
-.nav a.on {
+.nav button.on {
   background: var(--pill);
   font-weight: 500;
   color: var(--ink);
