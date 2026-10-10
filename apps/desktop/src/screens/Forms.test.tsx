@@ -2,7 +2,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
-import { day, parseDay } from "../fmt";
+import { configureFormat, day, parseDay } from "../fmt";
 import { acmePlatform } from "../test/acme";
 
 async function openNew(item: string) {
@@ -62,7 +62,10 @@ test("Increase the pool to a new total", async () => {
 
 test("dates read day month year and accept day-first typing", () => {
   expect(parseDay("6 Oct 2026")).toBe("2026-10-06");
-  expect(parseDay("06/10/2026")).toBe("2026-10-06");
+  expect(parseDay("06/10/2026")).toBe("2026-06-10"); // US: month first
+  configureFormat({ locale: "pt-PT", currency: "EUR", monthFirst: false });
+  expect(parseDay("06/10/2026")).toBe("2026-10-06"); // elsewhere: day first
+  configureFormat({ locale: "en-US", currency: "USD", monthFirst: true });
   expect(parseDay("6 october 2026")).toBe("2026-10-06");
   expect(parseDay("2026-10-06")).toBe("2026-10-06");
   expect(parseDay("31/02/2026")).toBeNull();

@@ -35,8 +35,10 @@ export type Result = { ok: true; vault: Vault } | { ok: false; errors: string[] 
 export type CompanyInput = {
   name: string;
   formationDate: string;
-  type: "DE_CCORP" | "OTHER";
-  country?: string;
+  type?: "DE_CCORP" | "OTHER"; // DE_CCORP = US + Delaware (older callers); otherwise country/subdivision
+  country?: string; // ISO 3166-1 alpha-2
+  subdivision?: string; // e.g. a US state code; "" for none
+  currency?: string; // ISO 4217, stored in capfolder.json; default USD
 };
 
 const DOC_DIRS = [
@@ -138,7 +140,7 @@ export async function createVault(
     name: p.company.name,
     formationDate: p.company.formationDate,
     country: p.company.type === "DE_CCORP" ? "US" : (p.company.country ?? "US"),
-    subdivision: p.company.type === "DE_CCORP" ? "DE" : "",
+    subdivision: p.company.type === "DE_CCORP" ? "DE" : (p.company.subdivision ?? ""),
   });
   const drafts: EventDraft[] = [
     { kind: "app", type: "vault_created", data: { name: p.company.name, created_by: "founder" } },
@@ -160,6 +162,7 @@ export async function createVault(
       created_at: ctx.now().toISOString(),
       issuer_id: iss.data.id,
       ocf_version: "1.2.0",
+      currency: p.company.currency ?? "USD",
     },
     r.events,
     ctx,
@@ -401,6 +404,13 @@ async function isPlainDocPath(fs: Fs, root: string, rel: string): Promise<boolea
   for (let i = 1; i <= parts.length; i++)
     if (await fs.isSymlink(join(root, ...parts.slice(0, i))).catch(() => true)) return false;
   return true;
+}
+
+/** Company currency for new records (capfolder.json). Records already made keep their own currency. */
+export async function setCompanyCurrency(fs: Fs, v: Vault, currency: string): Promise<Vault> {
+  const meta = { ...v.meta, currency };
+  await fs.writeText(join(v.root, "capfolder.json"), `${JSON.stringify(meta, null, 2)}\n`);
+  return { ...v, meta };
 }
 
 /** F-30. The lawyer zip. Documents are read from the vault; unreadable or unsafe paths are listed as missing. */

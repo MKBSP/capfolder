@@ -4,10 +4,10 @@ import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { shares, todayIso } from "../fmt";
+import { num, shares, todayIso } from "../fmt";
 import { useApp } from "../state";
 
-const digits = (s: string) => s.replace(/[,\s$]/g, "");
+const digits = num; // the founder's decimal mark (Settings → Your country)
 
 /** F-13 (create the pool) and F-25 (increase it: OCF records the new total). */
 export function Pool() {

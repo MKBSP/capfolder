@@ -1,8 +1,11 @@
+import { builders as b } from "@capfolder/core";
 import { useState } from "react";
 import { MainHeader } from "../components/Header";
+import { CompanyPlace, YourCountry } from "../components/RegionFields";
 import { ComingSoon, ErrorList, Field } from "../components/ui";
 import type { Settings as S } from "../settings";
 import { useApp } from "../state";
+import { setCompanyCurrency } from "../vault";
 
 export function Settings() {
   const app = useApp();
@@ -15,6 +18,14 @@ export function Settings() {
     <>
       <MainHeader />
       <main className="medium stack">
+        <section className="card stack" aria-label="You">
+          <h2>You</h2>
+          <YourCountry
+            value={settings.region}
+            onChange={(region) => app.setSettings({ ...settings, region })}
+          />
+        </section>
+        {app.vault && app.latest?.issuer ? <CompanySection /> : null}
         <section className="card stack">
           <h2>App lock</h2>
           <p className="muted small">
@@ -140,5 +151,67 @@ export function Settings() {
         </section>
       </main>
     </>
+  );
+}
+
+/** The company's own details: legal name and incorporation (an ISSUER update), and the currency for new records. */
+function CompanySection() {
+  const app = useApp();
+  const issuer = app.latest!.issuer!;
+  const [name, setName] = useState(String(issuer.legal_name ?? ""));
+  const [place, setPlace] = useState({
+    country: String(issuer.country_of_formation ?? "US"),
+    subdivision: String(issuer.country_subdivision_of_formation ?? ""),
+    currency: app.currency,
+  });
+  const [msg, setMsg] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[] | null>(null);
+  return (
+    <section className="card stack" aria-label="Company">
+      <h2>Company</h2>
+      <Field label="Legal name">
+        <input className="inp" value={name} onChange={(e) => setName(e.target.value)} />
+      </Field>
+      <CompanyPlace
+        {...place}
+        onChange={async (next) => {
+          setPlace(next);
+          setMsg(null);
+          if (next.currency !== app.currency && app.vault)
+            app.setVault(await setCompanyCurrency(app.platform.fs, app.vault, next.currency));
+        }}
+      />
+      <p className="meta" style={{ margin: 0 }}>
+        The currency applies to new records; amounts already recorded keep theirs.
+      </p>
+      <ErrorList errors={errors} />
+      {msg ? <div className="banner green small">{msg}</div> : null}
+      <div className="row" style={{ justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn primary"
+          onClick={async () => {
+            if (!name.trim()) return setErrors(["Enter the company's legal name."]);
+            const same =
+              name.trim() === issuer.legal_name &&
+              place.country === issuer.country_of_formation &&
+              place.subdivision.trim() === (issuer.country_subdivision_of_formation ?? "");
+            if (same) return setMsg("Saved.");
+            const errs = await app.run([
+              b.issuerUpdate({
+                previous: issuer,
+                name: name.trim(),
+                country: place.country,
+                subdivision: place.subdivision.trim(),
+              }),
+            ]);
+            setErrors(errs);
+            if (!errs) setMsg("Saved.");
+          }}
+        >
+          Save company details
+        </button>
+      </div>
+    </section>
   );
 }

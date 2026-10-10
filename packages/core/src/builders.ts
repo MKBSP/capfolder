@@ -397,6 +397,23 @@ export function repurchaseUnvested(p: { state: State; securityId: string; date: 
   ];
 }
 
+/** The company's own details changed (name, where it's incorporated): the ISSUER is re-emitted with the same id. */
+export function issuerUpdate(p: {
+  previous: Data;
+  name?: string;
+  country?: string;
+  subdivision?: string;
+}): EventDraft {
+  const { object_type: _t, ...prev } = structuredClone(p.previous);
+  if (p.name) prev.legal_name = p.name;
+  if (p.country) prev.country_of_formation = p.country;
+  if (p.subdivision !== undefined) {
+    if (p.subdivision) prev.country_subdivision_of_formation = p.subdivision;
+    else delete prev.country_subdivision_of_formation;
+  }
+  return ocf("ISSUER", prev);
+}
+
 /** F-19: same person or entity, new name and/or email. The full object is re-emitted with the same id. */
 export function stakeholderUpdate(p: { previous: Data; name?: string; email?: string }): EventDraft {
   const { object_type: _t, ...prev } = structuredClone(p.previous);

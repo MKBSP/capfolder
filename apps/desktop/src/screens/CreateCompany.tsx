@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { type BackupStatus, backupStatus, suggestedFolders } from "../backup";
 import { DateInput } from "../components/DateInput";
+import { CompanyPlace } from "../components/RegionFields";
 import { ErrorList, Stepper } from "../components/ui";
 import { todayIso } from "../fmt";
 import { join } from "../fs/types";
+import { regionOf } from "../regions";
 import { addRecent } from "../settings";
 import { useApp } from "../state";
 import { createVault } from "../vault";
@@ -13,8 +15,12 @@ export function CreateCompany() {
   const app = useApp();
   const { platform } = app;
   const [name, setName] = useState("");
-  const [type, setType] = useState<"DE_CCORP" | "OTHER">("DE_CCORP");
-  const [country, setCountry] = useState("US");
+  const home = regionOf(app.settings.region);
+  const [place, setPlace] = useState({
+    country: home.code,
+    subdivision: home.code === "US" ? "DE" : "",
+    currency: home.currency,
+  });
   const [date, setDate] = useState("");
   const [parent, setParent] = useState<string | null>(null);
   const [backup, setBackup] = useState<BackupStatus | null>(null);
@@ -41,7 +47,7 @@ export function CreateCompany() {
     try {
       const v = await createVault(platform.fs, app.ctx, {
         parent: parent!,
-        company: { name: name.trim(), formationDate: date, type, country },
+        company: { name: name.trim(), formationDate: date, ...place, subdivision: place.subdivision.trim() },
       });
       await app.setSettings({
         ...app.settings,
@@ -76,38 +82,16 @@ export function CreateCompany() {
             placeholder="Acme Inc."
           />
         </label>
-        <div className="grid2">
-          <label>
-            <span className="lbl">Type</span>
-            <select
-              className="inp"
-              value={type}
-              onChange={(e) => setType(e.target.value as "DE_CCORP" | "OTHER")}
-            >
-              <option value="DE_CCORP">Delaware C-corp</option>
-              <option value="OTHER">Other (track only)</option>
-            </select>
-          </label>
-          <label>
-            <span className="lbl">Incorporated</span>
-            <DateInput value={date} onChange={setDate} />
-          </label>
-        </div>
-        {type === "OTHER" ? (
-          <>
-            <label>
-              <span className="lbl">Country (2-letter code)</span>
-              <input
-                className="inp"
-                value={country}
-                maxLength={2}
-                onChange={(e) => setCountry(e.target.value.toUpperCase())}
-              />
-            </label>
-            <div className="banner amber">
-              Templates and checks are US-only for now. You can still track your cap table.
-            </div>
-          </>
+        <label>
+          <span className="lbl">Incorporated</span>
+          <DateInput value={date} onChange={setDate} />
+        </label>
+        <CompanyPlace {...place} onChange={setPlace} />
+        {place.country !== "US" || place.subdivision !== "DE" ? (
+          <div className="banner amber">
+            Templates and checks are written for Delaware companies for now. You can still track your cap
+            table.
+          </div>
         ) : null}
         <div>
           <span className="lbl">Where should the folder live?</span>

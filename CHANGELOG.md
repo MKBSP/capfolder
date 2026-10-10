@@ -4,6 +4,11 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added — country and currency (2026-10-10, from Mads)
+- **You:** your country (Welcome and Settings) sets how numbers look and are typed ("1.000.000,50" vs "1,000,000.50") and whether typed dates are month-first (US) or day-first. Defaults to the computer's language.
+- **Company:** country and state of incorporation and the company currency (Create company and Settings → Company). Changing the name or incorporation records an ISSUER update; the currency is used for new records (amounts already recorded keep theirs) and for every amount shown.
+- Imports use the company currency, and the founder's decimal mark when a file is ambiguous.
+
 ### Added — M2 · import (2026-10-10)
 - Import screen (from Start, or Home when the folder is empty): pick the source (Pulley, Carta, Cake, OCF, any spreadsheet) with that tool's export steps, choose the file, match columns, check and save.
 - OCF .zip imports with its full history. Spreadsheets (.xlsx, .csv): header row and columns guessed, editable; one position per row; people deduped by email, then name; dates in ISO, US, day-first, Excel serial or "Mar 14, 2023"; vesting schedules built from start + months + cliff, or "vesting unknown" when only "vested so far" is given; preferred classes; SAFEs with cap, discount, MFN; rows without a date become "imported snapshot".

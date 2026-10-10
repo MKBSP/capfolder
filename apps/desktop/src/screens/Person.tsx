@@ -13,7 +13,7 @@ import { type ReactNode, useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { Chip, ComingSoon, ErrorList, Field, Modal } from "../components/ui";
-import { day, month, shares, todayIso, usd, usdShort } from "../fmt";
+import { day, money, moneyShort, month, num, shares, todayIso } from "../fmt";
 import { CORRECTABLE, getPath, type HistoryItem, historyFor } from "../history";
 import { useApp } from "../state";
 import { scheduleText } from "../views";
@@ -251,8 +251,8 @@ function HoldingCard({ x }: { x: Security }) {
     return (
       <div className="card">
         <h2>SAFE · {x.id}</h2>
-        <KV k="Amount" v={usd(x.amount)} />
-        <KV k="Valuation cap" v={x.cap ? usdShort(x.cap) : "None"} />
+        <KV k="Amount" v={money(x.amount)} />
+        <KV k="Valuation cap" v={x.cap ? moneyShort(x.cap) : "None"} />
         {x.discount ? <KV k="Discount" v={`${Number(x.discount) * 100}%`} /> : null}
         <KV k="Date" v={day(x.date)} />
       </div>
@@ -265,7 +265,7 @@ function HoldingCard({ x }: { x: Security }) {
       {plan ? <KV k="Type" v={`${x.compensationType?.replace("OPTION_", "") ?? ""} · ${plan}`} /> : null}
       <KV k={x.kind === "equity" ? "Options" : "Shares"} v={shares(x.quantity)} />
       {x.exercised ? <KV k="Exercised" v={shares(x.exercised)} /> : null}
-      {x.price ? <KV k={x.kind === "equity" ? "Strike" : "Price"} v={usd(x.price)} /> : null}
+      {x.price ? <KV k={x.kind === "equity" ? "Strike" : "Price"} v={money(x.price)} /> : null}
       <KV k="Issued" v={day(x.date)} />
       {x.stoppedAt ? <KV k="Vesting stopped" v={day(x.stoppedAt)} /> : null}
     </div>
@@ -419,7 +419,7 @@ function ExerciseDialog({ secs, onClose }: { secs: Security[]; onClose(): void }
   const at = useMemo(() => reduce(app.vault!.events, date), [app.vault, date]);
   const x = at.securities.get(secId);
   const vested = x ? securityVested(x, at, date).vested : null;
-  const q = qty.replace(/[,\s]/g, "");
+  const q = num(qty);
   return (
     <Modal open onClose={onClose} title="Record exercise">
       <div className="stack">
@@ -469,7 +469,7 @@ function RepurchaseDialog({ secs, onClose }: { secs: Security[]; onClose(): void
         {v ? (
           <div className="banner">
             Unvested <span className="num">{shares(v.unvested)}</span> go back to the company at{" "}
-            {usd(x?.price)} per share. Vested <span className="num">{shares(v.vested)}</span> stay.
+            {money(x?.price)} per share. Vested <span className="num">{shares(v.vested)}</span> stay.
           </div>
         ) : null}
         <ErrorList errors={errors} />
@@ -546,7 +546,7 @@ function CorrectDialog({ item, onClose }: { item: HistoryItem; onClose(): void }
                 target: item.event.id,
                 field: path,
                 old: current,
-                new: value.replace(/[,\s$]/g, ""),
+                new: num(value),
                 reason,
               }),
             ]);

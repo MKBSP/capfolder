@@ -11,11 +11,11 @@ import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { shares, todayIso } from "../fmt";
+import { num, shares, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { standardTerms } from "../terms";
 
-const digits = (s: string) => s.replace(/[,\s$]/g, "");
+const digits = num; // the founder's decimal mark (Settings → Your country)
 
 /** F-14: grant options from the pool. Board consent + signing arrive in M5; for now the grant is recorded. */
 export function NewGrant() {
@@ -41,6 +41,7 @@ export function NewGrant() {
       ...person.drafts,
       ...(terms?.drafts ?? []),
       ...b.optionGrant({
+        currency: app.currency,
         state: latest,
         stakeholderId: person.id,
         planId,

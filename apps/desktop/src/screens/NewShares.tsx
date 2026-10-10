@@ -5,11 +5,11 @@ import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { day, todayIso } from "../fmt";
+import { day, num, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { standardTerms } from "../terms";
 
-const digits = (s: string) => s.replace(/[,\s$]/g, "");
+const digits = num; // the founder's decimal mark (Settings → Your country)
 const plus30 = (d: string) => {
   const [y, m, dd] = d.split("-").map(Number) as [number, number, number];
   return new Date(Date.UTC(y, m - 1, dd + 30)).toISOString().slice(0, 10);
@@ -38,6 +38,7 @@ export function NewShares() {
       ...person.drafts,
       ...(terms?.drafts ?? []),
       ...b.stockIssuance({
+        currency: app.currency,
         state: latest,
         stakeholderId: person.id,
         classId,

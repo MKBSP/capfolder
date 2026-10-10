@@ -1,6 +1,6 @@
 import { capTableRows, capTableTotals } from "@capfolder/core";
 import { MainHeader } from "../components/Header";
-import { shares, usd } from "../fmt";
+import { money, shares } from "../fmt";
 import { useApp } from "../state";
 
 /** Everyone in the vault, with what they hold as of the chosen date. */
@@ -42,7 +42,7 @@ export function People() {
                     </td>
                     <td className="td muted">{p.contact_info?.emails?.[0]?.email_address ?? ""}</td>
                     <td className="td num right">{held ? shares(held) : "—"}</td>
-                    <td className="td num right">{safes.length ? usd(t.safeAmount) : "—"}</td>
+                    <td className="td num right">{safes.length ? money(t.safeAmount) : "—"}</td>
                   </tr>
                 );
               })}

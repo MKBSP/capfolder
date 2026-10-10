@@ -1,5 +1,6 @@
 // F-08 "Start from zero": the wizard's answers → one batch of drafts (pure, so the live preview and the save agree).
 import { builders as b, type EventDraft, nextSecurityIdNumber, type State } from "@capfolder/core";
+import { num } from "./fmt";
 
 export interface FounderInput {
   name: string;
@@ -30,13 +31,19 @@ export const discountFraction = (pct: string) => {
   const n = Number(pct);
   return pct.trim() && n > 0 ? String(n / 100) : undefined;
 };
-const digits = (s: string) => s.replace(/[,\s$]/g, "");
+const digits = num; // the founder's decimal mark (Settings → Your country)
 
-export function wizardDrafts(latest: State, w: WizardInput): EventDraft[] {
+export function wizardDrafts(latest: State, w: WizardInput, currency = "USD"): EventDraft[] {
   const classId = b.newId("sc");
   const termsId = b.newId("vt");
   const drafts: EventDraft[] = [
-    b.stockClass({ id: classId, name: "Common", authorized: digits(w.authorized), parValue: w.par }),
+    b.stockClass({
+      id: classId,
+      name: "Common",
+      authorized: digits(w.authorized),
+      parValue: digits(w.par),
+      currency,
+    }),
   ];
   const vesting = w.founders.some((f) => f.vesting);
   if (vesting) drafts.push(b.vestingTerms4y1y(termsId));
@@ -47,6 +54,7 @@ export function wizardDrafts(latest: State, w: WizardInput): EventDraft[] {
     // The vesting terms aren't in `latest` yet, so the start condition id is the builder's default ("vesting-start").
     drafts.push(
       ...b.stockIssuance({
+        currency,
         state: latest,
         stakeholderId: sh.data.id,
         classId,
@@ -73,6 +81,7 @@ export function wizardDrafts(latest: State, w: WizardInput): EventDraft[] {
     drafts.push(
       sh,
       b.safe({
+        currency,
         state: latest,
         stakeholderId: sh.data.id,
         amount: digits(s.amount),

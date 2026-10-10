@@ -15,7 +15,7 @@ import { useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { ErrorList, Field, StatCard } from "../components/ui";
-import { shares, todayIso, usd } from "../fmt";
+import { formatConfig, money, shares, todayIso } from "../fmt";
 import { SOURCES, type SourceId } from "../importRules";
 import { useApp } from "../state";
 import { importIntoVault } from "../vault";
@@ -275,7 +275,7 @@ function Preview({ rows }: { rows: Row[] }) {
               <td className="td muted">{r.type}</td>
               <td className="td num right">{r.shares === null ? "" : shares(r.shares)}</td>
               <td className="td num right">{r.fdPercent}</td>
-              <td className="td num right">{r.safeAmount ? usd(r.safeAmount) : ""}</td>
+              <td className="td num right">{r.safeAmount ? money(r.safeAmount) : ""}</td>
             </tr>
           ))}
         </tbody>
@@ -318,7 +318,7 @@ function OcfReview(p: { drafts: EventDraft[]; file: Loaded; onBack(): void }) {
       <div className="stats">
         <StatCard label="Fully diluted" value={shares(pv.totals.fullyDiluted)} />
         <StatCard label="Stakeholders" value={String(people)} />
-        <StatCard label="SAFEs outstanding" value={usd(pv.totals.safeAmount)} />
+        <StatCard label="SAFEs outstanding" value={money(pv.totals.safeAmount)} />
       </div>
       <ErrorList errors={pv.violations.length ? pv.violations : errors} />
       <Preview rows={pv.rows} />
@@ -349,6 +349,7 @@ function SheetReview(p: {
   onBack(): void;
 }) {
   const { busy, errors, save } = useSave(p.file);
+  const { currency } = useApp();
   const [preferred, setPreferred] = useState<Record<string, boolean>>({});
   const [expectedSafe, setExpectedSafe] = useState("");
   const [exportDate, setExportDate] = useState(todayIso());
@@ -369,8 +370,10 @@ function SheetReview(p: {
         poolReserved: pool.trim() || undefined,
         preferred,
         date1904: p.date1904,
+        currency,
+        decimalMark: formatConfig().decimalMark,
       }),
-    [p.header, p.body, p.mapping, p.firstRow, exportDate, authorized, pool, preferred, p.date1904],
+    [p.header, p.body, p.mapping, p.firstRow, exportDate, authorized, pool, preferred, p.date1904, currency],
   );
   const rec = reconcile(r.summary, expected, expectedSafe);
   // The old tool's total is always required; a mismatch needs an explicit note.
@@ -382,7 +385,7 @@ function SheetReview(p: {
       <div className="stats">
         <StatCard label="Fully diluted" value={shares(r.summary.fullyDiluted)} />
         <StatCard label="Stakeholders" value={String(r.summary.stakeholders)} />
-        <StatCard label="SAFEs outstanding" value={usd(r.summary.safeTotal)} />
+        <StatCard label="SAFEs outstanding" value={money(r.summary.safeTotal)} />
       </div>
       {r.issues.length ? (
         <div className="banner amber">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { YourCountry } from "../components/RegionFields";
 import { ErrorList, Logo, Modal, Stepper } from "../components/ui";
 import { TERMS, TERMS_VERSION } from "../copy";
 import { baseName } from "../fs/types";
@@ -65,6 +66,10 @@ export function Welcome() {
             ))}
           </div>
         ) : null}
+        <YourCountry
+          value={settings.region}
+          onChange={(region) => app.setSettings({ ...settings, region })}
+        />
         <h2 style={{ marginTop: 24 }}>Lock the app when it opens?</h2>
         <div className="opt off" aria-disabled="true">
           <input type="radio" name="lock" disabled />

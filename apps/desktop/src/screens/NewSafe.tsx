@@ -6,11 +6,11 @@ import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { day, todayIso, usd, usdShort } from "../fmt";
+import { day, money, moneyShort, num, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { discountFraction } from "../wizard";
 
-const digits = (s: string) => s.replace(/[,\s$]/g, "");
+const digits = num; // the founder's decimal mark (Settings → Your country)
 
 /** NewSafe.html (F-11 / F-12). "Record as signed" works now; sending for signature arrives in M5. */
 export function NewSafe() {
@@ -33,6 +33,7 @@ export function NewSafe() {
     return [
       ...person.drafts,
       b.safe({
+        currency: app.currency,
         state: latest,
         stakeholderId: person.id,
         amount: digits(amount),
@@ -108,12 +109,12 @@ export function NewSafe() {
                 <div>
                   {investor} ≈{" "}
                   {row.asConverted
-                    ? `${row.asConverted}% as-converted (${usdShort(digits(amount))} ÷ ${usdShort(digits(cap))})`
+                    ? `${row.asConverted}% as-converted (${moneyShort(digits(amount))} ÷ ${moneyShort(digits(cap))})`
                     : "converts at the next round (no cap)"}
                 </div>
                 <div className="muted">
-                  SAFEs outstanding: {usdShort(sumDec(before))} →{" "}
-                  {usdShort(sumDec([...before, digits(amount)]))}
+                  SAFEs outstanding: {moneyShort(sumDec(before))} →{" "}
+                  {moneyShort(sumDec([...before, digits(amount)]))}
                 </div>
               </>
             ) : (
@@ -156,13 +157,13 @@ export function NewSafe() {
           </p>
           <p>
             THIS CERTIFIES THAT in exchange for the payment by <mark>{investor}</mark> (the "Investor") of{" "}
-            <mark>{usd(digits(amount) || undefined)}</mark> (the "Purchase Amount") on or about{" "}
+            <mark>{money(digits(amount) || undefined)}</mark> (the "Purchase Amount") on or about{" "}
             <mark>{day(date)}</mark>, <mark>{(latest?.issuer?.legal_name as string) ?? "the Company"}</mark>{" "}
             (the "Company") issues to the Investor the right to certain shares of the Company's Capital Stock,
             subject to the terms described below.
           </p>
           <p>
-            The "Post-Money Valuation Cap" is <mark>{usd(digits(cap) || undefined)}</mark>.
+            The "Post-Money Valuation Cap" is <mark>{money(digits(cap) || undefined)}</mark>.
             {discount ? (
               <>
                 {" "}

@@ -2,7 +2,7 @@ import { appendEvents, capTableRows, MAX_DATE, percentOf, type Row, reduce } fro
 import { useEffect, useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { ErrorList, Field, Stepper } from "../components/ui";
-import { day, shares as fmtShares, todayIso, usd } from "../fmt";
+import { day, shares as fmtShares, money, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { type FounderInput, type SafeInput, type WizardInput, wizardDrafts } from "../wizard";
 
@@ -29,7 +29,10 @@ export function Wizard() {
   });
   const [preview, setPreview] = useState<Row[]>([]);
   const [errors, setErrors] = useState<string[] | null>(null);
-  const drafts = useMemo(() => (app.latest ? wizardDrafts(app.latest, w) : []), [app.latest, w]);
+  const drafts = useMemo(
+    () => (app.latest ? wizardDrafts(app.latest, w, app.currency) : []),
+    [app.latest, w, app.currency],
+  );
 
   useEffect(() => {
     if (!app.vault) return;
@@ -331,7 +334,9 @@ export function Wizard() {
               {preview.map((r) => (
                 <tr key={r.securityId}>
                   <td className="td">{r.stakeholder}</td>
-                  <td className="td num right">{r.group === 3 ? usd(r.safeAmount) : fmtShares(r.shares)}</td>
+                  <td className="td num right">
+                    {r.group === 3 ? money(r.safeAmount) : fmtShares(r.shares)}
+                  </td>
                   <td className="td num right">
                     {r.group === 3 ? (r.asConverted ? `≈${r.asConverted}%` : "") : `${r.fdPercent}%`}
                   </td>

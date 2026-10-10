@@ -1,6 +1,6 @@
 // Person history: the events that touch a stakeholder, in plain sentences (docs/08 copy rules).
 import { liveEvents, type State, type VaultEvent } from "@capfolder/core";
-import { shares, usd, usdShort } from "./fmt";
+import { money, moneyShort, shares } from "./fmt";
 
 export interface HistoryItem {
   event: VaultEvent; // the original line (as written)
@@ -20,15 +20,15 @@ export function describe(e: VaultEvent, s: State): string {
     case "STAKEHOLDER":
       return `Added ${d.name?.legal_name}${d.contact_info?.emails?.[0] ? ` · ${d.contact_info.emails[0].email_address}` : ""}`;
     case "TX_STOCK_ISSUANCE":
-      return `Issued ${n(d.quantity)} ${cls || "shares"} at ${usd(d.share_price?.amount)} (${d.security_id})`;
+      return `Issued ${n(d.quantity)} ${cls || "shares"} at ${money(d.share_price?.amount)} (${d.security_id})`;
     case "TX_EQUITY_COMPENSATION_ISSUANCE":
     case "TX_PLAN_SECURITY_ISSUANCE":
-      return `Granted ${n(d.quantity)} options at ${usd(d.exercise_price?.amount)} (${d.security_id})`;
+      return `Granted ${n(d.quantity)} options at ${money(d.exercise_price?.amount)} (${d.security_id})`;
     case "TX_VESTING_START":
       return `Vesting started on ${d.security_id}`;
     case "TX_CONVERTIBLE_ISSUANCE": {
       const m = d.conversion_triggers?.[0]?.conversion_right?.conversion_mechanism;
-      return `SAFE ${usd(d.investment_amount?.amount)}${m?.conversion_valuation_cap ? `, cap ${usdShort(m.conversion_valuation_cap.amount)}` : ""} (${d.security_id})`;
+      return `SAFE ${money(d.investment_amount?.amount)}${m?.conversion_valuation_cap ? `, cap ${moneyShort(m.conversion_valuation_cap.amount)}` : ""} (${d.security_id})`;
     }
     case "TX_EQUITY_COMPENSATION_CANCELLATION":
     case "TX_STOCK_CANCELLATION":
@@ -38,9 +38,9 @@ export function describe(e: VaultEvent, s: State): string {
     case "TX_EQUITY_COMPENSATION_EXERCISE":
       return `Exercised ${n(d.quantity)} options on ${d.security_id}`;
     case "TX_STOCK_REPURCHASE":
-      return `Repurchased ${n(d.quantity)} shares of ${d.security_id}${d.price ? ` at ${usd(d.price.amount)}` : ""}`;
+      return `Repurchased ${n(d.quantity)} shares of ${d.security_id}${d.price ? ` at ${money(d.price.amount)}` : ""}`;
     case "TX_CONVERTIBLE_TRANSFER":
-      return `Transferred ${usd(d.amount?.amount)} of ${d.security_id}`;
+      return `Transferred ${money(d.amount?.amount)} of ${d.security_id}`;
     case "doc_added":
       return `Filed ${d.path}`;
     case "doc_linked":

@@ -184,3 +184,9 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - The preview rebuilds with fresh ids on every render (wasteful, not wrong).
 - The OCF preview runs without the vault's own events (fine while import requires an empty folder).
 - Pulley's matrix layout (a column per class) needs one row per holding; the screen says so, a detector comes with real files.
+
+## Country and currency decisions (2026-10-10)
+- Your country lives in app settings (per computer); the company currency lives in `capfolder.json` (per company) — Mads: "editable in the settings tab on the company and user profiles".
+- Display formatting is set once per render from those two (module state in fmt.ts) instead of threading a formatter through every component — cost: none for the UI; a future multi-company window would need it per window.
+- Dates still read "6 Oct 2026" everywhere (Mads' earlier ask); the country only changes how typed numeric dates are read.
+- Not yet localized: export sheet headings say "(USD)", percentages in tables keep a "." decimal point, and money in the PDF uses plain numbers.

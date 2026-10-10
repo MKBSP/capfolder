@@ -1,8 +1,9 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
 import { createContext, type ReactNode, useContext, useMemo, useRef, useState } from "react";
-import { todayIso } from "./fmt";
+import { configureFormat, todayIso } from "./fmt";
 import type { Platform } from "./platform";
+import { regionOf } from "./regions";
 import type { Settings } from "./settings";
 import { appendToVault, type Vault } from "./vault";
 
@@ -26,6 +27,8 @@ export interface App {
   /** State with every event, for picking new ids and form defaults. */
   latest: State | null;
   ctx: AppendCtx;
+  /** The company currency (capfolder.json), used for new money amounts. */
+  currency: string;
   /** Append drafts to the vault. Returns null on success, or the plain-language errors. */
   run(drafts: EventDraft[]): Promise<string[] | null>;
   route: Route;
@@ -49,6 +52,13 @@ export function AppProvider(p: {
 }) {
   const settings = p.settings; // owned by <App>, so the lock gate and screens never disagree
   const [vault, setVaultState] = useState(p.initialVault);
+  // Formatting follows the founder's country and the company currency; set before any child renders.
+  const region = regionOf(settings.region);
+  configureFormat({
+    locale: region.locale,
+    currency: (vault?.meta.currency as string | undefined) || "USD",
+    monthFirst: region.code === "US",
+  });
   // The newest vault and whether a save is in flight, readable from any closure (double-clicks, back-to-back saves).
   const latestVault = useRef(p.initialVault);
   const saving = useRef(false);
@@ -65,6 +75,7 @@ export function AppProvider(p: {
   const state = useMemo(() => (vault ? reduce(vault.events, asOf) : null), [vault, asOf]);
   const latest = useMemo(() => (vault ? reduce(vault.events, MAX_DATE) : null), [vault]);
   const app: App = {
+    currency: (vault?.meta.currency as string | undefined) || "USD",
     platform: p.platform,
     settings,
     setSettings: p.saveSettings,

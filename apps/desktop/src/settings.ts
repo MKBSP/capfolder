@@ -1,6 +1,7 @@
 // App settings live in the OS app-data folder, never in the vault (docs/01).
 import { builders } from "@capfolder/core";
 import { type Fs, join } from "./fs/types";
+import { guessRegion } from "./regions";
 
 export interface Settings {
   deviceId: string;
@@ -9,6 +10,7 @@ export interface Settings {
   telemetry: boolean; // stored now; the anonymous ping is wired in M8 (docs/11)
   recentVaults: { name: string; root: string }[];
   termsAccepted: string; // TERMS_VERSION the founder accepted; "" = not yet
+  region: string; // the founder's country (regions.ts): number format and how typed dates are read
 }
 
 const defaults = (): Settings => ({
@@ -18,6 +20,7 @@ const defaults = (): Settings => ({
   telemetry: true,
   recentVaults: [],
   termsAccepted: "",
+  region: guessRegion(),
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {

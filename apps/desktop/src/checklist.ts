@@ -1,6 +1,6 @@
 // Documents.html "Due-diligence ready": which papers a company should have, computed from the cap table (pure).
 import type { Gap, State } from "@capfolder/core";
-import { usdShort } from "./fmt";
+import { moneyShort } from "./fmt";
 import { isFounder } from "./views";
 
 export interface CheckItem {
@@ -89,7 +89,7 @@ export function checklist(s: State, gaps: Gap[]): { groups: CheckGroup[]; done: 
     .filter((x) => x.kind === "convertible")
     .map((x) =>
       item(
-        `${name(x.stakeholderId)} · ${usdShort(x.amount)}`,
+        `${name(x.stakeholderId)} · ${moneyShort(x.amount)}`,
         "safe",
         find([x.id, x.txId]),
         x.id,

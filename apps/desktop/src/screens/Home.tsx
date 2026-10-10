@@ -13,7 +13,7 @@ import { DateInput } from "../components/DateInput";
 import { ExportDialog } from "../components/ExportDialog";
 import { MainHeader } from "../components/Header";
 import { Chip, ComingSoon, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
-import { day, percent, shares, todayIso, usd, usdShort } from "../fmt";
+import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { docChip, isFounder, scheduleText, typeLabel, vestingCell } from "../views";
 
@@ -94,7 +94,7 @@ export function Home() {
             <StatCard label="Fully diluted" value={shares(fd)} />
             <StatCard label="Founders" value={`${totals.selectedPercent}%`} />
             <StatCard label="Pool available" value={shares(totals.poolAvailable)} />
-            <StatCard label="SAFEs outstanding" value={usd(totals.safeAmount)} />
+            <StatCard label="SAFEs outstanding" value={money(totals.safeAmount)} />
           </div>
           <div className="card" style={{ padding: 0, overflowX: "auto" }}>
             {rows.length === 0 ? (
@@ -156,12 +156,12 @@ export function Home() {
                               </button>
                             </td>
                             <td className="td muted">{typeLabel(state, r)}</td>
-                            <td className="td num right">{usd(r.safeAmount)}</td>
+                            <td className="td num right">{money(r.safeAmount)}</td>
                             <td className="td num right" title={r.math.as_converted}>
                               {r.asConverted ? `≈${r.asConverted}%` : "—"}
                             </td>
                             <td className="td meta">
-                              {r.safeCap ? `Cap ${usdShort(r.safeCap)}` : "No cap"}
+                              {r.safeCap ? `Cap ${moneyShort(r.safeCap)}` : "No cap"}
                               {r.safeDiscount ? ` · ${percent(r.safeDiscount)}` : ""}
                             </td>
                             <td className="td">{chip ? <Chip tone={chip.tone}>{chip.text}</Chip> : null}</td>
@@ -272,7 +272,7 @@ function CapRow({ r, gaps, open, toggle }: { r: Row; gaps: Gap[]; open: boolean;
                     </span>
                   ) : null}
                   {x ? <span>{scheduleText(state, x)}</span> : null}
-                  {x?.price && r.group === 1 ? <span>Strike {usd(x.price)}</span> : null}
+                  {x?.price && r.group === 1 ? <span>Strike {money(x.price)}</span> : null}
                 </>
               )}
               <ShowMath math={r.math} />
