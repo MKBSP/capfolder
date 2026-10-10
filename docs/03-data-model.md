@@ -47,7 +47,7 @@ Acme/                         # any folder name; usually inside iCloud/Dropbox/D
 | `schema_migrated` | from, to | F-38 |
 | `note` | target, text | free notes |
 
-## OCF mapping for our stories [verify exact object_type enums against OCF schema 1.2]
+## OCF mapping for our stories (names verified against OCF 1.2.0, 2026-10-10)
 | Story | OCF objects / transactions |
 |---|---|
 | F-05 company | `ISSUER` |

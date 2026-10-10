@@ -5,7 +5,13 @@ Your cap table, in a folder you own. Issue SAFEs and options, track vesting, col
 > Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.
 
 ## Status
-Milestones M0 (repo + CI) and M1 (core engine) are in progress. See `docs/09-build-plan.md`.
+M0 (repo + CI) and M1 (core engine) are done. Next: M2 import. Status, to do, known limits and future ideas: `docs/15-status-and-todo.md`. History: `CHANGELOG.md`.
+
+## Docs
+- Requirements: `docs/00-overview.md`, `docs/02-user-stories.md`
+- Architecture: `docs/01-architecture.md`, `docs/03-data-model.md`
+- Plans: `docs/09-build-plan.md`, `docs/superpowers/specs/`, `docs/superpowers/plans/`
+- Future: `docs/12-cloud-later.md`, `docs/15-status-and-todo.md`
 
 ## Commands
 ```
