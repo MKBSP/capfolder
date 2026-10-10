@@ -3,6 +3,7 @@ import { ComingSoon } from "../components/ui";
 import { useApp } from "../state";
 import { CreateCompany } from "./CreateCompany";
 import { Email } from "./Email";
+import { Home } from "./Home";
 import { StartChoice } from "./StartChoice";
 import { Welcome } from "./Welcome";
 import { Wizard } from "./Wizard";
@@ -21,6 +22,8 @@ export function Screen() {
       return <StartChoice />;
     case "wizard":
       return <Wizard />;
+    case "home":
+      return <Home />;
     case "comingSoon":
       return (
         <>
