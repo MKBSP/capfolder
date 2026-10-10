@@ -6,7 +6,8 @@ import { securityVested } from "./rows";
 import type { Data, EventDraft, State } from "./types";
 import { startConditionId } from "./vesting";
 
-const usd = (amount: string) => ({ amount, currency: "USD" });
+/** OCF Monetary. The company currency comes from the vault (capfolder.json); USD when not given. */
+const money = (amount: string, currency = "USD") => ({ amount, currency });
 const ocf = (type: string, data: Data): EventDraft => ({
   kind: "ocf",
   type,
@@ -47,6 +48,7 @@ export function issuer(p: {
 }
 
 export function stockClass(p: {
+  currency?: string;
   id?: string;
   name: string;
   authorized: string;
@@ -61,7 +63,9 @@ export function stockClass(p: {
     initial_shares_authorized: p.authorized,
     votes_per_share: "1",
     seniority: p.preferred ? "2" : "1",
-    ...(p.parValue ? { par_value: usd(p.parValue), price_per_share: usd(p.parValue) } : {}),
+    ...(p.parValue
+      ? { par_value: money(p.parValue, p.currency), price_per_share: money(p.parValue, p.currency) }
+      : {}),
   });
 }
 
@@ -175,6 +179,7 @@ function vestingStartDraft(state: State, securityId: string, termsId: string, da
 }
 
 export function stockIssuance(p: {
+  currency?: string;
   state: State;
   stakeholderId: string;
   classId: string;
@@ -194,7 +199,7 @@ export function stockIssuance(p: {
     stakeholder_id: p.stakeholderId,
     stock_class_id: p.classId,
     quantity: p.quantity,
-    share_price: usd(p.price),
+    share_price: money(p.price, p.currency),
     stock_legend_ids: [],
     security_law_exemptions: [],
     ...(p.vestingTermsId ? { vesting_terms_id: p.vestingTermsId } : {}),
@@ -229,6 +234,7 @@ export function poolAdjustment(p: { planId: string; newTotal: string; date: stri
 }
 
 export function optionGrant(p: {
+  currency?: string;
   state: State;
   stakeholderId: string;
   planId: string;
@@ -254,7 +260,7 @@ export function optionGrant(p: {
     compensation_type: type,
     option_grant_type: type === "OPTION_ISO" ? "ISO" : "NSO",
     quantity: p.quantity,
-    exercise_price: usd(p.strike),
+    exercise_price: money(p.strike, p.currency),
     expiration_date: addMonths(p.date, 120, START_DAY),
     termination_exercise_windows: [],
     security_law_exemptions: [],
@@ -265,6 +271,7 @@ export function optionGrant(p: {
 }
 
 export function safe(p: {
+  currency?: string;
   state: State;
   stakeholderId: string;
   amount: string;
@@ -282,7 +289,7 @@ export function safe(p: {
     custom_id: securityId,
     stakeholder_id: p.stakeholderId,
     convertible_type: "SAFE",
-    investment_amount: usd(p.amount),
+    investment_amount: money(p.amount, p.currency),
     seniority: 1,
     security_law_exemptions: [],
     conversion_triggers: [
@@ -297,7 +304,7 @@ export function safe(p: {
             type: "SAFE_CONVERSION",
             conversion_mfn: p.mfn,
             conversion_timing: "POST_MONEY",
-            ...(p.cap ? { conversion_valuation_cap: usd(p.cap) } : {}),
+            ...(p.cap ? { conversion_valuation_cap: money(p.cap, p.currency) } : {}),
             ...(p.discount ? { conversion_discount: p.discount } : {}),
           },
         },
@@ -366,6 +373,7 @@ export function exercise(p: {
       classId,
       quantity: p.quantity,
       price: x.price ?? "0",
+      currency: x.priceCurrency,
       date: p.date,
       securityId: stockId,
     }),
@@ -384,7 +392,7 @@ export function repurchaseUnvested(p: { state: State; securityId: string; date: 
       date: p.date,
       security_id: x.id,
       quantity: unvested.toString(),
-      ...(x.price ? { price: usd(x.price) } : {}),
+      ...(x.price ? { price: money(x.price, x.priceCurrency) } : {}),
     }),
   ];
 }

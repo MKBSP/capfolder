@@ -71,3 +71,16 @@ export function sumDec(values: string[]): string {
     return fixed(x.v * 10n ** BigInt(scale - x.scale) + y.v * 10n ** BigInt(scale - y.scale), scale);
   }, "0");
 }
+
+/**
+ * A number the founder typed, read with their decimal mark: "1,000,000.50" (".") or "1.000.000,50" (",").
+ * Currency signs and spaces are ignored. Returns a plain decimal string, or null when it isn't a non-negative number.
+ */
+export function parseLocalNumber(raw: string, decimalMark: "." | ","): string | null {
+  let v = raw
+    .replace(/[$€£¥\s  ']/g, "")
+    .replace(/^(usd|eur|gbp|cny|brl|chf)|(usd|eur|gbp|cny|brl|chf)$/gi, "");
+  if (!v) return null;
+  v = decimalMark === "," ? v.replace(/\./g, "").replace(",", ".") : v.replace(/,/g, "");
+  return /^\d+(\.\d+)?$/.test(v) ? v : null;
+}

@@ -1,5 +1,14 @@
 import { expect, test } from "vitest";
-import { decFraction, fmtInt, largestRemainder, parseDec, ratioFixed, subDec, toInt } from "../src/num";
+import {
+  decFraction,
+  fmtInt,
+  largestRemainder,
+  parseDec,
+  parseLocalNumber,
+  ratioFixed,
+  subDec,
+  toInt,
+} from "../src/num";
 
 test("parseDec / toInt", () => {
   expect(parseDec("0.20")).toEqual({ v: 20n, scale: 2 });
@@ -35,4 +44,15 @@ test("largestRemainder sums to 100.00", () => {
   ]);
   expect(largestRemainder([1n, 1n, 1n], 2)).toEqual(["33.34", "33.33", "33.33"]);
   expect(largestRemainder([0n, 0n], 2)).toEqual(["0.00", "0.00"]);
+});
+
+test("parseLocalNumber reads the founder's decimal mark", () => {
+  expect(parseLocalNumber("1,000,000.50", ".")).toBe("1000000.50");
+  expect(parseLocalNumber("$200,000", ".")).toBe("200000");
+  expect(parseLocalNumber("1.000.000,50", ",")).toBe("1000000.50");
+  expect(parseLocalNumber("0,50 €", ",")).toBe("0.50");
+  expect(parseLocalNumber("1 000 000", ",")).toBe("1000000");
+  expect(parseLocalNumber("1'000'000.5", ".")).toBe("1000000.5");
+  expect(parseLocalNumber("1.5M", ".")).toBeNull();
+  expect(parseLocalNumber("-5", ".")).toBeNull();
 });

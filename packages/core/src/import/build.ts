@@ -1,7 +1,7 @@
 // Generic spreadsheet → OCF drafts (docs/04 §3–5): one position per row, people deduped, vesting built or marked unknown.
 import * as b from "../builders";
 import { checkInvariants } from "../invariants";
-import { fmtInt, subDec, sumDec } from "../num";
+import { fmtInt, parseLocalNumber, subDec, sumDec } from "../num";
 import { validateOcf } from "../ocf/validate";
 import { reduce } from "../reduce";
 import { capTableRows } from "../rows";
@@ -19,6 +19,8 @@ export interface ImportInput {
   preferred?: Record<string, boolean>; // per class name: the founder's override of common/preferred
   poolReserved?: string; // the plan's total reserve; default = granted + the sheet's "available" pool row
   date1904?: boolean; // the workbook counts serial dates from 1904 (old Mac Excel)
+  decimalMark?: "." | ","; // the founder's own, used when the file doesn't make it clear
+  currency?: string; // the company currency for prices and SAFE amounts (default USD)
 }
 
 export interface ImportSummary {
@@ -75,25 +77,20 @@ function parseDate(raw: string, dayFirst: boolean, date1904: boolean): string | 
   return null;
 }
 
-/** True when the file writes decimals with a comma (1.000.000 / 0,50), as European Excel does. */
-function usesDecimalComma(values: string[]): boolean {
+/** True when the file writes decimals with a comma (1.000.000 / 0,50), as European Excel does. Ties: the founder's own. */
+function usesDecimalComma(values: string[], fallback: boolean): boolean {
   let comma = 0;
   let dot = 0;
   for (const raw of values) {
     const v = raw.replace(/[$€£\s]/g, "");
-    if (/\.\d{3}\.|\.\d{3},\d|^\d+,\d{1,2}$|^0,\d+$|^\d{1,3}(\.\d{3})+$/.test(v)) comma++;
-    if (/,\d{3},|,\d{3}\.\d|^\d+\.\d{1,2}$|^0\.\d+$|^\d{1,3}(,\d{3})+$/.test(v)) dot++;
+    if (/\.\d{3}\.|\.\d{3},\d|^\d+,\d{1,2}$|^0,\d+$/.test(v)) comma++; // "250.000" alone is ambiguous
+    if (/,\d{3},|,\d{3}\.\d|^\d+\.\d{1,2}$|^0\.\d+$/.test(v)) dot++; // so is "250,000"
   }
-  return comma > dot;
+  return comma === dot ? fallback : comma > dot;
 }
 
 /** "$1,000.50" / "1.000,50" → "1000.50"; null when it isn't a plain non-negative number. */
-function parseAmount(raw: string, decimalComma: boolean): string | null {
-  let v = raw.replace(/[$€£\s]/g, "").replace(/^usd|usd$|^eur|eur$/gi, "");
-  if (!v) return null;
-  v = decimalComma ? v.replace(/\./g, "").replace(",", ".") : v.replace(/,/g, "");
-  return /^\d+(\.\d+)?$/.test(v) ? v : null;
-}
+const parseAmount = (raw: string, decimalComma: boolean) => parseLocalNumber(raw, decimalComma ? "," : ".");
 
 /** Whole shares: "1,000,000" and "1000.00" are fine, "1.5" isn't. */
 function parseWhole(raw: string, decimalComma: boolean): bigint | null {
@@ -127,7 +124,10 @@ export function buildImport(p: ImportInput): ImportResult {
   const dayFirst = new Map(
     DATE_FIELDS.map((f) => [f, p.rows.some((r) => Number(numericParts(cell(r, f))?.[1] ?? 0) > 12)]),
   );
-  const decimalComma = usesDecimalComma(p.rows.flatMap((r) => NUMBER_FIELDS.map((f) => cell(r, f))));
+  const decimalComma = usesDecimalComma(
+    p.rows.flatMap((r) => NUMBER_FIELDS.map((f) => cell(r, f))),
+    p.decimalMark === ",",
+  );
   const amount = (r: string[], f: Field) => parseAmount(cell(r, f), decimalComma);
   const date = (raw: string, f: Field) => parseDate(raw, dayFirst.get(f)!, !!p.date1904);
   const issues: string[] = [];
@@ -302,6 +302,7 @@ export function buildImport(p: ImportInput): ImportResult {
         draft: (securityId) =>
           b.safe({
             state: empty,
+            currency: p.currency,
             stakeholderId: holder,
             amount: amt,
             cap: cap ?? undefined,
@@ -404,6 +405,7 @@ export function buildImport(p: ImportInput): ImportResult {
     const prefix = c.preferred ? "PS" : "CS";
     const d = b.stockIssuance({
       state: empty,
+      currency: p.currency,
       stakeholderId: s.holder,
       classId: c.id,
       quantity: String(s.qty),
@@ -418,6 +420,7 @@ export function buildImport(p: ImportInput): ImportResult {
   for (const g of grants) {
     const d = b.optionGrant({
       state: empty,
+      currency: p.currency,
       stakeholderId: g.holder,
       planId: planDrafts[0]!.data.id,
       classId: planClass!.id,

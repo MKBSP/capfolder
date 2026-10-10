@@ -208,3 +208,18 @@ describe("important: xlsx files from other writers", () => {
     expect(tx(r, "TX_STOCK_ISSUANCE")[0]!.data.date).toBe("2022-03-14");
   });
 });
+
+test("region: an ambiguous file uses the founder's decimal mark; the company currency is used", () => {
+  const h = ["Name", "Investment"];
+  const m: Field[] = ["name", "safeAmount"];
+  const us = run(h, m, [["Fund", "250.000"]]);
+  const pt = run(h, m, [["Fund", "250.000"]], { decimalMark: ",", currency: "EUR" });
+  expect(tx(us, "TX_CONVERTIBLE_ISSUANCE")[0]!.data.investment_amount).toEqual({
+    amount: "250.000",
+    currency: "USD",
+  });
+  expect(tx(pt, "TX_CONVERTIBLE_ISSUANCE")[0]!.data.investment_amount).toEqual({
+    amount: "250000",
+    currency: "EUR",
+  });
+});

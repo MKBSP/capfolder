@@ -204,6 +204,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           earlyExercisable: d.early_exercisable === true,
           note: e.meta?.note,
           price: (stock ? d.share_price : d.exercise_price)?.amount,
+          priceCurrency: (stock ? d.share_price : d.exercise_price)?.currency,
         });
         break;
       }

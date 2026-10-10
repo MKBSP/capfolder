@@ -51,6 +51,7 @@ export interface Security {
   earlyExercisable: boolean;
   note?: string; // e.g. "imported snapshot"
   price?: string; // stock: share price paid; options: exercise price
+  priceCurrency?: string;
 }
 
 export interface Plan {
