@@ -9,12 +9,14 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - canonicalize 5.1.0: Apache-2.0
 - @tauri-apps/api 2.11.1: Apache-2.0 OR MIT
 - fast-uri 3.1.8: BSD-3-Clause
+- @hono/node-server 2.1.1: MIT
 - @pdf-lib/standard-fonts 1.0.0: MIT
 - @pdf-lib/upng 1.0.1: MIT
 - ajv 8.20.0: MIT
 - ajv-formats 3.0.1: MIT
 - fast-deep-equal 3.1.3: MIT
 - fflate 0.8.3: MIT
+- hono 4.13.9: MIT
 - js-md5 0.9.2: MIT
 - json-schema-traverse 1.0.0: MIT
 - papaparse 5.7.0: MIT
@@ -27,5 +29,6 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - @tauri-apps/plugin-dialog 2.7.3: MIT OR Apache-2.0
 - @tauri-apps/plugin-fs 2.5.2: MIT OR Apache-2.0
 - @tauri-apps/plugin-opener 2.5.5: MIT OR Apache-2.0
+- nodemailer 10.0.10: MIT-0
 - @fontsource/ibm-plex-mono 5.3.0: OFL-1.1
 - @fontsource/ibm-plex-sans 5.3.0: OFL-1.1

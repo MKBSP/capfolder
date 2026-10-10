@@ -1,0 +1,20 @@
+{
+  "name": "@capfolder/relay",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=docker/.local/relay.env --experimental-strip-types src/server.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@hono/node-server": "2.1.1",
+    "hono": "4.13.9",
+    "nodemailer": "10.0.10"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "8.0.2"
+  }
+}

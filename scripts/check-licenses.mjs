@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 const ALLOWED = new Set([
   "MIT",
   "(MIT AND Zlib)", // pako, via pdf-lib
+  "MIT-0", // nodemailer (relay)
   "ISC",
   "Apache-2.0",
   "BSD-2-Clause",
