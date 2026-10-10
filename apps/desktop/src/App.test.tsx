@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { App } from "./App";
 import { fakePlatform } from "./test/fakePlatform";
 
@@ -51,4 +51,21 @@ test("passwords must match", async () => {
   await userEvent.type(screen.getByLabelText("Again"), "abce");
   await userEvent.click(screen.getByRole("button", { name: "Continue" }));
   expect(await screen.findByText("The passwords don't match.")).toBeInTheDocument();
+});
+
+test("a password set during first run is enforced by the idle lock in the same session", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    const { platform } = fakePlatform();
+    render(<App platform={platform} />);
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await user.type(await screen.findByLabelText("App password"), "abcd");
+    await user.type(screen.getByLabelText("Again"), "abcd");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    expect(await screen.findByText(/Your email/)).toBeInTheDocument();
+    await act(() => vi.advanceTimersByTimeAsync(16 * 60_000));
+    expect(await screen.findByText("Capfolder is locked")).toBeInTheDocument();
+  } finally {
+    vi.useRealTimers();
+  }
 });

@@ -46,7 +46,7 @@ export function AppProvider(p: {
   initialRoute: Route;
   children: ReactNode;
 }) {
-  const [settings, setSettingsState] = useState(p.settings);
+  const settings = p.settings; // owned by <App>, so the lock gate and screens never disagree
   const [vault, setVault] = useState(p.initialVault);
   const [asOf, setAsOf] = useState(todayIso());
   const [route, go] = useState<Route>(p.initialRoute);
@@ -59,10 +59,7 @@ export function AppProvider(p: {
   const app: App = {
     platform: p.platform,
     settings,
-    async setSettings(s) {
-      setSettingsState(s);
-      await p.saveSettings(s);
-    },
+    setSettings: p.saveSettings,
     vault,
     setVault,
     asOf,

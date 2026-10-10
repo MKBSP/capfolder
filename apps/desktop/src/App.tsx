@@ -7,11 +7,13 @@ import { loadSettings, type Settings, saveSettings } from "./settings";
 import { AppProvider, type Route } from "./state";
 import { openVault, type Vault } from "./vault";
 
-type Boot = { settings: Settings; vault: Vault | null; route: Route; dataDir: string };
+type Boot = { vault: Vault | null; route: Route; dataDir: string };
 
 /** Boot: settings → (lock) → last vault → Home, else first run. */
 export function App({ platform = tauriPlatform }: { platform?: Platform }) {
   const [boot, setBoot] = useState<Boot | null>(null);
+  // Settings live here (one source of truth) so the lock gate always sees the current lock choice.
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [locked, setLocked] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,14 +28,15 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
         const ctx = { now: () => new Date(), newId: () => "", deviceId: settings.deviceId };
         vault = await openVault(platform.fs, last.root, ctx).catch(() => null);
       }
-      setBoot({ settings, vault, route: vault ? { name: "home" } : { name: "welcome" }, dataDir });
+      setSettings(settings);
+      setBoot({ vault, route: vault ? { name: "home" } : { name: "welcome" }, dataDir });
     })().catch((e) => setError(String(e)));
   }, [platform]);
 
   const lockNow = useCallback(() => {
-    if (boot?.settings.lock === "password") setLocked(true);
-  }, [boot]);
-  useIdle(boot?.settings.idleMinutes ?? 0, lockNow);
+    if (settings?.lock === "password") setLocked(true);
+  }, [settings]);
+  useIdle(settings?.lock === "password" ? settings.idleMinutes : 0, lockNow);
 
   if (error)
     return (
@@ -41,13 +44,16 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
         <div className="errors">{error}</div>
       </main>
     );
-  if (!boot) return <main className="narrow">Capfolder</main>;
+  if (!boot || !settings) return <main className="narrow">Capfolder</main>;
   if (locked) return <Unlock verify={(p) => platform.lock.verify(p)} onUnlock={() => setLocked(false)} />;
   return (
     <AppProvider
       platform={platform}
-      settings={boot.settings}
-      saveSettings={(s) => saveSettings(platform.fs, boot.dataDir, s)}
+      settings={settings}
+      saveSettings={async (s) => {
+        setSettings(s);
+        await saveSettings(platform.fs, boot.dataDir, s);
+      }}
       initialVault={boot.vault}
       initialRoute={boot.route}
     >
