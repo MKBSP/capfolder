@@ -44,3 +44,9 @@ test("LF line endings with trailing newline", () => {
   expect(out.endsWith("\n")).toBe(true);
   expect(out.includes("\r")).toBe(false);
 });
+test("neutralises formulas in every column, keeps plain numbers", () => {
+  const out = toCaptableCsv([
+    row({ type: "=cmd", safeAmount: "+1+1", safeCap: "@x", safeDiscount: "=2", shares: -5n }),
+  ]);
+  expect(out.split("\n")[1]).toBe("X,'=cmd,Common,-5,100.00,1,0,'+1+1,'@x,'=2,,missing");
+});

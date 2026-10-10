@@ -15,22 +15,32 @@ const APP_IGNORED = new Set([
   "doc_replaced",
 ]);
 
-function setPath(obj: Data, path: string, value: unknown): void {
-  const keys = path.split(".");
+const FORBIDDEN_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
+/** Sets a dot path (numeric parts index arrays). Returns a problem string instead of writing when the path is unsafe or missing. */
+function setPath(obj: Data, path: string, value: unknown): string | undefined {
+  const keys = String(path).split(".");
+  if (keys.some((k) => FORBIDDEN_KEYS.has(k))) return "is not allowed";
   let o: any = obj;
-  for (const k of keys.slice(0, -1)) o = o[k];
+  for (const k of keys.slice(0, -1)) {
+    if (o === null || typeof o !== "object" || !Object.hasOwn(o, k)) return "does not exist on the target";
+    o = o[k];
+  }
+  if (o === null || typeof o !== "object") return "does not exist on the target";
   o[keys.at(-1)!] = value;
+  return undefined;
 }
 
 /** Drop reversed events and reversals, apply corrections (in file order) to copies of their targets. */
-export function liveEvents(events: VaultEvent[]): VaultEvent[] {
+export function liveEvents(events: VaultEvent[], problems: string[] = []): VaultEvent[] {
   const reversed = new Set(events.filter((e) => e.type === "reversal").map((e) => e.data.target));
   const kept = events.filter((e) => e.type !== "reversal" && !reversed.has(e.id));
   const byId = new Map(kept.map((e) => [e.id, { ...e, data: structuredClone(e.data) }]));
   for (const e of kept) {
     if (e.type !== "correction") continue;
     const target = byId.get(e.data.target);
-    if (target) setPath(target.data, e.data.field, e.data.new);
+    const problem = target && setPath(target.data, e.data.field, e.data.new);
+    if (problem) problems.push(`Correction ${e.id}: field ${e.data.field} ${problem}`);
   }
   return [...byId.values()].filter((e) => e.type !== "correction");
 }
@@ -52,7 +62,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     unknownEventTypes: [],
     violations: [],
   };
-  const live = liveEvents(events);
+  const live = liveEvents(events, s.violations);
   const unknown = (t: string) => {
     if (!s.unknownEventTypes.includes(t)) s.unknownEventTypes.push(t);
   };

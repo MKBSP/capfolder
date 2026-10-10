@@ -5,16 +5,21 @@ import type { Row, VaultEvent } from "./types";
 const HEADER =
   "stakeholder,type,class,shares,fd_percent,vested,unvested,safe_amount,safe_cap,safe_discount,as_converted_percent,doc_status";
 
-const text = (v: string) => (/^[=+\-@]/.test(v) ? `'${v}` : v); // stop spreadsheet formula execution
-const cell = (v: string) => (/[",\n\r]/.test(v) ? `"${v.replaceAll('"', '""')}"` : v);
+// Vault data is untrusted: anything that isn't a plain number and starts like a formula gets a leading '.
+const PLAIN_NUMBER = /^-?\d+(\.\d+)?$/;
+const safe = (v: string) => (/^[=+\-@\t\r]/.test(v) && !PLAIN_NUMBER.test(v) ? `'${v}` : v);
+const cell = (v: string) => {
+  const s = safe(v);
+  return /[",\n\r]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
+};
 const n = (v: bigint | null) => (v === null ? "" : v.toString());
 
 export function toCaptableCsv(rows: Row[]): string {
   const lines = rows.map((r) =>
     [
-      text(r.stakeholder),
+      r.stakeholder,
       r.type,
-      text(r.class),
+      r.class,
       n(r.shares),
       r.fdPercent,
       n(r.vested),
