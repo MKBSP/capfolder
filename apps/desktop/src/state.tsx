@@ -78,6 +78,9 @@ export function AppProvider(p: {
       const current = latestVault.current;
       if (!current) return ["Open or create a company folder first."];
       if (saving.current) return ["Already saving. One moment."];
+      // A date field holds "" while its text isn't a real date (DateInput); never save that.
+      if (drafts.some((d) => d.data.date === "" || d.data.board_approval_date === ""))
+        return ["Enter a valid date (for example 6 Oct 2026)."];
       saving.current = true;
       try {
         const r = await appendToVault(p.platform.fs, current, drafts, ctx);

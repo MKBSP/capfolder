@@ -4,6 +4,7 @@ import { type Fs, parentOf } from "./types";
 export class MemoryFs implements Fs {
   private files = new Map<string, string | Uint8Array>();
   private dirs = new Set<string>(["/"]);
+  private links = new Map<string, string>(); // path → target; reads follow them, like a real fs
 
   mkdirSync(path: string): void {
     for (let p = path; p !== "/" && !this.dirs.has(p); p = parentOf(p)) this.dirs.add(p);
@@ -18,7 +19,14 @@ export class MemoryFs implements Fs {
     return typeof f === "string" ? f : new TextDecoder().decode(f);
   }
   existsSync(path: string): boolean {
-    return this.files.has(path) || this.dirs.has(path);
+    return this.files.has(path) || this.dirs.has(path) || this.links.has(path);
+  }
+  linkSync(path: string, target: string): void {
+    this.files.delete(path);
+    this.links.set(path, target);
+  }
+  async isSymlink(path: string) {
+    return this.links.has(path);
   }
   deleteSync(path: string): void {
     this.files.delete(path);
@@ -34,7 +42,7 @@ export class MemoryFs implements Fs {
     this.writeSync(path, (this.files.has(path) ? this.readSync(path) : "") + text);
   }
   async readBytes(path: string) {
-    const f = this.files.get(path);
+    const f = this.files.get(this.links.get(path) ?? path);
     if (f === undefined) throw new Error(`No such file: ${path}`);
     return typeof f === "string" ? new TextEncoder().encode(f) : f;
   }

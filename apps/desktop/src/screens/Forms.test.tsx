@@ -69,3 +69,17 @@ test("dates read day month year and accept day-first typing", () => {
   expect(parseDay("6 Foo 2026")).toBeNull();
   expect(day("2026-10-06")).toBe("6 Oct 2026");
 });
+
+test("an impossible date is kept on screen and blocks the save (no silent fallback to today)", async () => {
+  const { fs, root } = await openNew("SAFE");
+  const before = fs.readSync(`${root}/events.jsonl`);
+  await userEvent.type(screen.getByLabelText("Name"), "Fund Y");
+  await userEvent.type(screen.getByLabelText("Amount (USD)"), "200000");
+  const date = screen.getByLabelText("Date");
+  await userEvent.clear(date);
+  await userEvent.type(date, "31/09/2026");
+  await userEvent.click(screen.getByRole("button", { name: "Record as signed" }));
+  expect(await screen.findByText("Enter a valid date (for example 6 Oct 2026).")).toBeInTheDocument();
+  expect(date).toHaveValue("31/09/2026");
+  expect(fs.readSync(`${root}/events.jsonl`)).toBe(before);
+});

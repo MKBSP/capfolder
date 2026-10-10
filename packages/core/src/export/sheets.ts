@@ -58,12 +58,17 @@ export function sheets(events: VaultEvent[], asOf: string, opts: { stakeholderId
   const mine = (r: Row) => !opts.stakeholderId || holderOf(s, r) === opts.stakeholderId;
   const rows = all.filter(mine);
 
+  // One person's sheet leaves out company totals: with few holders they reveal other people's numbers.
   const summary: Cell[][] = [
     ["Company", s.issuer?.legal_name ?? ""],
     ["As of", asOf],
-    ["Fully diluted", totals.fullyDiluted],
-    ["Option pool available", totals.poolAvailable],
-    ["SAFEs outstanding (USD)", num(totals.safeAmount)],
+    ...(opts.stakeholderId
+      ? []
+      : [
+          ["Fully diluted", totals.fullyDiluted],
+          ["Option pool available", totals.poolAvailable],
+          ["SAFEs outstanding (USD)", num(totals.safeAmount)],
+        ]),
     [],
     [DISCLAIMER],
     [],
@@ -144,7 +149,7 @@ export function sheets(events: VaultEvent[], asOf: string, opts: { stakeholderId
   ];
 
   return [
-    { name: "Summary", rows: summary, header: [8] },
+    { name: "Summary", rows: summary, header: [summary.length - rows.length - 1] },
     { name: "By person", rows: people, header: [0] },
     { name: "Vesting", rows: vesting, header: [0] },
     { name: "SAFEs", rows: safes, header: [0] },

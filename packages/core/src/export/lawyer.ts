@@ -24,15 +24,20 @@ function scopeIds(s: State, scope: LawyerScope): Set<string> | null {
   return ids;
 }
 
-/** Vault-relative paths of the attached (not removed) documents in scope, so the caller reads only those. */
-export function lawyerDocPaths(events: VaultEvent[], scope: LawyerScope): string[] {
+/** Attached (not removed) documents for the scope. For one person, a document also linked to anyone else is "shared" and left out. */
+function scopedDocs(events: VaultEvent[], scope: LawyerScope) {
   const s = reduce(events, MAX_DATE);
   const ids = scopeIds(s, scope);
-  return [...s.docs.values()]
-    .filter((d) => !d.removed && typeof d.data.path === "string")
-    .filter((d) => !ids || [...d.links].some((t) => ids.has(t)))
-    .map((d) => d.data.path as string);
+  const docs = [...s.docs.values()].filter((d) => !d.removed && typeof d.data.path === "string");
+  if (!ids) return { paths: docs.map((d) => d.data.path as string), shared: 0 };
+  const mine = docs.filter((d) => [...d.links].some((t) => ids.has(t)));
+  const own = mine.filter((d) => [...d.links].every((t) => ids.has(t)));
+  return { paths: own.map((d) => d.data.path as string), shared: mine.length - own.length };
 }
+
+/** Vault-relative paths of the documents in scope, so the caller reads only those. */
+export const lawyerDocPaths = (events: VaultEvent[], scope: LawyerScope): string[] =>
+  scopedDocs(events, scope).paths;
 
 export async function lawyerPackage(p: {
   events: VaultEvent[];
@@ -73,6 +78,7 @@ export async function lawyerPackage(p: {
   }
 
   const head = p.events.at(-1);
+  const shared = scopedDocs(p.events, p.scope).shared;
   out["README.txt"] = [
     `${company}${who ? `: documents for ${who}` : ""}`,
     `As of ${p.asOf}. Made with Capfolder on ${p.generatedAt.slice(0, 10)}.`,
@@ -98,6 +104,12 @@ export async function lawyerPackage(p: {
           "Each line's hash covers the line before it, so any edit to events.jsonl breaks the chain.",
           "",
         ]),
+    ...(shared
+      ? [
+          `${shared} document${shared > 1 ? "s are" : " is"} shared with other people and was left out. Add ${shared > 1 ? "them" : "it"} yourself if the lawyer should see ${shared > 1 ? "them" : "it"}.`,
+          "",
+        ]
+      : []),
     ...(missing.length
       ? [
           "Files that couldn't be read (they're listed in the record but weren't found):",

@@ -1,6 +1,6 @@
 // Pure builders: one function per founder action, returning OCF/app event drafts ready for appendEvents.
 // They never write anything; appendEvents validates and checks invariants.
-import { ulid } from "ulid";
+import { monotonicFactory } from "ulid";
 import { addMonths } from "./dates";
 import { securityVested } from "./rows";
 import type { Data, EventDraft, State } from "./types";
@@ -15,6 +15,8 @@ const ocf = (type: string, data: Data): EventDraft => ({
 const app = (type: string, data: Data): EventDraft => ({ kind: "app", type, data });
 const START_DAY = "VESTING_START_DAY_OR_LAST_DAY_OF_MONTH";
 
+// Monotonic: ids made in the same millisecond still sort in creation order (the reducer's last tie-break).
+const ulid = monotonicFactory();
 export const newId = (prefix: string): string => `${prefix}_${ulid()}`;
 
 /** Next free number for "CS-n" / "OPT-n" / "SAFE-n", across every security in the log (not just the as-of view). */

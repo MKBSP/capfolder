@@ -4,6 +4,16 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added — M6 · export + share (2026-10-10)
+- Export dialog on Home: as-of date + format: Excel (.xlsx with Summary, By person, Vesting, SAFEs tabs), CSV, or OCF (.zip). Dates before incorporation are blocked.
+- Share with lawyer on Documents: a .zip with README (contents, record hash), cap table .xlsx/.pdf/.csv, every attached document, events.jsonl, OCF and the What's missing list. Scope "Everything" or "One person" (only their holdings, documents and gaps). Nothing is uploaded.
+- Core: sheet builder, a small xlsx writer (no formulas, exact decimals), cap table PDF (pdf-lib), zip/unzip (fflate), lawyer package, and OCF import (`fromOcfExport`). An exported OCF re-imports with an identical cap table (M6 acceptance test).
+
+### Changed (2026-10-10, from Mads testing M3)
+- Welcome: one "I accept the terms and conditions" checkbox; the usage-count details and disclaimer live in the terms. The usage toggle stays in Settings.
+- Dates read day month year ("6 Oct 2026") everywhere; date fields accept "6 Oct 2026", "06/10/2026" or "2026-10-06" and have a calendar button.
+- "Lock after" is hidden when there's no lock; side-by-side fields line up.
+
 ### Added — M3 · desktop app (2026-10-10)
 - Tauri 2 + React desktop app (`apps/desktop`), run with `pnpm dev:desktop`. CI builds unsigned bundles on macOS, Windows, Linux.
 - First run: Welcome with app password lock (argon2 hash in the OS keychain) or no lock, idle re-lock, anonymous-usage toggle, disclaimer; Email (skip; verification with M5); Create company (folder picker, backup detection: iCloud, Dropbox, Google Drive, OneDrive, git); Start choice.

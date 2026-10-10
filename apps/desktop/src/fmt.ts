@@ -23,6 +23,7 @@ export const usdShort = (amount: string | undefined) => {
 
 /** "2026-11-07" → "7 Nov 2026" (day month year, everywhere in the app). */
 export const day = (iso: string) => {
+  if (!iso) return "—";
   const [y, m, d] = iso.split("-").map(Number) as [number, number, number];
   return `${d} ${MONTHS[m - 1]} ${y}`;
 };

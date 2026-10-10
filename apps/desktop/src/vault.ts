@@ -352,6 +352,15 @@ export function exportFile(
   };
 }
 
+/** Inside docs/, and no part of the path is a symlink (which could point anywhere the app may read). */
+async function isPlainDocPath(fs: Fs, root: string, rel: string): Promise<boolean> {
+  if (!isSafeDocPath(rel)) return false;
+  const parts = rel.split("/");
+  for (let i = 1; i <= parts.length; i++)
+    if (await fs.isSymlink(join(root, ...parts.slice(0, i))).catch(() => true)) return false;
+  return true;
+}
+
 /** F-30. The lawyer zip. Documents are read from the vault; unreadable or unsafe paths are listed as missing. */
 export async function lawyerZip(
   fs: Fs,
@@ -362,7 +371,9 @@ export async function lawyerZip(
 ): Promise<{ name: string; data: Uint8Array }> {
   const docs: Record<string, Uint8Array | null> = {};
   for (const rel of lawyerDocPaths(v.events, scope)) {
-    docs[rel] = isSafeDocPath(rel) ? await fs.readBytes(join(v.root, rel)).catch(() => null) : null;
+    docs[rel] = (await isPlainDocPath(fs, v.root, rel))
+      ? await fs.readBytes(join(v.root, rel)).catch(() => null)
+      : null;
   }
   const files = await lawyerPackage({
     events: v.events,

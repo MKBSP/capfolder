@@ -18,8 +18,8 @@ Updated 2026-10-10 (after M3). Milestones and acceptance tests: `docs/09-build-p
 | M0 Repo + CI | Done 2026-10-10 |
 | M1 Core engine | Done 2026-10-10 |
 | M3 Desktop shell (Tauri) | Done 2026-10-10 (built before M2, see below) |
-| M6 Export (xlsx, lawyer zip) | Next |
-| M2 Import | After M6: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
+| M6 Export (xlsx, lawyer zip) | Done 2026-10-10 |
+| M2 Import | Next: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
 | M5 Signing · M4 Document sorting · M7 Updates · M8 Website + launch | Not started |
 
 Order changed 2026-10-10 so the full product can be tested sooner: M3 → M6 → M2 → M5 → M4 → M7 → M8.
@@ -32,10 +32,11 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Lawyer review of `CLA.md` / `CCLA.md` (incl. explicit "relicense" wording, docs/13).
 - [ ] Register capfolder.com; trademark search (USPTO, EUIPO).
 - [ ] Apple Developer ID + Windows code-signing certificate (M7).
+- [ ] Lawyer review of the in-app terms and conditions (`apps/desktop/src/copy.ts`, TERMS).
 - [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`).
 
 ## Missing in the desktop app (M3)
-- Not built yet (shown as Coming soon): import (M2), document sorting/OCR (M4), AI and MCP (M4), signing and email verification (M5), xlsx and lawyer zip (M6), updates (M7), Touch ID / Windows Hello (M7).
+- Not built yet (shown as Coming soon): import (M2), document sorting/OCR (M4), AI and MCP (M4), signing and email verification (M5), updates (M7), Touch ID / Windows Hello (M7).
 - Not built, no placeholder: SAFE/share transfer (F-20), merge duplicate people (F-21), replace/rename a document (F-28), two-laptop forks (F-35), rebaseline after an outside edit (F-31), document generation from templates.
 - Founder detection is a heuristic (common stock issued on the formation date or with vesting) until stakeholder roles exist.
 - Options recorded without a strike are stored at $0 (with a 409A warning).
@@ -114,3 +115,31 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - openVault overwrites an existing captable.edited.csv
 - Documents uses label as React key (two founders with the same name collide)
 - NewSafe shows a 'stakeholder already exists' error behind the Attach modal after recording
+
+## M6 decisions (rulings made during the build)
+
+- No exceljs: its reader pulls `buffers` (no license at all), plus jszip/unzipper. A ~100-line xlsx writer on fflate instead — cost if wrong: reading Pulley/Cake xlsx in M2 needs its own choice of reader.
+- `(MIT AND Zlib)` added to the license allow-list (pako, via pdf-lib) — both permissive — cost: none.
+- xlsx cells: shares as integers, money/percents written from their exact decimal strings (no float conversion) — cost: none.
+- PDF uses the standard Helvetica font; characters outside WinAnsi print as "?" — cost: a non-Latin name looks wrong in the PDF (the xlsx is exact). Embed IBM Plex later.
+- Lawyer scope "one round" skipped (rounds aren't modeled); "One person" excludes events.jsonl, OCF and the full cap table because they show everyone — cost: a lawyer who wants the record asks for "Everything".
+- OCF import doesn't check manifest md5s; every object is schema-validated instead — cost: a corrupted-but-valid file isn't caught by md5.
+- OCF round-trip compares the cap table without `doc_status` (documents aren't in the OCF export yet) — cost: none until DOCUMENT objects are exported.
+- Telemetry disclosure moved into the terms (Mads) — docs/11 updated.
+- Date fields are text fields formatted "6 Oct 2026" with a calendar button (when the webview supports `showPicker`), because WebKit's native date field follows the OS locale.
+- Testing Library wait raised to 3 s: the full suite runs core and desktop in parallel and a save can exceed 1 s — cost: none.
+
+## M6 final review: fixed (each with a test that failed first)
+- Critical: a date the founder typed that isn't a real date (31/09) was silently replaced by the old date on save. Now the text stays, the field turns amber and the save is blocked ("Enter a valid date").
+- Important: event ids weren't monotonic within a millisecond, so two same-date transactions saved together (e.g. an OCF import) could replay in the wrong order. Ids are now monotonic ULIDs.
+- Important: odd OCF files (missing filepath, null entries, items not a list) threw instead of returning errors.
+- Important: one-person lawyer zips could include a document shared with someone else; now left out and counted in the README.
+- Important: one-person sheets showed company totals that could reveal other holders' numbers; removed.
+- Security: the lawyer zip no longer follows a symlink inside docs/ to a file outside the vault.
+
+## M6 deferred minors
+- xlsx: strip U+FFFE/U+FFFF; give percent cells a `0.00` format; check the file opens in Numbers.
+- Numeric dates are read day-first (10/1/2026 = 10 Jan), as Mads asked; US founders may expect month-first. Consider showing the parsed date while typing.
+- Lawyer zip: no "before incorporation" check on the as-of date; zipping runs on the UI thread (large vaults freeze briefly; use async zip / level 0 for PDFs).
+- Terms acceptance is only asked on first run; installs from before 2026-10-10 never see it. Usage counts default on with consent bundled in the terms: check with the lawyer (GDPR).
+- The calendar button relies on `showPicker` in the webview; hidden if unsupported. Check by hand in the Tauri window.

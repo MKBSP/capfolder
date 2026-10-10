@@ -17,10 +17,18 @@ export function DateInput(p: {
   const [text, setText] = useState(p.value ? day(p.value) : "");
   const [editing, setEditing] = useState(false);
   const picker = useRef<HTMLInputElement>(null);
+  const valid = (t: string) => {
+    const iso = parseDay(t);
+    return iso && (!p.max || iso <= p.max) ? iso : null;
+  };
+  // Show the value tidily when it changes from outside or on blur, but never wipe what the founder typed
+  // while it's invalid: the parent holds "" then, so its save is blocked instead of using an old date.
   useEffect(() => {
-    if (!editing) setText(p.value ? day(p.value) : "");
+    if (editing) return;
+    if (p.value) setText(day(p.value));
+    else if (valid(text)) setText(""); // cleared from outside
   }, [p.value, editing]);
-  const bad = !!text.trim() && !parseDay(text);
+  const bad = !!text.trim() && !valid(text);
   return (
     <span className="date-inp" style={p.style}>
       <input
@@ -35,9 +43,7 @@ export function DateInput(p: {
         onBlur={() => setEditing(false)}
         onChange={(e) => {
           setText(e.target.value);
-          const iso = parseDay(e.target.value);
-          if (iso && (!p.max || iso <= p.max)) p.onChange(iso);
-          else if (!e.target.value.trim()) p.onChange("");
+          p.onChange(valid(e.target.value) ?? "");
         }}
       />
       {canPick ? (

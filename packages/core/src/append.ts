@@ -1,5 +1,5 @@
 import canonicalize from "canonicalize";
-import { ulid } from "ulid";
+import { newId } from "./builders";
 import { GENESIS, hashEvent, verifyChain } from "./chain";
 import { MAX_DATE } from "./dates";
 import { checkInvariants } from "./invariants";
@@ -14,7 +14,7 @@ export interface AppendCtx {
 }
 export const defaultCtx = (deviceId: string): AppendCtx => ({
   now: () => new Date(),
-  newId: () => `evt_${ulid()}`,
+  newId: () => newId("evt"),
   deviceId,
 });
 

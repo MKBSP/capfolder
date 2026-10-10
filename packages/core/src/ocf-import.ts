@@ -33,20 +33,26 @@ export function fromOcfExport(
   if (!manifestPath) return { errors: ["No OCF manifest found (a file with file_type OCF_MANIFEST_FILE)"] };
   const manifest = parsed.get(manifestPath)!;
   const errors = validateOcf(manifest).map((e) => `${manifestPath}: ${e}`);
+  if (errors.length) return { errors };
 
   const objects: Data[] = [manifest.issuer];
   const dir = dirOf(manifestPath);
   for (const [key, list] of Object.entries(manifest)) {
     if (!key.endsWith("_files") || !Array.isArray(list)) continue;
-    for (const f of list as { filepath: string }[]) {
-      const path = resolve(dir, f.filepath);
-      const name = path.slice(dir.length);
-      const file = parsed.get(path);
-      if (!file) {
-        errors.push(`${name}: listed in the manifest but missing or not valid JSON`);
+    for (const f of list as unknown[]) {
+      const rel = (f as { filepath?: unknown } | null)?.filepath;
+      if (typeof rel !== "string") {
+        errors.push(`${manifestPath}: ${key} has an entry without a filepath`);
         continue;
       }
-      for (const o of file.items ?? []) {
+      const path = resolve(dir, rel);
+      const name = path.slice(dir.length);
+      const file = parsed.get(path);
+      if (!file || !Array.isArray(file.items)) {
+        errors.push(`${name}: listed in the manifest but missing, not valid JSON, or without an items list`);
+        continue;
+      }
+      for (const o of file.items) {
         const errs = validateOcf(o);
         if (errs.length) errors.push(`${name}: ${o?.object_type} ${o?.id}: ${errs.join("; ")}`);
         else objects.push(o);

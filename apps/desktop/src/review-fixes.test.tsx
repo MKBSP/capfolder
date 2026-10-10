@@ -1,5 +1,5 @@
 // Regression tests for the M3 final-review findings.
-import { builders as b, verifyChain } from "@capfolder/core";
+import { builders as b, unzip, verifyChain } from "@capfolder/core";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Profiler } from "react";
@@ -10,7 +10,7 @@ import { MemoryFs } from "./fs/memory";
 import { baseName, parentOf } from "./fs/types";
 import { acmePlatform } from "./test/acme";
 import { fakePlatform } from "./test/fakePlatform";
-import { appendToVault, attachDocument, createVault, openVault, removeDocument } from "./vault";
+import { appendToVault, attachDocument, createVault, lawyerZip, openVault, removeDocument } from "./vault";
 
 let i = 0;
 const ctx = {
@@ -174,4 +174,23 @@ describe("important: Windows paths", () => {
     expect(r).toEqual({ backedUp: false });
     expect(calls).toBeLessThan(10);
   });
+});
+
+test("M6 review: the lawyer zip doesn't follow a symlink out of the vault", async () => {
+  const fs = new MemoryFs();
+  const v = await createVault(fs, ctx, { parent: "/d", company });
+  const a = await attachDocument(fs, v, ctx, {
+    originalName: "x.pdf",
+    bytes: new TextEncoder().encode("one"),
+    docType: "other",
+    date: "2026-01-02",
+    person: "co",
+  });
+  if (a.ok !== true) throw new Error("attach");
+  const rel = a.vault.events.at(-1)!.data.path as string;
+  fs.writeSync("/home/secret.txt", "private key");
+  fs.linkSync(`/d/Co/${rel}`, "/home/secret.txt"); // someone with write access swaps the file for a link
+  const z = unzip((await lawyerZip(fs, a.vault, "2026-10-10", { kind: "all" }, ctx)).data);
+  expect(Object.keys(z).some((k) => k.startsWith("documents/"))).toBe(false);
+  expect(new TextDecoder().decode(z["README.txt"])).toContain(`Missing file: ${rel}`);
 });

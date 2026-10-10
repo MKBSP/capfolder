@@ -41,7 +41,7 @@
   - Relay holds nothing 24h after filing.
   - A tampered signed PDF is rejected.
 
-## M6 · Export + share (week 4)
+## M6 · Export + share (week 4) ✅ done 2026-10-10
 - xlsx/csv as-of export, lawyer zip, OCF export.
 - **Accept:** exported OCF re-imports into Capfolder with identical state (round trip).
 

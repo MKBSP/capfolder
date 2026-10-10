@@ -9,6 +9,7 @@ export interface Fs {
   mkdir(path: string): Promise<void>; // recursive
   list(path: string): Promise<string[]>; // child names
   rename(from: string, to: string): Promise<void>;
+  isSymlink(path: string): Promise<boolean>; // false when the path doesn't exist
 }
 
 /** Joins with "/". Tauri accepts forward slashes on every desktop OS. */
