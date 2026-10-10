@@ -11,12 +11,7 @@ const CARDS: { title: string; sub: string; steps: string[]; to: Route }[] = [
       "Totals must match before saving",
       "Then drop your signed documents",
     ],
-    to: {
-      name: "comingSoon",
-      title: "Import",
-      milestone: "M2",
-      text: "Import from Pulley, Carta, Cake, OCF or any spreadsheet.",
-    },
+    to: { name: "import" },
   },
   {
     title: "Start from zero",

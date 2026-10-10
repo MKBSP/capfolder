@@ -12,7 +12,7 @@ export interface Platform {
   homeDir(): Promise<string>;
   documentDir(): Promise<string>;
   pickFolder(title: string): Promise<string | null>;
-  pickFile(title: string): Promise<{ path: string; name: string } | null>;
+  pickFile(title: string, extensions?: string[]): Promise<{ path: string; name: string } | null>;
   saveText(defaultName: string, text: string): Promise<string | null>;
   saveBytes(defaultName: string, bytes: Uint8Array): Promise<string | null>;
   reveal(path: string): Promise<void>;
@@ -36,11 +36,15 @@ export const tauriPlatform: Platform = {
     const r = await open({ directory: true, multiple: false, recursive: true, title });
     return typeof r === "string" ? r : null;
   },
-  pickFile: async (title) => {
+  pickFile: async (title, extensions) => {
     const r = await open({
       multiple: false,
       title,
-      filters: [{ name: "Documents", extensions: ["pdf", "png", "jpg", "jpeg"] }],
+      filters: [
+        extensions
+          ? { name: "Exports", extensions }
+          : { name: "Documents", extensions: ["pdf", "png", "jpg", "jpeg"] },
+      ],
     });
     return typeof r === "string" ? { path: r, name: r.split(/[\\/]/).at(-1) ?? r } : null;
   },

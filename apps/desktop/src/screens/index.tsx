@@ -5,6 +5,7 @@ import { CreateCompany } from "./CreateCompany";
 import { Documents } from "./Documents";
 import { Email } from "./Email";
 import { Home } from "./Home";
+import { Import } from "./Import";
 import { NewGrant } from "./NewGrant";
 import { NewPerson } from "./NewPerson";
 import { NewSafe } from "./NewSafe";
@@ -48,6 +49,8 @@ export function Screen() {
       return <Signatures />;
     case "settings":
       return <Settings />;
+    case "import":
+      return <Import />;
     case "documents":
       return <Documents />;
     case "people":

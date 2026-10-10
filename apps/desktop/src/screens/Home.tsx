@@ -100,6 +100,15 @@ export function Home() {
             {rows.length === 0 ? (
               <p className="muted" style={{ padding: 20 }}>
                 Nothing issued as of {day(asOf)}. Use + New to add shares, a pool, grants or SAFEs.
+                {app.latest && app.latest.securities.size === 0 && app.latest.stakeholders.size === 0 ? (
+                  <>
+                    {" "}
+                    Or bring your existing cap table:{" "}
+                    <button type="button" className="btn link" onClick={() => app.go({ name: "import" })}>
+                      Import a cap table
+                    </button>
+                  </>
+                ) : null}
               </p>
             ) : (
               <table className="tbl" style={{ minWidth: 760 }}>

@@ -409,6 +409,7 @@ export const correction = (p: {
   reason: string;
 }) => app("correction", { target: p.target, field: p.field, old: p.old, new: p.new, reason: p.reason });
 export const reversal = (p: { target: string; reason: string }) => app("reversal", p);
+export const note = (p: { text: string }) => app("note", p);
 export const docAdded = (p: {
   docId: string;
   path: string;

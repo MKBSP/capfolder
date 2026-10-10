@@ -352,6 +352,40 @@ export function exportFile(
   };
 }
 
+/**
+ * F-07. Saves an import in one batch (source = the file), keeps the original in docs/_imports/, and records the
+ * founder's note when totals were accepted without matching. Only for a folder with no cap table yet.
+ */
+export async function importIntoVault(
+  fs: Fs,
+  v: Vault,
+  p: { drafts: EventDraft[]; fileName: string; bytes: Uint8Array; note?: string },
+  ctx: AppendCtx,
+): Promise<Result> {
+  const s = reduce(v.events, MAX_DATE);
+  if (s.securities.size || s.stakeholders.size)
+    return {
+      ok: false,
+      errors: [
+        "Import works on a new company folder, and this one already has a cap table. Create a new company first.",
+      ],
+    };
+  const source = `import:${baseName(p.fileName)}`;
+  const drafts: EventDraft[] = [
+    ...p.drafts.map((d) => ({ ...d, meta: { ...d.meta, source } })),
+    ...(p.note ? [b.note({ text: `Import totals accepted without matching: ${p.note}` })] : []),
+  ];
+  const r = await appendToVault(fs, v, drafts, ctx);
+  if (!r.ok) return r;
+  const safeName =
+    baseName(p.fileName)
+      .replace(/^\.+/, "")
+      .replace(/[\\/:]/g, "_") || "import";
+  await fs.mkdir(join(v.root, "docs", "_imports"));
+  await fs.writeBytes(join(v.root, "docs", "_imports", `${today(ctx)}_${safeName}`), p.bytes);
+  return r;
+}
+
 /** Inside docs/, and no part of the path is a symlink (which could point anywhere the app may read). */
 async function isPlainDocPath(fs: Fs, root: string, rel: string): Promise<boolean> {
   if (!isSafeDocPath(rel)) return false;

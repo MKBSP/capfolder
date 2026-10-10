@@ -39,6 +39,12 @@ export function Documents() {
           }}
         />
       ) : null}
+      {app.route.name === "documents" && app.route.imported ? (
+        <div className="banner green" style={{ margin: "12px 24px 0" }}>
+          Imported. Reports don't include signed documents: attach them below so each holding shows its
+          paperwork.
+        </div>
+      ) : null}
       {saved ? (
         <div className="banner green" style={{ margin: "12px 24px 0" }}>
           Saved <span className="mono">{saved}</span>{" "}

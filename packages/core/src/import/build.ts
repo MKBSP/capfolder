@@ -6,7 +6,7 @@ import { validateOcf } from "../ocf/validate";
 import { reduce } from "../reduce";
 import { capTableRows } from "../rows";
 import { capTableTotals } from "../totals";
-import type { EventDraft, VaultEvent } from "../types";
+import type { EventDraft, Row, VaultEvent } from "../types";
 import type { Field } from "./fields";
 
 export interface ImportInput {
@@ -34,6 +34,7 @@ export interface ImportResult {
   defaultAuthorized: Record<string, bigint>;
   optionsGranted: bigint;
   poolAvailable: bigint; // from the sheet's pool row(s)
+  rows: Row[]; // the cap table this import would give
 }
 
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
@@ -160,8 +161,8 @@ export function buildImport(p: ImportInput): ImportResult {
     return undefined;
   };
 
-  p.rows.forEach((r, i) => {
-    if (r.every((c) => !c.trim())) return;
+  for (const [i, r] of p.rows.entries()) {
+    if (r.every((c) => !c.trim())) continue;
     const name = cell(r, "name");
     const at = `Row ${p.firstRow + i}`;
     const label = name ? `${at} (${name})` : at;
@@ -173,34 +174,52 @@ export function buildImport(p: ImportInput): ImportResult {
     const isPoolName = /option pool|pool \(?available|unallocated|unissued|available for grant/i.test(name);
     if (kind === "pool" || isPoolName) {
       if (sharesRaw && /^\d+$/.test(sharesRaw)) poolAvailable += BigInt(sharesRaw);
-      return;
+      continue;
     }
-    if (kind.startsWith("unsupported:"))
-      return void issues.push(
+    if (kind.startsWith("unsupported:")) {
+      issues.push(
         `${label}: "${kind.slice(12)}" isn't supported yet (common, preferred, options and SAFEs are)`,
       );
-    if (!name) return void issues.push(`${at}: name missing`);
+      continue;
+    }
+    if (!name) {
+      issues.push(`${at}: name missing`);
+      continue;
+    }
     const dateRaw = cell(r, "issueDate");
     const parsed = dateRaw ? parseDate(dateRaw, dayFirst.get("issueDate")!) : null;
-    if (dateRaw && !parsed) return void issues.push(`${label}: issue date "${dateRaw}" isn't a date`);
+    if (dateRaw && !parsed) {
+      issues.push(`${label}: issue date "${dateRaw}" isn't a date`);
+      continue;
+    }
     const date = parsed ?? p.exportDate;
     const snapshot = !parsed;
     const meta = snapshot ? { note: "imported snapshot" } : undefined;
     const holder = person(name, cell(r, "email"));
 
     if (kind === "safe") {
-      if (!safeAmount) return void issues.push(`${label}: SAFE amount missing`);
-      if (!isNum(safeAmount))
-        return void issues.push(`${label}: SAFE amount "${cell(r, "safeAmount")}" isn't a number`);
+      if (!safeAmount) {
+        issues.push(`${label}: SAFE amount missing`);
+        continue;
+      }
+      if (!isNum(safeAmount)) {
+        issues.push(`${label}: SAFE amount "${cell(r, "safeAmount")}" isn't a number`);
+        continue;
+      }
       const cap = money(cell(r, "safeCap"));
-      if (cap && !isNum(cap))
-        return void issues.push(`${label}: valuation cap "${cell(r, "safeCap")}" isn't a number`);
+      if (cap && !isNum(cap)) {
+        issues.push(`${label}: valuation cap "${cell(r, "safeCap")}" isn't a number`);
+        continue;
+      }
       const discRaw = cell(r, "safeDiscount").replace(/\s/g, "");
       let discount: string | undefined;
       if (discRaw) {
         const pct = discRaw.endsWith("%");
         const n = discRaw.replace("%", "");
-        if (!isNum(n)) return void issues.push(`${label}: discount "${discRaw}" isn't a number`);
+        if (!isNum(n)) {
+          issues.push(`${label}: discount "${discRaw}" isn't a number`);
+          continue;
+        }
         discount = pct || Number(n) > 1 ? (Number(n) / 100).toFixed(4).replace(/(\.\d\d\d*?)0+$/, "$1") : n;
       }
       const mfn = /^(y|yes|true|x|1|✓)$/i.test(cell(r, "safeMfn"));
@@ -216,21 +235,28 @@ export function buildImport(p: ImportInput): ImportResult {
         securityId,
       });
       txs.push({ row: label, drafts: [{ ...d, meta }] });
-      return;
+      continue;
     }
 
-    if (!/^\d+$/.test(sharesRaw) || BigInt(sharesRaw) === 0n)
-      return void issues.push(`${label}: shares must be a whole number above 0, got "${cell(r, "shares")}"`);
+    if (!/^\d+$/.test(sharesRaw) || BigInt(sharesRaw) === 0n) {
+      issues.push(`${label}: shares must be a whole number above 0, got "${cell(r, "shares")}"`);
+      continue;
+    }
     const qty = BigInt(sharesRaw);
     const vest = vestingFor(r, qty, date, label);
     if (kind === "option") {
-      if (!strike) return void issues.push(`${label}: strike price missing`);
-      if (!isNum(strike))
-        return void issues.push(`${label}: strike price "${cell(r, "strike")}" isn't a number`);
+      if (!strike) {
+        issues.push(`${label}: strike price missing`);
+        continue;
+      }
+      if (!isNum(strike)) {
+        issues.push(`${label}: strike price "${cell(r, "strike")}" isn't a number`);
+        continue;
+      }
       grants.push({ holder, qty: sharesRaw, strike, date, snapshot, vest: vest || undefined, row: label });
       const c = clsName || "Common";
       if (!classes.has(c)) classes.set(c, { id: b.newId("sc"), name: c, issued: 0n, preferred: false });
-      return;
+      continue;
     }
     const preferred = kind === "preferred";
     const c = clsName || (preferred ? "Preferred" : "Common");
@@ -238,8 +264,10 @@ export function buildImport(p: ImportInput): ImportResult {
     const cls = classes.get(c)!;
     cls.issued += qty;
     const price = money(cell(r, "price"));
-    if (price && !isNum(price))
-      return void issues.push(`${label}: price "${cell(r, "price")}" isn't a number`);
+    if (price && !isNum(price)) {
+      issues.push(`${label}: price "${cell(r, "price")}" isn't a number`);
+      continue;
+    }
     const prefix = cls.preferred ? "PS" : "CS";
     const securityId = `${prefix}-${++seq[prefix]}`;
     const d = b.stockIssuance({
@@ -254,7 +282,7 @@ export function buildImport(p: ImportInput): ImportResult {
       vestingStart: vest ? vest.start : undefined,
     });
     txs.push({ row: label, drafts: d.map((x, j) => (j === 0 ? { ...x, meta } : x)) });
-  });
+  }
 
   // Options need a plan: its reserve is the founder's input, else granted + the sheet's "available" row.
   const optionsGranted = grants.reduce((a, g) => a + BigInt(g.qty), 0n);
@@ -326,21 +354,9 @@ export function buildImport(p: ImportInput): ImportResult {
   for (const d of [...classDrafts, ...planDrafts])
     for (const e of validateOcf(d.data)) issues.push(`${d.data.name ?? d.data.plan_name}: ${e}`);
 
-  // Unhashed events, only to compute the preview and run the same invariants an append would.
-  const events: VaultEvent[] = drafts.map((d, i) => ({
-    seq: i + 1,
-    id: `evt_import_${String(i).padStart(6, "0")}`,
-    ts: `${p.exportDate}T00:00:00Z`,
-    kind: d.kind,
-    type: d.type,
-    data: d.data,
-    meta: { source: "import", ...d.meta },
-    prev: "",
-    hash: "",
-  }));
-  for (const v of checkInvariants(reduce(events, "9999-12-31"))) if (!issues.includes(v)) issues.push(v);
-  const rows = capTableRows(reduce(events, "9999-12-31"));
-  const totals = capTableTotals(rows);
+  const preview = previewDrafts(drafts, p.exportDate);
+  for (const v of preview.violations) if (!issues.includes(v)) issues.push(v);
+  const { rows, totals } = preview;
   return {
     drafts,
     issues,
@@ -354,7 +370,28 @@ export function buildImport(p: ImportInput): ImportResult {
     defaultAuthorized: Object.fromEntries([...classes.values()].map((c) => [c.name, defaultAuthorized(c)])),
     optionsGranted,
     poolAvailable,
+    rows,
   };
+}
+
+/** The cap table these drafts would give (as of `asOf`), and any invariant they'd break, without writing anything. */
+export function previewDrafts(drafts: EventDraft[], asOf: string, before: VaultEvent[] = []) {
+  const events: VaultEvent[] = [
+    ...before,
+    ...drafts.map((d, i) => ({
+      seq: before.length + i + 1,
+      id: `evt_preview_${String(i).padStart(6, "0")}`,
+      ts: `${asOf}T00:00:00Z`,
+      kind: d.kind,
+      type: d.type,
+      data: d.data,
+      meta: { source: "preview", ...d.meta },
+      prev: "",
+      hash: "",
+    })),
+  ];
+  const rows = capTableRows(reduce(events, "9999-12-31"));
+  return { rows, totals: capTableTotals(rows), violations: checkInvariants(reduce(events, "9999-12-31")) };
 }
 
 /** Our fully diluted vs the number the old tool shows (docs/04 §5: exact). */

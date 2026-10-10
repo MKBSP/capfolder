@@ -288,3 +288,17 @@ test("OCF import into a vault keeps the vault's issuer id", () => {
     ["iss_vault", "Acme Inc."],
   ]);
 });
+
+test("blank rows in the middle are skipped, not the end of the import", () => {
+  const x = buildImport({
+    ...base,
+    header: ["Name", "Shares"],
+    mapping: ["name", "shares"],
+    rows: [
+      ["A", "10"],
+      ["", ""],
+      ["B", "5"],
+    ],
+  });
+  expect(x.summary.fullyDiluted).toBe(15n);
+});
