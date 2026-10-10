@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MainHeader } from "../components/Header";
 import { ErrorList, Modal } from "../components/ui";
 import { day } from "../fmt";
-import { tokenFor } from "../settings";
-import { type Envelope, type EnvelopeStatus, envelopes, RelayError, relayClient } from "../signing";
+import { type Envelope, type EnvelopeStatus, envelopes, RelayError, relayClient, relayFor } from "../signing";
 import { useApp } from "../state";
 import { DOC_FOLDER, fileSigned, voidEnvelope } from "../vault";
 
@@ -51,9 +50,10 @@ export function Signatures() {
     setOffline(null);
     let vault = app.vault;
     for (const env of envelopes(vault.events).filter((e) => e.state === "open")) {
-      const client = clientFor(env);
+      let client: ReturnType<typeof clientFor>;
       let s: EnvelopeStatus;
       try {
+        client = clientFor(env);
         s = await client.status(env.id);
       } catch (e) {
         if (e instanceof RelayError && e.status === 0) {
@@ -135,12 +135,16 @@ export function Signatures() {
       setNotes((x) => ({ ...x, [env.id]: { ok: false, text: (e as Error).message } }));
     }
   };
-  /** Each envelope is checked on the relay it was sent through, with that relay's token. */
-  const clientFor = (env: Envelope) =>
-    relayClient(latest.current.platform, {
-      relayUrl: env.relay,
-      relayToken: tokenFor(latest.current.settings, env.relay),
-    });
+  /** Each envelope is checked on the relay it was sent through, if this computer knows that relay. */
+  const clientFor = (env: Envelope) => {
+    const r = relayFor(latest.current.settings, env);
+    if (!r)
+      throw new RelayError(
+        `Sent through ${env.relay}, which isn't set up on this computer (Settings → Signing).`,
+        -1,
+      );
+    return relayClient(latest.current.platform, r);
+  };
 
   return (
     <>
@@ -274,10 +278,8 @@ function CancelDialog(p: { env: Envelope; status?: EnvelopeStatus; onClose(): vo
             onClick={async () => {
               if (!app.vault) return;
               try {
-                await relayClient(app.platform, {
-                  relayUrl: p.env.relay,
-                  relayToken: tokenFor(app.settings, p.env.relay),
-                }).remove(p.env.id);
+                const r = relayFor(app.settings, p.env);
+                if (r) await relayClient(app.platform, r).remove(p.env.id);
               } catch (e) {
                 // already gone on the relay (expired/purged) is fine; anything else stops here
                 if (!/not found/i.test((e as Error).message)) return setErrors([(e as Error).message]);

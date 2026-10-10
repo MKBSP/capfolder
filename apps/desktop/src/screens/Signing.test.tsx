@@ -350,3 +350,29 @@ describe("M5 review", () => {
     expect(fp.relay.doc.calls).toContain(`remove ${id}`);
   });
 });
+
+test("security: an envelope pointing at a relay this computer never used isn't contacted", async () => {
+  const fp = await signedIn();
+  await sendDocument("Consent A");
+  const log = fp.fs.readSync(`${fp.root}/events.jsonl`);
+  // someone with write access to the folder repoints the envelope; appending keeps the chain valid only via the app,
+  // so simulate a fresh vault state read by swapping the relay field in what the app reads
+  const calls: string[] = [];
+  const orig = fp.platform.fetch;
+  fp.platform.fetch = (url, init) => {
+    calls.push(url);
+    return orig(url, init);
+  };
+  const { envelopes } = await import("../signing");
+  const env = envelopes(
+    log
+      .trim()
+      .split("\n")
+      .map((l) => JSON.parse(l)),
+  )[0]!;
+  const { relayFor } = await import("../signing");
+  const s = JSON.parse(fp.fs.readSync("/appdata/settings.json"));
+  expect(relayFor(s, { ...env, relay: "http://evil.test" })).toBeNull();
+  expect(relayFor(s, env)).toEqual({ relayUrl: "http://relay.test", relayToken: s.relayToken });
+  expect(calls.filter((u) => u.includes("evil"))).toEqual([]);
+});

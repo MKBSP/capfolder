@@ -131,3 +131,16 @@ export function envelopes(events: VaultEvent[]): Envelope[] {
   }
   return [...out.values()];
 }
+
+/**
+ * Which relay to ask about an envelope. envelope_sent.relay comes from events.jsonl, a file anyone with access to
+ * the folder can edit, so only relays this computer was set up with are contacted (never an address from the file).
+ */
+export function relayFor(
+  s: { relayUrl: string; relayToken: string; relayTokens?: Record<string, string> },
+  env: Pick<Envelope, "relay">,
+): { relayUrl: string; relayToken: string } | null {
+  if (env.relay === s.relayUrl) return { relayUrl: s.relayUrl, relayToken: s.relayToken };
+  const t = s.relayTokens?.[env.relay];
+  return t ? { relayUrl: env.relay, relayToken: t } : null;
+}
