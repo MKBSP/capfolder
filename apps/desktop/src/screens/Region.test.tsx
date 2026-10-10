@@ -87,3 +87,12 @@ test("first run: country on Welcome, then the company's country sets its currenc
     undefined,
   ]);
 });
+
+test("a bad currency in capfolder.json falls back to USD instead of crashing the app", async () => {
+  const fp = acmePlatform();
+  const meta = JSON.parse(fp.fs.readSync(`${fp.root}/capfolder.json`));
+  fp.fs.writeSync(`${fp.root}/capfolder.json`, JSON.stringify({ ...meta, currency: "not a currency" }));
+  render(<App platform={fp.platform} />);
+  expect(await screen.findByText("Fully diluted")).toBeInTheDocument();
+  expect(screen.getByText("$900,000")).toBeInTheDocument();
+});

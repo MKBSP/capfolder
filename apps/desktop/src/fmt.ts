@@ -7,6 +7,18 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 // ponytail: module state instead of threading a formatter through every component (display only).
 let cfg = { locale: "en-US", currency: "USD", decimalMark: "." as "." | ",", monthFirst: true };
 export function configureFormat(p: { locale: string; currency: string; monthFirst: boolean }) {
+  // capfolder.json is a plain file anyone can edit: a value Intl rejects must not take the whole UI down.
+  const ok = (f: () => unknown) => {
+    try {
+      f();
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  if (!ok(() => new Intl.NumberFormat(p.locale))) p = { ...p, locale: "en-US" };
+  if (!ok(() => new Intl.NumberFormat(p.locale, { style: "currency", currency: p.currency })))
+    p = { ...p, currency: "USD" };
   const decimal = new Intl.NumberFormat(p.locale).formatToParts(1.5).find((x) => x.type === "decimal")?.value;
   cfg = { ...p, decimalMark: decimal === "," ? "," : "." };
 }
