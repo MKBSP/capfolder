@@ -10,6 +10,7 @@ export function fakePlatform(
   fs.mkdirSync("/appdata");
   let password = opts.password;
   const saved: Record<string, string> = {};
+  const savedBytes: Record<string, Uint8Array> = {};
   const platform: Platform = {
     fs,
     appDataDir: async () => "/appdata",
@@ -19,6 +20,10 @@ export function fakePlatform(
     pickFile: async () => opts.pickFile ?? null,
     saveText: async (name, text) => {
       saved[name] = text;
+      return `/home/me/Downloads/${name}`;
+    },
+    saveBytes: async (name, bytes) => {
+      savedBytes[name] = bytes;
       return `/home/me/Downloads/${name}`;
     },
     reveal: async () => {},
@@ -33,5 +38,5 @@ export function fakePlatform(
       },
     },
   };
-  return { platform, fs, saved };
+  return { platform, fs, saved, savedBytes };
 }

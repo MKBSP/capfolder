@@ -6,13 +6,20 @@ import {
   builders as b,
   captableCsv,
   type EventDraft,
+  type LawyerScope,
+  lawyerDocPaths,
+  lawyerPackage,
   MAX_DATE,
   reduce,
   sha256Hex,
+  sheets,
   toOcfExport,
+  toXlsx,
   type VaultEvent,
   verifyChain,
+  zip,
 } from "@capfolder/core";
+import { day } from "./fmt";
 import { baseName, type Fs, join } from "./fs/types";
 
 export interface Vault {
@@ -319,5 +326,56 @@ export function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string):
 
 /** F-29. The cap table as of any date, in captable.csv format. */
 export const exportCsv = (v: Vault, asOf: string): string => captableCsv(v.events, asOf);
+
+export type ExportFormat = "xlsx" | "csv" | "ocf";
+
+const companySlug = (v: Vault) =>
+  slug(String(reduce(v.events, MAX_DATE).issuer?.legal_name ?? baseName(v.root)));
+
+/** F-29. The file to save for an as-of export, or why it can't be made. */
+export function exportFile(
+  v: Vault,
+  asOf: string,
+  format: ExportFormat,
+  ctx: AppendCtx,
+): { name: string; data: Uint8Array | string } | { error: string } {
+  const formed = reduce(v.events, MAX_DATE).issuer?.formation_date;
+  if (formed && asOf < formed)
+    return { error: `The company didn't exist yet on ${day(asOf)} (incorporated ${day(formed)}).` };
+  const co = companySlug(v);
+  if (format === "csv") return { name: `${co}-cap-table-${asOf}.csv`, data: exportCsv(v, asOf) };
+  if (format === "xlsx")
+    return { name: `${co}-cap-table-${asOf}.xlsx`, data: toXlsx(sheets(v.events, asOf)) };
+  return {
+    name: `${co}-ocf-${asOf}.zip`,
+    data: zip(toOcfExport(v.events, { asOf, generatedAt: ctx.now().toISOString() })),
+  };
+}
+
+/** F-30. The lawyer zip. Documents are read from the vault; unreadable or unsafe paths are listed as missing. */
+export async function lawyerZip(
+  fs: Fs,
+  v: Vault,
+  asOf: string,
+  scope: LawyerScope,
+  ctx: AppendCtx,
+): Promise<{ name: string; data: Uint8Array }> {
+  const docs: Record<string, Uint8Array | null> = {};
+  for (const rel of lawyerDocPaths(v.events, scope)) {
+    docs[rel] = isSafeDocPath(rel) ? await fs.readBytes(join(v.root, rel)).catch(() => null) : null;
+  }
+  const files = await lawyerPackage({
+    events: v.events,
+    asOf,
+    docs,
+    scope,
+    generatedAt: ctx.now().toISOString(),
+  });
+  const who =
+    scope.kind === "person"
+      ? `-${slug(String(reduce(v.events, MAX_DATE).stakeholders.get(scope.stakeholderId)?.name?.legal_name ?? "person"))}`
+      : "";
+  return { name: `${companySlug(v)}${who}-for-lawyer-${asOf}.zip`, data: zip(files) };
+}
 
 export { sha256Hex };

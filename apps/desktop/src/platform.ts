@@ -14,6 +14,7 @@ export interface Platform {
   pickFolder(title: string): Promise<string | null>;
   pickFile(title: string): Promise<{ path: string; name: string } | null>;
   saveText(defaultName: string, text: string): Promise<string | null>;
+  saveBytes(defaultName: string, bytes: Uint8Array): Promise<string | null>;
   reveal(path: string): Promise<void>;
   lock: {
     set(password: string): Promise<void>;
@@ -47,6 +48,12 @@ export const tauriPlatform: Platform = {
     const path = await save({ defaultPath: defaultName });
     if (!path) return null;
     await tauriFs.writeText(path, text);
+    return path;
+  },
+  saveBytes: async (defaultName, bytes) => {
+    const path = await save({ defaultPath: defaultName });
+    if (!path) return null;
+    await tauriFs.writeBytes(path, bytes);
     return path;
   },
   reveal: (path) => revealItemInDir(path),

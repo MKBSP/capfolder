@@ -3,6 +3,7 @@ import { useState } from "react";
 import { type CheckItem, checklist } from "../checklist";
 import { AttachModal } from "../components/AttachModal";
 import { MainHeader } from "../components/Header";
+import { LawyerDialog } from "../components/LawyerDialog";
 import { ErrorList, Modal } from "../components/ui";
 import { useApp } from "../state";
 import { removeDocument } from "../vault";
@@ -13,6 +14,8 @@ export function Documents() {
   const s = app.state;
   const [attach, setAttach] = useState<{ target?: string; docType?: string } | null>(null);
   const [remove, setRemove] = useState<CheckItem | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [saved, setSaved] = useState<string | null>(null);
   if (!s) return null;
   const c = checklist(s, computeGaps(s));
   const missing = c.total - c.done;
@@ -22,21 +25,28 @@ export function Documents() {
         <button type="button" className="btn" onClick={() => setAttach({})}>
           Add documents
         </button>
-        <button
-          type="button"
-          className="btn primary"
-          onClick={() =>
-            app.go({
-              name: "comingSoon",
-              title: "Share with lawyer",
-              milestone: "M6",
-              text: "A .zip with the cap table, every signed PDF, events.jsonl and the What's missing list.",
-            })
-          }
-        >
+        <button type="button" className="btn primary" onClick={() => setSharing(true)}>
           Share with lawyer (.zip)
         </button>
       </MainHeader>
+      {sharing ? (
+        <LawyerDialog
+          open
+          onClose={() => setSharing(false)}
+          onSaved={(path) => {
+            setSharing(false);
+            setSaved(path);
+          }}
+        />
+      ) : null}
+      {saved ? (
+        <div className="banner green" style={{ margin: "12px 24px 0" }}>
+          Saved <span className="mono">{saved}</span>{" "}
+          <button type="button" className="btn link small" onClick={() => app.platform.reveal(saved)}>
+            Show in folder
+          </button>
+        </div>
+      ) : null}
       <main className="wide" style={{ paddingTop: 24 }}>
         <div className="card" style={{ marginBottom: 16 }}>
           <div className="row spread">

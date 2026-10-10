@@ -30,18 +30,17 @@ export const day = (iso: string) => {
 /** What the founder types → ISO date, or null. Accepts "7 Nov 2026", "7 November 2026", "07/11/2026" (day first) and "2026-11-07". */
 export function parseDay(text: string): string | null {
   const t = text.trim().toLowerCase().replace(/,/g, " ").replace(/\s+/g, " ");
-  let y: number;
-  let m: number;
-  let d: number;
-  let r = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(t);
-  if (r) [y, m, d] = [Number(r[1]), Number(r[2]), Number(r[3])];
-  else if ((r = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(t)))
-    [d, m, y] = [Number(r[1]), Number(r[2]), Number(r[3])];
-  else if ((r = /^(\d{1,2}) ([a-z]{3,9})\.? (\d{4})$/.exec(t))) {
-    const i = MONTHS.findIndex((mm) => r![2]!.startsWith(mm.toLowerCase()));
-    if (i < 0) return null;
-    [d, m, y] = [Number(r[1]), i + 1, Number(r[3])];
-  } else return null;
+  const iso = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(t);
+  const dmy = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(t);
+  const named = /^(\d{1,2}) ([a-z]{3,9})\.? (\d{4})$/.exec(t);
+  const mi = named ? MONTHS.findIndex((mm) => named[2]!.startsWith(mm.toLowerCase())) + 1 : 0;
+  const [y, m, d] = iso
+    ? [Number(iso[1]), Number(iso[2]), Number(iso[3])]
+    : dmy
+      ? [Number(dmy[3]), Number(dmy[2]), Number(dmy[1])]
+      : named && mi
+        ? [Number(named[3]), mi, Number(named[1])]
+        : [0, 0, 0];
   if (m < 1 || m > 12 || d < 1 || d > new Date(Date.UTC(y, m, 0)).getUTCDate()) return null;
   return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }

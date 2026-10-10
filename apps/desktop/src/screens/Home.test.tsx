@@ -60,8 +60,9 @@ test("export csv as of the chosen date", async () => {
   const { saved } = await home();
   fireEvent.change(screen.getByLabelText("As of"), { target: { value: "2026-10-07" } });
   await userEvent.click(screen.getByRole("button", { name: "Export" }));
-  await userEvent.click(screen.getByRole("menuitem", { name: /Export .csv/ }));
-  expect(saved["captable-2026-10-07.csv"]).toContain(
+  await userEvent.click(screen.getByLabelText(/CSV/));
+  await userEvent.click(screen.getByRole("button", { name: "Save…" }));
+  expect(saved["acme-inc-cap-table-2026-10-07.csv"]).toContain(
     "Mads Petersen,common,Common,4000000,50.00,3000000,1000000",
   );
 });

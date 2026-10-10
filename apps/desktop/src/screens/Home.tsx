@@ -10,11 +10,11 @@ import {
 import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
+import { ExportDialog } from "../components/ExportDialog";
 import { MainHeader } from "../components/Header";
 import { Chip, ComingSoon, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, percent, shares, todayIso, usd, usdShort } from "../fmt";
 import { useApp } from "../state";
-import { exportCsv } from "../vault";
 import { docChip, isFounder, scheduleText, typeLabel, vestingCell } from "../views";
 
 /** Main.html: the cap table is the home screen. */
@@ -24,6 +24,7 @@ export function Home() {
   const [open, setOpen] = useState<string | null>(null);
   const [attach, setAttach] = useState<{ target?: string; docType?: string } | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
   const rows = useMemo(() => (state ? capTableRows(state) : []), [state]);
   const gaps = useMemo(() => (state ? computeGaps(state) : []), [state]);
   const problems = useMemo(() => (state ? checkInvariants(state) : []), [state]);
@@ -51,28 +52,9 @@ export function Home() {
     />
   );
   const Export = (
-    <Menu
-      label="Export"
-      items={[
-        {
-          label: `Export .csv (as of ${asOf})`,
-          onClick: async () => {
-            const p = await app.platform.saveText(`captable-${asOf}.csv`, exportCsv(vault, asOf));
-            if (p) setSaved(p);
-          },
-        },
-        {
-          label: "Export .xlsx · Coming soon (M6)",
-          onClick: () =>
-            app.go({
-              name: "comingSoon",
-              title: "Export .xlsx",
-              milestone: "M6",
-              text: "Summary, By person, Vesting and SAFEs tabs.",
-            }),
-        },
-      ]}
-    />
+    <button type="button" className="btn" onClick={() => setExporting(true)}>
+      Export
+    </button>
   );
 
   return (
@@ -91,6 +73,16 @@ export function Home() {
         {New}
       </MainHeader>
       <VaultBanners />
+      {exporting ? (
+        <ExportDialog
+          open
+          onClose={() => setExporting(false)}
+          onSaved={(path) => {
+            setExporting(false);
+            setSaved(path);
+          }}
+        />
+      ) : null}
       {saved ? (
         <div className="banner green" style={{ margin: "12px 24px 0" }}>
           Saved <span className="mono">{saved}</span>

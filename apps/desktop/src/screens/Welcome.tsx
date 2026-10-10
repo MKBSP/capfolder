@@ -130,7 +130,10 @@ export function Welcome() {
             <button
               type="button"
               className="btn link"
-              onClick={(e) => (e.preventDefault(), setShowTerms(true))}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowTerms(true);
+              }}
             >
               terms and conditions
             </button>
