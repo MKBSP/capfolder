@@ -7,6 +7,7 @@ export * from "./dates";
 export * from "./export/lawyer";
 export * from "./export/pdf";
 export * from "./export/sheets";
+export * from "./export/signature-page";
 export * from "./export/xlsx";
 export * from "./export/zip";
 export * from "./gaps";

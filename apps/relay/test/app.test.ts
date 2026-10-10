@@ -220,3 +220,51 @@ describe("envelopes", () => {
     expect(doc.calls.at(-1)).toBe(`remove ${id}`);
   });
 });
+
+describe("abuse limits (security review)", () => {
+  const ip = (n: number) => ({ "x-forwarded-for": `203.0.113.${n}` });
+  test("one IP can't spray code emails at many addresses", async () => {
+    const { app } = setup();
+    for (let i = 0; i < 20; i++)
+      expect((await app.request("/auth/start", json({ email: `p${i}@x.example` }, ip(1)))).status).toBe(200);
+    expect((await app.request("/auth/start", json({ email: "p99@x.example" }, ip(1)))).status).toBe(429);
+    expect((await app.request("/auth/start", json({ email: "p99@x.example" }, ip(2)))).status).toBe(200);
+  });
+  test("one IP can't guess codes across many addresses", async () => {
+    const { app } = setup();
+    for (let i = 0; i < 60; i++)
+      await app.request("/auth/verify", json({ email: `v${i}@x.example`, code: "123456" }, ip(3)));
+    expect(
+      (await app.request("/auth/verify", json({ email: "v1@x.example", code: "123456" }, ip(3)))).status,
+    ).toBe(429);
+  });
+  test("a device can send at most 20 envelopes a day, 10 signers each, 15 MB", async () => {
+    const { app } = setup();
+    for (let i = 0; i < 20; i++) expect((await send(app, "busy@acme.example")).status).toBe(201);
+    expect((await send(app, "busy@acme.example")).status).toBe(429);
+    const many = new FormData();
+    many.append("pdf", new Blob([new Uint8Array([1])]), "x.pdf");
+    many.append(
+      "meta",
+      JSON.stringify({
+        title: "T",
+        signers: Array.from({ length: 11 }, (_, i) => ({ name: `S${i}`, email: `s${i}@x.example` })),
+        fields: [],
+      }),
+    );
+    expect(
+      (await app.request("/envelopes", { method: "POST", body: many, headers: auth("mads@acme.example") }))
+        .status,
+    ).toBe(400);
+    const big = new FormData();
+    big.append("pdf", new Blob([new Uint8Array(15 * 1024 * 1024 + 1)]), "x.pdf");
+    big.append(
+      "meta",
+      JSON.stringify({ title: "T", signers: [{ name: "A", email: "a@x.example" }], fields: [] }),
+    );
+    expect(
+      (await app.request("/envelopes", { method: "POST", body: big, headers: auth("mads@acme.example") }))
+        .status,
+    ).toBe(413);
+  });
+});

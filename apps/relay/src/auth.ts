@@ -23,6 +23,31 @@ export function readToken(secret: string, token: string, now: number): string | 
   return unb64(e);
 }
 
+/** Fixed-window counter: at most `max` hits per key per `windowMs`. */
+export class Limit {
+  private hits = new Map<string, number[]>();
+  private max: number;
+  private windowMs: number;
+  private now: () => number;
+  constructor(max: number, windowMs: number, now: () => number) {
+    this.max = max;
+    this.windowMs = windowMs;
+    this.now = now;
+  }
+  /** Counts a hit; false when the key is over its limit. */
+  take(key: string): boolean {
+    const t = this.now();
+    const recent = (this.hits.get(key) ?? []).filter((x) => t - x < this.windowMs);
+    if (recent.length >= this.max) {
+      this.hits.set(key, recent);
+      return false;
+    }
+    this.hits.set(key, [...recent, t]);
+    if (this.hits.size > 50_000) this.hits.clear(); // ponytail: crude memory cap; a restart forgets too
+    return true;
+  }
+}
+
 /** One pending code per email: 10 minutes, 5 tries; at most 5 codes per email per hour. */
 export class Codes {
   private pending = new Map<string, { code: string; until: number; tries: number }>();

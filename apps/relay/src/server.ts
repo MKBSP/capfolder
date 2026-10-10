@@ -1,5 +1,6 @@
 // Runs the relay on Node. Config is env only (docs/05): DOCUMENSO_URL, DOCUMENSO_API_TOKEN, RELAY_SECRET, SMTP_*.
 import { serve } from "@hono/node-server";
+import { getConnInfo } from "@hono/node-server/conninfo";
 import { createTransport } from "nodemailer";
 import { createApp, purge } from "./app.ts";
 import { httpDocumenso } from "./documenso.ts";
@@ -27,6 +28,10 @@ if (!dev && secret.length < 32) throw new Error("RELAY_SECRET must be at least 3
 
 const app = createApp({
   documenso,
+  // Behind a proxy (TRUST_PROXY=true) the client is the first X-Forwarded-For hop; otherwise the socket address,
+  // so a client can't pick its own rate-limit bucket by sending the header.
+  clientIp:
+    process.env.TRUST_PROXY === "true" ? undefined : (c) => getConnInfo(c).remote.address ?? "unknown",
   secret,
   now: () => Date.now(),
   sendMail: async (to, subject, text) => {

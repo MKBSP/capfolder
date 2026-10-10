@@ -1,8 +1,8 @@
 // The relay API (docs/05-signing.md). Thin on purpose: Documenso does the signing; this checks who's asking.
 import { randomBytes } from "node:crypto";
-import { Hono } from "hono";
+import { type Context, Hono } from "hono";
 import { cors } from "hono/cors";
-import { Codes, emailKey, makeToken, readToken } from "./auth.ts";
+import { Codes, emailKey, Limit, makeToken, readToken } from "./auth.ts";
 import type { DocEnvelope, Documenso } from "./documenso.ts";
 
 export interface RelayDeps {
@@ -10,8 +10,12 @@ export interface RelayDeps {
   secret: string;
   now(): number;
   sendMail(to: string, subject: string, text: string): Promise<void>;
+  /** Who's calling, for rate limits. Default: the first X-Forwarded-For hop (the relay runs behind a proxy). */
+  clientIp?(c: Context): string;
 }
 
+const MAX_SIGNERS = 10;
+const MAX_PDF = 15 * 1024 * 1024;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ORIGINS = [
   "tauri://localhost",
@@ -75,6 +79,12 @@ export async function purge(doc: Documenso, now: () => number): Promise<number> 
 
 export function createApp(d: RelayDeps) {
   const codes = new Codes(d.now);
+  // Abuse limits: code emails and guesses per IP (across addresses), envelopes per verified email per day.
+  const startPerIp = new Limit(20, 3600e3, d.now);
+  const verifyPerIp = new Limit(60, 3600e3, d.now);
+  const sendsPerEmail = new Limit(20, 864e5, d.now);
+  const ipOf = (c: Context) =>
+    d.clientIp?.(c) ?? c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const app = new Hono<{ Variables: { email: string } }>();
   app.use(
     "*",
@@ -95,6 +105,8 @@ export function createApp(d: RelayDeps) {
     const { email } = await c.req.json<{ email?: string }>().catch(() => ({ email: undefined }));
     if (!email || !EMAIL.test(email))
       return c.json({ error: "That doesn't look like an email address." }, 400);
+    if (!startPerIp.take(ipOf(c)))
+      return c.json({ error: "Too many codes from this network. Try again in an hour." }, 429);
     const r = codes.issue(email);
     if ("error" in r) return c.json({ error: r.error }, 429);
     await d.sendMail(
@@ -110,6 +122,8 @@ export function createApp(d: RelayDeps) {
       .json<{ email?: string; code?: string }>()
       .catch(() => ({}) as Record<string, undefined>);
     if (!email || !code) return c.json({ error: "Send the email and the code." }, 400);
+    if (!verifyPerIp.take(ipOf(c)))
+      return c.json({ error: "Too many tries from this network. Try again in an hour." }, 429);
     const ok = codes.check(email, code);
     if (ok === "expired") return c.json({ error: "That code has expired. Ask for a new one." }, 400);
     if (ok === "locked") return c.json({ error: "Too many tries. Ask for a new code." }, 400);
@@ -152,6 +166,11 @@ export function createApp(d: RelayDeps) {
       signers.some((s) => !s.name?.trim() || !s.email || !EMAIL.test(s.email))
     )
       return c.json({ error: "Send a PDF, a title and at least one signer with an email." }, 400);
+    if (signers.length > MAX_SIGNERS)
+      return c.json({ error: `At most ${MAX_SIGNERS} signers per document.` }, 400);
+    if (pdf.size > MAX_PDF) return c.json({ error: "The PDF is over 15 MB." }, 413);
+    if (!sendsPerEmail.take(c.get("email")))
+      return c.json({ error: "That's 20 documents today, the daily limit. Try again tomorrow." }, 429);
     const id = await d.documenso.create(
       {
         title: meta.title.trim().slice(0, 200),
