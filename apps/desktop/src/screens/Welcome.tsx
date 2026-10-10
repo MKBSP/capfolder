@@ -100,23 +100,27 @@ export function Welcome() {
           <input type="radio" name="lock" checked={lock === "none"} onChange={() => setLock("none")} />
           <b>No lock</b>
         </label>
-        <label>
-          <span className="lbl">Lock after</span>
-          <select
-            className="inp"
-            value={idle}
-            onChange={(e) => setIdle(Number(e.target.value) as Settings["idleMinutes"])}
-          >
-            <option value={15}>15 minutes idle</option>
-            <option value={5}>5 minutes idle</option>
-            <option value={60}>1 hour idle</option>
-            <option value={0}>Only when I quit</option>
-          </select>
-        </label>
-        <div className="banner">
-          This locks the app, not the files. Your folder stays readable so it can never be locked away from
-          you. File encryption is coming later as an option.
-        </div>
+        {lock === "password" ? (
+          <>
+            <label>
+              <span className="lbl">Lock after</span>
+              <select
+                className="inp"
+                value={idle}
+                onChange={(e) => setIdle(Number(e.target.value) as Settings["idleMinutes"])}
+              >
+                <option value={15}>15 minutes idle</option>
+                <option value={5}>5 minutes idle</option>
+                <option value={60}>1 hour idle</option>
+                <option value={0}>Only when I quit</option>
+              </select>
+            </label>
+            <div className="banner">
+              This locks the app, not the files. Your folder stays readable so it can never be locked away
+              from you. File encryption is coming later as an option.
+            </div>
+          </>
+        ) : null}
         <label className="row" style={{ alignItems: "flex-start" }}>
           <input type="checkbox" checked={telemetry} onChange={(e) => setTelemetry(e.target.checked)} />
           <span>

@@ -69,3 +69,11 @@ test("a password set during first run is enforced by the idle lock in the same s
     vi.useRealTimers();
   }
 });
+
+test("No lock hides the idle-lock setting", async () => {
+  render(<App platform={fakePlatform().platform} />);
+  expect(await screen.findByLabelText("Lock after")).toBeInTheDocument();
+  await userEvent.click(screen.getByLabelText("No lock"));
+  expect(screen.queryByLabelText("Lock after")).toBeNull();
+  expect(screen.queryByText(/This locks the app, not the files/)).toBeNull();
+});

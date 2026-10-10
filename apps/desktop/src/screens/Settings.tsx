@@ -70,20 +70,22 @@ export function Settings() {
               </button>
             ) : null}
           </div>
-          <Field label="Lock after">
-            <select
-              className="inp"
-              value={settings.idleMinutes}
-              onChange={(e) =>
-                app.setSettings({ ...settings, idleMinutes: Number(e.target.value) as S["idleMinutes"] })
-              }
-            >
-              <option value={15}>15 minutes idle</option>
-              <option value={5}>5 minutes idle</option>
-              <option value={60}>1 hour idle</option>
-              <option value={0}>Only when I quit</option>
-            </select>
-          </Field>
+          {settings.lock === "password" ? (
+            <Field label="Lock after">
+              <select
+                className="inp"
+                value={settings.idleMinutes}
+                onChange={(e) =>
+                  app.setSettings({ ...settings, idleMinutes: Number(e.target.value) as S["idleMinutes"] })
+                }
+              >
+                <option value={15}>15 minutes idle</option>
+                <option value={5}>5 minutes idle</option>
+                <option value={60}>1 hour idle</option>
+                <option value={0}>Only when I quit</option>
+              </select>
+            </Field>
+          ) : null}
           <div className="soon small">Touch ID / Windows Hello arrives in M7.</div>
           <ErrorList errors={errors} />
           {msg ? <div className="banner green small">{msg}</div> : null}
