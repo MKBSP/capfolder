@@ -58,6 +58,13 @@ export const DOC_FOLDER: Record<string, string> = {
   other: "company",
 };
 
+/** A document path from events.jsonl is untrusted: it must stay inside the vault's docs/ folder. */
+export const isSafeDocPath = (rel: unknown): rel is string =>
+  typeof rel === "string" &&
+  rel.startsWith("docs/") &&
+  !rel.includes("\\") &&
+  !rel.split("/").some((part) => part === ".." || part === "." || part === "");
+
 const today = (ctx: AppendCtx) => ctx.now().toISOString().slice(0, 10);
 const slug = (s: string) =>
   s
@@ -114,6 +121,8 @@ export async function createVault(
   ctx: AppendCtx,
   p: { parent: string; company: CompanyInput },
 ): Promise<Vault> {
+  if (/[/\\]/.test(p.company.name) || p.company.name.startsWith("."))
+    throw new Error("A company name can't contain / or \\ or start with a dot.");
   let root = join(p.parent, p.company.name);
   if (!(await isEmptyDir(fs, root))) root = join(root, p.company.name);
   if (!(await isEmptyDir(fs, root))) throw new Error(`${root} already has files in it. Pick another folder.`);
@@ -189,7 +198,8 @@ export async function openVault(fs: Fs, root: string, ctx: AppendCtx): Promise<V
   const nextMeta = await writeDerived(fs, root, meta, events, ctx);
   const missingDocs: string[] = [];
   for (const [id, d] of reduce(events, MAX_DATE).docs)
-    if (!d.removed && !(await fs.exists(join(root, d.data.path)))) missingDocs.push(id);
+    if (!d.removed && (!isSafeDocPath(d.data.path) || !(await fs.exists(join(root, d.data.path)))))
+      missingDocs.push(id);
   return { root, meta: nextMeta, log, events, csvEdited, missingDocs };
 }
 
@@ -265,6 +275,8 @@ export async function attachDocument(
 export async function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string): Promise<Result> {
   const doc = reduce(v.events, MAX_DATE).docs.get(docId);
   if (!doc || doc.removed) return { ok: false, errors: ["That document isn't in the folder."] };
+  if (!isSafeDocPath(doc.data.path))
+    return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
   const from = join(v.root, doc.data.path);
   const to = await freePath(fs, join(v.root, "docs", "_removed"), baseName(from));
   if (await fs.exists(from)) await fs.rename(from, to);

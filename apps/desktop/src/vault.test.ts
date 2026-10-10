@@ -222,3 +222,38 @@ test("exportCsv as of a date", async () => {
   const v = await founded();
   expect(exportCsv(v, "2025-12-31").trim().split("\n")).toHaveLength(1); // header only before issuance
 });
+
+describe("untrusted paths", () => {
+  test("a document path outside docs/ is never touched", async () => {
+    const v = await founded();
+    fs.writeSync("/Users/me/.ssh/id_rsa", "secret");
+    const r = await appendToVault(
+      fs,
+      v,
+      [
+        b.docAdded({
+          docId: "doc_evil",
+          path: "docs/../../../.ssh/id_rsa",
+          sha256: "x",
+          docType: "other",
+          originalName: "x",
+        }),
+      ],
+      ctx,
+    );
+    if (!r.ok) throw new Error(r.errors.join("; "));
+    const removed = await removeDocument(fs, r.vault, ctx, "doc_evil");
+    expect(removed).toEqual({
+      ok: false,
+      errors: ["That document's path isn't inside docs/, so it was left alone."],
+    });
+    expect(fs.readSync("/Users/me/.ssh/id_rsa")).toBe("secret");
+    const o = await openVault(fs, v.root, ctx);
+    expect(o.missingDocs).toEqual(["doc_evil"]);
+  });
+  test("company names can't escape the chosen folder", async () => {
+    await expect(
+      createVault(fs, ctx, { parent: "/Users/me/Documents", company: { ...company, name: "../../evil" } }),
+    ).rejects.toMatchObject({ message: "A company name can't contain / or \\ or start with a dot." });
+  });
+});
