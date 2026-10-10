@@ -69,3 +69,48 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Non-US entity templates (PT Lda, DK ApS, UK Ltd).
 - Signed/anchored event log (e.g. signed checkpoints) for real tamper evidence.
 - Paid hosted relay; AI credits for people without their own AI.
+
+## M3 decisions (rulings made during the build)
+
+- work on main — Mads asked for linear history on main — cost: none
+- State gains allSecurityIds (all security_ids regardless of asOf) and Security.price — nextSecurityId must not reuse a future-dated id; exercise/repurchase need the original price — cost: none
+- TX_STOCK_PLAN_RETURN_TO_POOL carries security_id — OCF requires it (schema test caught it) — cost: none
+- tauri companion crates pinned via Cargo.lock (tauri-runtime 2.11.3, tauri-runtime-wry 2.11.4, tauri-macros/codegen 2.6.3) — cargo resolved 2.12 runtime crates that don't compile with tauri 2.11.6 — cost: none (lockfile committed)
+- jsdom pinned to 26.1.0 via pnpm override — jsdom 30 needs Node ≥22.12 (local Node is 22.9) — cost: none
+- fs scope $HOME/** for now (ponytail; narrow to chosen vault in M7) — cost if wrong: broader file access than needed
+- argon2 0.6 API (hash_password generates salt; phc::PasswordHash), keyring 4 default v1 API — crate versions newer than plan assumed — cost: none
+- captable.csv "edited" check compares against the CSV regenerated at capfolder.json.captable_as_of — otherwise vesting changing day to day would flag every reopen as an outside edit; test "regenerated on another day is not reported as edited" — cost: none
+- appendToVault re-reads events.jsonl and refuses if it changed outside the app — cheap guard until F-35 forks — cost: none
+- security-review finding (fs scope $HOME/**) fixed now — scope = $APPDATA, $DOCUMENT + dialog-picked folders persisted via tauri-plugin-persisted-scope — cost if wrong: a vault outside ~/Documents opened without a dialog (recent list) relies on the persisted scope
+- core exports builders as a namespace (builders.safe…) to avoid top-level name clashes — cost: none
+- vitest 5 + jsdom: rejects.toThrow loses the message; tests use rejects.toMatchObject({message}) — cost: none
+- security-review path traversal fixed — isSafeDocPath (docs/ prefix, no ..) guards remove + missing-doc checks; company names with / \ or leading dot rejected — tests 'untrusted paths' RED→GREEN — cost: none
+- Platform interface (fs, paths, dialogs, reveal, lock) instead of mockIPC — one seam makes every screen testable with fakePlatform; nav/crumb use <button> not <a> (a11y lint) — cost: none
+- Logo uses the real brand/mark.svg paths (Mads: follow the original layout) — cost: none
+- Welcome defaults to app password (Touch ID shown disabled, Coming soon M7); telemetry toggle + exact disclaimer on Welcome; "Other" entity asks for a 2-letter country — cost: none
+- security-review fail-open fixed — settings owned by App, idle lock reads current settings; test 'password set during first run is enforced…' RED→GREEN — cost: none
+- builders accept explicit securityId and core exports nextSecurityIdNumber — one batch must issue CS-1, CS-2… without reusing an id — cost: none
+- live preview ignores stale async results (found by the over-issue UI test: an earlier keystroke's preview cleared the latest error) — cost: none
+- AttachModal built in Task 10 (Home's What's-missing 'Attach' needs it) instead of Task 13; Export .csv uses the captable.csv format (disclaimer lives in README.txt) — cost: none
+- form previews show the cap table as of the later of the as-of date and the change's own date (a change dated today was invisible at an earlier as-of) — caught by form tests — cost: none
+- new persons carry their id from creation (PersonChoice.newId) so drafts are stable between renders; options with no strike are recorded at $0 with the 409A warning (schema requires exercise_price) — cost: a $0 strike is visible data, fixable with a correction
+- corrections limited to a per-type field list (quantity, price/strike, amount, cap, date); transfer for 'different entity' shown as Coming soon; SAFE names on Home link to Person — cost: rarer fields need a reversal + re-entry
+- checklist items = certificate, bylaws, plan; per founder SPA + CIIAA + 83(b) when vesting; per grant + CIIAA; per SAFE — derived from state (acme 3/16) — cost: a company needing other docs adds them as 'Other'
+- re-graded Minor "lock set/clear failures unhandled" to Important — on Linux without a secret service, Continue silently does nothing (first run stuck)
+- Home verify footer kept ("totals add to 100.00%" shown only when checkInvariants, which includes the FD-sum invariant, is empty) — reviewer called it hard-coded; it is gated — cost: none
+
+## M3 deferred minors (from the final review)
+
+- Person discount display uses float (7% → 7.000000000000001%)
+- NewSafe preview discount and usdShort use float for display
+- todayIso/as-of use UTC date and don't roll over at midnight
+- Pool BigInt on decimals (now guarded by a whole-number check) / useDryRun has no .catch
+- writeDerived throwing after a successful append shows an error and the retry says "changed outside the app"
+- Modal renders <dialog open> (no backdrop/focus trap/Escape)
+- .git under $DOCUMENT never detected (leading-dot scope); suggestedFolders outside scope never offered
+- reveal scope doesn't cover vaults outside the four roots
+- persisted-scope remembers every attached-file and save-dialog path
+- createVault doesn't reject Windows-reserved characters or a trailing dot
+- openVault overwrites an existing captable.edited.csv
+- Documents uses label as React key (two founders with the same name collide)
+- NewSafe shows a 'stakeholder already exists' error behind the Attach modal after recording
