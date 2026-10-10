@@ -2,12 +2,12 @@
 
 **Target:** public launch (Show HN + Bookface) **before Nov 30, 2026**, the Pulley→Carta opt-in deadline. Pulley shuts down Dec 8.
 
-## M0 · Repo + CI (days 1–2)
+## M0 · Repo + CI (days 1–2) ✅ done 2026-10-10
 - pnpm monorepo per `docs/01`, AGPL-3.0 `LICENSE`, `THIRD_PARTY_LICENSES.md`, `CLA.md` + CLA Assistant + `CONTRIBUTING.md` (`docs/13`).
 - CI: lint, typecheck, unit + golden tests, Tauri build matrix (mac/win/linux).
 - **Accept:** `pnpm test` runs green on an empty core with the Acme golden test failing on purpose ("not implemented").
 
-## M1 · Core engine (week 1)
+## M1 · Core engine (week 1) ✅ done 2026-10-10 (Tauri build matrix moved to M3)
 - Event envelope, JCS hashing, chain verify, append API.
 - OCF validation (ajv + OCF schemas).
 - Reducer, vesting (cumulative floor), invariants, gaps, as-of replay.

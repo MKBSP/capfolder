@@ -117,3 +117,39 @@ Acme/                         # any folder name; usually inside iCloud/Dropbox/D
 - `captable.csv`: one row per holding. Columns: `stakeholder, type, class, shares, fd_percent, vested, unvested, safe_amount, safe_cap, safe_discount, as_converted_percent, doc_status`.
 - `ocf/`: full OCF export (manifest + files), so the vault is portable to any OCF tool.
 - Exports (F-29): xlsx with tabs Summary, By person, Vesting, SAFEs, plus CSV.
+
+## Decisions where OCF is silent (M1, 2026-10-10)
+- **OCF version:** 1.2.0 schemas, vendored in `packages/core/src/ocf/`. The deprecated `TX_PLAN_SECURITY_*` names are read as `TX_EQUITY_COMPENSATION_*`.
+- **captable.csv row order:** stock, then equity compensation, then pool rows, then convertibles. Within a group: issue date, then security id. Zero-balance rows are hidden.
+- **As-of:**
+  - Transactions are filtered by `date`.
+  - Definitions (stakeholders, classes, vesting terms) are always present.
+  - A stock plan appears only from its `board_approval_date`.
+  - App events are filtered by the date part of `ts`.
+- **Consuming transactions** (cancellation, repurchase, exercise, transfer):
+  - Without `balance_security_id` they reduce the source security.
+  - With it, the source closes and the remainder must be issued as its own security (strict OCF).
+  - A quantity above the outstanding balance is a violation.
+- **Vesting:**
+  - Vesting stops at the date of any cancellation or repurchase on that security.
+  - Vested is measured on the original quantity, minus exercised, capped at outstanding.
+- **Pool:** available = `shares_reserved` (the latest pool adjustment is the new total) − granted (original quantities) + returned (`TX_STOCK_PLAN_RETURN_TO_POOL`). A cancellation without a return-to-pool retires the shares.
+- **Supported vesting subset:**
+  - A `VESTING_START_DATE` condition, then a linear chain of month-based `VESTING_SCHEDULE_RELATIVE` conditions.
+  - Allocation `CUMULATIVE_ROUND_DOWN` (floor) or `CUMULATIVE_ROUNDING` (half up), or explicit `vestings[]`.
+  - Month steps are anchored to the start date (no drift) and use the condition's `day_of_month` rule.
+  - Anything else is "vesting unknown": a gap, never a guessed number.
+  - Acceleration is recorded, not computed.
+- **Corrections:**
+  - Format: `{target, field, old, new, reason}`, where `field` is a dot path with numeric parts for array indices.
+  - Applied in file order to a copy of the target.
+  - Paths through `__proto__`, `constructor` or `prototype`, or through keys that don't exist, are rejected as violations.
+  - Reversals of reversals are ignored.
+- **Gap document types:** `83b`, `ciiaa`, `board_consent`. Plan documents are any document linked to the plan id. The 83(b) gap shows while the 30-day deadline hasn't passed.
+- **Invariants on append:** `appendEvent` blocks only violations the new event introduces, so an already-inconsistent import can still be fixed.
+- **Number formats:**
+  - Money and percentages keep their OCF strings.
+  - `as_converted_percent` is half-up to 2 decimals (post-money cap only).
+  - `fd_percent` uses largest-remainder so rows sum to exactly 100.00.
+- **CSV safety:** any cell that starts with `= + - @`, tab or CR and isn't a plain number gets a leading `'`. Vault data is untrusted when it's opened in a spreadsheet.
+- **Hash chain scope:** the unsigned chain detects accidental or naive edits. Someone who rewrites a line and recomputes every later hash is not detected. Signing or anchoring the chain is later work.

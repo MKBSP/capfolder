@@ -62,7 +62,7 @@ The Acme fixture has placeholder strings in `vesting_conditions` and `conversion
 
 ### Reducer
 1. Drop reversed events (`reversal.target`), apply `correction` events (field, new value) to their targets, in `seq` order.
-2. Filter by `asOf`: OCF transactions by `data.date`, OCF objects (stakeholder, class, plan, terms, issuer) always included unless created after `asOf` by `ts`, app events by `ts` date.
+2. Filter by `asOf`: OCF transactions by `data.date`; definitions (stakeholder, class, terms, issuer) always included; a stock plan only from its `board_approval_date`; app events by `ts` date. (Corrected 2026-10-10: filtering objects by `ts` hid stakeholders from any as-of before the day they were typed in.)
 3. Sort transactions by (`data.date`, `ts`, `id`). Never by `seq`.
 4. Apply: issuer, stakeholders, stock classes, plans (+ pool adjustments), vesting terms, stock issuances, equity comp issuances, vesting starts, convertible issuances, docs (`doc_added`, `doc_linked`, `doc_unlinked`, `doc_removed`), and the remaining M1 transactions: cancellation, return to pool, exercise, repurchase, convertible transfer, pool adjustment.
 5. Unknown event types are kept but ignored; `State.unknownEventTypes` lists them ("Update to see everything").
