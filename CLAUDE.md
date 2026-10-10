@@ -29,9 +29,9 @@ The company's cap table lives in a **folder of plain files** on the founder's co
 ```
 pnpm i
 pnpm test          # unit + golden tests
-pnpm dev:desktop   # tauri dev
-pnpm dev:web       # website
-pnpm dev:relay     # relay api + documenso via docker compose
+pnpm dev:desktop   # tauri dev (added in M3)
+pnpm dev:web       # website (added in M8)
+pnpm dev:relay     # relay api + documenso via docker compose (added in M5)
 ```
 
 ## Marked items

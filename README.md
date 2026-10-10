@@ -1,47 +1,35 @@
-# Capfolder — handoff package
+# Capfolder
 
-Everything needed to start building Capfolder with Claude Code.
+Your cap table, in a folder you own. Issue SAFEs and options, track vesting, collect signatures. Open source, local-first.
 
-## How to use
-```bash
-unzip capfolder-handoff.zip && cd capfolder-handoff
-git init && git add . && git commit -m "Capfolder: specs, designs, fixtures"
-claude          # Claude Code reads CLAUDE.md automatically
+> Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.
+
+## Status
+Milestones M0 (repo + CI) and M1 (core engine) are in progress. See `docs/09-build-plan.md`.
+
+## Commands
+```
+pnpm i            # on Apple Silicon with an x64 Node, use: pnpm i --force
+pnpm test         # unit + golden tests
+pnpm typecheck
+pnpm lint
 ```
 
-First prompt to give Claude Code:
-> Read CLAUDE.md and every file in docs/. Then do milestone M0 from docs/09-build-plan.md and make the Acme golden test in fixtures/ run (failing is fine). Stop and show me the repo layout before M1.
-
-## What's inside
+## Layout
 ```
-CLAUDE.md                       instructions Claude Code follows
-docs/
-  00-overview.md                product, decisions, disclaimer, links
-  01-architecture.md            monorepo, stack, components, relay, security
-  02-user-stories.md            38 founder stories with Mermaid flows (the spec)
-  03-data-model.md              vault folder, event log, OCF mapping, math, invariants
-  04-import.md                  F-07 import: detect → map → OCF → validate → reconcile
-  05-signing.md                 relay API + Documenso flow + verification
-  06-ai.md                      providers, sorting pipeline, terms diff, MCP
-  07-updates-and-rules-pack.md  app updates + hot-swappable rules pack
-  08-design-system.md           tokens, components, motion, copy rules
-  09-build-plan.md              milestones M0–M8 with acceptance tests
-  10-research.md                Pulley shutdown, export paths, OCF, sources
-  11-metrics.md                 downloads, installs, stars, donations; pass/fail
-  12-cloud-later.md             $50/mo cloud sync tier (later); MVP rules for it
-  13-licensing-and-cla.md       AGPL + CLA (CLA Assistant), to set up in M0
-  14-brand-and-logo.md          brand colors/type + logo prompts for image generators
-design/
-  index.html                    open this: every screen, clickable
-  app/*.html                    15 app screens + system design + 2 flowcharts
-  website/index.html            landing page (works standalone)
-  source/                       original Design-canvas files (.dc.html + canvas.json)
-brand/                          logo: mark.svg, logo.svg, app-icon.svg, preview.png
-fixtures/acme-vault/            golden test vault + expected cap table
-integrations/tally.md           website download form (Tally id rjxQjR)
+packages/core/    OCF event log, hash chain, reducer, vesting, invariants, exports (pure TypeScript)
+fixtures/         golden vaults + expected outputs (they gate CI)
+docs/             product spec, data model, build plan (start with docs/00-overview.md)
+design/           clickable HTML mockups (open design/index.html)
+brand/            logo and favicon
 ```
 
-## Urgent, outside the code
-- Get the former company's **Pulley exports + all signed PDFs before Dec 8, 2026**. They're the F-07 test data.
-- Apple Developer ID + Windows code-signing certificate (needed for M7).
-- Domain + GitHub org name (the "Capfolder" name is a working title).
+## License
+AGPL-3.0 (see `LICENSE`). Contributions need a CLA (`CLA.md`, `CCLA.md` for companies); CLA Assistant asks on your first pull request. Third-party licenses: `THIRD_PARTY_LICENSES.md`.
+
+## To do outside the code
+- Get the pilot company's Pulley exports and every signed PDF before Dec 8, 2026.
+- Apple Developer ID and a Windows code-signing certificate (needed for M7).
+- Install CLA Assistant on MKBSP/capfolder, pointing at `CLA.md`.
+- Have a lawyer review `CLA.md` / `CCLA.md`.
+- Register capfolder.com and run a trademark search (USPTO, EUIPO).
