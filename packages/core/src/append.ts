@@ -78,3 +78,20 @@ export async function appendEvent(log: string, draft: EventDraft, ctx: AppendCtx
   if (added.size) return { ok: false, errors: [...added] };
   return { ok: true, event, line: canonicalize(event)! };
 }
+
+/** Several drafts as one change: all are appended or none (e.g. a grant + its vesting start). */
+export async function appendEvents(
+  log: string,
+  drafts: EventDraft[],
+  ctx: AppendCtx,
+): Promise<{ ok: true; events: VaultEvent[]; text: string } | { ok: false; errors: string[] }> {
+  let text = "";
+  const events: VaultEvent[] = [];
+  for (const draft of drafts) {
+    const r = await appendEvent(log + text, draft, ctx);
+    if (!r.ok) return r;
+    events.push(r.event);
+    text += `${r.line}\n`;
+  }
+  return { ok: true, events, text };
+}

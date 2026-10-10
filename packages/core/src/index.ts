@@ -10,5 +10,6 @@ export * from "./ocf/validate";
 export * from "./ocf-export";
 export * from "./reduce";
 export * from "./rows";
+export * from "./schedule";
 export * from "./types";
 export * from "./vesting";
