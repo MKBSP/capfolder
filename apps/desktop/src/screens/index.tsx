@@ -4,6 +4,11 @@ import { useApp } from "../state";
 import { CreateCompany } from "./CreateCompany";
 import { Email } from "./Email";
 import { Home } from "./Home";
+import { NewGrant } from "./NewGrant";
+import { NewPerson } from "./NewPerson";
+import { NewSafe } from "./NewSafe";
+import { NewShares } from "./NewShares";
+import { Pool } from "./Pool";
 import { StartChoice } from "./StartChoice";
 import { Welcome } from "./Welcome";
 import { Wizard } from "./Wizard";
@@ -24,6 +29,16 @@ export function Screen() {
       return <Wizard />;
     case "home":
       return <Home />;
+    case "newSafe":
+      return <NewSafe />;
+    case "newGrant":
+      return <NewGrant />;
+    case "newShares":
+      return <NewShares />;
+    case "pool":
+      return <Pool />;
+    case "newPerson":
+      return <NewPerson />;
     case "comingSoon":
       return (
         <>

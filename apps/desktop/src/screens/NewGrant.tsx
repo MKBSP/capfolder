@@ -1,0 +1,177 @@
+import {
+  builders as b,
+  capTableRows,
+  type EventDraft,
+  nextSecurityIdNumber,
+  type State,
+} from "@capfolder/core";
+import { useMemo, useState } from "react";
+import { CrumbHeader } from "../components/Header";
+import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
+import { ErrorList, Field } from "../components/ui";
+import { useDryRun } from "../dryrun";
+import { shares, todayIso } from "../fmt";
+import { useApp } from "../state";
+import { standardTerms } from "../terms";
+
+const digits = (s: string) => s.replace(/[,\s$]/g, "");
+
+/** F-14: grant options from the pool. Board consent + signing arrive in M5; for now the grant is recorded. */
+export function NewGrant() {
+  const app = useApp();
+  const latest = app.latest;
+  const plans = latest ? [...latest.plans.entries()] : [];
+  const [who, setWho] = useState<PersonChoice>(() => newPerson());
+  const [planId, setPlanId] = useState(plans[0]?.[0] ?? "");
+  const [quantity, setQuantity] = useState("");
+  const [strike, setStrike] = useState("");
+  const [date, setDate] = useState(todayIso());
+  const [vesting, setVesting] = useState(true);
+  const [start, setStart] = useState(todayIso());
+  const [termsId] = useState(() => b.newId("vt"));
+  const [errors, setErrors] = useState<string[] | null>(null);
+
+  const drafts = useMemo<EventDraft[] | null>(() => {
+    const person = resolvePerson(who);
+    const plan = latest?.plans.get(planId);
+    if (!latest || !person || !plan || !digits(quantity)) return null;
+    const terms = vesting ? standardTerms(latest, termsId) : null;
+    return [
+      ...person.drafts,
+      ...(terms?.drafts ?? []),
+      ...b.optionGrant({
+        state: latest,
+        stakeholderId: person.id,
+        planId,
+        classId: plan.data.stock_class_ids?.[0],
+        quantity: digits(quantity),
+        strike: digits(strike) || "0",
+        date,
+        securityId: `OPT-${nextSecurityIdNumber(latest, "OPT")}`,
+        ...(terms ? { vestingTermsId: terms.id, vestingStart: start } : {}),
+      }),
+    ];
+  }, [latest, who, planId, quantity, strike, date, vesting, start, termsId]);
+  const dry = useDryRun(drafts);
+  const poolNow = app.state ? capPool(app.state, planId) : null;
+  const poolAfter =
+    dry && !dry.errors ? dry.rows.find((r) => r.group === 2 && r.securityId === planId)?.shares : null;
+
+  if (!plans.length)
+    return (
+      <>
+        <CrumbHeader title="New grant" />
+        <main className="medium stack">
+          <div className="banner amber">Grants come from an option pool. Create the pool first.</div>
+          <button type="button" className="btn primary" onClick={() => app.go({ name: "pool" })}>
+            Create option pool
+          </button>
+        </main>
+      </>
+    );
+
+  return (
+    <>
+      <CrumbHeader title="New grant" />
+      <main className="medium">
+        <section className="card stack">
+          <PersonPicker label="Employee" value={who} onChange={setWho} />
+          {plans.length > 1 ? (
+            <Field label="Plan">
+              <select className="inp" value={planId} onChange={(e) => setPlanId(e.target.value)}>
+                {plans.map(([id, p]) => (
+                  <option key={id} value={id}>
+                    {p.data.plan_name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          ) : null}
+          <div className="grid2">
+            <Field label="Options">
+              <input
+                className="inp num"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="40,000"
+              />
+            </Field>
+            <Field label="Strike price (USD)" hint="From your latest 409A valuation.">
+              <input
+                className="inp num"
+                value={strike}
+                onChange={(e) => setStrike(e.target.value)}
+                placeholder="0.12"
+              />
+            </Field>
+            <Field label="Grant date">
+              <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            </Field>
+            <Field label="Vesting starts">
+              <input
+                className="inp"
+                type="date"
+                value={start}
+                disabled={!vesting}
+                onChange={(e) => setStart(e.target.value)}
+              />
+            </Field>
+          </div>
+          <div className="row">
+            <button
+              type="button"
+              className={`chip ${vesting ? "green" : ""}`}
+              onClick={() => setVesting(true)}
+            >
+              4 years · 1-year cliff · monthly
+            </button>
+            <button
+              type="button"
+              className={`chip ${!vesting ? "green" : ""}`}
+              onClick={() => setVesting(false)}
+            >
+              No vesting
+            </button>
+          </div>
+          {poolNow !== null ? (
+            <div className="banner">
+              Pool: <span className="num">{shares(poolNow)}</span> available
+              {poolAfter !== undefined && poolAfter !== null ? (
+                <>
+                  {" "}
+                  → <span className="num">{shares(poolAfter)}</span> after this grant
+                </>
+              ) : null}
+            </div>
+          ) : null}
+          {!digits(strike) || Number(digits(strike)) === 0 ? (
+            <div className="banner amber">Strike may be challenged. Get a 409A.</div>
+          ) : null}
+          <ErrorList errors={errors ?? dry?.errors ?? null} />
+          <div className="row" style={{ justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn primary"
+              onClick={async () => {
+                if (!drafts) return setErrors(["Fill in the employee and the number of options."]);
+                const errs = await app.run(drafts);
+                if (errs) return setErrors(errs);
+                app.go({ name: "home" });
+              }}
+            >
+              Record grant
+            </button>
+          </div>
+          <p className="meta">
+            The board consent and the grant notice for signature arrive with signing (M5). Attach signed
+            copies from Documents.
+          </p>
+        </section>
+      </main>
+    </>
+  );
+}
+
+function capPool(s: State, planId: string): bigint | null {
+  return capTableRows(s).find((r) => r.group === 2 && r.securityId === planId)?.shares ?? null;
+}
