@@ -50,18 +50,18 @@ export function stockClass(p: {
   id?: string;
   name: string;
   authorized: string;
-  parValue: string;
+  parValue?: string; // unknown on import: left out (OCF allows that)
+  preferred?: boolean;
 }): EventDraft {
   return ocf("STOCK_CLASS", {
     id: p.id ?? newId("sc"),
     name: p.name,
-    class_type: "COMMON",
-    default_id_prefix: "CS-",
+    class_type: p.preferred ? "PREFERRED" : "COMMON",
+    default_id_prefix: p.preferred ? "PS-" : "CS-",
     initial_shares_authorized: p.authorized,
     votes_per_share: "1",
-    seniority: "1",
-    par_value: usd(p.parValue),
-    price_per_share: usd(p.parValue),
+    seniority: p.preferred ? "2" : "1",
+    ...(p.parValue ? { par_value: usd(p.parValue), price_per_share: usd(p.parValue) } : {}),
   });
 }
 
@@ -79,37 +79,85 @@ export function stakeholder(p: {
   });
 }
 
-/** 4 years, 1-year cliff, monthly: the official OCF sample shape (same as the acme fixture). */
-export function vestingTerms4y1y(id?: string): EventDraft {
+/** N months, monthly, with an optional cliff: start → cliff (cliff/N) → monthly (1/N). OCF's official sample shape. */
+export function vestingTerms(p: { months: number; cliffMonths: number; id?: string }): EventDraft {
+  const { months, cliffMonths: cliff } = p;
   const rel = (length: number, occurrences: number, from: string) => ({
     type: "VESTING_SCHEDULE_RELATIVE",
     relative_to_condition_id: from,
     period: { type: "MONTHS", length, occurrences, day_of_month: START_DAY },
   });
+  const span = (m: number) => (m % 12 === 0 ? `${m / 12} year${m === 12 ? "" : "s"}` : `${m} months`);
+  const monthly = (from: string, occurrences: number) => ({
+    id: "monthly",
+    description: `1/${months} each month thereafter`,
+    portion: { numerator: "1", denominator: String(months) },
+    trigger: rel(1, occurrences, from),
+    next_condition_ids: [],
+  });
+  return ocf("VESTING_TERMS", {
+    id: p.id ?? newId("vt"),
+    name: `${span(months)}, ${
+      cliff
+        ? `${span(cliff)
+            .replace(/ years?$/, "-year")
+            .replace(/ months$/, "-month")} cliff`
+        : "no cliff"
+    }, monthly`,
+    description: `${months} months, ${cliff ? `${cliff}-month cliff, monthly thereafter` : "monthly"}`,
+    allocation_type: "CUMULATIVE_ROUND_DOWN",
+    vesting_conditions: cliff
+      ? [
+          {
+            id: "vesting-start",
+            quantity: "0",
+            trigger: { type: "VESTING_START_DATE" },
+            next_condition_ids: ["cliff"],
+          },
+          {
+            id: "cliff",
+            description: `${Number(((cliff / months) * 100).toFixed(2))}% at ${span(cliff)}`,
+            portion: { numerator: String(cliff), denominator: String(months) },
+            trigger: rel(cliff, 1, "vesting-start"),
+            next_condition_ids: ["monthly"],
+          },
+          monthly("cliff", months - cliff),
+        ]
+      : [
+          {
+            id: "vesting-start",
+            quantity: "0",
+            trigger: { type: "VESTING_START_DATE" },
+            next_condition_ids: ["monthly"],
+          },
+          monthly("vesting-start", months),
+        ],
+  });
+}
+
+/** 4 years, 1-year cliff, monthly: the official OCF sample shape (same as the acme fixture). */
+export const vestingTerms4y1y = (id?: string): EventDraft =>
+  vestingTerms({ months: 48, cliffMonths: 12, id });
+
+/** A schedule we don't know (an import gave only "vested so far"): the cap table shows "vesting unknown", never a guess. */
+export function vestingTermsUnknown(id?: string): EventDraft {
   return ocf("VESTING_TERMS", {
     id: id ?? newId("vt"),
-    name: "4 years, 1-year cliff, monthly",
-    description: "48 months, 12-month cliff, monthly thereafter",
+    name: "Unknown schedule (imported)",
+    description: "The import had no vesting schedule. Record the real schedule with a correction.",
     allocation_type: "CUMULATIVE_ROUND_DOWN",
     vesting_conditions: [
       {
         id: "vesting-start",
         quantity: "0",
         trigger: { type: "VESTING_START_DATE" },
-        next_condition_ids: ["cliff"],
+        next_condition_ids: ["unknown"],
       },
       {
-        id: "cliff",
-        description: "25% at 1 year",
-        portion: { numerator: "12", denominator: "48" },
-        trigger: rel(12, 1, "vesting-start"),
-        next_condition_ids: ["monthly"],
-      },
-      {
-        id: "monthly",
-        description: "1/48 each month thereafter",
-        portion: { numerator: "1", denominator: "48" },
-        trigger: rel(1, 36, "cliff"),
+        id: "unknown",
+        description: "Schedule not imported",
+        portion: { numerator: "1", denominator: "1" },
+        trigger: { type: "VESTING_EVENT" },
         next_condition_ids: [],
       },
     ],

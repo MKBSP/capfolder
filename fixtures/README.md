@@ -24,3 +24,6 @@ The company shown in every mockup. 29 events, hash-chained.
 ## To add
 - `pilot-pulley/`: the anonymized real Pulley export from the pilot company (urgent, before Dec 8, 2026)
 - Edge-case vaults listed in `docs/09-build-plan.md`
+
+## import/
+- `acme-generic.csv`: **synthetic**. A generic spreadsheet export of the acme cap table (US dates, `$` amounts, a title row above the header, a pool row). Importing it must give the acme numbers in `acme-vault/captable.expected.csv` (doc_status aside). Replace with real Pulley/Carta/Cake exports when they arrive.

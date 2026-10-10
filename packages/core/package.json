@@ -15,10 +15,12 @@
     "canonicalize": "5.1.0",
     "fflate": "0.8.3",
     "js-md5": "0.9.2",
+    "papaparse": "5.7.0",
     "pdf-lib": "1.17.1",
     "ulid": "3.0.2"
   },
   "devDependencies": {
+    "@types/papaparse": "5.5.2",
     "fast-check": "4.10.2"
   }
 }

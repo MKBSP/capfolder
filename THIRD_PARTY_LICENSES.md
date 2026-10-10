@@ -17,6 +17,7 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - fflate 0.8.3: MIT
 - js-md5 0.9.2: MIT
 - json-schema-traverse 1.0.0: MIT
+- papaparse 5.7.0: MIT
 - pdf-lib 1.17.1: MIT
 - react 19.3.0: MIT
 - react-dom 19.3.0: MIT
