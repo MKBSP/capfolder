@@ -17,15 +17,17 @@ const START_DAY = "VESTING_START_DAY_OR_LAST_DAY_OF_MONTH";
 
 export const newId = (prefix: string): string => `${prefix}_${ulid()}`;
 
-/** Next free "CS-n" / "OPT-n" / "SAFE-n", across every security in the log (not just the as-of view). */
-export function nextSecurityId(state: State, prefix: "CS" | "OPT" | "SAFE"): string {
+/** Next free number for "CS-n" / "OPT-n" / "SAFE-n", across every security in the log (not just the as-of view). */
+export function nextSecurityIdNumber(state: State, prefix: "CS" | "OPT" | "SAFE"): number {
   let max = 0;
   for (const id of state.allSecurityIds) {
     const m = new RegExp(`^${prefix}-(\\d+)$`).exec(id);
     if (m) max = Math.max(max, Number(m[1]));
   }
-  return `${prefix}-${max + 1}`;
+  return max + 1;
 }
+export const nextSecurityId = (state: State, prefix: "CS" | "OPT" | "SAFE"): string =>
+  `${prefix}-${nextSecurityIdNumber(state, prefix)}`;
 
 export function issuer(p: {
   name: string;
@@ -187,8 +189,9 @@ export function optionGrant(p: {
   vestingTermsId?: string;
   vestingStart?: string;
   type?: "OPTION_ISO" | "OPTION_NSO";
+  securityId?: string;
 }): EventDraft[] {
-  const securityId = nextSecurityId(p.state, "OPT");
+  const securityId = p.securityId ?? nextSecurityId(p.state, "OPT");
   const type = p.type ?? "OPTION_ISO";
   const grant = ocf("TX_EQUITY_COMPENSATION_ISSUANCE", {
     id: newId("tx"),
@@ -219,8 +222,9 @@ export function safe(p: {
   discount?: string;
   mfn: boolean;
   date: string;
+  securityId?: string;
 }): EventDraft {
-  const securityId = nextSecurityId(p.state, "SAFE");
+  const securityId = p.securityId ?? nextSecurityId(p.state, "SAFE");
   return ocf("TX_CONVERTIBLE_ISSUANCE", {
     id: newId("tx"),
     date: p.date,

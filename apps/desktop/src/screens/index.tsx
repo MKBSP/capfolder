@@ -5,6 +5,7 @@ import { CreateCompany } from "./CreateCompany";
 import { Email } from "./Email";
 import { StartChoice } from "./StartChoice";
 import { Welcome } from "./Welcome";
+import { Wizard } from "./Wizard";
 
 /** Route → screen. Screens not built yet show a placeholder. */
 export function Screen() {
@@ -18,6 +19,8 @@ export function Screen() {
       return <CreateCompany />;
     case "start":
       return <StartChoice />;
+    case "wizard":
+      return <Wizard />;
     case "comingSoon":
       return (
         <>

@@ -1,5 +1,6 @@
 export * from "./append";
 export * as builders from "./builders";
+export { nextSecurityIdNumber } from "./builders";
 export * from "./captable-csv";
 export * from "./chain";
 export * from "./dates";
