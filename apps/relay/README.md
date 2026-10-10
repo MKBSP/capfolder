@@ -25,3 +25,6 @@ Point the desktop app at `http://localhost:8787` (Settings → Signing). Every e
 
 ## Tests
 `pnpm test` runs against an in-memory Documenso. `RELAY_CONTRACT=1 pnpm test` also runs against the local stack.
+
+## Before a public deployment
+The relay's rate limits live in memory, bounded to 200,000 keys: when full, the oldest key is forgotten rather than everyone being locked out. Resetting a key that way takes 200,000 fresh IPv4 addresses or IPv6 /64 networks. A public relay should **also** rate-limit at its proxy (Caddy, nginx, Cloudflare), keep `TRUST_PROXY=true` only behind that proxy, and run a single instance (codes and limits aren't shared between instances).

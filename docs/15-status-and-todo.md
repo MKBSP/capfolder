@@ -190,3 +190,8 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Display formatting is set once per render from those two (module state in fmt.ts) instead of threading a formatter through every component — cost: none for the UI; a future multi-company window would need it per window.
 - Dates still read "6 Oct 2026" everywhere (Mads' earlier ask); the country only changes how typed numeric dates are read.
 - Not yet localized: export sheet headings say "(USD)", percentages in tables keep a "." decimal point, and money in the PDF uses plain numbers.
+
+## M5 rulings (so far)
+- Relay rate limits are in memory and bounded; when full the oldest key is evicted (availability over strictness). Two automated security reviews flagged each direction (fail-closed = global lockout; eviction = reset with ~200k fresh IPs/64s); a bounded in-memory limiter can't avoid both. A public relay must also rate-limit at its proxy (apps/relay/README.md) — Mads to confirm at deploy time.
+- Signing emails come from the relay's own address; the subject/message name the document. Sender-domain email later.
+- Reminders (day 3, then every 4 days) and 30-day expiry use Documenso's built-in settings, so the relay needs no reminder cron; it only purges old envelopes hourly.
