@@ -20,7 +20,7 @@ import { SOURCES, type SourceId } from "../importRules";
 import { useApp } from "../state";
 import { importIntoVault } from "../vault";
 
-type Sheets = { name: string; rows: string[][] }[];
+type Sheets = { name: string; rows: string[][]; date1904?: boolean }[];
 type Loaded = { fileName: string; bytes: Uint8Array };
 
 /** F-07: pick the source, choose the file, match columns (spreadsheets), check totals, save. */
@@ -245,6 +245,7 @@ export function Import() {
               body={rows.slice(headerRow + 1)}
               firstRow={headerRow + 2}
               mapping={mapping}
+              date1904={!!sheets[sheetIdx]?.date1904}
               onBack={() => setStep("map")}
             />
           )
@@ -344,9 +345,12 @@ function SheetReview(p: {
   body: string[][];
   firstRow: number;
   mapping: (FieldId | null)[];
+  date1904: boolean;
   onBack(): void;
 }) {
   const { busy, errors, save } = useSave(p.file);
+  const [preferred, setPreferred] = useState<Record<string, boolean>>({});
+  const [expectedSafe, setExpectedSafe] = useState("");
   const [exportDate, setExportDate] = useState(todayIso());
   const [authorized, setAuthorized] = useState<Record<string, string>>({});
   const [pool, setPool] = useState("");
@@ -363,11 +367,15 @@ function SheetReview(p: {
         exportDate: exportDate || todayIso(),
         authorized: Object.fromEntries(Object.entries(authorized).filter(([, v]) => v.trim())),
         poolReserved: pool.trim() || undefined,
+        preferred,
+        date1904: p.date1904,
       }),
-    [p.header, p.body, p.mapping, p.firstRow, exportDate, authorized, pool],
+    [p.header, p.body, p.mapping, p.firstRow, exportDate, authorized, pool, preferred, p.date1904],
   );
-  const rec = reconcile(r.summary, expected);
-  const canSave = !busy && r.issues.length === 0 && (rec.ok || (accept && note.trim() !== ""));
+  const rec = reconcile(r.summary, expected, expectedSafe);
+  // The old tool's total is always required; a mismatch needs an explicit note.
+  const canSave =
+    !busy && r.issues.length === 0 && expected.trim() !== "" && (rec.ok || (accept && note.trim() !== ""));
   return (
     <section className="card stack">
       <h1 style={{ margin: 0 }}>Check and save</h1>
@@ -390,7 +398,7 @@ function SheetReview(p: {
         <Field label="Export date" hint="Used for rows without an issue date (marked “imported snapshot”).">
           <DateInput value={exportDate} onChange={setExportDate} />
         </Field>
-        {r.optionsGranted > 0n ? (
+        {r.optionsGranted > 0n || r.poolAvailable > 0n ? (
           <Field
             label="Option pool, total reserved"
             hint={`Granted ${shares(r.optionsGranted)} + available ${shares(r.poolAvailable)} in the file.`}
@@ -404,23 +412,40 @@ function SheetReview(p: {
           </Field>
         ) : null}
         {r.classes.map((c) => (
-          <Field
-            key={c.name}
-            label={`Authorized shares: ${c.name}`}
-            hint="From the certificate of incorporation."
-          >
-            <input
-              className="inp num"
-              placeholder={shares(r.defaultAuthorized[c.name] ?? c.issued)}
-              value={authorized[c.name] ?? ""}
-              onChange={(e) => setAuthorized({ ...authorized, [c.name]: e.target.value })}
-            />
-          </Field>
+          <div key={c.name}>
+            <Field label={`Authorized shares: ${c.name}`} hint="From the certificate of incorporation.">
+              <input
+                className="inp num"
+                placeholder={shares(r.defaultAuthorized[c.name] ?? c.issued)}
+                value={authorized[c.name] ?? ""}
+                onChange={(e) => setAuthorized({ ...authorized, [c.name]: e.target.value })}
+              />
+            </Field>
+            <label className="row small" style={{ marginTop: 6 }}>
+              <input
+                type="checkbox"
+                checked={c.preferred}
+                onChange={(e) => setPreferred({ ...preferred, [c.name]: e.target.checked })}
+              />
+              <span>{c.name} is preferred stock</span>
+            </label>
+          </div>
         ))}
       </div>
-      <Field label="Fully diluted in your old tool" hint="Totals must match to the share before saving.">
-        <input className="inp num" value={expected} onChange={(e) => setExpected(e.target.value)} />
-      </Field>
+      <div className="grid2">
+        <Field label="Fully diluted in your old tool" hint="Totals must match to the share before saving.">
+          <input className="inp num" value={expected} onChange={(e) => setExpected(e.target.value)} />
+        </Field>
+        {r.summary.safeTotal !== "0" ? (
+          <Field label="SAFE total in your old tool (optional)" hint="Checked to the cent when given.">
+            <input
+              className="inp num"
+              value={expectedSafe}
+              onChange={(e) => setExpectedSafe(e.target.value)}
+            />
+          </Field>
+        ) : null}
+      </div>
       {expected.trim() ? <div className={`banner ${rec.ok ? "green" : "amber"}`}>{rec.text}</div> : null}
       {expected.trim() && !rec.ok ? (
         <>
@@ -445,7 +470,7 @@ function SheetReview(p: {
           type="button"
           className="btn primary"
           disabled={!canSave}
-          onClick={() => save(r.drafts, rec.ok ? undefined : note.trim())}
+          onClick={() => save(r.drafts, rec.ok ? undefined : `${note.trim()} (${rec.text})`)}
         >
           Save to the cap table
         </button>

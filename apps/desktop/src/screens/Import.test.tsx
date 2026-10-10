@@ -7,7 +7,7 @@ import { expect, test } from "vitest";
 import { App } from "../App";
 import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
-import { createVault, importIntoVault, openVault } from "../vault";
+import { appendToVault, createVault, importIntoVault, openVault } from "../vault";
 
 const FIX = resolve(process.cwd(), "../../fixtures");
 const acmeEvents = () =>
@@ -114,4 +114,57 @@ test("a company folder that already has a cap table is refused", async () => {
   render(<App platform={fp.platform} />);
   await screen.findByText("Fully diluted");
   expect(screen.queryByRole("button", { name: "Import a cap table" })).toBeNull();
+});
+
+test("M2 review: a folder with only a share class or pool is not 'new'; odd file names are kept safely", async () => {
+  const { MemoryFs } = await import("../fs/memory");
+  const { builders: bl } = await import("@capfolder/core");
+  const fs = new MemoryFs();
+  const v = await createVault(fs, ctx, {
+    parent: "/d",
+    company: { name: "Co", formationDate: "2026-01-02", type: "DE_CCORP" },
+  });
+  const withClass = await appendToVault(
+    fs,
+    v,
+    [bl.stockClass({ name: "Common", authorized: "100", parValue: "0.0001" })],
+    ctx,
+  );
+  if (!withClass.ok) throw new Error("setup");
+  const refused = await importIntoVault(
+    fs,
+    withClass.vault,
+    { drafts: [], fileName: "x.csv", bytes: new Uint8Array() },
+    ctx,
+  );
+  expect(refused.ok).toBe(false);
+
+  const fresh = await createVault(fs, ctx, {
+    parent: "/e",
+    company: { name: "Co", formationDate: "2026-01-02", type: "DE_CCORP" },
+  });
+  const ok = await importIntoVault(
+    fs,
+    fresh,
+    { drafts: [], fileName: 'cap*table?"<v2>.csv', bytes: new Uint8Array([1]) },
+    ctx,
+  );
+  expect(ok.ok).toBe(true);
+  expect(await fs.list("/e/Co/docs/_imports")).toEqual([
+    `${new Date("2026-10-10T12:00:00Z").toISOString().slice(0, 10)}_cap_table___v2_.csv`,
+  ]);
+});
+
+test("M2 review: clearing the old tool's total after accepting re-blocks the save", async () => {
+  await freshVault({ name: "p.csv", bytes: readFileSync(resolve(FIX, "import/acme-generic.csv"), "utf8") });
+  await userEvent.click(screen.getByLabelText(/Any spreadsheet/));
+  await userEvent.click(screen.getByRole("button", { name: "Choose file…" }));
+  await userEvent.click(await screen.findByRole("button", { name: "Continue" }));
+  const total = screen.getByLabelText(/^Fully diluted in your old tool/);
+  await userEvent.type(total, "1");
+  await userEvent.click(screen.getByLabelText(/Accept with a note/));
+  await userEvent.type(screen.getByLabelText("Note"), "x");
+  expect(screen.getByRole("button", { name: "Save to the cap table" })).toBeEnabled();
+  await userEvent.clear(total);
+  expect(screen.getByRole("button", { name: "Save to the cap table" })).toBeDisabled();
 });

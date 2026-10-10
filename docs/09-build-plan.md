@@ -17,7 +17,7 @@
   - Tampering with any line fails chain verification at that line.
   - Property tests: invariants hold for 10k random valid event sequences.
 
-## M2 · Import (weeks 1–2) — highest risk
+## M2 · Import (weeks 1–2) — highest risk ✅ done 2026-10-10 (OCF + generic spreadsheet; vendor detectors when real files arrive)
 - Detectors + mappers for OCF, Pulley xlsx, Carta reports/OCX, Cake exports, generic + AI mapping.
 - Reconcile + diff view data.
 - **Accept:**

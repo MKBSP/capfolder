@@ -4,6 +4,12 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added — M2 · import (2026-10-10)
+- Import screen (from Start, or Home when the folder is empty): pick the source (Pulley, Carta, Cake, OCF, any spreadsheet) with that tool's export steps, choose the file, match columns, check and save.
+- OCF .zip imports with its full history. Spreadsheets (.xlsx, .csv): header row and columns guessed, editable; one position per row; people deduped by email, then name; dates in ISO, US, day-first, Excel serial or "Mar 14, 2023"; vesting schedules built from start + months + cliff, or "vesting unknown" when only "vested so far" is given; preferred classes; SAFEs with cap, discount, MFN; rows without a date become "imported snapshot".
+- Saving is blocked until every row is valid and the fully diluted total matches the old tool to the share, or the founder accepts with a note (saved in the record). Events carry `source: import:<file>`; the original file is kept in `docs/_imports/`. Then Documents asks for the signed documents.
+- Core: CSV (papaparse) and xlsx readers, field synonyms, `buildImport`, `reconcile`, `previewDrafts`, `ocfImportDrafts`; general `vestingTerms` builder.
+
 ### Added — M6 · export + share (2026-10-10)
 - Export dialog on Home: as-of date + format: Excel (.xlsx with Summary, By person, Vesting, SAFEs tabs), CSV, or OCF (.zip). Dates before incorporation are blocked.
 - Share with lawyer on Documents: a .zip with README (contents, record hash), cap table .xlsx/.pdf/.csv, every attached document, events.jsonl, OCF and the What's missing list. Scope "Everything" or "One person" (only their holdings, documents and gaps). Nothing is uploaded.

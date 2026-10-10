@@ -363,27 +363,35 @@ export async function importIntoVault(
   ctx: AppendCtx,
 ): Promise<Result> {
   const s = reduce(v.events, MAX_DATE);
-  if (s.securities.size || s.stakeholders.size)
+  if (s.securities.size || s.stakeholders.size || s.classes.size || s.plans.size)
     return {
       ok: false,
       errors: [
         "Import works on a new company folder, and this one already has a cap table. Create a new company first.",
       ],
     };
+  // Keep the original first (a safe name on every OS); if that fails, nothing has been recorded yet.
+  const safeName =
+    baseName(p.fileName)
+      .replace(/[^\w.-]/g, "_")
+      .replace(/^\.+/, "") || "import";
+  try {
+    await fs.mkdir(join(v.root, "docs", "_imports"));
+    await fs.writeBytes(join(v.root, "docs", "_imports", `${today(ctx)}_${safeName}`), p.bytes);
+  } catch (e) {
+    return {
+      ok: false,
+      errors: [
+        `Couldn't keep a copy of ${baseName(p.fileName)} in docs/_imports: ${(e as Error).message ?? e}`,
+      ],
+    };
+  }
   const source = `import:${baseName(p.fileName)}`;
   const drafts: EventDraft[] = [
     ...p.drafts.map((d) => ({ ...d, meta: { ...d.meta, source } })),
     ...(p.note ? [b.note({ text: `Import totals accepted without matching: ${p.note}` })] : []),
   ];
-  const r = await appendToVault(fs, v, drafts, ctx);
-  if (!r.ok) return r;
-  const safeName =
-    baseName(p.fileName)
-      .replace(/^\.+/, "")
-      .replace(/[\\/:]/g, "_") || "import";
-  await fs.mkdir(join(v.root, "docs", "_imports"));
-  await fs.writeBytes(join(v.root, "docs", "_imports", `${today(ctx)}_${safeName}`), p.bytes);
-  return r;
+  return appendToVault(fs, v, drafts, ctx);
 }
 
 /** Inside docs/, and no part of the path is a symlink (which could point anywhere the app may read). */

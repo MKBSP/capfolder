@@ -52,7 +52,7 @@ describe("reading files", () => {
     const book = readXlsx(toXlsx(sheets(acmeEvents(), "2026-10-07")));
     expect(book.map((s) => s.name)).toEqual(["Summary", "By person", "Vesting", "SAFEs"]);
     const safes = book.find((s) => s.name === "SAFEs")!.rows;
-    expect(safes[2]).toEqual(["Angel A", "safe", "150000", "8000000", "0.20", "1.88", "signed"]);
+    expect(safes[2]).toEqual(["Angel A", "safe", "150000", "8000000", "0.2", "1.88", "signed"]); // a number cell: no trailing zeros
   });
   test("xlsx shared strings, sparse cells and entities", () => {
     const file = zip({
@@ -182,7 +182,11 @@ describe("buildImport", () => {
       rows,
     });
     expect(x.drafts.filter((d) => d.type === "STAKEHOLDER")).toHaveLength(1);
-    expect(x.summary.fullyDiluted).toBe(175n);
+    expect(x.summary.fullyDiluted).toBe(150n);
+    // same email, different spelling: flagged, never silently merged (M2 review)
+    expect(x.issues).toEqual([
+      "Row 6 (A. Ribeiro): same email as Ana Ribeiro (ana@x.com). Use one name, or give each its own email.",
+    ]);
   });
   test("missing issue date: export date, marked as an imported snapshot", () => {
     const x = buildImport({

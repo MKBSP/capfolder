@@ -19,7 +19,7 @@ Updated 2026-10-10 (after M3). Milestones and acceptance tests: `docs/09-build-p
 | M1 Core engine | Done 2026-10-10 |
 | M3 Desktop shell (Tauri) | Done 2026-10-10 (built before M2, see below) |
 | M6 Export (xlsx, lawyer zip) | Done 2026-10-10 |
-| M2 Import | Next: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
+| M2 Import | Done 2026-10-10 (OCF + generic spreadsheet). Still to come: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
 | M5 Signing · M4 Document sorting · M7 Updates · M8 Website + launch | Not started |
 
 Order changed 2026-10-10 so the full product can be tested sooner: M3 → M6 → M2 → M5 → M4 → M7 → M8.
@@ -32,11 +32,12 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Lawyer review of `CLA.md` / `CCLA.md` (incl. explicit "relicense" wording, docs/13).
 - [ ] Register capfolder.com; trademark search (USPTO, EUIPO).
 - [ ] Apple Developer ID + Windows code-signing certificate (M7).
+- [ ] Send real Pulley / Carta / Cake export files (anonymize names/emails, keep numbers): each gets a detector + golden test.
 - [ ] Lawyer review of the in-app terms and conditions (`apps/desktop/src/copy.ts`, TERMS).
 - [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`).
 
 ## Missing in the desktop app (M3)
-- Not built yet (shown as Coming soon): import (M2), document sorting/OCR (M4), AI and MCP (M4), signing and email verification (M5), updates (M7), Touch ID / Windows Hello (M7).
+- Not built yet (shown as Coming soon): document sorting/OCR (M4), AI and MCP (M4), signing and email verification (M5), updates (M7), Touch ID / Windows Hello (M7).
 - Not built, no placeholder: SAFE/share transfer (F-20), merge duplicate people (F-21), replace/rename a document (F-28), two-laptop forks (F-35), rebaseline after an outside edit (F-31), document generation from templates.
 - Founder detection is a heuristic (common stock issued on the formation date or with vesting) until stakeholder roles exist.
 - Options recorded without a strike are stored at $0 (with a 409A warning).
@@ -143,3 +144,43 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Lawyer zip: no "before incorporation" check on the as-of date; zipping runs on the UI thread (large vaults freeze briefly; use async zip / level 0 for PDFs).
 - Terms acceptance is only asked on first run; installs from before 2026-10-10 never see it. Usage counts default on with consent bundled in the terms: check with the lawyer (GDPR).
 - The calendar button relies on `showPicker` in the webview; hidden if unsupported. Check by hand in the Tauri window.
+
+## M2 decisions (rulings made during the build)
+
+- Import only into a company folder with no people or holdings yet — merging into an existing cap table needs conflict rules — cost: a founder who started from zero must create a new folder to import.
+- Numeric dates in a column are month-first (US tools) unless a value in that column can only be day-first — cost: an all-ambiguous day-first sheet (e.g. 01/02/2021 only) imports with month and day swapped; the preview shows the dates before saving.
+- Pulley, Carta and Cake use the generic column matcher until real files arrive — cost: the founder checks the column mapping by hand.
+- Reconcile compares fully diluted only (typed by the founder); per-class and SAFE totals are shown, not enforced — cost: an offsetting error across classes could pass.
+- Missing price per share on common/preferred imports as $0 — cost: price-based reports would be wrong until corrected.
+- Institution vs individual is a name heuristic (Inc, LLC, Fund, Ventures, …) — cost: wrong type label until edited; numbers unaffected.
+- Security ids are assigned in row order (CS-1, PS-1, OPT-1, SAFE-1); the option plan's board date is the earliest grant date — cost: the pool appears from the first grant rather than the real approval date.
+- No xlsx library (same reason as M6); a small reader on fflate — cost: unusual Excel files may need a fix once we see them.
+
+## M2 final review: fixed (each with a test that failed first)
+- Critical: European number formats (1.000.000 / 0,50 / 250.000,00) were read 100–1000× wrong; the decimal mark is now detected per file and anything unclear is a row issue.
+- Critical: an option row next to a preferred class crashed the Import screen; options and the pool always sit on a common class.
+- Important:
+  - same email with different names is flagged instead of merged
+  - Series/Seed classes count as preferred, and each class has a "preferred" checkbox
+  - a class is preferred if any of its rows says so
+  - a pool with no grants yet counts
+  - option rows without a class don't create a phantom class
+  - Total/Subtotal rows are skipped
+  - the SAFE total can be reconciled
+  - a vesting length without a start uses the issue date, and a start without a length is an issue
+  - discount "1" means 1% (same as New SAFE)
+  - the person-or-entity column is used
+  - Excel float noise (1.0000000000000001E-5) is cleaned up
+  - namespaced xlsx tags, self-closing rows and 1904 dates are read
+  - a folder with only a class or pool isn't "new"
+  - the original file is kept (with a safe name) before anything is recorded
+  - the reconcile check can't be bypassed by clearing the total
+  - "Advisor common" isn't an option
+
+## M2 deferred minors
+- The parsed dates aren't shown before saving; an all-ambiguous day-first file reads month-first (spec ruling).
+- CSV is read as UTF-8 only (Windows-1252 exports show "Jos�").
+- No size limit when unzipping (a zip bomb picked by the founder would hang the app; local file only).
+- The preview rebuilds with fresh ids on every render (wasteful, not wrong).
+- The OCF preview runs without the vault's own events (fine while import requires an empty folder).
+- Pulley's matrix layout (a column per class) needs one row per holding; the screen says so, a detector comes with real files.

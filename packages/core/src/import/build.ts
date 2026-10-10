@@ -1,7 +1,7 @@
 // Generic spreadsheet → OCF drafts (docs/04 §3–5): one position per row, people deduped, vesting built or marked unknown.
 import * as b from "../builders";
 import { checkInvariants } from "../invariants";
-import { fmtInt, parseDec, sumDec } from "../num";
+import { fmtInt, subDec, sumDec } from "../num";
 import { validateOcf } from "../ocf/validate";
 import { reduce } from "../reduce";
 import { capTableRows } from "../rows";
@@ -15,8 +15,10 @@ export interface ImportInput {
   mapping: (Field | null)[];
   firstRow: number; // spreadsheet row number of rows[0], for messages
   exportDate: string; // date of the export: used when a row has no issue date
-  authorized?: Record<string, string>; // per class name; default = issued
+  authorized?: Record<string, string>; // per class name; default = issued (+ the pool for the plan's class)
+  preferred?: Record<string, boolean>; // per class name: the founder's override of common/preferred
   poolReserved?: string; // the plan's total reserve; default = granted + the sheet's "available" pool row
+  date1904?: boolean; // the workbook counts serial dates from 1904 (old Mac Excel)
 }
 
 export interface ImportSummary {
@@ -39,8 +41,12 @@ export interface ImportResult {
 
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 const DATE_FIELDS: Field[] = ["issueDate", "vestingStart"];
+const NUMBER_FIELDS: Field[] = ["shares", "price", "strike", "vested", "safeAmount", "safeCap"];
 const INSTITUTION =
   /\b(inc|llc|l\.?l\.?c|l\.?p|ltd|limited|gmbh|s\.?a|corp|corporation|company|co|fund|ventures?|capital|partners|holdings|combinator|trust|foundation|bank|group|labs|spv)\b\.?/i;
+const PREFERRED_CLASS = /prefer|\bseries\b|\bseed\b/i;
+const TOTAL_ROW = /^(sub-?|grand\s+)?totals?\b/i;
+const POOL_NAME = /option pool|pool \(?available|unallocated|unissued|available for grant/i;
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (y: number, m: number, d: number) =>
   m >= 1 && m <= 12 && d >= 1 && d <= new Date(Date.UTC(y, m, 0)).getUTCDate()
@@ -49,16 +55,17 @@ const iso = (y: number, m: number, d: number) =>
 const numericParts = (v: string) => /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(v.trim());
 
 /** A spreadsheet date → ISO. Numeric a/b/yyyy is month-first unless the column is day-first. */
-function parseDate(raw: string, dayFirst: boolean): string | null {
+function parseDate(raw: string, dayFirst: boolean, date1904: boolean): string | null {
   const v = raw.trim().toLowerCase().replace(/,/g, " ").replace(/\s+/g, " ");
   if (!v) return null;
   let m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[t ].*)?$/.exec(v);
   if (m) return iso(+m[1]!, +m[2]!, +m[3]!);
   m = numericParts(v);
   if (m) return dayFirst ? iso(+m[3]!, +m[2]!, +m[1]!) : iso(+m[3]!, +m[1]!, +m[2]!);
-  if (/^\d{4,5}(\.\d+)?$/.test(v)) {
-    const d = new Date(Date.UTC(1899, 11, 30) + Math.floor(Number(v)) * 86400000); // Excel serial (1900 system)
-    return d.toISOString().slice(0, 10);
+  if (/^\d{5}(\.\d+)?$/.test(v)) {
+    // Excel serial: 1900 system (with its 1900-leap-year quirk) or 1904 system
+    const epoch = date1904 ? Date.UTC(1904, 0, 1) : Date.UTC(1899, 11, 30);
+    return new Date(epoch + Math.floor(Number(v)) * 86400000).toISOString().slice(0, 10);
   }
   const month = (s: string) => MONTHS.findIndex((x) => s.startsWith(x)) + 1;
   m = /^([a-z]{3,9})\.? (\d{1,2}) (\d{4})$/.exec(v); // Mar 14 2023
@@ -68,8 +75,34 @@ function parseDate(raw: string, dayFirst: boolean): string | null {
   return null;
 }
 
-const money = (raw: string) => raw.replace(/[$€£\s,]/g, "").replace(/^usd/i, "");
-const isNum = (s: string) => /^\d+(\.\d+)?$/.test(s);
+/** True when the file writes decimals with a comma (1.000.000 / 0,50), as European Excel does. */
+function usesDecimalComma(values: string[]): boolean {
+  let comma = 0;
+  let dot = 0;
+  for (const raw of values) {
+    const v = raw.replace(/[$€£\s]/g, "");
+    if (/\.\d{3}\.|\.\d{3},\d|^\d+,\d{1,2}$|^0,\d+$|^\d{1,3}(\.\d{3})+$/.test(v)) comma++;
+    if (/,\d{3},|,\d{3}\.\d|^\d+\.\d{1,2}$|^0\.\d+$|^\d{1,3}(,\d{3})+$/.test(v)) dot++;
+  }
+  return comma > dot;
+}
+
+/** "$1,000.50" / "1.000,50" → "1000.50"; null when it isn't a plain non-negative number. */
+function parseAmount(raw: string, decimalComma: boolean): string | null {
+  let v = raw.replace(/[$€£\s]/g, "").replace(/^usd|usd$|^eur|eur$/gi, "");
+  if (!v) return null;
+  v = decimalComma ? v.replace(/\./g, "").replace(",", ".") : v.replace(/,/g, "");
+  return /^\d+(\.\d+)?$/.test(v) ? v : null;
+}
+
+/** Whole shares: "1,000,000" and "1000.00" are fine, "1.5" isn't. */
+function parseWhole(raw: string, decimalComma: boolean): bigint | null {
+  const v = parseAmount(raw, decimalComma);
+  if (!v || !/^\d+(\.0+)?$/.test(v)) return null;
+  const n = BigInt(v.split(".")[0]!);
+  return n > 0n ? n : null;
+}
+
 const normName = (s: string) =>
   s
     .normalize("NFKC")
@@ -77,17 +110,15 @@ const normName = (s: string) =>
     .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 
-function kindOf(raw: string, has: { safe: boolean; strike: boolean }, cls: string) {
+function kindOf(raw: string, has: { safe: boolean; strike: boolean }) {
   const k = raw.toLowerCase();
-  if (/pool|available|unallocated|unissued|reserved/.test(k)) return "pool";
-  if (/safe/.test(k)) return "safe";
-  if (/option|iso|nso|\bso\b/.test(k)) return "option";
+  if (!k) return has.safe ? "safe" : has.strike ? "option" : "stock";
+  if (/\bpool\b|available for grant|unallocated|unissued/.test(k)) return "pool";
+  if (/\bsafe\b/.test(k)) return "safe";
+  if (/option|\biso\b|\bnso\b|\bnqso\b/.test(k)) return "option";
   if (/prefer/.test(k)) return "preferred";
-  if (/common|ordinary|stock|share|founder/.test(k)) return /prefer/i.test(cls) ? "preferred" : "common";
-  if (k) return `unsupported:${raw}`;
-  if (has.safe) return "safe";
-  if (has.strike) return "option";
-  return /prefer/i.test(cls) ? "preferred" : "common";
+  if (/common|ordinary|stock|share|founder/.test(k)) return "stock";
+  return `unsupported:${raw}`;
 }
 
 export function buildImport(p: ImportInput): ImportResult {
@@ -96,65 +127,100 @@ export function buildImport(p: ImportInput): ImportResult {
   const dayFirst = new Map(
     DATE_FIELDS.map((f) => [f, p.rows.some((r) => Number(numericParts(cell(r, f))?.[1] ?? 0) > 12)]),
   );
+  const decimalComma = usesDecimalComma(p.rows.flatMap((r) => NUMBER_FIELDS.map((f) => cell(r, f))));
+  const amount = (r: string[], f: Field) => parseAmount(cell(r, f), decimalComma);
+  const date = (raw: string, f: Field) => parseDate(raw, dayFirst.get(f)!, !!p.date1904);
   const issues: string[] = [];
-  const people = new Map<
-    string,
-    { id: string; name: string; email: string; type: "INSTITUTION" | "INDIVIDUAL" }
-  >();
-  const classes = new Map<string, { id: string; name: string; issued: bigint; preferred: boolean }>();
+  type Person = { id: string; name: string; email: string; type: "INSTITUTION" | "INDIVIDUAL" };
+  const people = new Map<string, Person>();
   const terms = new Map<string, EventDraft>();
-  const txs: { row: string; drafts: EventDraft[] }[] = [];
-  const grants: {
+  type Vest = { terms: string; start: string };
+  const stock: {
+    label: string;
     holder: string;
-    qty: string;
+    cls: string;
+    preferredRow: boolean;
+    qty: bigint;
+    price: string;
+    date: string;
+    snapshot: boolean;
+    vest?: Vest;
+  }[] = [];
+  const grants: {
+    label: string;
+    holder: string;
+    cls: string;
+    qty: bigint;
     strike: string;
     date: string;
     snapshot: boolean;
-    vest?: { terms: string; start: string };
-    row: string;
+    vest?: Vest;
   }[] = [];
+  const safes: { label: string; draft: (id: string) => EventDraft; snapshot: boolean }[] = [];
   let poolAvailable = 0n;
-  const seq = { CS: 0, PS: 0, OPT: 0, SAFE: 0 };
   const empty = reduce([], "9999-12-31");
 
-  /** Same email = same person; else same normalized name (unless both have different emails). */
-  const person = (name: string, email: string) => {
-    const eKey = email ? `e:${email.toLowerCase()}` : "";
+  /** Same email = same person, if the names agree; no email: same normalized name. */
+  const person = (name: string, email: string, typeCell: string, label: string): string | null => {
     const nKey = `n:${normName(name)}`;
-    const byName = people.get(nKey);
-    const found = (eKey && people.get(eKey)) || (byName && (!email || !byName.email) ? byName : undefined);
-    if (found) {
-      if (eKey && !found.email) {
-        found.email = email;
-        people.set(eKey, found);
-      }
-      return found.id;
+    const eKey = email ? `e:${email.toLowerCase()}` : "";
+    const byEmail = eKey ? people.get(eKey) : undefined;
+    if (byEmail) {
+      if (normName(byEmail.name) === normName(name)) return byEmail.id;
+      issues.push(
+        `${label}: same email as ${byEmail.name} (${email}). Use one name, or give each its own email.`,
+      );
+      return null;
     }
-    const id = b.newId("sh");
-    const holderType = INSTITUTION.test(name) ? "INSTITUTION" : "INDIVIDUAL";
-    const rec = { id, name, email, type: holderType as "INSTITUTION" | "INDIVIDUAL" };
+    const byName = people.get(nKey);
+    if (byName && (!email || !byName.email)) {
+      if (eKey) {
+        byName.email = email;
+        people.set(eKey, byName);
+      }
+      return byName.id;
+    }
+    const t = typeCell.toLowerCase();
+    const type = /individual|person|natural|employee|founder/.test(t)
+      ? "INDIVIDUAL"
+      : /entity|institution|company|corporat|fund|llc|trust|partnership|organi/.test(t)
+        ? "INSTITUTION"
+        : INSTITUTION.test(name)
+          ? "INSTITUTION"
+          : "INDIVIDUAL";
+    const rec: Person = { id: b.newId("sh"), name, email, type };
     if (!byName) people.set(nKey, rec);
     if (eKey) people.set(eKey, rec);
-    return id;
+    return rec.id;
   };
-  const vestingFor = (r: string[], qty: bigint, issue: string, label: string) => {
+
+  const vestingFor = (r: string[], qty: bigint, issue: string, label: string): Vest | undefined | false => {
     const months = cell(r, "vestingMonths");
     const startRaw = cell(r, "vestingStart");
-    const vested = money(cell(r, "vested"));
-    if (months && startRaw) {
-      const start = parseDate(startRaw, dayFirst.get("vestingStart")!);
+    if (startRaw && !months) {
+      issues.push(`${label}: vesting start given but no vesting length (months)`);
+      return false;
+    }
+    if (months) {
+      const start = startRaw ? date(startRaw, "vestingStart") : issue;
       const m = Number(months);
       const cliff = Number(cell(r, "cliffMonths") || "0");
-      if (!start) return void issues.push(`${label}: vesting start "${startRaw}" isn't a date`);
-      if (!Number.isInteger(m) || m < 1 || !Number.isInteger(cliff) || cliff < 0 || cliff >= m)
-        return void issues.push(
+      if (!start) {
+        issues.push(`${label}: vesting start "${startRaw}" isn't a date`);
+        return false;
+      }
+      if (!Number.isInteger(m) || m < 1 || !Number.isInteger(cliff) || cliff < 0 || cliff >= m) {
+        issues.push(
           `${label}: vesting length ${months} months with a ${cliff || 0}-month cliff doesn't work`,
         );
+        return false;
+      }
       const key = `${m}/${cliff}`;
       if (!terms.has(key)) terms.set(key, b.vestingTerms({ months: m, cliffMonths: cliff }));
       return { terms: terms.get(key)!.data.id as string, start };
     }
-    if (vested && isNum(vested) && parseDec(vested).v < qty * 10n ** BigInt(parseDec(vested).scale)) {
+    const vested = cell(r, "vested") ? (parseWhole(cell(r, "vested"), decimalComma) ?? 0n) : null;
+    if (vested !== null && vested < qty) {
       if (!terms.has("unknown")) terms.set("unknown", b.vestingTermsUnknown());
       return { terms: terms.get("unknown")!.data.id as string, start: issue };
     }
@@ -164,16 +230,18 @@ export function buildImport(p: ImportInput): ImportResult {
   for (const [i, r] of p.rows.entries()) {
     if (r.every((c) => !c.trim())) continue;
     const name = cell(r, "name");
+    if (TOTAL_ROW.test(name)) continue;
     const at = `Row ${p.firstRow + i}`;
     const label = name ? `${at} (${name})` : at;
-    const clsName = cell(r, "class");
-    const safeAmount = money(cell(r, "safeAmount"));
-    const strike = money(cell(r, "strike"));
-    const kind = kindOf(cell(r, "kind"), { safe: !!safeAmount, strike: !!strike }, clsName);
-    const sharesRaw = money(cell(r, "shares"));
-    const isPoolName = /option pool|pool \(?available|unallocated|unissued|available for grant/i.test(name);
-    if (kind === "pool" || isPoolName) {
-      if (sharesRaw && /^\d+$/.test(sharesRaw)) poolAvailable += BigInt(sharesRaw);
+    const cls = cell(r, "class");
+    const safeRaw = cell(r, "safeAmount");
+    const strikeRaw = cell(r, "strike");
+    const kind = kindOf(cell(r, "kind"), { safe: !!safeRaw, strike: !!strikeRaw });
+    const sharesRaw = cell(r, "shares");
+    if (kind === "pool" || POOL_NAME.test(name)) {
+      const q = parseWhole(sharesRaw, decimalComma);
+      if (q) poolAvailable += q;
+      else if (sharesRaw) issues.push(`${label}: pool size "${sharesRaw}" isn't a whole number`);
       continue;
     }
     if (kind.startsWith("unsupported:")) {
@@ -187,147 +255,186 @@ export function buildImport(p: ImportInput): ImportResult {
       continue;
     }
     const dateRaw = cell(r, "issueDate");
-    const parsed = dateRaw ? parseDate(dateRaw, dayFirst.get("issueDate")!) : null;
+    const parsed = dateRaw ? date(dateRaw, "issueDate") : null;
     if (dateRaw && !parsed) {
       issues.push(`${label}: issue date "${dateRaw}" isn't a date`);
       continue;
     }
-    const date = parsed ?? p.exportDate;
+    const issued = parsed ?? p.exportDate;
     const snapshot = !parsed;
-    const meta = snapshot ? { note: "imported snapshot" } : undefined;
-    const holder = person(name, cell(r, "email"));
+    const holder = person(name, cell(r, "email"), cell(r, "holderType"), label);
+    if (!holder) continue;
 
     if (kind === "safe") {
-      if (!safeAmount) {
+      const amt = amount(r, "safeAmount");
+      if (!safeRaw) {
         issues.push(`${label}: SAFE amount missing`);
         continue;
       }
-      if (!isNum(safeAmount)) {
-        issues.push(`${label}: SAFE amount "${cell(r, "safeAmount")}" isn't a number`);
+      if (!amt) {
+        issues.push(`${label}: SAFE amount "${safeRaw}" isn't a number`);
         continue;
       }
-      const cap = money(cell(r, "safeCap"));
-      if (cap && !isNum(cap)) {
-        issues.push(`${label}: valuation cap "${cell(r, "safeCap")}" isn't a number`);
+      const capRaw = cell(r, "safeCap");
+      const cap = capRaw ? amount(r, "safeCap") : null;
+      if (capRaw && !cap) {
+        issues.push(`${label}: valuation cap "${capRaw}" isn't a number`);
         continue;
       }
       const discRaw = cell(r, "safeDiscount").replace(/\s/g, "");
       let discount: string | undefined;
       if (discRaw) {
-        const pct = discRaw.endsWith("%");
-        const n = discRaw.replace("%", "");
-        if (!isNum(n)) {
+        // "20%" and "20" are percents; "0.2" is a fraction (same rule as the New SAFE form)
+        const n = discRaw.replace("%", "").replace(",", ".");
+        if (!/^\d+(\.\d+)?$/.test(n) || Number(n) > 100) {
           issues.push(`${label}: discount "${discRaw}" isn't a number`);
           continue;
         }
-        discount = pct || Number(n) > 1 ? (Number(n) / 100).toFixed(4).replace(/(\.\d\d\d*?)0+$/, "$1") : n;
+        discount =
+          discRaw.endsWith("%") || !n.includes(".")
+            ? (Number(n) / 100).toFixed(4).replace(/(\.\d\d\d*?)0+$/, "$1")
+            : n;
       }
-      const mfn = /^(y|yes|true|x|1|✓)$/i.test(cell(r, "safeMfn"));
-      const securityId = `SAFE-${++seq.SAFE}`;
-      const d = b.safe({
-        state: empty,
-        stakeholderId: holder,
-        amount: safeAmount,
-        cap: cap || undefined,
-        discount,
-        mfn,
-        date,
-        securityId,
+      const mfn = /^(y|yes|true|x|1|✓|sim)$/i.test(cell(r, "safeMfn"));
+      safes.push({
+        label,
+        snapshot,
+        draft: (securityId) =>
+          b.safe({
+            state: empty,
+            stakeholderId: holder,
+            amount: amt,
+            cap: cap ?? undefined,
+            discount,
+            mfn,
+            date: issued,
+            securityId,
+          }),
       });
-      txs.push({ row: label, drafts: [{ ...d, meta }] });
       continue;
     }
 
-    if (!/^\d+$/.test(sharesRaw) || BigInt(sharesRaw) === 0n) {
-      issues.push(`${label}: shares must be a whole number above 0, got "${cell(r, "shares")}"`);
+    const qty = parseWhole(sharesRaw, decimalComma);
+    if (!qty) {
+      issues.push(`${label}: shares must be a whole number above 0, got "${sharesRaw}"`);
       continue;
     }
-    const qty = BigInt(sharesRaw);
-    const vest = vestingFor(r, qty, date, label);
+    const vest = vestingFor(r, qty, issued, label);
+    if (vest === false) continue;
     if (kind === "option") {
-      if (!strike) {
+      if (!strikeRaw) {
         issues.push(`${label}: strike price missing`);
         continue;
       }
-      if (!isNum(strike)) {
-        issues.push(`${label}: strike price "${cell(r, "strike")}" isn't a number`);
+      const strike = amount(r, "strike");
+      if (!strike) {
+        issues.push(`${label}: strike price "${strikeRaw}" isn't a number`);
         continue;
       }
-      grants.push({ holder, qty: sharesRaw, strike, date, snapshot, vest: vest || undefined, row: label });
-      const c = clsName || "Common";
-      if (!classes.has(c)) classes.set(c, { id: b.newId("sc"), name: c, issued: 0n, preferred: false });
+      grants.push({ label, holder, cls, qty, strike, date: issued, snapshot, vest });
       continue;
     }
-    const preferred = kind === "preferred";
-    const c = clsName || (preferred ? "Preferred" : "Common");
-    if (!classes.has(c)) classes.set(c, { id: b.newId("sc"), name: c, issued: 0n, preferred });
-    const cls = classes.get(c)!;
-    cls.issued += qty;
-    const price = money(cell(r, "price"));
-    if (price && !isNum(price)) {
-      issues.push(`${label}: price "${cell(r, "price")}" isn't a number`);
+    const priceRaw = cell(r, "price");
+    const price = priceRaw ? amount(r, "price") : "0";
+    if (!price) {
+      issues.push(`${label}: price "${priceRaw}" isn't a number`);
       continue;
     }
-    const prefix = cls.preferred ? "PS" : "CS";
-    const securityId = `${prefix}-${++seq[prefix]}`;
-    const d = b.stockIssuance({
-      state: empty,
-      stakeholderId: holder,
-      classId: cls.id,
-      quantity: sharesRaw,
-      price: price || "0",
-      date,
-      securityId,
-      vestingTermsId: vest ? vest.terms : undefined,
-      vestingStart: vest ? vest.start : undefined,
+    const preferredRow = kind === "preferred";
+    stock.push({
+      label,
+      holder,
+      cls: cls || (preferredRow ? "Preferred" : "Common"),
+      preferredRow,
+      qty,
+      price,
+      date: issued,
+      snapshot,
+      vest,
     });
-    txs.push({ row: label, drafts: d.map((x, j) => (j === 0 ? { ...x, meta } : x)) });
   }
 
-  // Options need a plan: its reserve is the founder's input, else granted + the sheet's "available" row.
-  const optionsGranted = grants.reduce((a, g) => a + BigInt(g.qty), 0n);
+  // Classes: preferred if the founder says so, else if any of its rows or its name says so.
+  const classes = new Map<string, { id: string; name: string; issued: bigint; preferred: boolean }>();
+  for (const s of stock) {
+    const c = classes.get(s.cls) ?? { id: b.newId("sc"), name: s.cls, issued: 0n, preferred: false };
+    c.issued += s.qty;
+    c.preferred ||= s.preferredRow || PREFERRED_CLASS.test(s.cls);
+    classes.set(s.cls, c);
+  }
+  for (const c of classes.values())
+    if (p.preferred && c.name in p.preferred) c.preferred = !!p.preferred[c.name];
+
+  // Options and the pool live in a stock plan on a common class: the option's own class, else the first common one.
+  const optionsGranted = grants.reduce((a, g) => a + g.qty, 0n);
   const planDrafts: EventDraft[] = [];
-  let planClassName = "";
+  let planClass: { id: string; name: string } | undefined;
   let planReserve = 0n;
-  if (grants.length) {
-    const planClass = [...classes.values()].find((c) => !c.preferred)!;
-    planClassName = planClass.name;
-    const planId = b.newId("plan");
-    const reserved = p.poolReserved?.replace(/[,\s]/g, "") || String(optionsGranted + poolAvailable);
+  if (grants.length || poolAvailable > 0n || p.poolReserved?.trim()) {
+    for (const g of grants)
+      if (g.cls && classes.get(g.cls)?.preferred)
+        issues.push(`${g.label}: options are on common stock, but ${g.cls} is preferred`);
+    const named = grants.find((g) => g.cls && !classes.get(g.cls)?.preferred)?.cls;
+    const common = [...classes.values()].find((c) => !c.preferred);
+    const name = named ?? common?.name ?? "Common";
+    if (!classes.has(name)) classes.set(name, { id: b.newId("sc"), name, issued: 0n, preferred: false });
+    planClass = classes.get(name)!;
+    const reserved = p.poolReserved?.replace(/[,\s.]/g, "") || String(optionsGranted + poolAvailable);
     if (!/^\d+$/.test(reserved)) issues.push(`Option pool "${p.poolReserved}" isn't a whole number`);
     else planReserve = BigInt(reserved);
+    const planId = b.newId("plan");
+    const firstGrant = grants.map((g) => g.date).sort()[0] ?? p.exportDate;
     planDrafts.push(
       b.stockPlan({
         id: planId,
         name: "Equity Incentive Plan",
-        reserved,
-        boardApprovalDate: grants.map((g) => g.date).sort()[0]!,
+        reserved: String(planReserve),
+        boardApprovalDate: firstGrant,
         classId: planClass.id,
       }),
     );
-    for (const g of grants) {
-      const securityId = `OPT-${++seq.OPT}`;
-      const d = b.optionGrant({
-        state: empty,
-        stakeholderId: g.holder,
-        planId,
-        classId: planClass.id,
-        quantity: g.qty,
-        strike: g.strike,
-        date: g.date,
-        securityId,
-        vestingTermsId: g.vest?.terms,
-        vestingStart: g.vest?.start,
-      });
-      txs.push({
-        row: g.row,
-        drafts: d.map((x, j) => (j === 0 && g.snapshot ? { ...x, meta: { note: "imported snapshot" } } : x)),
-      });
-    }
   }
 
+  const snap = (d: EventDraft, yes: boolean): EventDraft =>
+    yes ? { ...d, meta: { note: "imported snapshot" } } : d;
+  const txs: { row: string; drafts: EventDraft[] }[] = [];
+  const seq = { CS: 0, PS: 0, OPT: 0, SAFE: 0 };
+  for (const s of stock) {
+    const c = classes.get(s.cls)!;
+    const prefix = c.preferred ? "PS" : "CS";
+    const d = b.stockIssuance({
+      state: empty,
+      stakeholderId: s.holder,
+      classId: c.id,
+      quantity: String(s.qty),
+      price: s.price,
+      date: s.date,
+      securityId: `${prefix}-${++seq[prefix]}`,
+      vestingTermsId: s.vest?.terms,
+      vestingStart: s.vest?.start,
+    });
+    txs.push({ row: s.label, drafts: d.map((x, j) => (j === 0 ? snap(x, s.snapshot) : x)) });
+  }
+  for (const g of grants) {
+    const d = b.optionGrant({
+      state: empty,
+      stakeholderId: g.holder,
+      planId: planDrafts[0]!.data.id,
+      classId: planClass!.id,
+      quantity: String(g.qty),
+      strike: g.strike,
+      date: g.date,
+      securityId: `OPT-${++seq.OPT}`,
+      vestingTermsId: g.vest?.terms,
+      vestingStart: g.vest?.start,
+    });
+    txs.push({ row: g.label, drafts: d.map((x, j) => (j === 0 ? snap(x, g.snapshot) : x)) });
+  }
+  for (const s of safes)
+    txs.push({ row: s.label, drafts: [snap(s.draft(`SAFE-${++seq.SAFE}`), s.snapshot)] });
+
   const defaultAuthorized = (c: { name: string; issued: bigint }) => {
-    const n = c.issued + (c.name === planClassName ? planReserve : 0n);
+    const n = c.issued + (c.name === planClass?.name ? planReserve : 0n);
     return n > 0n ? n : 1n;
   };
   const classDrafts = [...classes.values()].map((c) =>
@@ -335,7 +442,7 @@ export function buildImport(p: ImportInput): ImportResult {
       id: c.id,
       name: c.name,
       preferred: c.preferred,
-      authorized: p.authorized?.[c.name]?.replace(/[,\s]/g, "") || String(defaultAuthorized(c)),
+      authorized: p.authorized?.[c.name]?.replace(/[,\s.]/g, "") || String(defaultAuthorized(c)),
     }),
   );
   const uniquePeople = [...new Set(people.values())];
@@ -374,7 +481,42 @@ export function buildImport(p: ImportInput): ImportResult {
   };
 }
 
-/** The cap table these drafts would give (as of `asOf`), and any invariant they'd break, without writing anything. */
+/** Our totals vs the numbers the old tool shows (docs/04 §5: exact). The SAFE total is checked when given. */
+export function reconcile(
+  s: ImportSummary,
+  fullyDiluted: string,
+  safeTotal = "",
+): { ok: boolean; text: string } {
+  const digits = fullyDiluted.replace(/[,\s.]/g, "");
+  if (!/^\d+$/.test(digits)) return { ok: false, text: "Type the fully diluted total from your old tool" };
+  const want = BigInt(digits);
+  const parts: string[] = [];
+  let ok = true;
+  if (want === s.fullyDiluted) parts.push(`Fully diluted matches: ${fmtInt(want)}`);
+  else {
+    ok = false;
+    const diff = want - s.fullyDiluted;
+    parts.push(
+      `Fully diluted is ${fmtInt(s.fullyDiluted)} here but ${fmtInt(want)} in your old tool (${fmtInt(diff < 0n ? -diff : diff)} ${diff > 0n ? "short" : "over"})`,
+    );
+  }
+  if (safeTotal.trim()) {
+    const usd = (v: string) =>
+      `$${fmtInt(BigInt(v.split(".")[0]!))}${v.includes(".") && /[1-9]/.test(v.split(".")[1]!) ? `.${v.split(".")[1]}` : ""}`;
+    const theirs = safeTotal.replace(/[$\s,]/g, "");
+    if (!/^\d+(\.\d+)?$/.test(theirs))
+      return { ok: false, text: `${parts.join(". ")}. Type the SAFE total as a number` };
+    const same = /^-?0(\.0+)?$/.test(subDec(theirs, s.safeTotal || "0"));
+    if (same) parts.push(`SAFE total matches: ${usd(s.safeTotal)}`);
+    else {
+      ok = false;
+      parts.push(`SAFE total is ${usd(s.safeTotal)} here but ${usd(theirs)} in your old tool`);
+    }
+  }
+  return { ok, text: parts.join(". ") };
+}
+
+/** The cap table these drafts would give, and any invariant they'd break, without writing anything. */
 export function previewDrafts(drafts: EventDraft[], asOf: string, before: VaultEvent[] = []) {
   const events: VaultEvent[] = [
     ...before,
@@ -392,17 +534,4 @@ export function previewDrafts(drafts: EventDraft[], asOf: string, before: VaultE
   ];
   const rows = capTableRows(reduce(events, "9999-12-31"));
   return { rows, totals: capTableTotals(rows), violations: checkInvariants(reduce(events, "9999-12-31")) };
-}
-
-/** Our fully diluted vs the number the old tool shows (docs/04 §5: exact). */
-export function reconcile(s: ImportSummary, expected: string): { ok: boolean; text: string } {
-  const digits = expected.replace(/[,\s]/g, "");
-  if (!/^\d+$/.test(digits)) return { ok: false, text: "Type the fully diluted total from your old tool" };
-  const want = BigInt(digits);
-  if (want === s.fullyDiluted) return { ok: true, text: `Fully diluted matches: ${fmtInt(want)}` };
-  const diff = want - s.fullyDiluted;
-  return {
-    ok: false,
-    text: `Fully diluted is ${fmtInt(s.fullyDiluted)} here but ${fmtInt(want)} in your old tool (${fmtInt(diff < 0n ? -diff : diff)} ${diff > 0n ? "short" : "over"})`,
-  };
 }
