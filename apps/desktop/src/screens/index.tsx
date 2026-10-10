@@ -2,6 +2,7 @@ import { CrumbHeader } from "../components/Header";
 import { ComingSoon } from "../components/ui";
 import { useApp } from "../state";
 import { CreateCompany } from "./CreateCompany";
+import { Documents } from "./Documents";
 import { Email } from "./Email";
 import { Home } from "./Home";
 import { NewGrant } from "./NewGrant";
@@ -41,6 +42,8 @@ export function Screen() {
       return <Pool />;
     case "newPerson":
       return <NewPerson />;
+    case "documents":
+      return <Documents />;
     case "people":
       return <People />;
     case "person":
