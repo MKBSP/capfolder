@@ -1,0 +1,52 @@
+# Local signing stack for development: Documenso + Postgres + Mailpit (catches every email at http://localhost:8025).
+# Secrets and the self-signed certificate are made by ./dev-setup.sh into ./.local (gitignored). Never use in production.
+name: capfolder-signing-dev
+
+services:
+  database:
+    image: postgres:15.14
+    environment:
+      POSTGRES_USER: documenso
+      POSTGRES_PASSWORD: documenso
+      POSTGRES_DB: documenso
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U documenso -d documenso"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit:v1.31.1
+    ports:
+      - "8025:8025" # web UI
+      - "1025:1025" # SMTP
+
+  documenso:
+    image: documenso/documenso:v2.18.0
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file: ./.local/documenso.env
+    environment:
+      PORT: "3000"
+      NEXT_PUBLIC_WEBAPP_URL: http://localhost:3100
+      NEXT_PRIVATE_INTERNAL_WEBAPP_URL: http://localhost:3000
+      NEXT_PRIVATE_DATABASE_URL: postgres://documenso:documenso@database:5432/documenso
+      NEXT_PRIVATE_DIRECT_DATABASE_URL: postgres://documenso:documenso@database:5432/documenso
+      NEXT_PRIVATE_SMTP_TRANSPORT: smtp-auth
+      NEXT_PRIVATE_SMTP_HOST: mailpit
+      NEXT_PRIVATE_SMTP_PORT: "1025"
+      NEXT_PRIVATE_SMTP_USERNAME: dev
+      NEXT_PRIVATE_SMTP_PASSWORD: dev
+      NEXT_PRIVATE_SMTP_FROM_NAME: Capfolder (dev)
+      NEXT_PRIVATE_SMTP_FROM_ADDRESS: signing@capfolder.local
+      NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH: /opt/documenso/cert.p12
+    ports:
+      - "3100:3000" # 3000 is often taken on dev machines
+    volumes:
+      - ./.local/cert.p12:/opt/documenso/cert.p12:ro
+
+volumes:
+  database:
