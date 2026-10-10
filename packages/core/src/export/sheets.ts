@@ -1,0 +1,152 @@
+// F-29: the cap table as plain sheet data (Summary, By person, Vesting, SAFEs). xlsx and pdf are drawn from this.
+import { sumDec } from "../num";
+import { reduce } from "../reduce";
+import { capTableRows, securityVested } from "../rows";
+import { fullyVestedOn, nextVest } from "../schedule";
+import { capTableTotals, percentOf } from "../totals";
+import type { Row, State, VaultEvent } from "../types";
+
+/** A cell: text, a whole number, or an exact decimal written as a number ({num: "1.88"}). */
+export type Cell = string | bigint | { num: string } | null;
+export interface Sheet {
+  name: string;
+  rows: Cell[][];
+  header: number[]; // row indexes drawn bold
+}
+
+export const DISCLAIMER =
+  "Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.";
+
+const num = (s: string): Cell => (s === "" ? "" : { num: s });
+const CAP_HEADER = [
+  "Stakeholder",
+  "Type",
+  "Class",
+  "Shares",
+  "FD %",
+  "Vested",
+  "Unvested",
+  "SAFE amount (USD)",
+  "Valuation cap",
+  "Discount",
+  "As-converted %",
+  "Document",
+];
+
+const capRow = (r: Row): Cell[] => [
+  r.stakeholder,
+  r.type,
+  r.class,
+  r.shares,
+  num(r.fdPercent),
+  r.vested,
+  r.unvested,
+  num(r.safeAmount),
+  num(r.safeCap),
+  num(r.safeDiscount),
+  num(r.asConverted),
+  r.docStatus,
+];
+
+const holderOf = (s: State, r: Row) => s.securities.get(r.securityId)?.stakeholderId;
+
+/** The four tabs as of `asOf`. With stakeholderId, only that person's rows (company totals still show). */
+export function sheets(events: VaultEvent[], asOf: string, opts: { stakeholderId?: string } = {}): Sheet[] {
+  const s = reduce(events, asOf);
+  const all = capTableRows(s);
+  const totals = capTableTotals(all);
+  const mine = (r: Row) => !opts.stakeholderId || holderOf(s, r) === opts.stakeholderId;
+  const rows = all.filter(mine);
+
+  const summary: Cell[][] = [
+    ["Company", s.issuer?.legal_name ?? ""],
+    ["As of", asOf],
+    ["Fully diluted", totals.fullyDiluted],
+    ["Option pool available", totals.poolAvailable],
+    ["SAFEs outstanding (USD)", num(totals.safeAmount)],
+    [],
+    [DISCLAIMER],
+    [],
+    CAP_HEADER,
+    ...rows.map(capRow),
+  ];
+
+  const people: Cell[][] = [
+    ["Name", "Email", "Shares & options", "FD %", "Vested", "Unvested", "SAFE amount (USD)"],
+  ];
+  for (const [id, p] of s.stakeholders) {
+    if (opts.stakeholderId && id !== opts.stakeholderId) continue;
+    const held = all.filter((r) => holderOf(s, r) === id);
+    const eq = held.filter((r) => r.group <= 1);
+    if (!held.length) continue;
+    const shares = eq.reduce((a, r) => a + (r.shares ?? 0n), 0n);
+    const safes = held.filter((r) => r.group === 3).map((r) => r.safeAmount);
+    people.push([
+      p.name?.legal_name ?? id,
+      p.contact_info?.emails?.[0]?.email_address ?? "",
+      eq.length ? shares : null,
+      eq.length ? num(percentOf(shares, totals.fullyDiluted)) : "",
+      eq.length ? eq.reduce((a, r) => a + (r.vested ?? 0n), 0n) : null,
+      eq.length ? eq.reduce((a, r) => a + (r.unvested ?? 0n), 0n) : null,
+      safes.length ? num(sumDec(safes)) : "",
+    ]);
+  }
+
+  const vesting: Cell[][] = [
+    [
+      "Holder",
+      "Security",
+      "Type",
+      "Granted",
+      "Outstanding",
+      "Vested",
+      "Unvested",
+      "Vesting start",
+      "Next vest",
+      "Next vest shares",
+      "Fully vested on",
+      "How",
+    ],
+  ];
+  for (const r of rows.filter((x) => x.group <= 1)) {
+    const x = s.securities.get(r.securityId)!;
+    if (!x.vestingTermsId && !x.vestings?.length) continue;
+    const next = nextVest(x, s, asOf);
+    vesting.push([
+      r.stakeholder,
+      x.id,
+      r.type,
+      x.originalQuantity,
+      x.quantity,
+      r.vested,
+      r.unvested,
+      x.vestingStart?.date ?? "",
+      next?.date ?? "",
+      next?.quantity ?? null,
+      fullyVestedOn(x, s) ?? "",
+      securityVested(x, s, asOf).math,
+    ]);
+  }
+
+  const safes: Cell[][] = [
+    ["Holder", "Type", "Amount (USD)", "Valuation cap", "Discount", "Post-money %", "Document"],
+    ...rows
+      .filter((r) => r.group === 3)
+      .map((r) => [
+        r.stakeholder,
+        r.type,
+        num(r.safeAmount),
+        num(r.safeCap),
+        num(r.safeDiscount),
+        num(r.asConverted),
+        r.docStatus,
+      ]),
+  ];
+
+  return [
+    { name: "Summary", rows: summary, header: [8] },
+    { name: "By person", rows: people, header: [0] },
+    { name: "Vesting", rows: vesting, header: [0] },
+    { name: "SAFEs", rows: safes, header: [0] },
+  ];
+}
