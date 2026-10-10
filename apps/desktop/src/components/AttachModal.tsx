@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { todayIso } from "../fmt";
 import { useApp } from "../state";
 import { attachDocument } from "../vault";
+import { DateInput } from "./DateInput";
 import { ErrorList, Field, Modal } from "./ui";
 
 export const DOC_TYPES: { value: string; label: string }[] = [
@@ -125,7 +126,7 @@ export function AttachModal(p: { open: boolean; onClose(): void; target?: string
           </select>
         </Field>
         <Field label="Signed on">
-          <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <DateInput value={date} onChange={setDate} />
         </Field>
         <p className="meta">
           The file is copied into your folder. The original stays where it is. Nothing is uploaded.

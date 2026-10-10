@@ -13,7 +13,7 @@
 | Donations | Revolut | Manual (Revolut has no public API for this payment link). Log the total weekly |
 
 ## Install ping: privacy rules (say these on the site and in the app)
-- **On by default, shown on the Welcome screen** with an on/off toggle: "Send anonymous usage counts (no company data). [What's sent]"
+- **On by default, disclosed in the terms and conditions** the founder accepts on the Welcome screen (Mads, 2026-10-10: one "I accept the terms" checkbox instead of a separate toggle). The on/off toggle lives in Settings.
 - **Payload, exactly:**
 ```json
 { "install_id": "random uuid, generated locally", "event": "first_run|weekly",

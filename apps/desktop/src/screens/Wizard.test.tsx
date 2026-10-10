@@ -9,6 +9,7 @@ export async function toWizard() {
   const fp = fakePlatform();
   render(<App platform={fp.platform} />);
   await userEvent.click(await screen.findByLabelText("No lock"));
+  await userEvent.click(screen.getByLabelText(/I accept the/));
   await userEvent.click(screen.getByRole("button", { name: "Continue" }));
   await userEvent.click(await screen.findByRole("button", { name: "Skip for now" }));
   await userEvent.type(await screen.findByLabelText("Legal name"), "Test Co");

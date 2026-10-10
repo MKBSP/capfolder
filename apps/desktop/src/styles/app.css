@@ -480,3 +480,40 @@ dialog.modal::backdrop {
     transition: none !important;
   }
 }
+
+/* Inside a two-column grid, fields sit side by side: no stacked top margin. */
+.grid2 > .field + .field {
+  margin-top: 0;
+}
+
+.date-inp {
+  position: relative;
+  display: block;
+}
+.date-inp .inp {
+  padding-right: 36px;
+}
+.date-inp .inp.bad {
+  border-color: var(--amber-text);
+}
+.date-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  padding: 4px;
+  cursor: pointer;
+  line-height: 0;
+}
+.date-native {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}

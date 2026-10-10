@@ -102,6 +102,7 @@ describe("important: app lock", () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
       await user.type(await screen.findByLabelText("App password"), "abcd");
       await user.type(screen.getByLabelText("Again"), "abcd");
+      await user.click(screen.getByLabelText(/I accept the/));
       await user.click(screen.getByRole("button", { name: "Continue" }));
       await screen.findByText(/Your email/);
       await act(() => vi.advanceTimersByTimeAsync(16 * 60_000));
@@ -129,6 +130,7 @@ describe("important: app lock", () => {
     render(<App platform={platform} />);
     await userEvent.type(await screen.findByLabelText("App password"), "abcd");
     await userEvent.type(screen.getByLabelText("Again"), "abcd");
+    await userEvent.click(screen.getByLabelText(/I accept the/));
     await userEvent.click(screen.getByRole("button", { name: "Continue" }));
     expect(
       await screen.findByText("Couldn't save the password in the keychain: No secret service available"),

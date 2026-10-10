@@ -1,6 +1,7 @@
 import { builders as b, type EventDraft, nextSecurityIdNumber, sumDec } from "@capfolder/core";
 import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
+import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
@@ -93,7 +94,7 @@ export function NewSafe() {
               />
             </Field>
             <Field label="Date">
-              <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              <DateInput value={date} onChange={setDate} />
             </Field>
           </div>
           <label className="row small">

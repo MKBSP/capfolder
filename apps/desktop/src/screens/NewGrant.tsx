@@ -6,6 +6,7 @@ import {
   type State,
 } from "@capfolder/core";
 import { useMemo, useState } from "react";
+import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
@@ -105,16 +106,10 @@ export function NewGrant() {
               />
             </Field>
             <Field label="Grant date">
-              <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              <DateInput value={date} onChange={setDate} />
             </Field>
             <Field label="Vesting starts">
-              <input
-                className="inp"
-                type="date"
-                value={start}
-                disabled={!vesting}
-                onChange={(e) => setStart(e.target.value)}
-              />
+              <DateInput value={start} disabled={!vesting} onChange={(v) => setStart(v)} />
             </Field>
           </div>
           <div className="row">

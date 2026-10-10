@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { type BackupStatus, backupStatus, suggestedFolders } from "../backup";
+import { DateInput } from "../components/DateInput";
 import { ErrorList, Stepper } from "../components/ui";
 import { todayIso } from "../fmt";
 import { join } from "../fs/types";
@@ -89,7 +90,7 @@ export function CreateCompany() {
           </label>
           <label>
             <span className="lbl">Incorporated</span>
-            <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <DateInput value={date} onChange={setDate} />
           </label>
         </div>
         {type === "OTHER" ? (

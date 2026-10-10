@@ -1,5 +1,6 @@
 import { builders as b, type EventDraft, nextSecurityIdNumber } from "@capfolder/core";
 import { useMemo, useState } from "react";
+import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
@@ -81,7 +82,7 @@ export function NewShares() {
               />
             </Field>
             <Field label="Issued on">
-              <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              <DateInput value={date} onChange={setDate} />
             </Field>
           </div>
           <div className="row wrap">
@@ -102,13 +103,7 @@ export function NewShares() {
             {vesting ? (
               <label className="row small">
                 Vesting starts
-                <input
-                  className="inp"
-                  style={{ width: 170 }}
-                  type="date"
-                  value={start}
-                  onChange={(e) => setStart(e.target.value)}
-                />
+                <DateInput style={{ width: 170 }} value={start} onChange={(v) => setStart(v)} />
               </label>
             ) : null}
           </div>

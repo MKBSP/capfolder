@@ -9,6 +9,7 @@ import {
 } from "@capfolder/core";
 import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
+import { DateInput } from "../components/DateInput";
 import { MainHeader } from "../components/Header";
 import { Chip, ComingSoon, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, percent, shares, todayIso, usd, usdShort } from "../fmt";
@@ -79,13 +80,11 @@ export function Home() {
       <MainHeader>
         <label className="row small muted" style={{ gap: 6 }}>
           As of
-          <input
-            className="inp"
+          <DateInput
             style={{ width: 160, minHeight: 36 }}
-            type="date"
             value={asOf}
             max="9999-12-31"
-            onChange={(e) => app.setAsOf(e.target.value || todayIso())}
+            onChange={(v) => app.setAsOf(v || todayIso())}
           />
         </label>
         {Export}

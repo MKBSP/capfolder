@@ -8,6 +8,7 @@ export interface Settings {
   idleMinutes: 0 | 5 | 15 | 60; // 0 = only when I quit
   telemetry: boolean; // stored now; the anonymous ping is wired in M8 (docs/11)
   recentVaults: { name: string; root: string }[];
+  termsAccepted: string; // TERMS_VERSION the founder accepted; "" = not yet
 }
 
 const defaults = (): Settings => ({
@@ -16,6 +17,7 @@ const defaults = (): Settings => ({
   idleMinutes: 15,
   telemetry: true,
   recentVaults: [],
+  termsAccepted: "",
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {

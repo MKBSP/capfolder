@@ -2,6 +2,7 @@ import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
 import { App } from "./App";
+import { TERMS_VERSION } from "./copy";
 import { fakePlatform } from "./test/fakePlatform";
 
 test("first run with no vault starts at Welcome", async () => {
@@ -34,6 +35,7 @@ test("first run: no lock → skip email → create company → start choice → 
   const { platform, fs } = fakePlatform();
   render(<App platform={platform} />);
   await userEvent.click(await screen.findByLabelText("No lock"));
+  await userEvent.click(screen.getByLabelText(/I accept the/));
   await userEvent.click(screen.getByRole("button", { name: "Continue" }));
   await userEvent.click(await screen.findByRole("button", { name: "Skip for now" }));
   await userEvent.type(await screen.findByLabelText("Legal name"), "Test Co");
@@ -49,6 +51,7 @@ test("passwords must match", async () => {
   render(<App platform={fakePlatform().platform} />);
   await userEvent.type(await screen.findByLabelText("App password"), "abcd");
   await userEvent.type(screen.getByLabelText("Again"), "abce");
+  await userEvent.click(screen.getByLabelText(/I accept the/));
   await userEvent.click(screen.getByRole("button", { name: "Continue" }));
   expect(await screen.findByText("The passwords don't match.")).toBeInTheDocument();
 });
@@ -61,6 +64,7 @@ test("a password set during first run is enforced by the idle lock in the same s
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     await user.type(await screen.findByLabelText("App password"), "abcd");
     await user.type(screen.getByLabelText("Again"), "abcd");
+    await user.click(screen.getByLabelText(/I accept the/));
     await user.click(screen.getByRole("button", { name: "Continue" }));
     expect(await screen.findByText(/Your email/)).toBeInTheDocument();
     await act(() => vi.advanceTimersByTimeAsync(16 * 60_000));
@@ -76,4 +80,20 @@ test("No lock hides the idle-lock setting", async () => {
   await userEvent.click(screen.getByLabelText("No lock"));
   expect(screen.queryByLabelText("Lock after")).toBeNull();
   expect(screen.queryByText(/This locks the app, not the files/)).toBeNull();
+});
+
+test("Welcome asks to accept the terms; the usage-count details live in the terms", async () => {
+  const { platform, fs } = fakePlatform();
+  render(<App platform={platform} />);
+  await userEvent.click(await screen.findByLabelText("No lock"));
+  expect(screen.queryByText(/Send anonymous usage counts/)).toBeNull();
+  await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+  expect(await screen.findByText("Accept the terms and conditions to continue.")).toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "terms and conditions" }));
+  expect(await screen.findByText("Anonymous usage counts")).toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "Close" }));
+  await userEvent.click(screen.getByLabelText(/I accept the/));
+  await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+  expect(await screen.findByRole("button", { name: "Skip for now" })).toBeInTheDocument();
+  expect(JSON.parse(fs.readSync("/appdata/settings.json")).termsAccepted).toBe(TERMS_VERSION);
 });

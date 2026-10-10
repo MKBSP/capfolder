@@ -10,6 +10,7 @@ import {
   vestingSchedule,
 } from "@capfolder/core";
 import { type ReactNode, useMemo, useState } from "react";
+import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { Chip, ComingSoon, ErrorList, Field, Modal } from "../components/ui";
 import { day, month, shares, todayIso, usd, usdShort } from "../fmt";
@@ -188,7 +189,7 @@ function Summary({ x }: { x: Security }) {
       <div>
         <div className="meta">Next vest</div>
         <div className="num" style={{ fontSize: 22 }}>
-          {next ? `${shares(next.quantity)} ${day(next.date).replace(/, \d{4}$/, "")}` : "—"}
+          {next ? `${shares(next.quantity)} ${day(next.date).replace(/ \d{4}$/, "")}` : "—"}
         </div>
       </div>
       <div>
@@ -382,7 +383,7 @@ function TerminateDialog({ secs, onClose }: { secs: Security[]; onClose(): void 
         <SecuritySelect secs={secs} value={secId} onChange={setSecId} />
         <div className="grid2">
           <Field label="Last day">
-            <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <DateInput value={date} onChange={setDate} />
           </Field>
           <Field label="Reason">
             <select className="inp" value={reason} onChange={(e) => setReason(e.target.value)}>
@@ -431,7 +432,7 @@ function ExerciseDialog({ secs, onClose }: { secs: Security[]; onClose(): void }
             <input className="inp num" value={qty} onChange={(e) => setQty(e.target.value)} />
           </Field>
           <Field label="Date">
-            <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <DateInput value={date} onChange={setDate} />
           </Field>
         </div>
         <p className="meta">
@@ -463,7 +464,7 @@ function RepurchaseDialog({ secs, onClose }: { secs: Security[]; onClose(): void
       <div className="stack">
         <SecuritySelect secs={secs} value={secId} onChange={setSecId} />
         <Field label="Date">
-          <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <DateInput value={date} onChange={setDate} />
         </Field>
         {v ? (
           <div className="banner">

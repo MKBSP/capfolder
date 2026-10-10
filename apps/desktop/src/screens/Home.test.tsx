@@ -37,8 +37,8 @@ test("row expands with next vest and the math", async () => {
   fireEvent.change(screen.getByLabelText("As of"), { target: { value: "2026-10-07" } });
   await userEvent.click(screen.getAllByText("Employee · Option", { selector: "td" })[0]!);
   expect(screen.getByText("10,000 of 40,000 vested")).toBeInTheDocument();
-  expect(screen.getByText("Next: 833 on Nov 7, 2026")).toBeInTheDocument();
-  expect(screen.getByText("4 years · 1-year cliff (passed Oct 7, 2026) · monthly")).toBeInTheDocument();
+  expect(screen.getByText("Next: 833 on 7 Nov 2026")).toBeInTheDocument();
+  expect(screen.getByText("4 years · 1-year cliff (passed 7 Oct 2026) · monthly")).toBeInTheDocument();
   await userEvent.click(screen.getByRole("button", { name: "How is this calculated?" }));
   expect(screen.getByText("10,000 = floor(40,000 × 12/48), as of 2026-10-07")).toBeInTheDocument();
 });

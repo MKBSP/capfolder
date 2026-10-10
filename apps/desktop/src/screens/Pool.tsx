@@ -1,5 +1,6 @@
 import { builders as b, capTableRows, type EventDraft } from "@capfolder/core";
 import { useMemo, useState } from "react";
+import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
@@ -83,7 +84,7 @@ export function Pool() {
               />
             </Field>
             <Field label="Board approved on">
-              <input className="inp" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              <DateInput value={date} onChange={setDate} />
             </Field>
           </div>
           {after !== null && after !== undefined ? (

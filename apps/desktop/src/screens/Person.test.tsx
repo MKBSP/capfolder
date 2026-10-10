@@ -21,7 +21,7 @@ const backHome = async () => {
 test("Lisa: summary, chart and history", async () => {
   await person("Lisa Moreau");
   expect(screen.getByText("10,000")).toBeInTheDocument();
-  expect(screen.getByText("833 Nov 7")).toBeInTheDocument();
+  expect(screen.getByText("833 7 Nov")).toBeInTheDocument();
   expect(screen.getAllByText("Oct 2029").length).toBeGreaterThan(0);
   expect(screen.getByRole("img", { name: "Vesting schedule" }).children).toHaveLength(48);
   expect(screen.getByText("Granted 40,000 options at $0.12 (OPT-1)")).toBeInTheDocument();
@@ -32,7 +32,7 @@ test("terminate Lisa after the cliff: unvested returns to the pool", async () =>
   await userEvent.click(screen.getByRole("button", { name: "Terminate…" }));
   fireEvent.change(screen.getByLabelText("Last day"), { target: { value: "2026-11-07" } });
   expect(within(screen.getByRole("dialog")).getByText(/^Vested/).textContent).toBe(
-    "Vested 10,833 · returns 29,167 to the pool · exercise by Feb 5, 2027",
+    "Vested 10,833 · returns 29,167 to the pool · exercise by 5 Feb 2027",
   );
   await userEvent.click(screen.getByRole("button", { name: "Record termination" }));
   expect(await screen.findByText("Cancelled 29,167 unvested on OPT-1 · Voluntary")).toBeInTheDocument();

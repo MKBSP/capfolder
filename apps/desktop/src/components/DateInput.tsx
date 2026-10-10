@@ -1,0 +1,71 @@
+import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { day, parseDay } from "../fmt";
+
+// WebKit's native date field follows the OS locale (06/10/2026); this one always reads "6 Oct 2026".
+const canPick = typeof HTMLInputElement !== "undefined" && "showPicker" in HTMLInputElement.prototype;
+
+/** A date field showing "6 Oct 2026". Typed dates are understood day-first; the button opens the system calendar. */
+export function DateInput(p: {
+  value: string; // ISO "YYYY-MM-DD" or ""
+  onChange(iso: string): void;
+  id?: string;
+  max?: string;
+  disabled?: boolean;
+  style?: CSSProperties;
+  "aria-label"?: string;
+}) {
+  const [text, setText] = useState(p.value ? day(p.value) : "");
+  const [editing, setEditing] = useState(false);
+  const picker = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!editing) setText(p.value ? day(p.value) : "");
+  }, [p.value, editing]);
+  const bad = !!text.trim() && !parseDay(text);
+  return (
+    <span className="date-inp" style={p.style}>
+      <input
+        className={`inp${bad ? " bad" : ""}`}
+        id={p.id}
+        aria-label={p["aria-label"]}
+        aria-invalid={bad || undefined}
+        placeholder="6 Oct 2026"
+        disabled={p.disabled}
+        value={text}
+        onFocus={() => setEditing(true)}
+        onBlur={() => setEditing(false)}
+        onChange={(e) => {
+          setText(e.target.value);
+          const iso = parseDay(e.target.value);
+          if (iso && (!p.max || iso <= p.max)) p.onChange(iso);
+          else if (!e.target.value.trim()) p.onChange("");
+        }}
+      />
+      {canPick ? (
+        <>
+          <button
+            type="button"
+            className="date-btn"
+            aria-label="Pick a date"
+            disabled={p.disabled}
+            onClick={() => picker.current?.showPicker()}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" />
+              <path d="M2 6.5h12M5 1.5v3M11 1.5v3" stroke="currentColor" />
+            </svg>
+          </button>
+          <input
+            ref={picker}
+            type="date"
+            tabIndex={-1}
+            aria-hidden="true"
+            className="date-native"
+            value={p.value}
+            max={p.max}
+            onChange={(e) => e.target.value && p.onChange(e.target.value)}
+          />
+        </>
+      ) : null}
+    </span>
+  );
+}

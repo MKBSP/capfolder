@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ErrorList, Logo, Stepper } from "../components/ui";
-import { DISCLAIMER } from "../copy";
+import { ErrorList, Logo, Modal, Stepper } from "../components/ui";
+import { TERMS, TERMS_VERSION } from "../copy";
 import { baseName } from "../fs/types";
 import type { Settings } from "../settings";
 import { addRecent } from "../settings";
@@ -15,7 +15,8 @@ export function Welcome() {
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
   const [idle, setIdle] = useState<Settings["idleMinutes"]>(15);
-  const [telemetry, setTelemetry] = useState(settings.telemetry);
+  const [accepted, setAccepted] = useState(settings.termsAccepted === TERMS_VERSION);
+  const [showTerms, setShowTerms] = useState(false);
   const [errors, setErrors] = useState<string[] | null>(null);
 
   async function open(root: string) {
@@ -34,6 +35,7 @@ export function Welcome() {
   }
 
   async function next() {
+    if (!accepted) return setErrors(["Accept the terms and conditions to continue."]);
     if (lock === "password") {
       if (pw.length < 4) return setErrors(["Choose a password with at least 4 characters."]);
       if (pw !== pw2) return setErrors(["The passwords don't match."]);
@@ -43,7 +45,7 @@ export function Welcome() {
         return setErrors([`Couldn't save the password in the keychain: ${(e as Error).message ?? e}`]);
       }
     }
-    await app.setSettings({ ...settings, lock, idleMinutes: idle, telemetry });
+    await app.setSettings({ ...settings, lock, idleMinutes: idle, termsAccepted: TERMS_VERSION });
     app.go({ name: "email" });
   }
 
@@ -121,16 +123,31 @@ export function Welcome() {
             </div>
           </>
         ) : null}
-        <label className="row" style={{ alignItems: "flex-start" }}>
-          <input type="checkbox" checked={telemetry} onChange={(e) => setTelemetry(e.target.checked)} />
+        <label className="row">
+          <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
           <span>
-            Send anonymous usage counts (no company data).{" "}
-            <span className="meta">
-              Only an install id, app version, OS and three yes/no flags (docs/11).
-            </span>
+            I accept the{" "}
+            <button
+              type="button"
+              className="btn link"
+              onClick={(e) => (e.preventDefault(), setShowTerms(true))}
+            >
+              terms and conditions
+            </button>
           </span>
         </label>
-        <div className="banner small">{DISCLAIMER}</div>
+        <Modal open={showTerms} onClose={() => setShowTerms(false)} title="Terms and conditions">
+          <div className="stack small">
+            {TERMS.map(([h, t]) => (
+              <div key={h}>
+                <b>{h}</b>
+                <p className="muted" style={{ margin: "4px 0 0" }}>
+                  {t}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Modal>
         <ErrorList errors={errors} />
         <div className="row spread">
           <button

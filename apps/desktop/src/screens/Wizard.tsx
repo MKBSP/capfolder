@@ -1,5 +1,6 @@
 import { appendEvents, capTableRows, MAX_DATE, percentOf, type Row, reduce } from "@capfolder/core";
 import { useEffect, useMemo, useState } from "react";
+import { DateInput } from "../components/DateInput";
 import { ErrorList, Field, Stepper } from "../components/ui";
 import { day, shares as fmtShares, todayIso, usd } from "../fmt";
 import { useApp } from "../state";
@@ -109,12 +110,7 @@ export function Wizard() {
               />
             </Field>
             <Field label="Issued on">
-              <input
-                className="inp"
-                type="date"
-                value={f.issueDate}
-                onChange={(e) => setFounder(i, { issueDate: e.target.value })}
-              />
+              <DateInput value={f.issueDate} onChange={(v) => setFounder(i, { issueDate: v })} />
             </Field>
           </div>
           <div className="row wrap">
@@ -135,12 +131,10 @@ export function Wizard() {
             {f.vesting ? (
               <label className="row small">
                 Vesting starts
-                <input
-                  className="inp"
+                <DateInput
                   style={{ width: 170 }}
-                  type="date"
                   value={f.vestingStart}
-                  onChange={(e) => setFounder(i, { vestingStart: e.target.value })}
+                  onChange={(v) => setFounder(i, { vestingStart: v })}
                 />
               </label>
             ) : (
@@ -200,11 +194,9 @@ export function Wizard() {
               />
             </Field>
             <Field label="Board approved on">
-              <input
-                className="inp"
-                type="date"
+              <DateInput
                 value={w.pool.approved}
-                onChange={(e) => setW({ ...w, pool: { ...w.pool!, approved: e.target.value } })}
+                onChange={(v) => setW({ ...w, pool: { ...w.pool!, approved: v } })}
               />
             </Field>
           </div>
@@ -274,12 +266,7 @@ export function Wizard() {
               />
             </Field>
             <Field label="Date">
-              <input
-                className="inp"
-                type="date"
-                value={s.date}
-                onChange={(e) => setSafe(i, { date: e.target.value })}
-              />
+              <DateInput value={s.date} onChange={(v) => setSafe(i, { date: v })} />
             </Field>
           </div>
           <label className="row small">
