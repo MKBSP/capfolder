@@ -71,6 +71,7 @@ export function capTableRows(s: State): Row[] {
         vested: null,
         unvested: null,
         safeAmount: x.amount,
+        currency: x.currency ?? "USD",
         safeCap: x.cap ?? "",
         safeDiscount: x.discount ?? "",
         asConverted: post ? ratioFixed(n * 100n, d, 2) : "",

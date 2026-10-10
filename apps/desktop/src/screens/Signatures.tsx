@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MainHeader } from "../components/Header";
 import { ErrorList, Modal } from "../components/ui";
 import { day } from "../fmt";
-import { type Envelope, type EnvelopeStatus, envelopes, relayClient } from "../signing";
+import { tokenFor } from "../settings";
+import { type Envelope, type EnvelopeStatus, envelopes, RelayError, relayClient } from "../signing";
 import { useApp } from "../state";
 import { DOC_FOLDER, fileSigned, voidEnvelope } from "../vault";
 
@@ -24,18 +25,52 @@ export function Signatures() {
   const filing = useRef(new Set<string>());
   const me = app.settings.email;
 
+  // The timer and buttons always see the newest vault and settings (a stale copy would re-file or 404).
+  const latest = useRef(app);
+  latest.current = app;
+  const running = useRef(false);
+  const again = useRef(false);
   const refresh = useCallback(async () => {
+    if (running.current) {
+      again.current = true; // one loop at a time; a click meanwhile runs once more right after
+      return;
+    }
+    running.current = true;
+    try {
+      do {
+        again.current = false;
+        await refreshOnce();
+      } while (again.current);
+    } finally {
+      running.current = false;
+    }
+  }, []);
+  const refreshOnce = async () => {
+    const app = latest.current;
     if (!app.vault) return;
-    const client = relayClient(app.platform, app.settings);
     setOffline(null);
     let vault = app.vault;
     for (const env of envelopes(vault.events).filter((e) => e.state === "open")) {
+      const client = clientFor(env);
       let s: EnvelopeStatus;
       try {
         s = await client.status(env.id);
       } catch (e) {
-        setOffline((e as Error).message);
-        return;
+        if (e instanceof RelayError && e.status === 0) {
+          setOffline(e.message); // offline: nothing else will answer either
+          return;
+        }
+        setNotes((x) => ({
+          ...x,
+          [env.id]: {
+            ok: false,
+            text:
+              e instanceof RelayError && e.status === 404
+                ? "The relay no longer has this document (expired or deleted). Cancel it here, then send it again if it's still needed."
+                : (e as Error).message,
+          },
+        }));
+        continue;
       }
       setStatus((x) => ({ ...x, [env.id]: s }));
       if (s.status !== "completed" || filing.current.has(env.id)) continue;
@@ -48,7 +83,12 @@ export function Signatures() {
           continue;
         }
         vault = r.vault;
-        app.setVault(vault);
+        latest.current.setVault(vault);
+        if (r.warning) {
+          setNotes((x) => ({ ...x, [env.id]: { ok: false, text: r.warning! } }));
+          await client.remove(env.id).catch(() => {});
+          continue;
+        }
         await client.remove(env.id).catch(() => {}); // the relay also purges anything older than 30 days
         setNotes((x) => ({
           ...x,
@@ -63,7 +103,7 @@ export function Signatures() {
         filing.current.delete(env.id);
       }
     }
-  }, [app]);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: refresh on open and every minute, not on every render
   useEffect(() => {
@@ -95,7 +135,12 @@ export function Signatures() {
       setNotes((x) => ({ ...x, [env.id]: { ok: false, text: (e as Error).message } }));
     }
   };
-  const client = relayClient(app.platform, app.settings);
+  /** Each envelope is checked on the relay it was sent through, with that relay's token. */
+  const clientFor = (env: Envelope) =>
+    relayClient(latest.current.platform, {
+      relayUrl: env.relay,
+      relayToken: tokenFor(latest.current.settings, env.relay),
+    });
 
   return (
     <>
@@ -146,7 +191,7 @@ export function Signatures() {
                       type="button"
                       className="btn primary"
                       onClick={() =>
-                        act(env, async () => app.platform.openUrl(await client.signingUrl(env.id)))
+                        act(env, async () => app.platform.openUrl(await clientFor(env).signingUrl(env.id)))
                       }
                     >
                       Sign now
@@ -157,7 +202,11 @@ export function Signatures() {
                       type="button"
                       className="btn"
                       onClick={() =>
-                        act(env, () => client.remind(env.id), "Reminder sent to everyone who hasn't signed.")
+                        act(
+                          env,
+                          () => clientFor(env).remind(env.id),
+                          "Reminder sent to whoever is next to sign.",
+                        )
                       }
                     >
                       Send reminder
@@ -225,7 +274,10 @@ function CancelDialog(p: { env: Envelope; status?: EnvelopeStatus; onClose(): vo
             onClick={async () => {
               if (!app.vault) return;
               try {
-                await relayClient(app.platform, app.settings).remove(p.env.id);
+                await relayClient(app.platform, {
+                  relayUrl: p.env.relay,
+                  relayToken: tokenFor(app.settings, p.env.relay),
+                }).remove(p.env.id);
               } catch (e) {
                 // already gone on the relay (expired/purged) is fine; anything else stops here
                 if (!/not found/i.test((e as Error).message)) return setErrors([(e as Error).message]);

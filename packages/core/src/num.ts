@@ -77,10 +77,16 @@ export function sumDec(values: string[]): string {
  * Currency signs and spaces are ignored. Returns a plain decimal string, or null when it isn't a non-negative number.
  */
 export function parseLocalNumber(raw: string, decimalMark: "." | ","): string | null {
-  let v = raw
-    .replace(/[$€£¥\s  ']/g, "")
+  const v = raw
+    .replace(/[$€£¥\s  '’]/g, "") // spaces and apostrophes are only ever thousands separators
     .replace(/^(usd|eur|gbp|cny|brl|chf)|(usd|eur|gbp|cny|brl|chf)$/gi, "");
   if (!v) return null;
-  v = decimalMark === "," ? v.replace(/\./g, "").replace(",", ".") : v.replace(/,/g, "");
-  return /^\d+(\.\d+)?$/.test(v) ? v : null;
+  // Plain digits, or digits grouped in threes, then an optional decimal part. Anything else (like "0,12" when
+  // the decimal mark is ".") is refused rather than read as 12.
+  const ok =
+    decimalMark === ","
+      ? /^(\d+|\d{1,3}(\.\d{3})+)(,\d+)?$/.test(v)
+      : /^(\d+|\d{1,3}(,\d{3})+)(\.\d+)?$/.test(v);
+  if (!ok) return null;
+  return decimalMark === "," ? v.replace(/\./g, "").replace(",", ".") : v.replace(/,/g, "");
 }

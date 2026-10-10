@@ -4,6 +4,11 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added — M5 · signing (2026-10-10)
+- `apps/relay`: the only server. Email codes and device tokens (F-04); send in signing order with reminders (day 3, then every 4 days) and 30-day expiry; status per signer; your own signing link only; remind; cancel and delete; the sealed PDF; hourly purge of anything older than 30 days. Abuse limits on codes, guesses, envelopes (20/day), signers (10) and size (15 MB). Runs locally with Documenso + Mailpit (`apps/relay/README.md`).
+- Desktop: verify your email on first run, in Settings or at the first send; Settings → Signing (relay address, test connection; F-37). Send any PDF from Documents, or a new SAFE from New SAFE: Capfolder adds a signature page, you sign last. Signatures screen: status per signer, Sign now (opens your signing page), Send reminder, Cancel & delete from relay (F-17). When everyone has signed, the sealed copy's original pages are checked (same text, nothing added on top, no page missing) against what was sent, filed in `docs/<type>/`, linked, and the relay copy deleted. A SAFE sent for signature is recorded on the cap table only once it's signed.
+- Tests: the real relay over an in-memory Documenso in desktop tests; opt-in contract and end-to-end tests against a real local Documenso (both parties sign; the sealed PDF passes the check).
+
 ### Added — country and currency (2026-10-10, from Mads)
 - **You:** your country (Welcome and Settings) sets how numbers look and are typed ("1.000.000,50" vs "1,000,000.50") and whether typed dates are month-first (US) or day-first. Defaults to the computer's language.
 - **Company:** country and state of incorporation and the company currency (Create company and Settings → Company). Changing the name or incorporation records an ISSUER update; the currency is used for new records (amounts already recorded keep theirs) and for every amount shown.

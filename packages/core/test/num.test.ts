@@ -56,3 +56,14 @@ test("parseLocalNumber reads the founder's decimal mark", () => {
   expect(parseLocalNumber("1.5M", ".")).toBeNull();
   expect(parseLocalNumber("-5", ".")).toBeNull();
 });
+
+test("parseLocalNumber rejects the other convention instead of misreading it (M5 review)", () => {
+  expect(parseLocalNumber("0,12", ".")).toBeNull(); // not 12
+  expect(parseLocalNumber("1,5", ".")).toBeNull(); // not 15
+  expect(parseLocalNumber("0.12", ",")).toBeNull(); // not 12
+  expect(parseLocalNumber("1,000,000", ".")).toBe("1000000");
+  expect(parseLocalNumber("12,34,567", ".")).toBeNull(); // bad grouping
+  expect(parseLocalNumber("1’000’000.50", ".")).toBe("1000000.50"); // de-CH typographic apostrophe
+  expect(parseLocalNumber("1.000.000,50", ",")).toBe("1000000.50");
+  expect(parseLocalNumber("0,12", ",")).toBe("0.12");
+});

@@ -55,3 +55,7 @@ test("unknown event types are listed, not applied", () => {
   );
   expect(s.unknownEventTypes).toEqual(["TX_WARRANT_ISSUANCE", "future_thing"]);
 });
+
+test("rows carry each SAFE's own currency (M5 review)", () => {
+  expect(rows.filter((r) => r.group === 3).map((r) => r.currency)).toEqual(["USD", "USD", "USD"]);
+});

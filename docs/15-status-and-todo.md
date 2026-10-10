@@ -20,7 +20,8 @@ Updated 2026-10-10 (after M3). Milestones and acceptance tests: `docs/09-build-p
 | M3 Desktop shell (Tauri) | Done 2026-10-10 (built before M2, see below) |
 | M6 Export (xlsx, lawyer zip) | Done 2026-10-10 |
 | M2 Import | Done 2026-10-10 (OCF + generic spreadsheet). Still to come: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
-| M5 Signing · M4 Document sorting · M7 Updates · M8 Website + launch | Not started |
+| M5 Signing | Done 2026-10-10, runs locally; hosting relay.capfolder.com is Mads' decision |
+| M4 Document sorting · M7 Updates · M8 Website + launch | Not started |
 
 Order changed 2026-10-10 so the full product can be tested sooner: M3 → M6 → M2 → M5 → M4 → M7 → M8.
 
@@ -33,11 +34,13 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Register capfolder.com; trademark search (USPTO, EUIPO).
 - [ ] Apple Developer ID + Windows code-signing certificate (M7).
 - [ ] Send real Pulley / Carta / Cake export files (anonymize names/emails, keep numbers): each gets a detector + golden test.
+- [ ] Decide where the relay + Documenso run (relay.capfolder.com), and which email service sends codes and signing emails (SMTP). Then a production signing certificate (self-signed works; an AATL certificate shows a green check in Acrobat).
+- [ ] Source the YC post-money SAFE template so New SAFE can fill it (today the founder attaches the filled PDF).
 - [ ] Lawyer review of the in-app terms and conditions (`apps/desktop/src/copy.ts`, TERMS).
 - [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`).
 
 ## Missing in the desktop app (M3)
-- Not built yet (shown as Coming soon): document sorting/OCR (M4), AI and MCP (M4), signing and email verification (M5), updates (M7), Touch ID / Windows Hello (M7).
+- Not built yet (shown as Coming soon): document sorting/OCR (M4), AI and MCP (M4), updates (M7), Touch ID / Windows Hello (M7).
 - Not built, no placeholder: SAFE/share transfer (F-20), merge duplicate people (F-21), replace/rename a document (F-28), two-laptop forks (F-35), rebaseline after an outside edit (F-31), document generation from templates.
 - Founder detection is a heuristic (common stock issued on the formation date or with vesting) until stakeholder roles exist.
 - Options recorded without a strike are stored at $0 (with a 409A warning).
@@ -195,3 +198,26 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Relay rate limits are in memory and bounded; when full the oldest key is evicted (availability over strictness). Two automated security reviews flagged each direction (fail-closed = global lockout; eviction = reset with ~200k fresh IPs/64s); a bounded in-memory limiter can't avoid both. A public relay must also rate-limit at its proxy (apps/relay/README.md) — Mads to confirm at deploy time.
 - Signing emails come from the relay's own address; the subject/message name the document. Sender-domain email later.
 - Reminders (day 3, then every 4 days) and 30-day expiry use Documenso's built-in settings, so the relay needs no reminder cron; it only purges old envelopes hourly.
+
+## M5 final review: fixed (each with a test that failed first)
+- Critical: two SAFEs sent for signature at the same time got the same id and the second could never be filed. Ids are fitted when filing (the next free one if taken since sending).
+- Critical: filing was three writes; a failure halfway left it stuck. It's one write now, and a retry skips anything already recorded. If the SAFE no longer fits the cap table, the signed PDF is still filed and the founder is told to record it.
+- Important:
+  - the minute-by-minute check used a stale copy of the folder and stopped at the first "not found"
+  - envelopes are checked on the relay they were sent through (tokens kept per relay)
+  - the relay purges completed envelopes a week after completion, not 30 days after sending
+  - the signed-copy check also refuses added annotations on original pages and missing pages
+  - "0,12" is refused instead of read as 12 when your decimal mark is "."
+  - amounts show in their own currency (a company currency change doesn't relabel old ones); mixed SAFE totals say so
+  - your name is kept when you verify inside the send dialog
+  - a send this computer can't record is withdrawn from the relay
+- Minor fixed with the above: reminders go only to whoever is next to sign; malformed sign-in input is a 400; purge no longer skips envelopes while paging; outbox paths must be under docs/_outbox/; a Refresh during a running check runs once more after it.
+
+## M5 deferred minors
+- The signed-copy check compares text and annotations, not pixels: content drawn as shapes or images over an original page would pass. Next step: render each original page with pdf.js and compare.
+- Device tokens last a year and are only revoked by rotating RELAY_SECRET; changing email doesn't revoke the old token.
+- CSP allows connections to any https host (any self-hosted relay); production builds still allow localhost:8787; the opener may open any https URL the relay returns (could check it's the Documenso host).
+- Changing the company currency writes capfolder.json outside the save queue (a save at the same moment shows a "folder changed" error).
+- money() uses Number() for display: amounts above 2^53 or with more than 20 decimals lose precision in the display only.
+- New SAFE → Send: the recorded SAFE terms come from the form, not from the PDF the founder attaches; they could disagree (until the YC template is filled by the app).
+- Import: a lone "250.000" in a file with no other clue uses the founder's decimal mark (a US founder importing a European file would read 250).

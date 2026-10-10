@@ -23,30 +23,39 @@ export function configureFormat(p: { locale: string; currency: string; monthFirs
   cfg = { ...p, decimalMark: decimal === "," ? "," : "." };
 }
 export const formatConfig = () => cfg;
+/** A record's own currency, if Intl knows it (a hand-edited file could say anything). */
+const knownCurrency = (c: string) => {
+  try {
+    new Intl.NumberFormat("en", { style: "currency", currency: c });
+    return c;
+  } catch {
+    return cfg.currency;
+  }
+};
 
 export const shares = (n: bigint | null | undefined) =>
   n === null || n === undefined ? "—" : new Intl.NumberFormat(cfg.locale).format(n);
 
 /** "500000" → "$500,000" / "500.000 €" (keeps cents if present). Display only. */
-export const money = (amount: string | undefined) => {
+export const money = (amount: string | undefined, currency = cfg.currency) => {
   if (!amount) return "—";
   const cents = amount.split(".")[1]?.replace(/0+$/, "") ?? "";
   return new Intl.NumberFormat(cfg.locale, {
     style: "currency",
-    currency: cfg.currency,
+    currency: knownCurrency(currency),
     minimumFractionDigits: cents ? Math.max(2, cents.length) : 0,
     maximumFractionDigits: cents ? Math.max(2, cents.length) : 0,
   }).format(Number(amount));
 };
 
 /** "10000000" → "$10M", "150000" → "$150k", "1100000" → "$1.1M" (symbol and decimal mark follow the settings). */
-export const moneyShort = (amount: string | undefined) => {
+export const moneyShort = (amount: string | undefined, currency = cfg.currency) => {
   if (!amount) return "—";
   const n = Number(amount);
   const [v, suffix] = n >= 1_000_000 ? [n / 1_000_000, "M"] : n >= 1_000 ? [n / 1_000, "k"] : [n, ""];
   const parts = new Intl.NumberFormat(cfg.locale, {
     style: "currency",
-    currency: cfg.currency,
+    currency: knownCurrency(currency),
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
   }).formatToParts(v);

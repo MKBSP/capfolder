@@ -10,6 +10,7 @@ import {
   lawyerDocPaths,
   lawyerPackage,
   MAX_DATE,
+  nextSecurityIdNumber,
   reduce,
   sha256Hex,
   sheets,
@@ -447,6 +448,8 @@ export { sha256Hex };
 
 // ---- Signing (M5, docs/05). The relay never sees the vault; these record what was sent and file what comes back.
 
+const isOutbox = (rel: unknown): rel is string => typeof rel === "string" && rel.startsWith("docs/_outbox/");
+
 /** F-11/F-16: adds the signature page, sends it, keeps the sent copy in docs/_outbox/ and records envelope_sent. */
 export async function sendForSignature(
   fs: Fs,
@@ -467,7 +470,7 @@ export async function sendForSignature(
   const blocked = await writeBlocked(fs, v);
   if (blocked) return { ok: false, errors: blocked };
   if (p.onSigned?.length) {
-    const dry = await appendEvents(v.log, p.onSigned, ctx); // would it be valid? (checked again when filing)
+    const dry = await appendEvents(v.log, p.onSigned, ctx); // would it be valid? (fitted again when filing)
     if (!dry.ok) return dry;
   }
   let page: Awaited<ReturnType<typeof withSignaturePage>>;
@@ -482,14 +485,33 @@ export async function sendForSignature(
   } catch (e) {
     return { ok: false, errors: [(e as Error).message] };
   }
-  await fs.mkdir(join(v.root, "docs", "_outbox"));
-  const abs = await freePath(
-    fs,
-    join(v.root, "docs", "_outbox"),
-    `${today(ctx)}_${slug(p.title)}_${slug(id)}.pdf`,
-  );
-  await fs.writeBytes(abs, page.pdf);
-  return appendToVault(
+  // From here the signers have their emails: if this computer can't record the send, withdraw it.
+  const withdraw = async (why: string): Promise<Result> => {
+    const gone = await client.remove(id).then(
+      () => true,
+      () => false,
+    );
+    return {
+      ok: false,
+      errors: [
+        `${why} ${gone ? "The signing request was withdrawn." : "Cancel it from the relay when you're online."}`,
+      ],
+    };
+  };
+  let rel: string;
+  try {
+    await fs.mkdir(join(v.root, "docs", "_outbox"));
+    const abs = await freePath(
+      fs,
+      join(v.root, "docs", "_outbox"),
+      `${today(ctx)}_${slug(p.title)}_${slug(id)}.pdf`,
+    );
+    await fs.writeBytes(abs, page.pdf);
+    rel = abs.slice(v.root.length + 1);
+  } catch (e) {
+    return withdraw(`Couldn't keep the sent copy in docs/_outbox (${(e as Error).message ?? e}).`);
+  }
+  const recorded = await appendToVault(
     fs,
     v,
     [
@@ -504,7 +526,7 @@ export async function sendForSignature(
           person: p.person,
           ...(p.target ? { target: p.target } : {}),
           signers: p.signers,
-          outbox: abs.slice(v.root.length + 1),
+          outbox: rel,
           original_pages: page.originalPages,
           original_sha256: await sha256Bytes(p.pdf),
           on_signed: p.onSigned ?? [],
@@ -512,18 +534,50 @@ export async function sendForSignature(
       },
     ],
     ctx,
-  );
+  ).catch((e: Error): Result => ({ ok: false, errors: [e.message] }));
+  return recorded.ok ? recorded : withdraw(`Couldn't record the send: ${recorded.errors.join(" ")}`);
 }
 
-/** Everyone signed: check the sealed copy against what was sent, record what it decides, file it, close the envelope. */
+/**
+ * The records an envelope decided (e.g. the SAFE), fitted to the record as it is now: anything already recorded is
+ * skipped (a filing that broke halfway can finish), and a security id taken since sending gets the next free one.
+ */
+function fitOnSigned(v: Vault, drafts: EventDraft[], target?: string) {
+  const s = reduce(v.events, MAX_DATE);
+  const recorded = new Set(v.events.map((e) => e.data?.id).filter(Boolean));
+  const taken = new Set(s.allSecurityIds);
+  const renamed = new Map<string, string>();
+  const out: EventDraft[] = [];
+  for (const d of drafts) {
+    if (d.kind === "ocf" && recorded.has(d.data.id)) continue;
+    const old = d.data.security_id as string | undefined;
+    if (old && d.type.endsWith("_ISSUANCE") && taken.has(old) && !renamed.has(old)) {
+      const prefix = old.replace(/-\d+$/, "") as "CS" | "OPT" | "SAFE";
+      let n = Math.max(nextSecurityIdNumber(s, prefix), 1);
+      while (taken.has(`${prefix}-${n}`)) n++;
+      renamed.set(old, `${prefix}-${n}`);
+    }
+    if (old) taken.add(renamed.get(old) ?? old);
+    let json = JSON.stringify(d.data);
+    for (const [a, c] of renamed) json = json.split(`"${a}"`).join(`"${c}"`).split(`"${a}.`).join(`"${c}.`);
+    out.push({ ...d, data: JSON.parse(json) });
+  }
+  return { drafts: out, target: target ? (renamed.get(target) ?? target) : undefined };
+}
+
+/**
+ * Everyone signed: check the sealed copy against what was sent, then ONE write: what the envelope decided, the
+ * filed document and its link, and envelope_signed. If the decided records no longer fit, the PDF is still filed
+ * and `warning` tells the founder to record them by hand.
+ */
 export async function fileSigned(
   fs: Fs,
   v: Vault,
   ctx: AppendCtx,
   env: Envelope,
   signed: Uint8Array,
-): Promise<Result> {
-  if (!(await isPlainDocPath(fs, v.root, env.outbox)))
+): Promise<{ ok: true; vault: Vault; warning?: string } | { ok: false; errors: string[] }> {
+  if (!isOutbox(env.outbox) || !(await isPlainDocPath(fs, v.root, env.outbox)))
     return {
       ok: false,
       errors: ["The copy you sent isn't in docs/_outbox, so the signed one can't be checked."],
@@ -541,40 +595,54 @@ export async function fileSigned(
       ok: false,
       errors: [`Signed copy doesn't match what you sent. ${check.reason} It wasn't filed.`],
     };
-  let cur = v;
-  if (env.onSigned.length) {
-    const r = await appendToVault(fs, cur, env.onSigned, ctx);
-    if (!r.ok) return r;
-    cur = r.vault;
-  }
-  const att = await attachDocument(fs, cur, ctx, {
-    originalName: `${env.title}.pdf`,
-    bytes: signed,
-    docType: env.docType,
-    date: today(ctx),
-    person: env.person,
-    target: env.target,
-  });
-  if (att.ok === false) return att;
-  const docId =
-    att.ok === "duplicate"
-      ? att.docId
-      : ([...att.vault.events].reverse().find((e) => e.type === "doc_added")?.data.doc_id as string);
-  if (att.ok === true) cur = att.vault;
-  const r = await appendToVault(
-    fs,
-    cur,
-    [{ kind: "app", type: "envelope_signed", data: { envelope_id: env.id, doc_id: docId } }],
-    ctx,
-  );
-  if (r.ok)
+  return exclusive(v.root, async () => {
+    const blocked = await writeBlocked(fs, v);
+    if (blocked) return { ok: false as const, errors: blocked };
+    const fit = fitOnSigned(v, env.onSigned, env.target);
+    const folder = DOC_FOLDER[env.docType] ?? "company";
+    const abs = await freePath(
+      fs,
+      join(v.root, "docs", folder),
+      `${today(ctx)}_${slug(env.person)}_${slug(env.docType)}.pdf`,
+    );
+    await fs.writeBytes(abs, signed);
+    const docId = b.newId("doc");
+    const sha256 = await sha256Bytes(signed);
+    const doc = (target?: string): EventDraft[] => [
+      b.docAdded({
+        docId,
+        path: abs.slice(v.root.length + 1),
+        sha256,
+        docType: env.docType,
+        originalName: `${env.title}.pdf`,
+      }),
+      ...(target ? [b.docLinked({ docId, target })] : []),
+    ];
+    const closed = (extra: Record<string, unknown> = {}): EventDraft => ({
+      kind: "app",
+      type: "envelope_signed",
+      data: { envelope_id: env.id, doc_id: docId, ...extra },
+    });
+    let r = await appendUnlocked(fs, v, [...fit.drafts, ...doc(fit.target), closed()], ctx);
+    let warning: string | undefined;
+    if (!r.ok && fit.drafts.length) {
+      warning = `Filed the signed PDF, but couldn't add it to the cap table: ${r.errors.join(" ")} Record it with + New.`;
+      r = await appendUnlocked(fs, v, [...doc(), closed({ not_recorded: r.errors })], ctx);
+    }
+    if (!r.ok) {
+      await fs
+        .rename(abs, await freePath(fs, join(v.root, "docs", "_removed"), baseName(abs)))
+        .catch(() => {});
+      return r;
+    }
     await fs
       .rename(
         join(v.root, env.outbox),
         await freePath(fs, join(v.root, "docs", "_removed"), baseName(env.outbox)),
       )
       .catch(() => {});
-  return r;
+    return { ok: true as const, vault: r.vault, warning };
+  });
 }
 
 /** F-17: cancelled before everyone signed. The sent copy moves to docs/_voided/ (never deleted). */
@@ -591,7 +659,7 @@ export async function voidEnvelope(
     [{ kind: "app", type: "envelope_voided", data: { envelope_id: env.id, reason } }],
     ctx,
   );
-  if (r.ok && (await isPlainDocPath(fs, v.root, env.outbox)))
+  if (r.ok && isOutbox(env.outbox) && (await isPlainDocPath(fs, v.root, env.outbox)))
     await fs
       .rename(
         join(v.root, env.outbox),

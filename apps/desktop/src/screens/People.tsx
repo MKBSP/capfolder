@@ -42,7 +42,9 @@ export function People() {
                     </td>
                     <td className="td muted">{p.contact_info?.emails?.[0]?.email_address ?? ""}</td>
                     <td className="td num right">{held ? shares(held) : "—"}</td>
-                    <td className="td num right">{safes.length ? money(t.safeAmount) : "—"}</td>
+                    <td className="td num right">
+                      {safes.length ? money(t.safeAmount, safes[0]!.currency) : "—"}
+                    </td>
                   </tr>
                 );
               })}

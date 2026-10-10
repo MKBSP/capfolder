@@ -227,6 +227,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           quantity: 0n,
           exercised: 0n,
           amount,
+          currency: d.investment_amount?.currency,
           cap,
           discount: mech?.conversion_discount,
           timing: mech?.conversion_timing,

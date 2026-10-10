@@ -251,8 +251,8 @@ function HoldingCard({ x }: { x: Security }) {
     return (
       <div className="card">
         <h2>SAFE · {x.id}</h2>
-        <KV k="Amount" v={money(x.amount)} />
-        <KV k="Valuation cap" v={x.cap ? moneyShort(x.cap) : "None"} />
+        <KV k="Amount" v={money(x.amount, x.currency)} />
+        <KV k="Valuation cap" v={x.cap ? moneyShort(x.cap, x.currency) : "None"} />
         {x.discount ? <KV k="Discount" v={`${Number(x.discount) * 100}%`} /> : null}
         <KV k="Date" v={day(x.date)} />
       </div>
@@ -265,7 +265,9 @@ function HoldingCard({ x }: { x: Security }) {
       {plan ? <KV k="Type" v={`${x.compensationType?.replace("OPTION_", "") ?? ""} · ${plan}`} /> : null}
       <KV k={x.kind === "equity" ? "Options" : "Shares"} v={shares(x.quantity)} />
       {x.exercised ? <KV k="Exercised" v={shares(x.exercised)} /> : null}
-      {x.price ? <KV k={x.kind === "equity" ? "Strike" : "Price"} v={money(x.price)} /> : null}
+      {x.price ? (
+        <KV k={x.kind === "equity" ? "Strike" : "Price"} v={money(x.price, x.priceCurrency)} />
+      ) : null}
       <KV k="Issued" v={day(x.date)} />
       {x.stoppedAt ? <KV k="Vesting stopped" v={day(x.stoppedAt)} /> : null}
     </div>
@@ -469,7 +471,8 @@ function RepurchaseDialog({ secs, onClose }: { secs: Security[]; onClose(): void
         {v ? (
           <div className="banner">
             Unvested <span className="num">{shares(v.unvested)}</span> go back to the company at{" "}
-            {money(x?.price)} per share. Vested <span className="num">{shares(v.vested)}</span> stay.
+            {money(x?.price, x?.priceCurrency)} per share. Vested{" "}
+            <span className="num">{shares(v.vested)}</span> stay.
           </div>
         ) : null}
         <ErrorList errors={errors} />

@@ -52,6 +52,7 @@ export interface Security {
   note?: string; // e.g. "imported snapshot"
   price?: string; // stock: share price paid; options: exercise price
   priceCurrency?: string;
+  currency?: string; // convertibles: the investment amount's currency
 }
 
 export interface Plan {
@@ -97,4 +98,5 @@ export interface Row {
   asConverted: string;
   docStatus: "signed" | "missing" | "";
   math: Record<string, string>;
+  currency?: string; // SAFEs: their own currency (a company can change its currency later)
 }

@@ -40,10 +40,12 @@ export function SendDialog(p: { defaults: SendDefaults; onClose(): void; onSent(
   async function send() {
     setErrors(null);
     const filled = signers.filter((s) => s.name.trim() || s.email.trim()); // an empty row is just unused
-    const all = [...filled, ...(meLast ? [{ name: myName, email: app.settings.email }] : [])].map((s) => ({
-      name: s.name.trim(),
-      email: s.email.trim().toLowerCase(),
-    }));
+    const all = [...filled, ...(meLast ? [{ name: myName || founder, email: app.settings.email }] : [])].map(
+      (s) => ({
+        name: s.name.trim(),
+        email: s.email.trim().toLowerCase(),
+      }),
+    );
     const errs: string[] = [];
     if (!file) errs.push("Choose the PDF to send.");
     if (!title.trim()) errs.push("Give the document a title.");

@@ -241,7 +241,16 @@ function SigningSection() {
               await app.setSettings({
                 ...app.settings,
                 relayUrl: clean,
-                ...(moved ? { relayToken: "" } : {}),
+                // keep the old relay's token so envelopes sent through it still finish there (F-37)
+                ...(moved
+                  ? {
+                      relayToken: app.settings.relayTokens?.[clean] ?? "",
+                      relayTokens: {
+                        ...app.settings.relayTokens,
+                        [app.settings.relayUrl]: app.settings.relayToken,
+                      },
+                    }
+                  : {}),
               });
               setMsg({
                 ok: true,

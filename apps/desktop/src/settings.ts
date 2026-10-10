@@ -14,7 +14,12 @@ export interface Settings {
   relayUrl: string; // signing relay (F-37: self-hosted relays welcome)
   email: string; // verified with the relay (F-04); "" = not yet
   relayToken: string; // device token from the relay; "" = not verified
+  relayTokens: Record<string, string>; // tokens for relays used before (F-37: old envelopes finish on their relay)
 }
+
+/** The device token for a relay: the current one, or one kept from before a switch. */
+export const tokenFor = (s: Settings, relay: string) =>
+  relay === s.relayUrl ? s.relayToken : (s.relayTokens?.[relay] ?? "");
 
 export const DEFAULT_RELAY = "https://relay.capfolder.com";
 
@@ -29,6 +34,7 @@ const defaults = (): Settings => ({
   relayUrl: import.meta.env?.DEV ? "http://localhost:8787" : DEFAULT_RELAY,
   email: "",
   relayToken: "",
+  relayTokens: {},
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {

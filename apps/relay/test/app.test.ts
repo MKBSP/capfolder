@@ -325,3 +325,30 @@ describe("security review 2", () => {
     expect(r.status).toBe(413);
   });
 });
+
+describe("M5 review", () => {
+  test("a completed envelope isn't purged just because it was created 30 days ago", async () => {
+    const { app, doc } = setup();
+    const { id } = (await (await send(app)).json()) as { id: string };
+    doc.sign(id, "fund@y.example");
+    doc.sign(id, "mads@acme.example");
+    const e = doc.envelopes.get(id)!;
+    e.createdAt = new Date(clock - 31 * 864e5).toISOString();
+    e.completedAt = new Date(clock - 2 * 864e5).toISOString();
+    const { purge } = await import("../src/app.ts");
+    expect(await purge(doc.api, () => clock)).toBe(0);
+    e.completedAt = new Date(clock - 8 * 864e5).toISOString(); // a week after completion it goes
+    expect(await purge(doc.api, () => clock)).toBe(1);
+  });
+  test("remind only the signer whose turn it is", async () => {
+    const { app, doc } = setup();
+    const { id } = (await (await send(app)).json()) as { id: string };
+    await app.request(`/envelopes/${id}/remind`, { method: "POST", headers: auth("mads@acme.example") });
+    expect(doc.calls.at(-1)).toBe(`redistribute ${id} 1`);
+  });
+  test("malformed sign-in input is a 400, not a 502", async () => {
+    const { app } = setup();
+    expect((await app.request("/auth/start", json({ email: 5 }))).status).toBe(400);
+    expect((await app.request("/auth/verify", json({ email: ["a"], code: {} }))).status).toBe(400);
+  });
+});

@@ -10,27 +10,30 @@ const loadWorker = () =>
     (globalThis as { pdfjsWorker?: unknown }).pdfjsWorker = w;
   }));
 
-/** The text of each page, whitespace-normalized. */
-export async function pageTexts(bytes: Uint8Array): Promise<string[]> {
+interface PageInfo {
+  text: string;
+  annotations: number; // pdf.js ignores annotation appearances in text, so count them separately
+}
+
+/** Each page's text (whitespace-normalized) and how many annotations sit on it. */
+export async function pageInfo(bytes: Uint8Array): Promise<PageInfo[]> {
   await loadWorker();
   // verbosity 0: text extraction doesn't need the standard font files pdf.js would otherwise warn about
-  const task = pdfjs.getDocument({
-    data: bytes.slice(),
-    useSystemFonts: false,
-    verbosity: 0,
-  });
+  const task = pdfjs.getDocument({ data: bytes.slice(), useSystemFonts: false, verbosity: 0 });
   const doc = await task.promise;
   try {
-    const out: string[] = [];
+    const out: PageInfo[] = [];
     for (let i = 1; i <= doc.numPages; i++) {
-      const c = await (await doc.getPage(i)).getTextContent();
-      out.push(
-        c.items
+      const page = await doc.getPage(i);
+      const c = await page.getTextContent();
+      out.push({
+        text: c.items
           .map((x) => ("str" in x ? x.str : ""))
           .join(" ")
           .replace(/\s+/g, " ")
           .trim(),
-      );
+        annotations: (await page.getAnnotations()).length,
+      });
     }
     return out;
   } finally {
@@ -38,22 +41,32 @@ export async function pageTexts(bytes: Uint8Array): Promise<string[]> {
   }
 }
 
+export const pageTexts = async (bytes: Uint8Array) => (await pageInfo(bytes)).map((p) => p.text);
+
+/**
+ * A sanity check, not tamper-proofing: every original page must have the same text and no added annotations,
+ * and no page may be missing. It doesn't compare what pages look like, so content drawn as shapes or images
+ * would pass (rendering each page and comparing pixels is the next step).
+ */
 export async function verifySigned(
   sent: Uint8Array,
   signed: Uint8Array,
   originalPages: number,
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
-  let a: string[];
-  let b: string[];
+  let a: PageInfo[];
+  let b: PageInfo[];
   try {
-    [a, b] = [await pageTexts(sent), await pageTexts(signed)];
+    [a, b] = [await pageInfo(sent), await pageInfo(signed)];
   } catch (e) {
     return { ok: false, reason: `The signed copy isn't a readable PDF (${(e as Error).message}).` };
   }
   if (b.length < a.length)
     return { ok: false, reason: "The signed copy has fewer pages than what you sent." };
-  for (let i = 0; i < originalPages; i++)
-    if (a[i] !== b[i])
+  for (let i = 0; i < originalPages; i++) {
+    if (a[i]!.text !== b[i]!.text)
       return { ok: false, reason: `Page ${i + 1} of the signed copy doesn't match what you sent.` };
+    if (b[i]!.annotations > a[i]!.annotations)
+      return { ok: false, reason: `Something was added on top of page ${i + 1} of the signed copy.` };
+  }
   return { ok: true };
 }

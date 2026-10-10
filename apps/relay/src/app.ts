@@ -74,21 +74,27 @@ function status(e: DocEnvelope, now: number) {
   };
 }
 
-/** Deletes every Capfolder envelope older than 30 days (run hourly). Returns how many went. */
+/**
+ * Hourly: deletes Capfolder envelopes nobody will fetch any more. Pending, rejected or cancelled ones 30 days after
+ * they were sent; completed ones a week after completion (the app normally fetches and deletes them sooner).
+ */
 export async function purge(doc: Documenso, now: () => number): Promise<number> {
-  let gone = 0;
+  const old: DocEnvelope[] = [];
   for (let page = 1, total = 1; page <= total; page++) {
     const r = await doc.find(page);
     total = r.totalPages;
-    for (const e of r.data)
-      if (e.externalId?.startsWith("capfolder:") && now() - Date.parse(e.createdAt) > 30 * 864e5) {
-        if (e.deletedAt) continue;
-        if (e.status === "PENDING") await doc.cancel(e.id);
-        await doc.remove(e.id);
-        gone++;
-      }
+    for (const e of r.data) {
+      if (!e.externalId?.startsWith("capfolder:") || e.deletedAt) continue;
+      const age = e.status === "COMPLETED" && e.completedAt ? now() - Date.parse(e.completedAt) : null;
+      if (age !== null ? age > 7 * 864e5 : now() - Date.parse(e.createdAt) > 30 * 864e5) old.push(e);
+    }
   }
-  return gone;
+  for (const e of old) {
+    // collected first: deleting while paging would shift later pages and skip some
+    if (e.status === "PENDING") await doc.cancel(e.id);
+    await doc.remove(e.id);
+  }
+  return old.length;
 }
 
 export function createApp(d: RelayDeps) {
@@ -118,7 +124,8 @@ export function createApp(d: RelayDeps) {
   app.get("/health", (c) => c.json({ ok: true, service: "capfolder-relay" }));
 
   app.post("/auth/start", async (c) => {
-    const { email } = await c.req.json<{ email?: string }>().catch(() => ({ email: undefined }));
+    const body = await c.req.json<{ email?: unknown }>().catch(() => ({}) as { email?: unknown });
+    const email = typeof body.email === "string" ? body.email : undefined;
     if (!email || !EMAIL.test(email))
       return c.json({ error: "That doesn't look like an email address." }, 400);
     if (!startPerIp.take(ipOf(c)))
@@ -134,9 +141,11 @@ export function createApp(d: RelayDeps) {
   });
 
   app.post("/auth/verify", async (c) => {
-    const { email, code } = await c.req
-      .json<{ email?: string; code?: string }>()
-      .catch(() => ({}) as Record<string, undefined>);
+    const body = await c.req
+      .json<{ email?: unknown; code?: unknown }>()
+      .catch(() => ({}) as Record<string, unknown>);
+    const email = typeof body.email === "string" ? body.email : undefined;
+    const code = typeof body.code === "string" ? body.code : undefined;
     if (!email || !code) return c.json({ error: "Send the email and the code." }, 400);
     if (!verifyPerIp.take(ipOf(c)))
       return c.json({ error: "Too many tries from this network. Try again in an hour." }, 429);
@@ -242,7 +251,11 @@ export function createApp(d: RelayDeps) {
   authed.post("/envelopes/:id/remind", async (c) => {
     const e = await mine(c.get("email"), c.req.param("id"));
     if (!e) return c.json({ error: "Not found" }, 404);
-    const waiting = e.recipients.filter((r) => r.signingStatus === "NOT_SIGNED").map((r) => r.id);
+    // Sequential signing: only the first signer who hasn't signed is waiting; later ones get their email in turn.
+    const next = [...e.recipients]
+      .sort((a, b) => (a.signingOrder ?? 0) - (b.signingOrder ?? 0))
+      .find((r) => r.signingStatus === "NOT_SIGNED");
+    const waiting = next ? [next.id] : [];
     if (e.status !== "PENDING" || !waiting.length)
       return c.json({ error: "Nobody is waiting to sign." }, 409);
     await d.documenso.redistribute(e.id, waiting);

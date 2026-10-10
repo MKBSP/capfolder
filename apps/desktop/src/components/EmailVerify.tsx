@@ -71,7 +71,12 @@ export function EmailVerify(p: { onVerified(): void; action?: string }) {
             onClick={() =>
               run(async () => {
                 const r = await client.verify(sentTo, code);
-                await app.setSettings({ ...app.settings, email: r.email, relayToken: r.token });
+                await app.setSettings({
+                  ...app.settings,
+                  email: r.email,
+                  relayToken: r.token,
+                  relayTokens: { ...app.settings.relayTokens, [app.settings.relayUrl]: r.token },
+                });
                 p.onVerified();
               })
             }
