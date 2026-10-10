@@ -61,8 +61,11 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     docs: new Map(),
     unknownEventTypes: [],
     violations: [],
+    allSecurityIds: new Set(),
   };
   const live = liveEvents(events, s.violations);
+  for (const e of live)
+    if (isTx(e) && typeof e.data.security_id === "string") s.allSecurityIds.add(e.data.security_id);
   const unknown = (t: string) => {
     if (!s.unknownEventTypes.includes(t)) s.unknownEventTypes.push(t);
   };
@@ -199,6 +202,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           vestings: d.vestings,
           earlyExercisable: d.early_exercisable === true,
           note: e.meta?.note,
+          price: (stock ? d.share_price : d.exercise_price)?.amount,
         });
         break;
       }

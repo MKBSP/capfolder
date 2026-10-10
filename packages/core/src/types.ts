@@ -50,6 +50,7 @@ export interface Security {
   stoppedAt?: string; // vesting stops at a cancellation/repurchase date
   earlyExercisable: boolean;
   note?: string; // e.g. "imported snapshot"
+  price?: string; // stock: share price paid; options: exercise price
 }
 
 export interface Plan {
@@ -75,6 +76,7 @@ export interface State {
   docs: Map<string, Doc>;
   unknownEventTypes: string[];
   violations: string[]; // problems found while replaying (invariants 4, 5, bad references, bad numbers)
+  allSecurityIds: Set<string>; // every security_id in the log, regardless of asOf (for picking new ids)
 }
 
 export interface Row {

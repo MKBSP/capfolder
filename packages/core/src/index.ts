@@ -1,4 +1,5 @@
 export * from "./append";
+export * from "./builders";
 export * from "./captable-csv";
 export * from "./chain";
 export * from "./dates";
