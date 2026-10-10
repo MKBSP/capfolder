@@ -5,7 +5,7 @@ import { afterEach } from "vitest";
 afterEach(cleanup);
 
 // jsdom has no layout: scrolling is a no-op in tests.
-window.scrollTo = () => {};
+if (typeof window !== "undefined") window.scrollTo = () => {};
 
 // The full suite runs core and desktop in parallel; under that load a save can take over the default 1s.
 configure({ asyncUtilTimeout: 3000 });
