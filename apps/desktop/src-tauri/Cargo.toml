@@ -1,0 +1,21 @@
+[package]
+name = "capfolder"
+version = "0.0.0"
+description = "Your cap table, in a folder you own"
+license = "AGPL-3.0-only"
+edition = "2021"
+
+[lib]
+name = "capfolder_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "=2.6.3", features = [] }
+
+[dependencies]
+tauri = { version = "=2.11.6", features = [] }
+tauri-plugin-fs = "=2.5.2"
+tauri-plugin-dialog = "=2.7.3"
+tauri-plugin-opener = "=2.5.5"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.151"

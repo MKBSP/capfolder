@@ -7,11 +7,37 @@
       "!design",
       "!brand",
       "!docs",
-      "!**/src/ocf/schemas-*.json"
+      "!**/src/ocf/schemas-*.json",
+      "!**/src-tauri/target",
+      "!**/src-tauri/gen",
+      "!**/dist"
     ]
   },
-  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 110 },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 110
+  },
   "linter": {
-    "rules": { "suspicious": { "noExplicitAny": "off" }, "style": { "noNonNullAssertion": "off" } }
-  }
+    "rules": {
+      "suspicious": {
+        "noExplicitAny": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["apps/desktop/src/styles/app.css"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
+    }
+  ]
 }

@@ -1,0 +1,36 @@
+/* Design tokens: docs/08-design-system.md plus the extra values the mockups in design/app use. */
+:root {
+  --ink: #16181d;
+  --ink-2: #3a3e46;
+  --muted: #5b606b;
+  --bg: #fbfbfa;
+  --surface: #ffffff;
+  --border: #e6e6e3;
+  --border-strong: #d9dad6;
+  --row-divider: #efefec;
+  --green-600: #1f6f4a;
+  --green-700: #16543a;
+  --green-tint: #e8f3ec;
+  --accent: #4fbf85;
+  --amber-text: #8a3e05;
+  --amber-bg: #fdf1e3;
+  --red-text: #a1261a;
+  --red-bg: #fde8e6;
+  --purple-text: #3d3170;
+  --purple-bg: #f4f1fa;
+  --bar-track: #e9ece8;
+  --bar-future: #dde3de;
+  --bar-part: #7fb596;
+  --pill: #f0f1ee;
+  --soft: #f3f4f1;
+  --attn: #fffbf4;
+  --sel: #f7f8f5;
+  --sep: #b5b7b2;
+  --dot-red: #c0392b;
+  --dot-amber: #d97706;
+  --unsure: #e0a458;
+  --font: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}

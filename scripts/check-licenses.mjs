@@ -15,6 +15,8 @@ const ALLOWED = new Set([
   "LGPL-3.0-only",
   "LGPL-3.0-or-later",
   "MIT OR Apache-2.0",
+  "OFL-1.1",
+  "Apache-2.0 OR MIT",
 ]);
 const raw = execFileSync("pnpm", ["licenses", "list", "--prod", "--json", "-r"], { encoding: "utf8" });
 const data = raw.trim().startsWith("{") ? JSON.parse(raw) : {}; // pnpm prints plain text when there are no prod deps

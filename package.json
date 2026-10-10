@@ -11,12 +11,19 @@
     "typecheck": "pnpm -r typecheck",
     "lint": "biome check .",
     "licenses:gen": "node scripts/check-licenses.mjs --write",
-    "licenses:check": "node scripts/check-licenses.mjs"
+    "licenses:check": "node scripts/check-licenses.mjs",
+    "dev:desktop": "pnpm --filter @capfolder/desktop tauri dev",
+    "build:desktop": "pnpm --filter @capfolder/desktop tauri build"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
     "@types/node": "22.20.5",
     "typescript": "7.0.2",
     "vitest": "5.0.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "jsdom": "26.1.0"
+    }
   }
 }
