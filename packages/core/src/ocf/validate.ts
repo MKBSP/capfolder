@@ -4,7 +4,7 @@ import schemas from "./schemas-1.2.0.json" with { type: "json" };
 
 type SchemaDoc = {
   $id: string;
-  properties?: { object_type?: { const?: string }; file_type?: { const?: string } };
+  properties?: { object_type?: { const?: string; enum?: string[] }; file_type?: { const?: string } };
 };
 
 let validators: Map<string, ValidateFunction> | undefined;
