@@ -14,5 +14,8 @@
     "ajv-formats": "3.0.1",
     "canonicalize": "5.1.0",
     "ulid": "3.0.2"
+  },
+  "devDependencies": {
+    "fast-check": "4.10.2"
   }
 }
