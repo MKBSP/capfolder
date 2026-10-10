@@ -48,7 +48,7 @@ export function liveEvents(events: VaultEvent[], problems: string[] = []): Vault
 const isTx = (e: VaultEvent) => e.kind === "ocf" && e.type.startsWith("TX_");
 const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
 // OCF 1.2.0 still accepts the deprecated TX_PLAN_SECURITY_* names for equity compensation.
-const txType = (t: string) => t.replace(/^TX_PLAN_SECURITY_/, "TX_EQUITY_COMPENSATION_");
+export const txType = (t: string) => t.replace(/^TX_PLAN_SECURITY_/, "TX_EQUITY_COMPENSATION_");
 
 export function reduce(events: VaultEvent[], asOf: string): State {
   const s: State = {
@@ -66,20 +66,53 @@ export function reduce(events: VaultEvent[], asOf: string): State {
   const unknown = (t: string) => {
     if (!s.unknownEventTypes.includes(t)) s.unknownEventTypes.push(t);
   };
-  const qty = (e: VaultEvent, field: string): bigint | undefined => {
+  const fail = (e: VaultEvent, msg: string) => s.violations.push(`${e.type} ${e.data?.id}: ${msg}`);
+  /** A whole share count ≥ min, or a violation. */
+  const qty = (e: VaultEvent, field: string, min = 1n): bigint | undefined => {
     try {
       const q = toInt(e.data[field]);
-      if (q <= 0n) throw new Error(`${field} must be greater than 0`);
+      if (q < min) throw new Error(`${field} must be ${min === 1n ? "greater than 0" : "0 or more"}`);
       return q;
     } catch (err) {
-      s.violations.push(`${e.type} ${e.data.id}: ${(err as Error).message}`);
+      fail(e, (err as Error).message);
       return undefined;
     }
+  };
+  /** A money amount > 0 (kept as its OCF string), or a violation. */
+  const money = (e: VaultEvent, value: unknown, label: string): string | undefined => {
+    try {
+      if (parseDec(value as string).v > 0n) return value as string;
+      fail(e, `${label} must be greater than 0`);
+    } catch (err) {
+      fail(e, (err as Error).message);
+    }
+    return undefined;
+  };
+  /** Schema-valid data can still be unusable; one bad event becomes a violation instead of breaking the vault. */
+  const guard = (e: VaultEvent, apply: () => void) => {
+    try {
+      apply();
+    } catch (err) {
+      fail(e, `could not be read (${(err as Error).message})`);
+    }
+  };
+  const refsOk = (e: VaultEvent): boolean => {
+    const d = e.data;
+    const missing =
+      (!s.stakeholders.has(d.stakeholder_id) && `stakeholder ${d.stakeholder_id}`) ||
+      (d.stock_class_id !== undefined && !s.classes.has(d.stock_class_id) && `class ${d.stock_class_id}`) ||
+      (d.stock_plan_id !== undefined && !s.plans.has(d.stock_plan_id) && `plan ${d.stock_plan_id}`);
+    if (missing) s.violations.push(`${e.type} ${d.id} refers to unknown ${missing}`);
+    if (!missing && s.securities.has(d.security_id)) fail(e, `security ${d.security_id} already exists`);
+    return !missing && !s.securities.has(d.security_id);
   };
 
   // 1. Definitions (no date): always present, except plans approved after asOf.
   for (const e of live) {
     if (e.kind !== "ocf" || isTx(e)) continue;
+    guard(e, () => defineObject(e));
+  }
+  function defineObject(e: VaultEvent): void {
     const d = e.data;
     switch (e.type) {
       case "ISSUER":
@@ -88,13 +121,17 @@ export function reduce(events: VaultEvent[], asOf: string): State {
       case "STAKEHOLDER":
         s.stakeholders.set(d.id, d);
         break;
-      case "STOCK_CLASS":
-        s.classes.set(d.id, { data: d, authorized: toInt(d.initial_shares_authorized) });
+      case "STOCK_CLASS": {
+        const authorized = qty(e, "initial_shares_authorized", 0n);
+        if (authorized !== undefined) s.classes.set(d.id, { data: d, authorized });
         break;
-      case "STOCK_PLAN":
-        if (!d.board_approval_date || d.board_approval_date <= asOf)
-          s.plans.set(d.id, { data: d, reserved: toInt(d.initial_shares_reserved), returned: 0n });
+      }
+      case "STOCK_PLAN": {
+        if (d.board_approval_date && d.board_approval_date > asOf) break;
+        const reserved = qty(e, "initial_shares_reserved", 0n);
+        if (reserved !== undefined) s.plans.set(d.id, { data: d, reserved, returned: 0n });
         break;
+      }
       case "VESTING_TERMS":
         s.vestingTerms.set(d.id, d);
         break;
@@ -129,13 +166,22 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     return true;
   };
 
-  for (const e of txs) {
+  for (const e of txs) guard(e, () => applyTx(e));
+  function applyTx(e: VaultEvent): void {
     const d = e.data;
     switch (txType(e.type)) {
       case "TX_STOCK_ISSUANCE":
       case "TX_EQUITY_COMPENSATION_ISSUANCE": {
         const q = qty(e, "quantity");
-        if (q === undefined) break;
+        if (q === undefined || !refsOk(e)) break;
+        let vested = 0n;
+        for (const v of d.vestings ?? []) {
+          const a = toInt(v.amount);
+          if (a < 0n) return void fail(e, "vesting amount must be 0 or more");
+          vested += a;
+        }
+        if (vested > q)
+          return void fail(e, `vestings add up to ${fmtInt(vested)}, more than the ${fmtInt(q)} granted`);
         const stock = e.type === "TX_STOCK_ISSUANCE";
         s.securities.set(d.security_id, {
           id: d.security_id,
@@ -157,9 +203,13 @@ export function reduce(events: VaultEvent[], asOf: string): State {
         break;
       }
       case "TX_CONVERTIBLE_ISSUANCE": {
+        const amount = money(e, d.investment_amount?.amount, "investment amount");
+        if (amount === undefined || !refsOk(e)) break;
         const mech = (d.conversion_triggers ?? [])
           .map((t: Data) => t.conversion_right?.conversion_mechanism)
           .find((m: Data | undefined) => m?.type === "SAFE_CONVERSION");
+        const rawCap = mech?.conversion_valuation_cap?.amount;
+        const cap = rawCap === undefined ? undefined : money(e, rawCap, "valuation cap");
         s.securities.set(d.security_id, {
           id: d.security_id,
           txId: d.id,
@@ -170,8 +220,8 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           originalQuantity: 0n,
           quantity: 0n,
           exercised: 0n,
-          amount: d.investment_amount.amount,
-          cap: mech?.conversion_valuation_cap?.amount,
+          amount,
+          cap,
           discount: mech?.conversion_discount,
           timing: mech?.conversion_timing,
           earlyExercisable: false,
@@ -205,9 +255,10 @@ export function reduce(events: VaultEvent[], asOf: string): State {
         break;
       }
       case "TX_CONVERTIBLE_TRANSFER": {
-        const x = sec(e);
+        const amount = money(e, d.amount?.amount, "amount");
+        const x = amount === undefined ? undefined : sec(e);
         if (!x) break;
-        const left = subDec(x.amount!, d.amount.amount);
+        const left = subDec(x.amount!, amount!);
         if (parseDec(left).v < 0n)
           s.violations.push(
             `Transfer ${d.id}: ${d.amount.amount} is more than the ${x.amount} outstanding on ${x.id}`,
@@ -242,7 +293,8 @@ export function reduce(events: VaultEvent[], asOf: string): State {
   const apps = live
     .filter((e) => e.kind === "app" && datePart(e.ts) <= asOf)
     .sort((a, b) => cmp(a.ts, b.ts) || cmp(a.id, b.id));
-  for (const e of apps) {
+  for (const e of apps) guard(e, () => applyApp(e));
+  function applyApp(e: VaultEvent): void {
     const d = e.data;
     const doc = s.docs.get(d.doc_id);
     switch (e.type) {

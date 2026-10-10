@@ -22,9 +22,14 @@ export const startConditionId = (terms: Data): string | undefined =>
   (terms.vesting_conditions ?? []).find((c: Data) => c.trigger?.type === "VESTING_START_DATE")?.id;
 
 function step(c: Data, offsetMonths: number, dayRule: string): Step {
-  return c.portion
-    ? { offsetMonths, dayRule, portion: decFraction(c.portion.numerator, c.portion.denominator) }
-    : { offsetMonths, dayRule, quantity: toInt(c.quantity ?? "0") };
+  if (c.portion) {
+    const [n, d] = decFraction(c.portion.numerator, c.portion.denominator);
+    if (d <= 0n || n < 0n) throw new Error(`condition ${c.id}: portion must be a non-negative fraction`);
+    return { offsetMonths, dayRule, portion: [n, d] };
+  }
+  const quantity = toInt(c.quantity ?? "0");
+  if (quantity < 0n) throw new Error(`condition ${c.id}: quantity must be 0 or more`);
+  return { offsetMonths, dayRule, quantity };
 }
 
 /** The supported subset: one start condition, then a linear chain of month-based relative schedules. */
@@ -63,7 +68,12 @@ function scheduleSteps(terms: Data): Step[] | string {
 
 /** Vested quantity of `total` at date `at` for OCF vesting terms starting on `start`. */
 export function vestedAt(total: bigint, terms: Data, start: string, at: string): VestingResult {
-  const steps = scheduleSteps(terms);
+  let steps: Step[] | string;
+  try {
+    steps = scheduleSteps(terms);
+  } catch (err) {
+    steps = (err as Error).message; // e.g. a zero denominator: unknown, never a crash
+  }
   if (typeof steps === "string")
     return { vested: null, math: `vesting unknown: ${steps}`, unknownReason: steps };
   let num = 0n;

@@ -31,6 +31,8 @@ export async function verifyChain(text: string): Promise<ChainResult> {
     } catch {
       return { ok: false, line: i + 1, reason: "not valid JSON" };
     }
+    if (e === null || typeof e !== "object" || Array.isArray(e))
+      return { ok: false, line: i + 1, reason: "not an event object" };
     // ponytail: an array prev (merge event, docs/12) is accepted if it contains the previous hash; real fork merge is F-35.
     const prevs = Array.isArray(e.prev) ? e.prev : [e.prev];
     if (!prevs.includes(prev))

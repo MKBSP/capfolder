@@ -1,10 +1,12 @@
 import { fmtInt } from "./num";
-import { capTableRows, securityVested } from "./rows";
+import { capTableRows } from "./rows";
 import type { State } from "./types";
 
 /** Plain-language list of everything that breaks docs/03 invariants 1–7. Empty means the state is consistent. */
 export function checkInvariants(s: State): string[] {
-  const out = [...s.violations]; // 4 (exercise ≤ vested), 5 (≤ balance), bad numbers, bad references
+  // From the reducer: 3 (explicit vestings ≤ granted; vesting terms can't exceed by construction), 4 (exercise ≤ vested),
+  // 5 (≤ balance), bad numbers, unknown or duplicate references.
+  const out = [...s.violations];
   for (const [id, c] of s.classes) {
     const issued = [...s.securities.values()]
       .filter((x) => x.kind === "stock" && x.classId === id)
@@ -19,11 +21,6 @@ export function checkInvariants(s: State): string[] {
     out.push(
       `Pool ${s.plans.get(r.securityId)!.data.plan_name} would go negative (${fmtInt(r.shares!)} available)`,
     );
-  for (const x of s.securities.values()) {
-    const v = securityVested(x, s, s.asOf);
-    if (v.vested !== null && v.vested > x.originalQuantity)
-      out.push(`${x.id}: vested ${fmtInt(v.vested)} exceeds granted ${fmtInt(x.originalQuantity)}`);
-  }
   const fd = rows.filter((r) => r.group <= 2);
   const sum = fd.reduce((a, r) => a + BigInt(r.fdPercent.replace(".", "")), 0n);
   // Skipped when a pool is negative: invariant 2 already reports that, and percentages of a negative row are meaningless.

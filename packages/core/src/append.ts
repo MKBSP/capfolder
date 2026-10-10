@@ -4,7 +4,7 @@ import { GENESIS, hashEvent, verifyChain } from "./chain";
 import { MAX_DATE } from "./dates";
 import { checkInvariants } from "./invariants";
 import { validateOcf } from "./ocf/validate";
-import { liveEvents, reduce } from "./reduce";
+import { liveEvents, reduce, txType } from "./reduce";
 import type { EventDraft, VaultEvent } from "./types";
 
 export interface AppendCtx {
@@ -43,6 +43,11 @@ export async function appendEvent(log: string, draft: EventDraft, ctx: AppendCtx
   const event: VaultEvent = { ...base, hash: await hashEvent(base) };
   const next = [...events, event];
 
+  if (draft.kind === "ocf" && txType(draft.type) !== txType(String(draft.data?.object_type)))
+    return {
+      ok: false,
+      errors: [`Event type ${draft.type} doesn't match object_type ${draft.data?.object_type}`],
+    };
   let schemaErrors: string[] = [];
   if (draft.kind === "ocf") schemaErrors = validateOcf(draft.data);
   else if (draft.type === "correction") {
@@ -52,9 +57,24 @@ export async function appendEvent(log: string, draft: EventDraft, ctx: AppendCtx
   }
   if (schemaErrors.length) return { ok: false, errors: schemaErrors };
 
-  // Block only violations this event introduces, so an already-broken import can still be fixed.
-  const before = new Set(checkInvariants(reduce(events, MAX_DATE)));
-  const added = checkInvariants(reduce(next, MAX_DATE)).filter((v) => !before.has(v));
-  if (added.length) return { ok: false, errors: added };
+  // Check every as-of the event can affect: its own date and each later transaction date (all dates for corrections
+  // and reversals, which can move history), plus the end of time.
+  const own = draft.kind === "ocf" && typeof draft.data.date === "string" ? draft.data.date : undefined;
+  const rewritesHistory = draft.type === "correction" || draft.type === "reversal";
+  const dates = new Set<string>([MAX_DATE]);
+  if (own) dates.add(own);
+  for (const e of next)
+    if (e.type.startsWith("TX_") && (rewritesHistory || (own && e.data.date >= own))) dates.add(e.data.date);
+
+  // Block only violations this event introduces, so an already-broken import can still be fixed. Violations are
+  // compared without their trailing "(numbers)", so improving an existing problem is allowed.
+  // ponytail: making an existing problem worse (e.g. a pool already negative goes more negative) is also allowed.
+  const key = (v: string) => v.replace(/ \([^)]*\)$/, "");
+  const added = new Set<string>();
+  for (const d of [...dates].sort()) {
+    const before = new Set(checkInvariants(reduce(events, d)).map(key));
+    for (const v of checkInvariants(reduce(next, d))) if (!before.has(key(v))) added.add(v);
+  }
+  if (added.size) return { ok: false, errors: [...added] };
   return { ok: true, event, line: canonicalize(event)! };
 }
