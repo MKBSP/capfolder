@@ -61,3 +61,13 @@ export function largestRemainder(values: bigint[], decimals: number): string[] {
   }
   return floors.map((f) => fixed(f, decimals));
 }
+
+/** Exact sum of decimal strings ("0" for none). */
+export function sumDec(values: string[]): string {
+  return values.reduce((acc, v) => {
+    const x = parseDec(acc);
+    const y = parseDec(v);
+    const scale = Math.max(x.scale, y.scale);
+    return fixed(x.v * 10n ** BigInt(scale - x.scale) + y.v * 10n ** BigInt(scale - y.scale), scale);
+  }, "0");
+}

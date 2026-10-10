@@ -31,7 +31,8 @@ export const tauriPlatform: Platform = {
   homeDir: async () => strip(await homeDir()),
   documentDir: async () => strip(await documentDir()),
   pickFolder: async (title) => {
-    const r = await open({ directory: true, multiple: false, title });
+    // recursive: the picked folder AND everything under it joins the fs scope (a vault has docs/<type>/ subfolders)
+    const r = await open({ directory: true, multiple: false, recursive: true, title });
     return typeof r === "string" ? r : null;
   },
   pickFile: async (title) => {

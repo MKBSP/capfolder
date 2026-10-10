@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { type BackupStatus, backupStatus } from "../backup";
+import { baseName } from "../fs/types";
 import { type Route, useApp } from "../state";
 import { Chip, Logo } from "./ui";
 
@@ -18,7 +19,7 @@ export function MainHeader({ children }: { children?: ReactNode }) {
   useEffect(() => {
     if (vault) backupStatus(vault.root, (p) => platform.fs.exists(p)).then(setBackup);
   }, [vault, platform]);
-  const name = latest?.issuer?.legal_name ?? vault?.root.split("/").at(-1) ?? "";
+  const name = latest?.issuer?.legal_name ?? (vault ? baseName(vault.root) : "");
   return (
     <header className="app-header">
       <Logo />

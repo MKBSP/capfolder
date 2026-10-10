@@ -1,4 +1,4 @@
-import { appendEvents, capTableRows, MAX_DATE, type Row, reduce } from "@capfolder/core";
+import { appendEvents, capTableRows, MAX_DATE, percentOf, type Row, reduce } from "@capfolder/core";
 import { useEffect, useMemo, useState } from "react";
 import { ErrorList, Field, Stepper } from "../components/ui";
 import { day, shares as fmtShares, todayIso, usd } from "../fmt";
@@ -50,11 +50,10 @@ export function Wizard() {
   const setSafe = (i: number, s: Partial<SafeInput>) =>
     setW({ ...w, safes: w.safes.map((x, j) => (j === i ? { ...x, ...s } : x)) });
   const pctOfAuthorized = (q: string) => {
-    const a = Number(digits(w.authorized));
-    const n = Number(digits(q));
-    return a > 0 && n > 0
-      ? `${fmtShares(BigInt(Math.round(n)))} shares = ${((n / a) * 100).toFixed(2)}% of authorized`
-      : "";
+    const a = digits(w.authorized);
+    const n = digits(q);
+    if (!/^\d+$/.test(a) || !/^\d+$/.test(n) || BigInt(a) === 0n || BigInt(n) === 0n) return "";
+    return `${fmtShares(BigInt(n))} shares = ${percentOf(BigInt(n), BigInt(a))}% of authorized`;
   };
 
   async function finish() {

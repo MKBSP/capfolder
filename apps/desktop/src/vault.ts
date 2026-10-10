@@ -203,23 +203,38 @@ export async function openVault(fs: Fs, root: string, ctx: AppendCtx): Promise<V
   return { root, meta: nextMeta, log, events, csvEdited, missingDocs };
 }
 
-/** The only write path for events: all drafts or none, then the derived files are refreshed. */
-export async function appendToVault(fs: Fs, v: Vault, drafts: EventDraft[], ctx: AppendCtx): Promise<Result> {
+/** One write at a time per vault folder: two saves racing would both pass the freshness check and fork the chain. */
+const locks = new Map<string, Promise<unknown>>();
+function exclusive<T>(root: string, work: () => Promise<T>): Promise<T> {
+  const prev = locks.get(root) ?? Promise.resolve();
+  const next = prev.catch(() => {}).then(work);
+  locks.set(root, next);
+  return next;
+}
+
+/** Why this vault can't be written to right now, or null. */
+async function writeBlocked(fs: Fs, v: Vault): Promise<string[] | null> {
   if (v.broken)
-    return {
-      ok: false,
-      errors: [`The record is broken at line ${v.broken.line}. Restore the folder from your backup.`],
-    };
-  const path = join(v.root, "events.jsonl");
-  if ((await fs.readText(path)) !== v.log)
-    return { ok: false, errors: ["The folder changed outside the app. Reopen it to see the latest."] };
+    return [`The record is broken at line ${v.broken.line}. Restore the folder from your backup.`];
+  if ((await fs.readText(join(v.root, "events.jsonl"))) !== v.log)
+    return ["The folder changed outside the app. Reopen it to see the latest."];
+  return null;
+}
+
+async function appendUnlocked(fs: Fs, v: Vault, drafts: EventDraft[], ctx: AppendCtx): Promise<Result> {
+  const blocked = await writeBlocked(fs, v);
+  if (blocked) return { ok: false, errors: blocked };
   const r = await appendEvents(v.log, drafts, ctx);
   if (!r.ok) return r;
-  await fs.appendText(path, r.text);
+  await fs.appendText(join(v.root, "events.jsonl"), r.text);
   const events = [...v.events, ...r.events];
   const meta = await writeDerived(fs, v.root, v.meta, events, ctx);
   return { ok: true, vault: { ...v, meta, log: v.log + r.text, events } };
 }
+
+/** The only write path for events: all drafts or none, then the derived files are refreshed. */
+export const appendToVault = (fs: Fs, v: Vault, drafts: EventDraft[], ctx: AppendCtx): Promise<Result> =>
+  exclusive(v.root, () => appendUnlocked(fs, v, drafts, ctx));
 
 async function freePath(fs: Fs, dir: string, name: string): Promise<string> {
   const dot = name.lastIndexOf(".");
@@ -236,7 +251,7 @@ async function sha256Bytes(bytes: Uint8Array): Promise<string> {
 }
 
 /** F-26. Copies the file into docs/<type>/<date>_<person>_<type>.<ext>, then records doc_added (+ doc_linked). */
-export async function attachDocument(
+export function attachDocument(
   fs: Fs,
   v: Vault,
   ctx: AppendCtx,
@@ -249,38 +264,57 @@ export async function attachDocument(
     target?: string;
   },
 ): Promise<Result | { ok: "duplicate"; docId: string }> {
-  const sha256 = await sha256Bytes(p.bytes);
-  for (const [id, d] of reduce(v.events, MAX_DATE).docs)
-    if (!d.removed && d.data.sha256 === sha256) return { ok: "duplicate", docId: id };
-  const ext = /\.[a-z0-9]+$/i.exec(p.originalName)?.[0].toLowerCase() ?? ".pdf";
-  const folder = DOC_FOLDER[p.docType] ?? "company";
-  const abs = await freePath(
-    fs,
-    join(v.root, "docs", folder),
-    `${p.date}_${slug(p.person)}_${slug(p.docType)}${ext}`,
-  );
-  const rel = abs.slice(v.root.length + 1);
-  await fs.writeBytes(abs, p.bytes);
-  const docId = b.newId("doc");
-  const drafts = [
-    b.docAdded({ docId, path: rel, sha256, docType: p.docType, originalName: p.originalName }),
-    ...(p.target ? [b.docLinked({ docId, target: p.target })] : []),
-  ];
-  const r = await appendToVault(fs, v, drafts, ctx);
-  if (!r.ok) await fs.rename(abs, await freePath(fs, join(v.root, "docs", "_removed"), baseName(abs))); // undo the copy
-  return r;
+  return exclusive(v.root, async () => {
+    const blocked = await writeBlocked(fs, v); // checked before any file is written
+    if (blocked) return { ok: false, errors: blocked };
+    const sha256 = await sha256Bytes(p.bytes);
+    for (const [id, d] of reduce(v.events, MAX_DATE).docs)
+      if (!d.removed && d.data.sha256 === sha256) return { ok: "duplicate", docId: id };
+    const ext = /\.[a-z0-9]+$/i.exec(p.originalName)?.[0].toLowerCase() ?? ".pdf";
+    const folder = DOC_FOLDER[p.docType] ?? "company";
+    const abs = await freePath(
+      fs,
+      join(v.root, "docs", folder),
+      `${p.date}_${slug(p.person)}_${slug(p.docType)}${ext}`,
+    );
+    const rel = abs.slice(v.root.length + 1);
+    await fs.writeBytes(abs, p.bytes);
+    const docId = b.newId("doc");
+    const drafts = [
+      b.docAdded({ docId, path: rel, sha256, docType: p.docType, originalName: p.originalName }),
+      ...(p.target ? [b.docLinked({ docId, target: p.target })] : []),
+    ];
+    const undo = async () =>
+      fs.rename(abs, await freePath(fs, join(v.root, "docs", "_removed"), baseName(abs)));
+    try {
+      const r = await appendUnlocked(fs, v, drafts, ctx);
+      if (!r.ok) await undo();
+      return r;
+    } catch (e) {
+      await undo().catch(() => {});
+      throw e;
+    }
+  });
 }
 
-/** F-27. Never deletes: the file moves to docs/_removed/ and a doc_removed event is written. */
-export async function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string): Promise<Result> {
-  const doc = reduce(v.events, MAX_DATE).docs.get(docId);
-  if (!doc || doc.removed) return { ok: false, errors: ["That document isn't in the folder."] };
-  if (!isSafeDocPath(doc.data.path))
-    return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
-  const from = join(v.root, doc.data.path);
-  const to = await freePath(fs, join(v.root, "docs", "_removed"), baseName(from));
-  if (await fs.exists(from)) await fs.rename(from, to);
-  return appendToVault(fs, v, [b.docRemoved({ docId, movedTo: to.slice(v.root.length + 1) })], ctx);
+/** F-27. Never deletes: a doc_removed event is written first, then the file moves to docs/_removed/. */
+export function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string): Promise<Result> {
+  return exclusive(v.root, async () => {
+    const doc = reduce(v.events, MAX_DATE).docs.get(docId);
+    if (!doc || doc.removed) return { ok: false, errors: ["That document isn't in the folder."] };
+    if (!isSafeDocPath(doc.data.path))
+      return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
+    const from = join(v.root, doc.data.path);
+    const to = await freePath(fs, join(v.root, "docs", "_removed"), baseName(from));
+    const r = await appendUnlocked(
+      fs,
+      v,
+      [b.docRemoved({ docId, movedTo: to.slice(v.root.length + 1) })],
+      ctx,
+    );
+    if (r.ok && (await fs.exists(from))) await fs.rename(from, to);
+    return r;
+  });
 }
 
 /** F-29. The cap table as of any date, in captable.csv format. */

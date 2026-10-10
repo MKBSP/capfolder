@@ -1,13 +1,5 @@
 // Labels for Home/Person derived from core output. No cap-table math here: every number comes from core.
-import {
-  type Gap,
-  nextVest,
-  parseDec,
-  type Row,
-  type Security,
-  type State,
-  vestingSchedule,
-} from "@capfolder/core";
+import { type Gap, nextVest, type Row, type Security, type State, vestingSchedule } from "@capfolder/core";
 import { day, month } from "./fmt";
 
 /** Founder = holder of common stock issued on the formation date or with vesting (ponytail: until roles exist). */
@@ -74,20 +66,4 @@ export function scheduleText(s: State, x: Security): string {
       ? ` · ${cliffIdx % 12 === 0 ? `${cliffIdx / 12}-year` : `${cliffIdx}-month`} cliff (${cliff.date <= s.asOf ? "passed" : "on"} ${day(cliff.date)})`
       : "";
   return `${years}${cliffText} · monthly`;
-}
-
-/** Sum of OCF money strings, as a string (exact). */
-export function sumMoney(amounts: string[]): string {
-  let scale = 0;
-  const parsed = amounts.map((a) => parseDec(a));
-  for (const p of parsed) scale = Math.max(scale, p.scale);
-  const total = parsed.reduce((acc, p) => acc + p.v * 10n ** BigInt(scale - p.scale), 0n);
-  const d = 10n ** BigInt(scale);
-  return scale ? `${total / d}.${(total % d).toString().padStart(scale, "0")}` : `${total}`;
-}
-
-/** Sum of "12.50"-style percentages, exact, as "87.50". */
-export function sumPercent(values: string[]): string {
-  const bp = values.reduce((acc, v) => acc + BigInt(v.replace(".", "") || "0"), 0n);
-  return `${bp / 100n}.${(bp % 100n).toString().padStart(2, "0")}`;
 }

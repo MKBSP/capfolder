@@ -1,4 +1,4 @@
-import { builders as b, type EventDraft, nextSecurityIdNumber } from "@capfolder/core";
+import { builders as b, type EventDraft, nextSecurityIdNumber, sumDec } from "@capfolder/core";
 import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
 import { CrumbHeader } from "../components/Header";
@@ -7,7 +7,6 @@ import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
 import { day, todayIso, usd, usdShort } from "../fmt";
 import { useApp } from "../state";
-import { sumMoney } from "../views";
 import { discountFraction } from "../wizard";
 
 const digits = (s: string) => s.replace(/[,\s$]/g, "");
@@ -112,8 +111,8 @@ export function NewSafe() {
                     : "converts at the next round (no cap)"}
                 </div>
                 <div className="muted">
-                  SAFEs outstanding: {usdShort(before.length ? sumMoney(before) : "0")} →{" "}
-                  {usdShort(sumMoney([...before, digits(amount)]))}
+                  SAFEs outstanding: {usdShort(sumDec(before))} →{" "}
+                  {usdShort(sumDec([...before, digits(amount)]))}
                 </div>
               </>
             ) : (

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ErrorList, Logo, Stepper } from "../components/ui";
 import { DISCLAIMER } from "../copy";
+import { baseName } from "../fs/types";
 import type { Settings } from "../settings";
 import { addRecent } from "../settings";
 import { useApp } from "../state";
@@ -20,7 +21,7 @@ export function Welcome() {
   async function open(root: string) {
     try {
       const v = await openVault(platform.fs, root, app.ctx);
-      const name = v.root.split("/").at(-1)!;
+      const name = baseName(v.root);
       await app.setSettings({
         ...settings,
         recentVaults: addRecent(settings.recentVaults, { name, root: v.root }),
@@ -36,7 +37,11 @@ export function Welcome() {
     if (lock === "password") {
       if (pw.length < 4) return setErrors(["Choose a password with at least 4 characters."]);
       if (pw !== pw2) return setErrors(["The passwords don't match."]);
-      await platform.lock.set(pw);
+      try {
+        await platform.lock.set(pw);
+      } catch (e) {
+        return setErrors([`Couldn't save the password in the keychain: ${(e as Error).message ?? e}`]);
+      }
     }
     await app.setSettings({ ...settings, lock, idleMinutes: idle, telemetry });
     app.go({ name: "email" });

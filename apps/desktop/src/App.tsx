@@ -20,7 +20,12 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
   useEffect(() => {
     (async () => {
       const dataDir = await platform.appDataDir();
-      const settings = await loadSettings(platform.fs, dataDir);
+      let settings = await loadSettings(platform.fs, dataDir);
+      // The keychain item is gone (e.g. removed per "Forgot it?"): there's nothing to unlock with, so drop the lock.
+      if (settings.lock === "password" && !(await platform.lock.isSet().catch(() => true))) {
+        settings = { ...settings, lock: "none" };
+        await saveSettings(platform.fs, dataDir, settings);
+      }
       setLocked(settings.lock === "password");
       const last = settings.recentVaults[0];
       let vault: Vault | null = null;
@@ -45,7 +50,7 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
       </main>
     );
   if (!boot || !settings) return <main className="narrow">Capfolder</main>;
-  if (locked) return <Unlock verify={(p) => platform.lock.verify(p)} onUnlock={() => setLocked(false)} />;
+  // The provider stays mounted while locked, so the open vault and the current screen survive an idle lock.
   return (
     <AppProvider
       platform={platform}
@@ -57,7 +62,11 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
       initialVault={boot.vault}
       initialRoute={boot.route}
     >
-      <Screen />
+      {locked ? (
+        <Unlock verify={(p) => platform.lock.verify(p)} onUnlock={() => setLocked(false)} />
+      ) : (
+        <Screen />
+      )}
     </AppProvider>
   );
 }

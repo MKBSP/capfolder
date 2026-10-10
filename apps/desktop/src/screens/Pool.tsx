@@ -13,7 +13,8 @@ export function Pool() {
   const app = useApp();
   const latest = app.latest;
   const plans = latest ? [...latest.plans.entries()] : [];
-  const classes = latest ? [...latest.classes.keys()] : [];
+  const classId = latest ? [...latest.classes.keys()][0] : undefined;
+  const [planIdNew] = useState(() => b.newId("plan")); // stable: a new id each render made the preview loop
   const creating = plans.length === 0;
   const [planId, setPlanId] = useState(plans[0]?.[0] ?? "");
   const [size, setSize] = useState("");
@@ -24,10 +25,13 @@ export function Pool() {
 
   const drafts = useMemo<EventDraft[] | null>(() => {
     if (!latest || !digits(size)) return null;
+    if (!/^\d+$/.test(digits(size))) return null;
     if (creating)
-      return [b.stockPlan({ name, reserved: digits(size), boardApprovalDate: date, classId: classes[0]! })];
+      return classId
+        ? [b.stockPlan({ id: planIdNew, name, reserved: digits(size), boardApprovalDate: date, classId })]
+        : null;
     return [b.poolAdjustment({ planId, newTotal: digits(size), date })];
-  }, [latest, size, name, date, planId, creating, classes]);
+  }, [latest, size, name, date, planId, creating, classId, planIdNew]);
   const dry = useDryRun(drafts);
   const after =
     dry && !dry.errors
@@ -35,7 +39,7 @@ export function Pool() {
       : null;
 
   async function save() {
-    if (!drafts) return setErrors(["Enter the pool size."]);
+    if (!drafts) return setErrors(["Enter the pool size as a whole number of shares."]);
     if (!creating && current !== undefined && BigInt(digits(size)) <= current)
       return setErrors([`The new total must be more than the current ${shares(current)} reserved.`]);
     const errs = await app.run(drafts);
@@ -48,7 +52,7 @@ export function Pool() {
       <CrumbHeader title={creating ? "Option pool" : "Increase option pool"} />
       <main className="medium">
         <section className="card stack">
-          {!classes.length ? (
+          {!classId ? (
             <div className="banner amber">Set up authorized shares first (Start from zero).</div>
           ) : null}
           {creating ? (

@@ -64,8 +64,9 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     allSecurityIds: new Set(),
   };
   const live = liveEvents(events, s.violations);
-  for (const e of live)
-    if (isTx(e) && typeof e.data.security_id === "string") s.allSecurityIds.add(e.data.security_id);
+  // From every event, reversed ones included: a reversed CS-3 must not be handed out again (its docs still point at it).
+  for (const e of events)
+    if (isTx(e) && typeof e.data?.security_id === "string") s.allSecurityIds.add(e.data.security_id);
   const unknown = (t: string) => {
     if (!s.unknownEventTypes.includes(t)) s.unknownEventTypes.push(t);
   };

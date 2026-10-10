@@ -1,8 +1,7 @@
-import { capTableRows } from "@capfolder/core";
+import { capTableRows, capTableTotals } from "@capfolder/core";
 import { MainHeader } from "../components/Header";
 import { shares, usd } from "../fmt";
 import { useApp } from "../state";
-import { sumMoney } from "../views";
 
 /** Everyone in the vault, with what they hold as of the chosen date. */
 export function People() {
@@ -31,8 +30,9 @@ export function People() {
             <tbody>
               {[...s.stakeholders.values()].map((p) => {
                 const mine = rows.filter((r) => s.securities.get(r.securityId)?.stakeholderId === p.id);
-                const held = mine.filter((r) => r.group < 2).reduce((a, r) => a + (r.shares ?? 0n), 0n);
-                const safes = mine.filter((r) => r.group === 3).map((r) => r.safeAmount);
+                const t = capTableTotals(mine.filter((r) => r.group !== 2));
+                const held = t.fullyDiluted;
+                const safes = mine.filter((r) => r.group === 3);
                 return (
                   <tr key={p.id} className="click" onClick={() => app.go({ name: "person", id: p.id })}>
                     <td className="td">
@@ -42,7 +42,7 @@ export function People() {
                     </td>
                     <td className="td muted">{p.contact_info?.emails?.[0]?.email_address ?? ""}</td>
                     <td className="td num right">{held ? shares(held) : "—"}</td>
-                    <td className="td num right">{safes.length ? usd(sumMoney(safes)) : "—"}</td>
+                    <td className="td num right">{safes.length ? usd(t.safeAmount) : "—"}</td>
                   </tr>
                 );
               })}

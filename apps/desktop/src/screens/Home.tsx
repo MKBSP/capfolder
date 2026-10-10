@@ -1,4 +1,12 @@
-import { capTableRows, checkInvariants, computeGaps, type Gap, nextVest, type Row } from "@capfolder/core";
+import {
+  capTableRows,
+  capTableTotals,
+  checkInvariants,
+  computeGaps,
+  type Gap,
+  nextVest,
+  type Row,
+} from "@capfolder/core";
 import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
 import { MainHeader } from "../components/Header";
@@ -6,7 +14,7 @@ import { Chip, ComingSoon, Menu, ShowMath, StatCard, VestingBar } from "../compo
 import { day, percent, shares, todayIso, usd, usdShort } from "../fmt";
 import { useApp } from "../state";
 import { exportCsv } from "../vault";
-import { docChip, isFounder, scheduleText, sumMoney, sumPercent, typeLabel, vestingCell } from "../views";
+import { docChip, isFounder, scheduleText, typeLabel, vestingCell } from "../views";
 
 /** Main.html: the cap table is the home screen. */
 export function Home() {
@@ -22,12 +30,11 @@ export function Home() {
 
   const fdRows = rows.filter((r) => r.group <= 2);
   const safes = rows.filter((r) => r.group === 3);
-  const fd = fdRows.reduce((a, r) => a + (r.shares ?? 0n), 0n);
-  const founders = sumPercent(
-    fdRows.filter((r) => isFounder(state, state.securities.get(r.securityId))).map((r) => r.fdPercent),
-  );
-  const pool = fdRows.filter((r) => r.group === 2).reduce((a, r) => a + (r.shares ?? 0n), 0n);
-  const safeTotal = safes.length ? sumMoney(safes.map((r) => r.safeAmount)) : "0";
+  const founderIds = fdRows
+    .filter((r) => isFounder(state, state.securities.get(r.securityId)))
+    .map((r) => r.securityId);
+  const totals = capTableTotals(rows, founderIds); // all numbers from core
+  const fd = totals.fullyDiluted;
 
   const New = (
     <Menu
@@ -94,9 +101,9 @@ export function Home() {
         <section style={{ flex: "999 1 640px", minWidth: 0 }}>
           <div className="stats">
             <StatCard label="Fully diluted" value={shares(fd)} />
-            <StatCard label="Founders" value={`${founders}%`} />
-            <StatCard label="Pool available" value={shares(pool)} />
-            <StatCard label="SAFEs outstanding" value={usd(safeTotal)} />
+            <StatCard label="Founders" value={`${totals.selectedPercent}%`} />
+            <StatCard label="Pool available" value={shares(totals.poolAvailable)} />
+            <StatCard label="SAFEs outstanding" value={usd(totals.safeAmount)} />
           </div>
           <div className="card" style={{ padding: 0, overflowX: "auto" }}>
             {rows.length === 0 ? (

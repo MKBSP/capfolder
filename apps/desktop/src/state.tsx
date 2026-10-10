@@ -1,6 +1,6 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
-import { createContext, type ReactNode, useContext, useMemo, useState } from "react";
+import { createContext, type ReactNode, useContext, useMemo, useRef, useState } from "react";
 import { todayIso } from "./fmt";
 import type { Platform } from "./platform";
 import type { Settings } from "./settings";
@@ -47,7 +47,14 @@ export function AppProvider(p: {
   children: ReactNode;
 }) {
   const settings = p.settings; // owned by <App>, so the lock gate and screens never disagree
-  const [vault, setVault] = useState(p.initialVault);
+  const [vault, setVaultState] = useState(p.initialVault);
+  // The newest vault and whether a save is in flight, readable from any closure (double-clicks, back-to-back saves).
+  const latestVault = useRef(p.initialVault);
+  const saving = useRef(false);
+  const setVault = (v: Vault | null) => {
+    latestVault.current = v;
+    setVaultState(v);
+  };
   const [asOf, setAsOf] = useState(todayIso());
   const [route, go] = useState<Route>(p.initialRoute);
   const ctx: AppendCtx = useMemo(
@@ -68,11 +75,18 @@ export function AppProvider(p: {
     latest,
     ctx,
     async run(drafts) {
-      if (!vault) return ["Open or create a company folder first."];
-      const r = await appendToVault(p.platform.fs, vault, drafts, ctx);
-      if (!r.ok) return r.errors;
-      setVault(r.vault);
-      return null;
+      const current = latestVault.current;
+      if (!current) return ["Open or create a company folder first."];
+      if (saving.current) return ["Already saving. One moment."];
+      saving.current = true;
+      try {
+        const r = await appendToVault(p.platform.fs, current, drafts, ctx);
+        if (!r.ok) return r.errors;
+        setVault(r.vault);
+        return null;
+      } finally {
+        saving.current = false;
+      }
     },
     route,
     go(r) {

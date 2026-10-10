@@ -17,5 +17,15 @@ export const join = (...parts: string[]): string =>
     .filter(Boolean)
     .join("/")
     .replace(/\/{2,}/g, "/");
-export const parentOf = (path: string): string => path.replace(/\/[^/]+\/?$/, "") || "/";
-export const baseName = (path: string): string => path.replace(/\/$/, "").split("/").at(-1) ?? path;
+/** Parent folder; understands "/" and "\\" (Windows). A root ("/", "C:") is its own parent. */
+export const parentOf = (path: string): string => {
+  const p = path.replace(/[\\/]+$/, "");
+  const i = Math.max(p.lastIndexOf("/"), p.lastIndexOf("\\"));
+  if (i < 0) return p || "/";
+  return p.slice(0, i) || "/";
+};
+export const baseName = (path: string): string =>
+  path
+    .replace(/[\\/]+$/, "")
+    .split(/[\\/]/)
+    .at(-1) ?? path;

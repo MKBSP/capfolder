@@ -151,3 +151,12 @@ describe("builders produce the right numbers", () => {
     expect(row.asConverted).toBe("2.00");
   });
 });
+
+test("a reversed security's id is never reused", () => {
+  const x = acme.find((e) => e.data.security_id === "SAFE-3")!;
+  const s = reduce(
+    [...acme, { ...x, id: "evt_rev", type: "reversal", kind: "app", data: { target: x.id, reason: "dup" } }],
+    "2026-10-07",
+  );
+  expect(b.nextSecurityId(s, "SAFE")).toBe("SAFE-4");
+});

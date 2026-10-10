@@ -16,7 +16,7 @@ export async function backupStatus(
   exists: (p: string) => Promise<boolean>,
 ): Promise<BackupStatus> {
   for (const [re, by] of RULES) if (re.test(root)) return { backedUp: true, by };
-  for (let p = root; p !== "/" && p !== ""; p = parentOf(p)) {
+  for (let p = root, prev = ""; p !== prev; prev = p, p = parentOf(p)) {
     try {
       if (await exists(join(p, ".git"))) return { backedUp: true, by: "git" };
     } catch {

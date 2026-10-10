@@ -36,7 +36,13 @@ export function Settings() {
               onClick={async () => {
                 if (pw.length < 4) return setErrors(["Choose a password with at least 4 characters."]);
                 if (pw !== pw2) return setErrors(["The passwords don't match."]);
-                await platform.lock.set(pw);
+                try {
+                  await platform.lock.set(pw);
+                } catch (e) {
+                  return setErrors([
+                    `Couldn't save the password in the keychain: ${(e as Error).message ?? e}`,
+                  ]);
+                }
                 await app.setSettings({ ...settings, lock: "password" });
                 setPw("");
                 setPw2("");
@@ -51,7 +57,11 @@ export function Settings() {
                 type="button"
                 className="btn danger"
                 onClick={async () => {
-                  await platform.lock.clear();
+                  try {
+                    await platform.lock.clear();
+                  } catch (e) {
+                    return setErrors([`Couldn't remove the keychain item: ${(e as Error).message ?? e}`]);
+                  }
                   await app.setSettings({ ...settings, lock: "none" });
                   setMsg("Lock removed.");
                 }}
