@@ -11,7 +11,12 @@ export interface Settings {
   recentVaults: { name: string; root: string }[];
   termsAccepted: string; // TERMS_VERSION the founder accepted; "" = not yet
   region: string; // the founder's country (regions.ts): number format and how typed dates are read
+  relayUrl: string; // signing relay (F-37: self-hosted relays welcome)
+  email: string; // verified with the relay (F-04); "" = not yet
+  relayToken: string; // device token from the relay; "" = not verified
 }
+
+export const DEFAULT_RELAY = "https://relay.capfolder.com";
 
 const defaults = (): Settings => ({
   deviceId: builders.newId("dev"),
@@ -21,6 +26,9 @@ const defaults = (): Settings => ({
   recentVaults: [],
   termsAccepted: "",
   region: guessRegion(),
+  relayUrl: import.meta.env?.DEV ? "http://localhost:8787" : DEFAULT_RELAY,
+  email: "",
+  relayToken: "",
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {

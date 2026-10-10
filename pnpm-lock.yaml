@@ -57,6 +57,9 @@ importers:
         specifier: 19.3.0
         version: 19.3.0(react@19.3.0)
     devDependencies:
+      '@capfolder/relay':
+        specifier: workspace:*
+        version: link:../relay
       '@tauri-apps/cli':
         specifier: 2.11.5
         version: 2.11.5

@@ -4,6 +4,7 @@ import { type CheckItem, checklist } from "../checklist";
 import { AttachModal } from "../components/AttachModal";
 import { MainHeader } from "../components/Header";
 import { LawyerDialog } from "../components/LawyerDialog";
+import { SendDialog } from "../components/SendDialog";
 import { ErrorList, Modal } from "../components/ui";
 import { useApp } from "../state";
 import { removeDocument } from "../vault";
@@ -15,6 +16,7 @@ export function Documents() {
   const [attach, setAttach] = useState<{ target?: string; docType?: string } | null>(null);
   const [remove, setRemove] = useState<CheckItem | null>(null);
   const [sharing, setSharing] = useState(false);
+  const [sending, setSending] = useState(false);
   const [saved, setSaved] = useState<string | null>(null);
   if (!s) return null;
   const c = checklist(s, computeGaps(s));
@@ -25,10 +27,20 @@ export function Documents() {
         <button type="button" className="btn" onClick={() => setAttach({})}>
           Add documents
         </button>
+        <button type="button" className="btn" onClick={() => setSending(true)}>
+          Send for signature
+        </button>
         <button type="button" className="btn primary" onClick={() => setSharing(true)}>
           Share with lawyer (.zip)
         </button>
       </MainHeader>
+      {sending ? (
+        <SendDialog
+          defaults={{ title: "", signers: [], docType: "other", person: "company" }}
+          onClose={() => setSending(false)}
+          onSent={() => app.go({ name: "signatures" })}
+        />
+      ) : null}
       {sharing ? (
         <LawyerDialog
           open

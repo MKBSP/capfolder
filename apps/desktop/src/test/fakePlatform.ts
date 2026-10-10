@@ -3,7 +3,13 @@ import type { Platform } from "../platform";
 
 /** A Platform for UI tests: memory files, a fake keychain, scripted dialogs. */
 export function fakePlatform(
-  opts: { password?: string; pickFolder?: string; pickFile?: { path: string; name: string } } = {},
+  opts: {
+    password?: string;
+    pickFolder?: string;
+    pickFile?: { path: string; name: string };
+    /** Where relay calls go (see fakeRelay); without one the app is "offline". */
+    relay?: { fetch(url: string, init?: RequestInit): Promise<Response> };
+  } = {},
 ) {
   const fs = new MemoryFs();
   fs.mkdirSync("/home/me/Documents");
@@ -11,6 +17,7 @@ export function fakePlatform(
   let password = opts.password;
   const saved: Record<string, string> = {};
   const savedBytes: Record<string, Uint8Array> = {};
+  const opened: string[] = [];
   const platform: Platform = {
     fs,
     appDataDir: async () => "/appdata",
@@ -27,6 +34,11 @@ export function fakePlatform(
       return `/home/me/Downloads/${name}`;
     },
     reveal: async () => {},
+    fetch: (url, init) =>
+      opts.relay ? opts.relay.fetch(url, init) : Promise.reject(new TypeError("Failed to fetch")),
+    openUrl: async (url) => {
+      opened.push(url);
+    },
     lock: {
       set: async (p) => {
         password = p;
@@ -38,5 +50,5 @@ export function fakePlatform(
       },
     },
   };
-  return { platform, fs, saved, savedBytes };
+  return { platform, fs, saved, savedBytes, opened };
 }

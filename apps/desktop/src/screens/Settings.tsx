@@ -1,9 +1,11 @@
 import { builders as b } from "@capfolder/core";
 import { useState } from "react";
+import { EmailVerify } from "../components/EmailVerify";
 import { MainHeader } from "../components/Header";
 import { CompanyPlace, YourCountry } from "../components/RegionFields";
 import { ComingSoon, ErrorList, Field } from "../components/ui";
 import type { Settings as S } from "../settings";
+import { relayClient } from "../signing";
 import { useApp } from "../state";
 import { setCompanyCurrency } from "../vault";
 
@@ -141,10 +143,7 @@ export function Settings() {
             Bring your own AI (Ollama, LM Studio, Claude Code, Codex, an API key) to sort documents.
           </ComingSoon>
         </section>
-        <section className="card stack">
-          <h2>Signing relay</h2>
-          <ComingSoon milestone="M5">relay.capfolder.com, or your own self-hosted relay.</ComingSoon>
-        </section>
+        <SigningSection />
         <section className="card stack">
           <h2>Updates</h2>
           <ComingSoon milestone="M7">Signed app updates and a signed rules pack.</ComingSoon>
@@ -212,6 +211,61 @@ function CompanySection() {
           Save company details
         </button>
       </div>
+    </section>
+  );
+}
+
+/** F-37: which relay, is it reachable, and the verified email it sends for. */
+function SigningSection() {
+  const app = useApp();
+  const [url, setUrl] = useState(app.settings.relayUrl);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [changing, setChanging] = useState(false);
+  return (
+    <section className="card stack" aria-label="Signing">
+      <h2>Signing relay</h2>
+      <Field label="Relay address" hint="relay.capfolder.com, or your own (apps/relay in the repo).">
+        <input className="inp" value={url} onChange={(e) => setUrl(e.target.value)} />
+      </Field>
+      <div className="row wrap">
+        <button
+          type="button"
+          className="btn"
+          onClick={async () => {
+            const clean = url.trim().replace(/\/+$/, "");
+            try {
+              const h = await relayClient(app.platform, { relayUrl: clean, relayToken: "" }).health();
+              if (h.service !== "capfolder-relay")
+                throw new Error("That address answers, but it isn't a Capfolder relay.");
+              const moved = clean !== app.settings.relayUrl;
+              await app.setSettings({
+                ...app.settings,
+                relayUrl: clean,
+                ...(moved ? { relayToken: "" } : {}),
+              });
+              setMsg({
+                ok: true,
+                text: moved ? "Connected. Verify your email with this relay below." : "Connected.",
+              });
+            } catch (e) {
+              setMsg({ ok: false, text: (e as Error).message });
+            }
+          }}
+        >
+          Test and save
+        </button>
+      </div>
+      {msg ? <div className={`banner small ${msg.ok ? "green" : "amber"}`}>{msg.text}</div> : null}
+      {app.settings.relayToken && !changing ? (
+        <div className="row spread wrap">
+          <span className="small">Sending as {app.settings.email}</span>
+          <button type="button" className="btn link small" onClick={() => setChanging(true)}>
+            Change email
+          </button>
+        </div>
+      ) : (
+        <EmailVerify onVerified={() => setChanging(false)} action="Verify" />
+      )}
     </section>
   );
 }

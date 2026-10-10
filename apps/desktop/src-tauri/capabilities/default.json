@@ -50,6 +50,17 @@
     "fs:allow-mkdir",
     "fs:allow-read-dir",
     "fs:allow-rename",
-    "fs:allow-lstat"
+    "fs:allow-lstat",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "https://*"
+        },
+        {
+          "url": "http://localhost:*"
+        }
+      ]
+    }
   ]
 }

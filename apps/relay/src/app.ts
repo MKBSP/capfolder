@@ -171,7 +171,12 @@ export function createApp(d: RelayDeps) {
     }),
     async (c) => {
       const form = await c.req.formData().catch(() => null);
-      const pdf = form?.get("pdf");
+      const got = form?.get("pdf");
+      // a file part, whichever Blob class the runtime uses (checking instanceof breaks across realms)
+      const pdf =
+        got && typeof got === "object" && typeof (got as Blob).arrayBuffer === "function"
+          ? (got as Blob)
+          : null;
       let meta: {
         title?: string;
         signers?: { name?: string; email?: string }[];
@@ -182,7 +187,7 @@ export function createApp(d: RelayDeps) {
       } catch {}
       const signers = meta.signers ?? [];
       if (
-        !(pdf instanceof Blob) ||
+        !pdf ||
         !meta.title?.trim() ||
         !signers.length ||
         signers.some((s) => !s.name?.trim() || !s.email || !EMAIL.test(s.email))

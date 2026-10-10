@@ -17,10 +17,12 @@ import {
   toXlsx,
   type VaultEvent,
   verifyChain,
+  withSignaturePage,
   zip,
 } from "@capfolder/core";
 import { day } from "./fmt";
 import { baseName, type Fs, join } from "./fs/types";
+import type { Envelope, RelayClient } from "./signing";
 
 export interface Vault {
   root: string;
@@ -442,3 +444,159 @@ export async function lawyerZip(
 }
 
 export { sha256Hex };
+
+// ---- Signing (M5, docs/05). The relay never sees the vault; these record what was sent and file what comes back.
+
+/** F-11/F-16: adds the signature page, sends it, keeps the sent copy in docs/_outbox/ and records envelope_sent. */
+export async function sendForSignature(
+  fs: Fs,
+  v: Vault,
+  ctx: AppendCtx,
+  client: RelayClient,
+  p: {
+    pdf: Uint8Array;
+    title: string;
+    signers: { name: string; email: string }[];
+    docType: string;
+    person: string;
+    target?: string;
+    onSigned?: EventDraft[]; // recorded only once everyone has signed (e.g. the SAFE itself)
+    relayUrl: string;
+  },
+): Promise<Result> {
+  const blocked = await writeBlocked(fs, v);
+  if (blocked) return { ok: false, errors: blocked };
+  if (p.onSigned?.length) {
+    const dry = await appendEvents(v.log, p.onSigned, ctx); // would it be valid? (checked again when filing)
+    if (!dry.ok) return dry;
+  }
+  let page: Awaited<ReturnType<typeof withSignaturePage>>;
+  try {
+    page = await withSignaturePage(p.pdf, { title: p.title, signers: p.signers });
+  } catch {
+    return { ok: false, errors: ["That file isn't a PDF Capfolder can read."] };
+  }
+  let id: string;
+  try {
+    id = (await client.send(page.pdf, { title: p.title, signers: p.signers, fields: page.fields })).id;
+  } catch (e) {
+    return { ok: false, errors: [(e as Error).message] };
+  }
+  await fs.mkdir(join(v.root, "docs", "_outbox"));
+  const abs = await freePath(
+    fs,
+    join(v.root, "docs", "_outbox"),
+    `${today(ctx)}_${slug(p.title)}_${slug(id)}.pdf`,
+  );
+  await fs.writeBytes(abs, page.pdf);
+  return appendToVault(
+    fs,
+    v,
+    [
+      {
+        kind: "app",
+        type: "envelope_sent",
+        data: {
+          envelope_id: id,
+          relay: p.relayUrl,
+          title: p.title,
+          doc_type: p.docType,
+          person: p.person,
+          ...(p.target ? { target: p.target } : {}),
+          signers: p.signers,
+          outbox: abs.slice(v.root.length + 1),
+          original_pages: page.originalPages,
+          original_sha256: await sha256Bytes(p.pdf),
+          on_signed: p.onSigned ?? [],
+        },
+      },
+    ],
+    ctx,
+  );
+}
+
+/** Everyone signed: check the sealed copy against what was sent, record what it decides, file it, close the envelope. */
+export async function fileSigned(
+  fs: Fs,
+  v: Vault,
+  ctx: AppendCtx,
+  env: Envelope,
+  signed: Uint8Array,
+): Promise<Result> {
+  if (!(await isPlainDocPath(fs, v.root, env.outbox)))
+    return {
+      ok: false,
+      errors: ["The copy you sent isn't in docs/_outbox, so the signed one can't be checked."],
+    };
+  const sent = await fs.readBytes(join(v.root, env.outbox)).catch(() => null);
+  if (!sent)
+    return {
+      ok: false,
+      errors: ["The copy you sent is missing from docs/_outbox, so the signed one can't be checked."],
+    };
+  const { verifySigned } = await import("./pdfverify");
+  const check = await verifySigned(sent, signed, env.originalPages);
+  if (!check.ok)
+    return {
+      ok: false,
+      errors: [`Signed copy doesn't match what you sent. ${check.reason} It wasn't filed.`],
+    };
+  let cur = v;
+  if (env.onSigned.length) {
+    const r = await appendToVault(fs, cur, env.onSigned, ctx);
+    if (!r.ok) return r;
+    cur = r.vault;
+  }
+  const att = await attachDocument(fs, cur, ctx, {
+    originalName: `${env.title}.pdf`,
+    bytes: signed,
+    docType: env.docType,
+    date: today(ctx),
+    person: env.person,
+    target: env.target,
+  });
+  if (att.ok === false) return att;
+  const docId =
+    att.ok === "duplicate"
+      ? att.docId
+      : ([...att.vault.events].reverse().find((e) => e.type === "doc_added")?.data.doc_id as string);
+  if (att.ok === true) cur = att.vault;
+  const r = await appendToVault(
+    fs,
+    cur,
+    [{ kind: "app", type: "envelope_signed", data: { envelope_id: env.id, doc_id: docId } }],
+    ctx,
+  );
+  if (r.ok)
+    await fs
+      .rename(
+        join(v.root, env.outbox),
+        await freePath(fs, join(v.root, "docs", "_removed"), baseName(env.outbox)),
+      )
+      .catch(() => {});
+  return r;
+}
+
+/** F-17: cancelled before everyone signed. The sent copy moves to docs/_voided/ (never deleted). */
+export async function voidEnvelope(
+  fs: Fs,
+  v: Vault,
+  ctx: AppendCtx,
+  env: Envelope,
+  reason: string,
+): Promise<Result> {
+  const r = await appendToVault(
+    fs,
+    v,
+    [{ kind: "app", type: "envelope_voided", data: { envelope_id: env.id, reason } }],
+    ctx,
+  );
+  if (r.ok && (await isPlainDocPath(fs, v.root, env.outbox)))
+    await fs
+      .rename(
+        join(v.root, env.outbox),
+        await freePath(fs, join(v.root, "docs", "_voided"), baseName(env.outbox)),
+      )
+      .catch(() => {});
+  return r;
+}

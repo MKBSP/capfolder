@@ -4,6 +4,7 @@ import { AttachModal } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
+import { SendDialog } from "../components/SendDialog";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
 import { day, money, moneyShort, num, todayIso } from "../fmt";
@@ -23,6 +24,7 @@ export function NewSafe() {
   const [mfn, setMfn] = useState(false);
   const [errors, setErrors] = useState<string[] | null>(null);
   const [attachFor, setAttachFor] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
   const latest = app.latest;
   const securityId = latest ? `SAFE-${nextSecurityIdNumber(latest, "SAFE")}` : "SAFE-1";
 
@@ -126,14 +128,10 @@ export function NewSafe() {
             <button
               type="button"
               className="btn"
-              onClick={() =>
-                app.go({
-                  name: "comingSoon",
-                  title: "Send for signature",
-                  milestone: "M5",
-                  text: "The investor gets a link and signs in the browser; you countersign here.",
-                })
-              }
+              onClick={() => {
+                if (!drafts) return setErrors(["Fill in the investor and the amount."]);
+                setSending(true);
+              }}
             >
               Send for signature
             </button>
@@ -186,6 +184,28 @@ export function NewSafe() {
           app.go({ name: "home" });
         }}
       />
+      {sending && drafts ? (
+        <SendDialog
+          defaults={{
+            title: `SAFE · ${investor}`,
+            signers: [
+              {
+                name: investor,
+                email:
+                  "id" in who
+                    ? (latest?.stakeholders.get(who.id)?.contact_info?.emails?.[0]?.email_address ?? "")
+                    : who.email,
+              },
+            ],
+            docType: "safe",
+            person: investor,
+            target: securityId,
+            onSigned: drafts,
+          }}
+          onClose={() => setSending(false)}
+          onSent={() => app.go({ name: "signatures" })}
+        />
+      ) : null}
     </>
   );
 }

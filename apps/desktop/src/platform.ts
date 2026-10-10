@@ -2,7 +2,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { appDataDir, documentDir, homeDir } from "@tauri-apps/api/path";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { revealItemInDir } from "@tauri-apps/plugin-opener";
+import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
 import { tauriFs } from "./fs/tauri";
 import type { Fs } from "./fs/types";
 
@@ -16,6 +16,10 @@ export interface Platform {
   saveText(defaultName: string, text: string): Promise<string | null>;
   saveBytes(defaultName: string, bytes: Uint8Array): Promise<string | null>;
   reveal(path: string): Promise<void>;
+  /** Network calls to the signing relay (the only server the app talks to). */
+  fetch(url: string, init?: RequestInit): Promise<Response>;
+  /** Opens a link in the founder's browser (Documenso's signing page). */
+  openUrl(url: string): Promise<void>;
   lock: {
     set(password: string): Promise<void>;
     verify(password: string): Promise<boolean>;
@@ -61,6 +65,8 @@ export const tauriPlatform: Platform = {
     return path;
   },
   reveal: (path) => revealItemInDir(path),
+  fetch: (url, init) => window.fetch(url, init),
+  openUrl: (url) => openUrl(url),
   lock: {
     set: (password) => invoke("lock_set", { password }),
     verify: (password) => invoke<boolean>("lock_verify", { password }),
