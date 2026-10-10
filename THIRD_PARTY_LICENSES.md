@@ -9,6 +9,7 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - ajv 8.20.0: MIT
 - ajv-formats 3.0.1: MIT
 - fast-deep-equal 3.1.3: MIT
+- js-md5 0.9.2: MIT
 - json-schema-traverse 1.0.0: MIT
 - require-from-string 2.0.2: MIT
 - ulid 3.0.2: MIT

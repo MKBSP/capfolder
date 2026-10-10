@@ -32,6 +32,9 @@ importers:
       canonicalize:
         specifier: 5.1.0
         version: 5.1.0
+      js-md5:
+        specifier: 0.9.2
+        version: 0.9.2
       ulid:
         specifier: 3.0.2
         version: 3.0.2
@@ -408,6 +411,9 @@ packages:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+
+  js-md5@0.9.2:
+    resolution: {integrity: sha512-QK62elp/ozZj7kzyCG5yaeK+uWeqxPlg3w3znYDBvwyqzJs7nh5bgTAAH9KltLni2LT7qx/E1EgSVwfiOSRe0Q==}
 
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
@@ -863,6 +869,8 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
+
+  js-md5@0.9.2: {}
 
   json-schema-traverse@1.0.0: {}
 

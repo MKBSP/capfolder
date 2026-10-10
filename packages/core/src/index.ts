@@ -6,6 +6,7 @@ export * from "./gaps";
 export * from "./invariants";
 export * from "./num";
 export * from "./ocf/validate";
+export * from "./ocf-export";
 export * from "./reduce";
 export * from "./rows";
 export * from "./types";
