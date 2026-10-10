@@ -20,8 +20,8 @@ services:
   mailpit:
     image: axllent/mailpit:v1.31.1
     ports:
-      - "8025:8025" # web UI
-      - "1025:1025" # SMTP
+      - "127.0.0.1:8025:8025" # web UI (localhost only: dev passwords are fixed)
+      - "127.0.0.1:1025:1025" # SMTP
 
   documenso:
     image: documenso/documenso:v2.18.0
@@ -44,7 +44,7 @@ services:
       NEXT_PRIVATE_SMTP_FROM_ADDRESS: signing@capfolder.local
       NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH: /opt/documenso/cert.p12
     ports:
-      - "3100:3000" # 3000 is often taken on dev machines
+      - "127.0.0.1:3100:3000" # 3000 is often taken on dev machines
     volumes:
       - ./.local/cert.p12:/opt/documenso/cert.p12:ro
 
