@@ -19,6 +19,7 @@ The company shown in every mockup. 29 events, hash-chained.
 **OCF payloads:**
 - They follow OCF field names as closely as known.
 - Fields shown as `"[…]"` strings (vesting conditions, conversion triggers) are **placeholders**. Replace them with schema-valid OCF structures when wiring ajv validation [verify against OCF 1.2 schemas], then regenerate the hashes. Keep the computed numbers identical.
+- 2026-10-09: placeholders replaced with schema-valid OCF 1.2.0 structures (official 4yr/1yr-cliff vesting sample, SAFE_CONVERSION mechanisms); hashes regenerated with `packages/core/scripts/rehash-fixture.mjs`. Expected numbers unchanged.
 
 ## To add
 - `pilot-pulley/`: the anonymized real Pulley export from the pilot company (urgent, before Dec 8, 2026)

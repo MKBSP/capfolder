@@ -17,8 +17,11 @@ function init(): Map<string, ValidateFunction> {
   const map = new Map<string, ValidateFunction>();
   for (const s of docs) {
     if (s.$id.includes("/primitives/")) continue;
-    const key = s.properties?.object_type?.const ?? s.properties?.file_type?.const;
-    if (key) map.set(key, ajv.getSchema(s.$id)!);
+    // Equity-comp transactions use an enum (current name + deprecated TX_PLAN_SECURITY_* alias) instead of a const.
+    const ot = s.properties?.object_type;
+    const keys = ot?.const ? [ot.const] : (ot?.enum ?? []);
+    const ft = s.properties?.file_type?.const;
+    for (const key of ft ? [ft] : keys) map.set(key, ajv.getSchema(s.$id)!);
   }
   return map;
 }

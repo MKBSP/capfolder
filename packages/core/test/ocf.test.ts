@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { validateOcf } from "../src/ocf/validate";
+import { acmeEvents } from "./helpers";
 
 describe("validateOcf", () => {
   test("valid stakeholder passes", () => {
@@ -29,7 +30,20 @@ describe("validateOcf", () => {
   test("unknown object_type", () => {
     expect(validateOcf({ object_type: "NOPE" })).toEqual(["Unknown OCF object_type or file_type: NOPE"]);
   });
+  test("enum object_types (equity-comp transactions) are known", () => {
+    expect(validateOcf({ object_type: "TX_EQUITY_COMPENSATION_EXERCISE" })).not.toEqual([
+      "Unknown OCF object_type or file_type: TX_EQUITY_COMPENSATION_EXERCISE",
+    ]);
+  });
   test("OCF file schemas dispatch on file_type", () => {
     expect(validateOcf({ file_type: "OCF_STAKEHOLDERS_FILE", items: [] })).toEqual([]);
   });
+});
+
+test("every OCF payload in the acme fixture is schema-valid", () => {
+  const bad = acmeEvents()
+    .filter((e) => e.kind === "ocf")
+    .map((e) => ({ id: e.id, errors: validateOcf(e.data) }))
+    .filter((r) => r.errors.length);
+  expect(bad).toEqual([]);
 });
