@@ -15,6 +15,19 @@ export interface RelayDeps {
   clientIp?(c: Context): string;
 }
 
+/** Rate-limit key for an address: IPv4 as is, IPv6 by its /64 (one customer network). */
+export function clientKey(ip: string): string {
+  if (!ip.includes(":") || ip.includes(".")) return ip;
+  const [head = "", tail = ""] = ip.split("::");
+  const h = head ? head.split(":") : [];
+  const t = tail ? tail.split(":") : [];
+  const full = ip.includes("::") ? [...h, ...Array(8 - h.length - t.length).fill("0"), ...t] : h;
+  return `${full
+    .slice(0, 4)
+    .map((x) => x.toLowerCase().replace(/^0+(?=.)/, ""))
+    .join(":")}::/64`;
+}
+
 const MAX_SIGNERS = 10;
 const MAX_PDF = 15 * 1024 * 1024;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -84,7 +97,8 @@ export function createApp(d: RelayDeps) {
   const startPerIp = new Limit(20, 3600e3, d.now);
   const verifyPerIp = new Limit(60, 3600e3, d.now);
   const sendsPerEmail = new Limit(20, 864e5, d.now);
-  const ipOf = (c: Context) =>
+  const ipOf = (c: Context) => clientKey(rawIp(c));
+  const rawIp = (c: Context) =>
     // The last hop is the one our proxy added; anything before it the client could have written itself.
     d.clientIp?.(c) ?? c.req.header("x-forwarded-for")?.split(",").at(-1)?.trim() ?? "unknown";
   const app = new Hono<{ Variables: { email: string } }>();

@@ -16,5 +16,10 @@
   },
   "devDependencies": {
     "@types/nodemailer": "8.0.2"
+  },
+  "exports": {
+    "./app": "./src/app.ts",
+    "./auth": "./src/auth.ts",
+    "./fake-documenso": "./src/fake-documenso.ts"
   }
 }

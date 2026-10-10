@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { createApp } from "../src/app.ts";
 import { makeToken } from "../src/auth.ts";
-import { fakeDocumenso } from "./fake-documenso.ts";
+import { fakeDocumenso } from "../src/fake-documenso.ts";
 
 const SECRET = "test-secret";
 let clock = Date.parse("2026-10-10T12:00:00Z");
@@ -270,12 +270,30 @@ describe("abuse limits (security review)", () => {
 });
 
 describe("security review 2", () => {
-  test("flooding the limiter with keys doesn't reset anyone's limit (fails closed)", async () => {
+  test("a full limiter never locks everyone out, and flooding below its size resets nobody", async () => {
     const { Limit } = await import("../src/auth.ts");
     const l = new Limit(1, 3600e3, () => clock, 100);
     expect(l.take("victim")).toBe(true);
-    for (let i = 0; i < 500; i++) l.take(`spam${i}`);
-    expect(l.take("victim")).toBe(false);
+    for (let i = 0; i < 98; i++) l.take(`spam${i}`);
+    expect(l.take("victim")).toBe(false); // still limited
+    for (let i = 98; i < 500; i++) l.take(`spam${i}`);
+    expect(l.take("newcomer")).toBe(true); // full: the oldest key goes, newcomers still get in
+  });
+  test("IPv6 clients are counted per /64", async () => {
+    const { app } = setup();
+    for (let i = 0; i < 20; i++)
+      await app.request(
+        "/auth/start",
+        json({ email: `six${i}@x.example` }, { "x-forwarded-for": `2001:db8:1:2::${i.toString(16)}` }),
+      );
+    expect(
+      (
+        await app.request(
+          "/auth/start",
+          json({ email: "six@x.example" }, { "x-forwarded-for": "2001:db8:1:2:ffff::1" }),
+        )
+      ).status,
+    ).toBe(429);
   });
   test("behind a proxy the client is the hop the proxy added (the last), not one the client wrote", async () => {
     const { app } = setup();

@@ -1,4 +1,4 @@
-import type { CreatePayload, DocEnvelope, Documenso } from "../src/documenso.ts";
+import type { CreatePayload, DocEnvelope, Documenso } from "./documenso.ts";
 
 /** In-memory Documenso: enough behaviour to test the relay (and the desktop app) without Docker. */
 export function fakeDocumenso(now = () => new Date("2026-10-10T12:00:00Z")) {

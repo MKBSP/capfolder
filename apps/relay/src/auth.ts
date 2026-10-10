@@ -30,7 +30,7 @@ export class Limit {
   private windowMs: number;
   private now: () => number;
   private cap: number;
-  constructor(max: number, windowMs: number, now: () => number, cap = 50_000) {
+  constructor(max: number, windowMs: number, now: () => number, cap = 200_000) {
     this.max = max;
     this.windowMs = windowMs;
     this.now = now;
@@ -40,9 +40,10 @@ export class Limit {
   take(key: string): boolean {
     const t = this.now();
     if (!this.hits.has(key) && this.hits.size >= this.cap) {
-      // Full: forget only what has expired; if that isn't enough, refuse new keys (never reset existing ones).
+      // Full: forget what has expired, then the oldest key. Never refuse newcomers (that would lock everyone
+      // out); resetting one old key takes `cap` fresh IPs (IPv6 is counted per /64), which is the real cost.
       for (const [k, v] of this.hits) if (v.every((x) => t - x >= this.windowMs)) this.hits.delete(k);
-      if (this.hits.size >= this.cap) return false;
+      if (this.hits.size >= this.cap) this.hits.delete(this.hits.keys().next().value!);
     }
     const recent = (this.hits.get(key) ?? []).filter((x) => t - x < this.windowMs);
     if (recent.length >= this.max) {
@@ -69,7 +70,7 @@ export class Codes {
     if (this.pending.size > 50_000 || this.sent.size > 50_000) {
       for (const [x, p] of this.pending) if (t > p.until) this.pending.delete(x);
       for (const [x, v] of this.sent) if (v.every((y) => t - y >= 3600e3)) this.sent.delete(x);
-      if (this.pending.size > 50_000) return { error: "The relay is busy. Try again in a few minutes." };
+      while (this.pending.size > 50_000) this.pending.delete(this.pending.keys().next().value!); // oldest code goes
     }
     const recent = (this.sent.get(k) ?? []).filter((x) => t - x < 3600e3);
     if (recent.length >= 5) return { error: "Too many codes for this email. Try again in an hour." };
