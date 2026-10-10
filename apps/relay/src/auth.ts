@@ -29,21 +29,27 @@ export class Limit {
   private max: number;
   private windowMs: number;
   private now: () => number;
-  constructor(max: number, windowMs: number, now: () => number) {
+  private cap: number;
+  constructor(max: number, windowMs: number, now: () => number, cap = 50_000) {
     this.max = max;
     this.windowMs = windowMs;
     this.now = now;
+    this.cap = cap;
   }
   /** Counts a hit; false when the key is over its limit. */
   take(key: string): boolean {
     const t = this.now();
+    if (!this.hits.has(key) && this.hits.size >= this.cap) {
+      // Full: forget only what has expired; if that isn't enough, refuse new keys (never reset existing ones).
+      for (const [k, v] of this.hits) if (v.every((x) => t - x >= this.windowMs)) this.hits.delete(k);
+      if (this.hits.size >= this.cap) return false;
+    }
     const recent = (this.hits.get(key) ?? []).filter((x) => t - x < this.windowMs);
     if (recent.length >= this.max) {
       this.hits.set(key, recent);
       return false;
     }
     this.hits.set(key, [...recent, t]);
-    if (this.hits.size > 50_000) this.hits.clear(); // ponytail: crude memory cap; a restart forgets too
     return true;
   }
 }
@@ -60,6 +66,11 @@ export class Codes {
   issue(email: string): { code: string } | { error: string } {
     const k = email.trim().toLowerCase();
     const t = this.now();
+    if (this.pending.size > 50_000 || this.sent.size > 50_000) {
+      for (const [x, p] of this.pending) if (t > p.until) this.pending.delete(x);
+      for (const [x, v] of this.sent) if (v.every((y) => t - y >= 3600e3)) this.sent.delete(x);
+      if (this.pending.size > 50_000) return { error: "The relay is busy. Try again in a few minutes." };
+    }
     const recent = (this.sent.get(k) ?? []).filter((x) => t - x < 3600e3);
     if (recent.length >= 5) return { error: "Too many codes for this email. Try again in an hour." };
     this.sent.set(k, [...recent, t]);

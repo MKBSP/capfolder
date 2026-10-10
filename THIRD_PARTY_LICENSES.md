@@ -7,9 +7,12 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - pako 1.0.11: (MIT AND Zlib)
 - tslib 1.14.1: 0BSD
 - canonicalize 5.1.0: Apache-2.0
+- pdfjs-dist 6.3.289: Apache-2.0
 - @tauri-apps/api 2.11.1: Apache-2.0 OR MIT
 - fast-uri 3.1.8: BSD-3-Clause
 - @hono/node-server 2.1.1: MIT
+- @napi-rs/canvas 1.0.11: MIT
+- @napi-rs/canvas-darwin-x64 1.0.11: MIT
 - @pdf-lib/standard-fonts 1.0.0: MIT
 - @pdf-lib/upng 1.0.1: MIT
 - ajv 8.20.0: MIT

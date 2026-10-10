@@ -21,7 +21,7 @@ Point the desktop app at `http://localhost:8787` (Settings → Signing). Every e
 | `RELAY_SECRET` | ≥ 32 random characters; rotating it signs every device out |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | email for the codes |
 | `PORT` (8787), `HOST` | where it listens |
-| `TRUST_PROXY` | `true` only behind a reverse proxy: rate limits then use the first X-Forwarded-For hop |
+| `TRUST_PROXY` | `true` only behind a reverse proxy: rate limits then use the last X-Forwarded-For hop (the one your proxy adds) |
 
 ## Tests
 `pnpm test` runs against an in-memory Documenso. `RELAY_CONTRACT=1 pnpm test` also runs against the local stack.

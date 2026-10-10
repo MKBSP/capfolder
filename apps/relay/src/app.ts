@@ -1,6 +1,7 @@
 // The relay API (docs/05-signing.md). Thin on purpose: Documenso does the signing; this checks who's asking.
 import { randomBytes } from "node:crypto";
 import { type Context, Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
 import { Codes, emailKey, Limit, makeToken, readToken } from "./auth.ts";
 import type { DocEnvelope, Documenso } from "./documenso.ts";
@@ -10,7 +11,7 @@ export interface RelayDeps {
   secret: string;
   now(): number;
   sendMail(to: string, subject: string, text: string): Promise<void>;
-  /** Who's calling, for rate limits. Default: the first X-Forwarded-For hop (the relay runs behind a proxy). */
+  /** Who's calling, for rate limits. Default: the last X-Forwarded-For hop (the one our proxy added). */
   clientIp?(c: Context): string;
 }
 
@@ -84,7 +85,8 @@ export function createApp(d: RelayDeps) {
   const verifyPerIp = new Limit(60, 3600e3, d.now);
   const sendsPerEmail = new Limit(20, 864e5, d.now);
   const ipOf = (c: Context) =>
-    d.clientIp?.(c) ?? c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    // The last hop is the one our proxy added; anything before it the client could have written itself.
+    d.clientIp?.(c) ?? c.req.header("x-forwarded-for")?.split(",").at(-1)?.trim() ?? "unknown";
   const app = new Hono<{ Variables: { email: string } }>();
   app.use(
     "*",
@@ -147,48 +149,55 @@ export function createApp(d: RelayDeps) {
 
   authed.get("/me", (c) => c.json({ email: c.get("email") }));
 
-  authed.post("/envelopes", async (c) => {
-    const form = await c.req.formData().catch(() => null);
-    const pdf = form?.get("pdf");
-    let meta: {
-      title?: string;
-      signers?: { name?: string; email?: string }[];
-      fields?: { signer: number; page: number; x: number; y: number; w: number; h: number }[];
-    } = {};
-    try {
-      meta = JSON.parse(String(form?.get("meta") ?? "{}"));
-    } catch {}
-    const signers = meta.signers ?? [];
-    if (
-      !(pdf instanceof Blob) ||
-      !meta.title?.trim() ||
-      !signers.length ||
-      signers.some((s) => !s.name?.trim() || !s.email || !EMAIL.test(s.email))
-    )
-      return c.json({ error: "Send a PDF, a title and at least one signer with an email." }, 400);
-    if (signers.length > MAX_SIGNERS)
-      return c.json({ error: `At most ${MAX_SIGNERS} signers per document.` }, 400);
-    if (pdf.size > MAX_PDF) return c.json({ error: "The PDF is over 15 MB." }, 413);
-    if (!sendsPerEmail.take(c.get("email")))
-      return c.json({ error: "That's 20 documents today, the daily limit. Try again tomorrow." }, 429);
-    const id = await d.documenso.create(
-      {
-        title: meta.title.trim().slice(0, 200),
-        externalId: `${prefix(c.get("email"))}${randomBytes(8).toString("hex")}`,
-        recipients: signers.map((s, i) => ({
-          name: s.name!.trim(),
-          email: s.email!.trim().toLowerCase(),
-          signingOrder: i + 1,
-          fields: (meta.fields ?? [])
-            .filter((f) => f.signer === i)
-            .map((f) => ({ page: f.page, positionX: f.x, positionY: f.y, width: f.w, height: f.h })),
-        })),
-      },
-      new Uint8Array(await pdf.arrayBuffer()),
-    );
-    await d.documenso.distribute(id);
-    return c.json({ id }, 201);
-  });
+  authed.post(
+    "/envelopes",
+    bodyLimit({
+      maxSize: MAX_PDF + 1024 * 1024,
+      onError: (c) => c.json({ error: "The PDF is over 15 MB." }, 413),
+    }),
+    async (c) => {
+      const form = await c.req.formData().catch(() => null);
+      const pdf = form?.get("pdf");
+      let meta: {
+        title?: string;
+        signers?: { name?: string; email?: string }[];
+        fields?: { signer: number; page: number; x: number; y: number; w: number; h: number }[];
+      } = {};
+      try {
+        meta = JSON.parse(String(form?.get("meta") ?? "{}"));
+      } catch {}
+      const signers = meta.signers ?? [];
+      if (
+        !(pdf instanceof Blob) ||
+        !meta.title?.trim() ||
+        !signers.length ||
+        signers.some((s) => !s.name?.trim() || !s.email || !EMAIL.test(s.email))
+      )
+        return c.json({ error: "Send a PDF, a title and at least one signer with an email." }, 400);
+      if (signers.length > MAX_SIGNERS)
+        return c.json({ error: `At most ${MAX_SIGNERS} signers per document.` }, 400);
+      if (pdf.size > MAX_PDF) return c.json({ error: "The PDF is over 15 MB." }, 413);
+      if (!sendsPerEmail.take(c.get("email")))
+        return c.json({ error: "That's 20 documents today, the daily limit. Try again tomorrow." }, 429);
+      const id = await d.documenso.create(
+        {
+          title: meta.title.trim().slice(0, 200),
+          externalId: `${prefix(c.get("email"))}${randomBytes(8).toString("hex")}`,
+          recipients: signers.map((s, i) => ({
+            name: s.name!.trim(),
+            email: s.email!.trim().toLowerCase(),
+            signingOrder: i + 1,
+            fields: (meta.fields ?? [])
+              .filter((f) => f.signer === i)
+              .map((f) => ({ page: f.page, positionX: f.x, positionY: f.y, width: f.w, height: f.h })),
+          })),
+        },
+        new Uint8Array(await pdf.arrayBuffer()),
+      );
+      await d.documenso.distribute(id);
+      return c.json({ id }, 201);
+    },
+  );
 
   authed.get("/envelopes/:id", async (c) => {
     const e = await mine(c.get("email"), c.req.param("id"));

@@ -268,3 +268,42 @@ describe("abuse limits (security review)", () => {
     ).toBe(413);
   });
 });
+
+describe("security review 2", () => {
+  test("flooding the limiter with keys doesn't reset anyone's limit (fails closed)", async () => {
+    const { Limit } = await import("../src/auth.ts");
+    const l = new Limit(1, 3600e3, () => clock, 100);
+    expect(l.take("victim")).toBe(true);
+    for (let i = 0; i < 500; i++) l.take(`spam${i}`);
+    expect(l.take("victim")).toBe(false);
+  });
+  test("behind a proxy the client is the hop the proxy added (the last), not one the client wrote", async () => {
+    const { app } = setup();
+    for (let i = 0; i < 20; i++)
+      await app.request(
+        "/auth/start",
+        json({ email: `q${i}@x.example` }, { "x-forwarded-for": `198.51.100.${i}, 203.0.113.9` }),
+      );
+    expect(
+      (
+        await app.request(
+          "/auth/start",
+          json({ email: "q@x.example" }, { "x-forwarded-for": "1.2.3.4, 203.0.113.9" }),
+        )
+      ).status,
+    ).toBe(429);
+  });
+  test("a huge upload is refused before it's read", async () => {
+    const { app } = setup();
+    const r = await app.request("/envelopes", {
+      method: "POST",
+      headers: {
+        ...auth("mads@acme.example"),
+        "content-type": "multipart/form-data; boundary=x",
+        "content-length": String(40 * 1024 * 1024),
+      },
+      body: "--x--",
+    });
+    expect(r.status).toBe(413);
+  });
+});

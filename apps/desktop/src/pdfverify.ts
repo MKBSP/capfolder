@@ -16,7 +16,6 @@ export async function pageTexts(bytes: Uint8Array): Promise<string[]> {
   // verbosity 0: text extraction doesn't need the standard font files pdf.js would otherwise warn about
   const task = pdfjs.getDocument({
     data: bytes.slice(),
-    isEvalSupported: false,
     useSystemFonts: false,
     verbosity: 0,
   });
