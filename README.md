@@ -5,7 +5,7 @@ Your cap table, in a folder you own. Issue SAFEs and options, track vesting, col
 > Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.
 
 ## Status
-M0 (repo + CI) and M1 (core engine) are done. Next: M2 import. Status, to do, known limits and future ideas: `docs/15-status-and-todo.md`. History: `CHANGELOG.md`.
+M0 (repo + CI), M1 (core engine) and M3 (desktop app) are done. Next: M6 export, then M2 import. Status, to do, known limits and future ideas: `docs/15-status-and-todo.md`. History: `CHANGELOG.md`.
 
 ## Docs
 - Requirements: `docs/00-overview.md`, `docs/02-user-stories.md`
@@ -19,10 +19,12 @@ pnpm i            # on Apple Silicon with an x64 Node, use: pnpm i --force
 pnpm test         # unit + golden tests
 pnpm typecheck
 pnpm lint
+pnpm dev:desktop  # the desktop app (needs Rust; first build takes a few minutes)
 ```
 
 ## Layout
 ```
+apps/desktop/     Tauri 2 + React desktop app
 packages/core/    OCF event log, hash chain, reducer, vesting, invariants, exports (pure TypeScript)
 fixtures/         golden vaults + expected outputs (they gate CI)
 docs/             product spec, data model, build plan (start with docs/00-overview.md)

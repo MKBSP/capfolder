@@ -4,6 +4,22 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added — M3 · desktop app (2026-10-10)
+- Tauri 2 + React desktop app (`apps/desktop`), run with `pnpm dev:desktop`. CI builds unsigned bundles on macOS, Windows, Linux.
+- First run: Welcome with app password lock (argon2 hash in the OS keychain) or no lock, idle re-lock, anonymous-usage toggle, disclaimer; Email (skip; verification with M5); Create company (folder picker, backup detection: iCloud, Dropbox, Google Drive, OneDrive, git); Start choice.
+- Start from zero wizard: authorized shares, founders with vesting and 83(b) reminder, optional pool and signed SAFEs, live cap table.
+- Home: cap table as of any date, fully diluted, vesting bars, expandable rows with next vest and "How is this calculated?", SAFEs as-converted, What's missing with Attach, vault verification banners, CSV export.
+- New SAFE (record as signed, live impact), New grant (pool check, 409A warning), New shares, Option pool (create / increase), New person.
+- People and Person: vesting chart, holdings, history, Correct… / Reverse…, Edit (same entity), Terminate, Record exercise, Repurchase unvested.
+- Documents: due-diligence checklist, attach (copied into docs/, hashed, linked), remove (moved to docs/_removed).
+- Settings: lock, idle time, telemetry toggle, company folder. Signatures, AI, relay, updates, import, xlsx and lawyer zip are visible as "Coming soon".
+- Core: OCF draft builders, all-or-nothing `appendEvents`, vesting schedule helpers.
+
+### Security (M3)
+- Document paths from the vault are kept inside `docs/`; company names can't escape the chosen folder.
+- File access scoped to app data, ~/Documents and folders picked in a dialog (persisted-scope plugin).
+- A password set during first run is enforced by the idle lock immediately.
+
 ### Added — M0 · repo + CI (2026-10-10)
 - pnpm monorepo (`packages/core`; other apps/packages are added when their milestone starts).
 - CI on GitHub Actions: lint (biome), typecheck, tests, license allow-list check.

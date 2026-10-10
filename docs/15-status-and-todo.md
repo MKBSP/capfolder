@@ -1,6 +1,6 @@
 # 15 · Status, to do, missing things, future ideas
 
-Updated 2026-10-10. Milestones and acceptance tests: `docs/09-build-plan.md`. History: `CHANGELOG.md`.
+Updated 2026-10-10 (after M3). Milestones and acceptance tests: `docs/09-build-plan.md`. History: `CHANGELOG.md`.
 
 ## Where the docs are
 | Topic | File |
@@ -17,9 +17,12 @@ Updated 2026-10-10. Milestones and acceptance tests: `docs/09-build-plan.md`. Hi
 |---|---|
 | M0 Repo + CI | Done 2026-10-10 |
 | M1 Core engine | Done 2026-10-10 |
-| M2 Import (Pulley/Carta/Cake/OCF) | Next. Blocked on real Pulley exports for the golden test |
-| M3 Desktop shell (Tauri) | Not started. Also adds the Tauri build matrix to CI |
-| M4 Document sorting · M5 Signing · M6 Export · M7 Updates · M8 Website + launch | Not started |
+| M3 Desktop shell (Tauri) | Done 2026-10-10 (built before M2, see below) |
+| M6 Export (xlsx, lawyer zip) | Next |
+| M2 Import | After M6: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
+| M5 Signing · M4 Document sorting · M7 Updates · M8 Website + launch | Not started |
+
+Order changed 2026-10-10 so the full product can be tested sooner: M3 → M6 → M2 → M5 → M4 → M7 → M8.
 
 Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 
@@ -30,6 +33,14 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Register capfolder.com; trademark search (USPTO, EUIPO).
 - [ ] Apple Developer ID + Windows code-signing certificate (M7).
 - [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`).
+
+## Missing in the desktop app (M3)
+- Not built yet (shown as Coming soon): import (M2), document sorting/OCR (M4), AI and MCP (M4), signing and email verification (M5), xlsx and lawyer zip (M6), updates (M7), Touch ID / Windows Hello (M7).
+- Not built, no placeholder: SAFE/share transfer (F-20), merge duplicate people (F-21), replace/rename a document (F-28), two-laptop forks (F-35), rebaseline after an outside edit (F-31), document generation from templates.
+- Founder detection is a heuristic (common stock issued on the formation date or with vesting) until stakeholder roles exist.
+- Options recorded without a strike are stored at $0 (with a 409A warning).
+- Reset of a forgotten app password is manual (remove the "Capfolder" keychain item).
+- File scope covers ~/Documents and dialog-picked folders; a vault elsewhere must be opened through the dialog once.
 
 ## Missing / known limits (engine)
 - Hash chain catches accidental edits only; a rewrite with recomputed hashes is undetected. Needs signing/anchoring.

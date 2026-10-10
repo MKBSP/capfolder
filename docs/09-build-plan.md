@@ -24,7 +24,7 @@
   - Pilot company's real Pulley export imports with totals matching to the share.
   - Every unmappable column is surfaced, never silently dropped.
 
-## M3 · Desktop shell (weeks 2–3)
+## M3 · Desktop shell (weeks 2–3) ✅ done 2026-10-10 (built before M2)
 - First run (F-02 to F-06): lock, email, company, start choice.
 - Home (cap table + What's missing), Person, Documents, guided from-zero form (F-08), New SAFE/Grant/Shares forms, Settings.
 - **Accept:** a founder goes from install to a populated cap table in under 5 minutes with the pilot data.
