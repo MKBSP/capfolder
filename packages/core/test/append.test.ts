@@ -115,3 +115,21 @@ test("rejects a correction aimed at a missing event", async () => {
   );
   expect(r).toEqual({ ok: false, errors: ["Correction target evt_nope doesn't exist"] });
 });
+
+test("a reversal can't be reversed (it would look like an undo but do nothing)", async () => {
+  const first = await appendEvent(
+    log,
+    { kind: "app", type: "reversal", data: { target: "evt_0018", reason: "dup" } },
+    { ...ctx, newId: () => "evt_REV" },
+  );
+  if (!first.ok) throw new Error(first.errors.join());
+  const r = await appendEvent(
+    `${log}${first.line}\n`,
+    { kind: "app", type: "reversal", data: { target: "evt_REV", reason: "undo" } },
+    { ...ctx, newId: () => "evt_REV2" },
+  );
+  expect(r).toEqual({
+    ok: false,
+    errors: ["A reversal can't be reversed. Enter what you need again instead."],
+  });
+});

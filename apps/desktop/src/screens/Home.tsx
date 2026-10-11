@@ -348,6 +348,11 @@ export function VaultBanners() {
           <span className="mono">captable.edited.csv</span>). Make changes in the app.
         </div>
       ) : null}
+      {vault.derivedError ? (
+        <div className="banner amber" style={{ marginTop: 12 }}>
+          Saved. {vault.derivedError} It's refreshed on the next save.
+        </div>
+      ) : null}
       {vault.missingDocs.length ? (
         <div className="banner amber" style={{ marginTop: 12 }}>
           {vault.missingDocs.length} linked document{vault.missingDocs.length > 1 ? "s are" : " is"} missing

@@ -49,3 +49,9 @@ Rules pack: edit `rules/rules.json` (bump `version`), run `pnpm rules:sign`, com
 
 ## Event format changes
 Never rewrite `events.jsonl`. Bump `format_version` in `capfolder.json` and append a `schema_migrated` event. The reducer understands all past versions. Old apps ignore unknown event types and show "Update to see everything".
+
+## Beta builds without Apple/Microsoft certificates (2026-10-11)
+- Actions → release → Run workflow with `allow_unsigned`: macOS is ad-hoc signed (`-`, so Apple Silicon opens it after "Open Anyway"), Windows unsigned (SmartScreen: More info → Run anyway). Updates are still signed with the Tauri updater key, so the secret `TAURI_SIGNING_PRIVATE_KEY` is required.
+- The draft is published as a **normal release** (not a prerelease): `/releases/latest`, the website and the updater only see those.
+- Versions stay plain x.y.z (Windows MSI rejects `-beta`). Betas: 0.1.0, 0.1.1, … The first signed build takes a higher number than any beta, so testers update to it.
+- Before publishing: `latest.json` lists darwin-aarch64, darwin-x86_64, windows-x86_64, linux-x86_64; on a Mac, `codesign -dv` on the downloaded app shows `Signature=adhoc`.

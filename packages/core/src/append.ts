@@ -26,6 +26,9 @@ export async function appendEvent(log: string, draft: EventDraft, ctx: AppendCtx
   if (!chain.ok)
     return { ok: false, errors: [`The record is broken at line ${chain.line}: ${chain.reason}`] };
   const events = chain.events;
+  // the reducer ignores reversals of reversals, so accepting one would record an "undo" that does nothing
+  if (draft.type === "reversal" && events.some((e) => e.id === draft.data.target && e.type === "reversal"))
+    return { ok: false, errors: ["A reversal can't be reversed. Enter what you need again instead."] };
   const last = events.at(-1);
   const base = {
     seq: (last?.seq ?? 0) + 1,

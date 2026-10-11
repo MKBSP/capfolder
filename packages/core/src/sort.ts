@@ -216,7 +216,8 @@ export function unsignedSignal(text: string, opts: { signedPdf?: boolean } = {})
       .exec(text)?.[0]
       .toLowerCase() ??
     // template blanks: [Investor Name], [Date], [●], [•], [_____]
-    /\[(?:[^\]\n]{0,30}\b(?:name|date|amount|address|title|company|investor)\b[^\]\n]{0,20}|[●•]|_{3,}|\s*)\]/i.exec(
+    // (not checkboxes like "[ ]" or "[X]", nor filled-in brackets like "[Name: Mads Petersen]")
+    /\[\s*(?:(?:investor|company|signatory|holder|purchaser)?\s*(?:name|date|amount|address|title)|[●•]|_{3,})\s*\]/i.exec(
       text,
     )?.[0]
   );

@@ -175,6 +175,52 @@ function acmeEvents(): VaultEvent[] {
     .map((l) => JSON.parse(l));
 }
 
+describe("transfer refusals that protect vesting (review)", () => {
+  test("a stopped holding that still has unvested shares can't move (they'd turn vested)", async () => {
+    const part = { log, events: acmeEvents() };
+    const s0 = reduce(part.events, MAX_DATE);
+    const cancel = await write(
+      [
+        {
+          kind: "ocf",
+          type: "TX_STOCK_REPURCHASE",
+          data: {
+            object_type: "TX_STOCK_REPURCHASE",
+            id: "tx_rp",
+            date: "2025-01-01",
+            security_id: "CS-1",
+            quantity: "100000",
+            price: { amount: "0.00001", currency: "USD" },
+          },
+        },
+      ],
+      part.log,
+    );
+    expect(s0.securities.get("CS-1")).toBeTruthy();
+    const t = b.transfer({
+      state: reduce(cancel.events, MAX_DATE),
+      securityId: "CS-1",
+      toStakeholderId: "sh_ana",
+      quantity: "1000000",
+      date: "2026-01-01",
+    });
+    expect("error" in t && t.error).toMatch(/unvested/);
+  });
+  test("vesting terms but no recorded start: refused, not invented", () => {
+    const s = acme();
+    const x = s.securities.get("CS-1")!;
+    delete x.vestingStart;
+    const t = b.transfer({
+      state: s,
+      securityId: "CS-1",
+      toStakeholderId: "sh_ana",
+      quantity: "10",
+      date: "2026-01-01",
+    });
+    expect("error" in t && t.error).toMatch(/vesting start/);
+  });
+});
+
 describe("merge duplicate people (F-21)", () => {
   test("an import made 'Angel A' and 'Angela A.': one person, holdings and documents moved, old name remembered", async () => {
     const dup = await write([

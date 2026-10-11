@@ -542,14 +542,22 @@ export function transfer(p: {
   if (q > x.quantity) return { error: `Only ${fmtInt(x.quantity)} shares are outstanding on ${x.id}.` };
   const partial = q < x.quantity;
   const stopped = x.stoppedAt !== undefined && x.stoppedAt <= p.date;
+  // issued without a schedule, these would count as vested: refuse instead of guessing
+  if (stopped && (securityVested(x, p.state, p.date).unvested ?? 0n) > 0n)
+    return {
+      error:
+        "Vesting stopped on this holding while part of it is still unvested. Record the repurchase or cancellation of the unvested shares first.",
+    };
+  if (!stopped && x.vestingTermsId && !x.vestingStart)
+    return {
+      error: "This holding has a vesting schedule but no vesting start. Record when vesting started first.",
+    };
   if (partial && !stopped && x.vestings?.length)
     return { error: "This holding has a custom vesting schedule, so only all of it can be transferred." };
   const n = nextSecurityIdNumber(p.state, "CS");
   const [toId, restId] = [`CS-${n}`, `CS-${n + 1}`];
   // after a repurchase or cancellation stopped vesting, what's left is vested: the new holdings carry no schedule
-  const vesting = stopped
-    ? {}
-    : { vestingTermsId: x.vestingTermsId, vestingStart: x.vestingStart?.date ?? x.date };
+  const vesting = stopped ? {} : { vestingTermsId: x.vestingTermsId, vestingStart: x.vestingStart?.date };
   const issue = (stakeholderId: string, quantity: bigint, securityId: string) =>
     stockIssuance({
       state: p.state,

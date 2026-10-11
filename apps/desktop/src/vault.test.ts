@@ -324,9 +324,37 @@ describe("rename and replace a document (F-28)", () => {
     expect((await removeDocument(fs, v, ctx, docId)).ok).toBe(false);
   });
 
+  test("rename: Windows-reserved names get a suffix, a missing file gets a plain message", async () => {
+    const { v, docId } = await withDoc();
+    const r = await renameDocument(fs, v, ctx, docId, "con");
+    if (!r.ok) throw new Error(r.errors.join());
+    expect(reduce(r.vault.events, "9999-12-31").docs.get(docId)!.data.path).toBe("docs/founders/con_.pdf");
+    fs.deleteSync(`${v.root}/docs/founders/con_.pdf`);
+    expect(await renameDocument(fs, r.vault, ctx, docId, "y")).toEqual({
+      ok: false,
+      errors: ["That document's file is missing from the folder."],
+    });
+  });
+
   test("replacing with the same file is refused", async () => {
     const { v, docId } = await withDoc();
     const r = await replaceDocument(fs, v, ctx, docId, { originalName: "same.pdf", bytes: pdf });
     expect(r).toEqual({ ok: false, errors: ["That's the same file."] });
   });
+});
+
+test("a locked captable.csv (open in Excel) doesn't fail the save: the event is kept and the app says why", async () => {
+  const v = await founded();
+  const write = fs.writeText.bind(fs);
+  fs.writeText = async (p, t) => {
+    if (p.endsWith("captable.csv")) throw new Error("EBUSY: resource busy or locked");
+    return write(p, t);
+  };
+  const r = await appendToVault(fs, v, [b.note({ text: "hi" })], ctx);
+  if (!r.ok) throw new Error(r.errors.join());
+  expect(r.vault.events.at(-1)!.type).toBe("note");
+  expect(r.vault.derivedError).toMatch(/captable\.csv couldn't be updated/);
+  // and the next save still works
+  const again = await appendToVault(fs, r.vault, [b.note({ text: "again" })], ctx);
+  expect(again.ok).toBe(true);
 });

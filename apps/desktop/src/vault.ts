@@ -34,6 +34,7 @@ export interface Vault {
   broken?: { line: number; reason: string };
   csvEdited: boolean;
   missingDocs: string[];
+  derivedError?: string; // captable.csv / ocf/ couldn't be refreshed (file open in Excel, sync lock…)
 }
 export type Result = { ok: true; vault: Vault } | { ok: false; errors: string[] };
 export type CompanyInput = {
@@ -107,21 +108,36 @@ Y Combinator and are provided as is. Have a lawyer review your documents.
 `;
 
 /** Rewrites the derived files (captable.csv, ocf/) as of today and records that date in capfolder.json. */
+/**
+ * Refreshes the files made from the record. Best effort: events.jsonl is already saved, so a locked file (captable.csv
+ * open in Excel, a sync client holding it) must not fail the save. Returns the problem to show instead.
+ */
 async function writeDerived(
   fs: Fs,
   root: string,
   meta: Record<string, unknown>,
   events: VaultEvent[],
   ctx: AppendCtx,
-) {
+): Promise<{ meta: Record<string, unknown>; error?: string }> {
   const asOf = today(ctx);
-  await fs.writeText(join(root, "captable.csv"), captableCsv(events, asOf));
-  await fs.mkdir(join(root, "ocf"));
-  const files = toOcfExport(events, { asOf, generatedAt: ctx.now().toISOString() });
-  for (const [name, text] of Object.entries(files)) await fs.writeText(join(root, "ocf", name), text);
+  try {
+    await fs.writeText(join(root, "captable.csv"), captableCsv(events, asOf));
+  } catch (e) {
+    return {
+      meta,
+      error: `captable.csv couldn't be updated (is it open in Excel?): ${(e as Error).message ?? e}`,
+    };
+  }
   const next = { ...meta, captable_as_of: asOf };
-  await fs.writeText(join(root, "capfolder.json"), `${JSON.stringify(next, null, 2)}\n`);
-  return next;
+  try {
+    await fs.mkdir(join(root, "ocf"));
+    const files = toOcfExport(events, { asOf, generatedAt: ctx.now().toISOString() });
+    for (const [name, text] of Object.entries(files)) await fs.writeText(join(root, "ocf", name), text);
+    await fs.writeText(join(root, "capfolder.json"), `${JSON.stringify(next, null, 2)}\n`);
+  } catch (e) {
+    return { meta: next, error: `The ocf/ files couldn't be updated: ${(e as Error).message ?? e}` };
+  }
+  return { meta: next };
 }
 
 async function isEmptyDir(fs: Fs, path: string) {
@@ -157,7 +173,7 @@ export async function createVault(
   for (const d of DOC_DIRS) await fs.mkdir(join(root, "docs", d));
   await fs.writeText(join(root, "README.txt"), readme(p.company.name));
   await fs.writeText(join(root, "events.jsonl"), r.text);
-  const meta = await writeDerived(
+  const { meta } = await writeDerived(
     fs,
     root,
     {
@@ -209,12 +225,12 @@ export async function openVault(fs: Fs, root: string, ctx: AppendCtx): Promise<V
       csvEdited = true;
     }
   }
-  const nextMeta = await writeDerived(fs, root, meta, events, ctx);
+  const derived = await writeDerived(fs, root, meta, events, ctx);
   const missingDocs: string[] = [];
   for (const [id, d] of reduce(events, MAX_DATE).docs)
     if (!d.removed && (!isSafeDocPath(d.data.path) || !(await fs.exists(join(root, d.data.path)))))
       missingDocs.push(id);
-  return { root, meta: nextMeta, log, events, csvEdited, missingDocs };
+  return { root, meta: derived.meta, log, events, csvEdited, missingDocs, derivedError: derived.error };
 }
 
 /** One write at a time per vault folder: two saves racing would both pass the freshness check and fork the chain. */
@@ -242,8 +258,8 @@ async function appendUnlocked(fs: Fs, v: Vault, drafts: EventDraft[], ctx: Appen
   if (!r.ok) return r;
   await fs.appendText(join(v.root, "events.jsonl"), r.text);
   const events = [...v.events, ...r.events];
-  const meta = await writeDerived(fs, v.root, v.meta, events, ctx);
-  return { ok: true, vault: { ...v, meta, log: v.log + r.text, events } };
+  const d = await writeDerived(fs, v.root, v.meta, events, ctx);
+  return { ok: true, vault: { ...v, meta: d.meta, log: v.log + r.text, events, derivedError: d.error } };
 }
 
 /** The only write path for events: all drafts or none, then the derived files are refreshed. */
@@ -352,7 +368,9 @@ const fileStem = (name: string) =>
     .replace(/[\\/:*?"<>|\u0000-\u001f]/g, " ")
     .replace(/\s+/g, " ")
     .replace(/^[.\s]+|[.\s]+$/g, "")
-    .slice(0, 120);
+    .slice(0, 120)
+    // names Windows reserves for devices, whatever the extension
+    .replace(/^(con|prn|aux|nul|com\d|lpt\d)$/i, "$1_");
 
 /** F-28. Renames the file in its folder (the extension stays), then records the new path. */
 export function renameDocument(
@@ -375,7 +393,13 @@ export function renameDocument(
     const dir = from.slice(0, from.lastIndexOf("/"));
     const ext = /\.[a-z0-9]+$/i.exec(doc.data.path)?.[0] ?? "";
     if (`${stem}${ext}` === baseName(from)) return { ok: true, vault: v };
-    const to = await freePath(fs, dir, `${stem}${ext}`);
+    if (!(await fs.exists(from)))
+      return { ok: false, errors: ["That document's file is missing from the folder."] };
+    // a change of case only: on a case-insensitive disk the "other" file is this one
+    const to =
+      `${stem}${ext}`.toLowerCase() === baseName(from).toLowerCase()
+        ? join(dir, `${stem}${ext}`)
+        : await freePath(fs, dir, `${stem}${ext}`);
     // the file moves first: a record pointing at a file that isn't there is worse than an unrecorded rename
     await fs.rename(from, to);
     const r = await appendUnlocked(
@@ -423,7 +447,11 @@ export function replaceDocument(
     const abs = await freePath(fs, dir, `${stem}${ext}`);
     await fs.writeBytes(abs, p.bytes);
     const newDoc = b.newId("doc");
-    const flags = ((old.data.flags as string[]) ?? []).filter((f) => f !== "draft");
+    // how the old copy was read (OCR, sorting) says nothing about this one
+    const flags = ((old.data.flags as string[]) ?? []).filter(
+      (f) => f !== "draft" && f !== "ocr" && !f.startsWith("sorted:"),
+    );
+    flags.push("replaced:founder");
     const drafts = [
       b.docAdded({
         docId: newDoc,
