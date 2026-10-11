@@ -1,3 +1,4 @@
+import { TRANSFER_NOTE } from "./builders";
 import { parseDec } from "./num";
 import { securityVested } from "./rows";
 import type { Security, State } from "./types";
@@ -18,7 +19,9 @@ export const SIDE_DOC_TYPES = new Set([
   "company_certificate",
   "company_bylaws",
 ]);
-export const isHoldingProof = (docType: unknown) => !SIDE_DOC_TYPES.has(String(docType ?? ""));
+/** A signed document for the holding itself: not a side document (consent, 83(b)…) and not filed as a draft. */
+export const isHoldingProof = (docType: unknown, flags?: unknown) =>
+  !SIDE_DOC_TYPES.has(String(docType ?? "")) && !(Array.isArray(flags) && flags.includes("draft"));
 
 // doc_type values used for gap checks (docs/03): 83b, ciiaa, board_consent, plus any doc linked to a plan id.
 export function computeGaps(s: State): Gap[] {
@@ -26,10 +29,16 @@ export function computeGaps(s: State): Gap[] {
   const name = (id: string) => s.stakeholders.get(id)?.name?.legal_name ?? id;
   const linked = (target: string, type?: string) =>
     [...s.docs.values()].some(
-      (d) => !d.removed && d.links.has(target) && (!type || d.data.doc_type === type),
+      (d) =>
+        !d.removed &&
+        d.links.has(target) &&
+        (!type || d.data.doc_type === type) &&
+        !d.data.flags?.includes?.("draft"),
     );
   const proof = (target: string) =>
-    [...s.docs.values()].some((d) => !d.removed && d.links.has(target) && isHoldingProof(d.data.doc_type));
+    [...s.docs.values()].some(
+      (d) => !d.removed && d.links.has(target) && isHoldingProof(d.data.doc_type, d.data.flags),
+    );
   const label = (x: Security) =>
     x.kind === "convertible"
       ? (x.convertibleType ?? "convertible")
@@ -63,6 +72,7 @@ export function computeGaps(s: State): Gap[] {
       x.kind === "stock" &&
       (x.vestingTermsId || x.vestings?.length) &&
       plus30(x.date) >= s.asOf &&
+      !x.note?.startsWith(TRANSFER_NOTE) &&
       !linked(x.id, "83b")
     )
       gaps.push({

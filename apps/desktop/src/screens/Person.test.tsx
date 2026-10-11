@@ -68,3 +68,41 @@ test("edit a name as the same person", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Save" }));
   expect(await screen.findByRole("heading", { name: "Ana R. Ribeiro", level: 1 })).toBeInTheDocument();
 });
+
+test("transfer part of Ana's shares to a new holding company: both rows on the cap table", async () => {
+  await person("Ana Ribeiro");
+  await userEvent.click(screen.getByRole("button", { name: "Transfer…" }));
+  const dialog = within(screen.getByRole("dialog"));
+  await userEvent.type(dialog.getByLabelText("Name"), "Ribeiro Holdings");
+  await userEvent.type(dialog.getByLabelText(/^Shares/), "1000000");
+  fireEvent.change(dialog.getByLabelText("Date"), { target: { value: "2026-01-01" } });
+  await userEvent.click(dialog.getByRole("button", { name: "Record transfer" }));
+  expect(await screen.findByText(/Transferred 1,000,000 shares of CS-2/)).toBeInTheDocument();
+  await backHome();
+  const t = screen.getByRole("table").textContent!;
+  expect(t).toContain("Ribeiro Holdings");
+  expect(t).toMatch(/Ana Ribeiro.*2,000,000/);
+});
+
+test("transfer refuses more than the holder has, and says why", async () => {
+  await person("Ana Ribeiro");
+  await userEvent.click(screen.getByRole("button", { name: "Transfer…" }));
+  const dialog = within(screen.getByRole("dialog"));
+  await userEvent.selectOptions(dialog.getByLabelText("To"), "Mads Petersen");
+  await userEvent.type(dialog.getByLabelText(/^Shares/), "9000000");
+  await userEvent.click(dialog.getByRole("button", { name: "Record transfer" }));
+  expect(await dialog.findByText("Only 3,000,000 shares are outstanding on CS-2.")).toBeInTheDocument();
+});
+
+test("merge a duplicate: holdings move, the duplicate is gone, its page goes to the kept person", async () => {
+  const fp = await person("Fund X");
+  await userEvent.click(screen.getByRole("button", { name: "Edit" }));
+  await userEvent.click(screen.getByRole("button", { name: "A duplicate of someone else here" }));
+  await userEvent.selectOptions(screen.getByLabelText("Keep"), "Y Combinator");
+  await userEvent.click(screen.getByRole("button", { name: "Merge into Y Combinator" }));
+  expect(await screen.findByRole("heading", { name: "Y Combinator", level: 1 })).toBeInTheDocument();
+  expect(screen.getAllByText(/SAFE-3/).length).toBeGreaterThan(0);
+  expect(fp.fs.readSync(`${fp.root}/events.jsonl`)).toContain('"type":"stakeholder_alias"');
+  await userEvent.click(screen.getByRole("button", { name: "← People" }));
+  expect(screen.queryByRole("button", { name: "Fund X" })).not.toBeInTheDocument();
+});

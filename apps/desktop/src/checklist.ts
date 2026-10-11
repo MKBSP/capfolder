@@ -25,6 +25,7 @@ export function checklist(s: State, gaps: Gap[]): { groups: CheckGroup[]; done: 
     const hit = docs.find(
       ([, d]) =>
         targets.some((t) => d.links.has(t)) &&
+        !d.data.flags?.includes?.("draft") &&
         (type ? d.data.doc_type === type : isHoldingProof(d.data.doc_type)),
     );
     return hit ? { docId: hit[0], path: hit[1].data.path as string } : null;

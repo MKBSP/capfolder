@@ -12,7 +12,8 @@ import {
 import { type ReactNode, useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
-import { Chip, ComingSoon, ErrorList, Field, Modal } from "../components/ui";
+import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
+import { Chip, ErrorList, Field, Modal } from "../components/ui";
 import { day, money, moneyShort, month, num, shares, todayIso } from "../fmt";
 import { CORRECTABLE, getPath, type HistoryItem, historyFor } from "../history";
 import { useApp } from "../state";
@@ -28,6 +29,7 @@ type Dialog =
   | "terminate"
   | "exercise"
   | "repurchase"
+  | "transfer"
   | { correct: HistoryItem }
   | { reverse: HistoryItem }
   | null;
@@ -45,6 +47,7 @@ export function Person({ id }: { id: string }) {
   );
   const equity = secs.filter((x) => x.kind !== "convertible");
   const options = secs.filter((x) => x.kind === "equity");
+  const transferable = secs.filter((x) => x.kind === "stock" || x.convertibleType === "SAFE");
   const vestingStock = secs.filter((x) => x.kind === "stock" && (x.vestingTermsId || x.vestings?.length));
   const main = equity.find((x) => vestingSchedule(x, s)) ?? equity[0];
   const history = historyFor(app.vault.events, s, id);
@@ -63,6 +66,11 @@ export function Person({ id }: { id: string }) {
         <button type="button" className="btn" onClick={() => setDialog("edit")}>
           Edit
         </button>
+        {transferable.length ? (
+          <button type="button" className="btn" onClick={() => setDialog("transfer")}>
+            Transfer…
+          </button>
+        ) : null}
         {options.length ? (
           <button type="button" className="btn" onClick={() => setDialog("exercise")}>
             Record exercise
@@ -152,7 +160,15 @@ export function Person({ id }: { id: string }) {
           </div>
         </div>
       </main>
-      {dialog === "edit" ? <EditDialog id={id} onClose={() => setDialog(null)} /> : null}
+      {dialog === "edit" ? (
+        <EditDialog
+          id={id}
+          canTransfer={transferable.length > 0}
+          onTransfer={() => setDialog("transfer")}
+          onClose={() => setDialog(null)}
+        />
+      ) : null}
+      {dialog === "transfer" ? <TransferDialog secs={transferable} onClose={() => setDialog(null)} /> : null}
       {dialog === "terminate" ? (
         <TerminateDialog
           secs={equity.filter((x) => x.vestingTermsId || x.vestings?.length)}
@@ -290,39 +306,87 @@ function useSave(onClose: () => void) {
   };
 }
 
-function EditDialog({ id, onClose }: { id: string; onClose(): void }) {
+function EditDialog({
+  id,
+  canTransfer,
+  onTransfer,
+  onClose,
+}: {
+  id: string;
+  canTransfer: boolean;
+  onTransfer(): void;
+  onClose(): void;
+}) {
   const app = useApp();
   const prev = app.latest!.stakeholders.get(id)!;
-  const [same, setSame] = useState<boolean | null>(null);
+  const [kind, setKind] = useState<"same" | "other" | "duplicate" | null>(null);
   const [name, setName] = useState(prev.name?.legal_name ?? "");
   const [email, setEmail] = useState(prev.contact_info?.emails?.[0]?.email_address ?? "");
-  const { errors, save } = useSave(onClose);
+  const others = [...app.latest!.stakeholders.values()].filter((x) => x.id !== id);
+  const [keep, setKeep] = useState(others[0]?.id ?? "");
+  const keepName = app.latest!.stakeholders.get(keep)?.name?.legal_name ?? "";
+  const { errors, setErrors, save } = useSave(onClose);
+  const choice = (k: typeof kind, label: string) => (
+    <button type="button" className={`btn ${kind === k ? "primary" : ""}`} onClick={() => setKind(k)}>
+      {label}
+    </button>
+  );
   return (
     <Modal open onClose={onClose} title="Edit person">
       <div className="stack">
         <p>Is this the same person or legal entity?</p>
-        <div className="row">
-          <button
-            type="button"
-            className={`btn ${same === true ? "primary" : ""}`}
-            onClick={() => setSame(true)}
-          >
-            Same, just a new name or email
-          </button>
-          <button
-            type="button"
-            className={`btn ${same === false ? "primary" : ""}`}
-            onClick={() => setSame(false)}
-          >
-            A different entity
-          </button>
+        <div className="row wrap">
+          {choice("same", "Same, just a new name or email")}
+          {choice("other", "A different entity")}
+          {others.length ? choice("duplicate", "A duplicate of someone else here") : null}
         </div>
-        {same === false ? (
-          <ComingSoon milestone="a later release">
-            Moving holdings to another entity is a transfer, with consent and signatures.
-          </ComingSoon>
+        {kind === "other" ? (
+          <div className="stack">
+            <p>
+              Moving holdings to another person or entity is a transfer. Record it once the transfer agreement
+              is signed.
+            </p>
+            {canTransfer ? (
+              <button type="button" className="btn primary" onClick={onTransfer}>
+                Transfer holdings…
+              </button>
+            ) : (
+              <p className="meta">{prev.name?.legal_name} has no shares or SAFEs to transfer.</p>
+            )}
+          </div>
         ) : null}
-        {same ? (
+        {kind === "duplicate" ? (
+          <>
+            <Field label="Keep">
+              <select className="inp" value={keep} onChange={(e) => setKeep(e.target.value)}>
+                {others.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.name?.legal_name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <p className="meta">
+              Everything recorded for {prev.name?.legal_name} moves to {keepName}: holdings, documents, and
+              the name, which sorting will still recognize. The history keeps both records.
+            </p>
+            <ErrorList errors={errors} />
+            <button
+              type="button"
+              className="btn primary"
+              onClick={async () => {
+                const drafts = b.mergePeople({ events: app.vault!.events, fromId: id, intoId: keep });
+                if (!drafts.length) return setErrors(["Nothing to merge."]);
+                const errs = await app.run(drafts);
+                if (errs) return setErrors(errs);
+                app.go({ name: "person", id: keep });
+              }}
+            >
+              Merge into {keepName}
+            </button>
+          </>
+        ) : null}
+        {kind === "same" ? (
           <>
             <Field label="Name">
               <input className="inp" value={name} onChange={(e) => setName(e.target.value)} />
@@ -341,6 +405,70 @@ function EditDialog({ id, onClose }: { id: string; onClose(): void }) {
             </button>
           </>
         ) : null}
+      </div>
+    </Modal>
+  );
+}
+
+function TransferDialog({ secs, onClose }: { secs: Security[]; onClose(): void }) {
+  const app = useApp();
+  const [secId, setSecId] = useState(secs[0]?.id ?? "");
+  const [to, setTo] = useState<PersonChoice>(() => newPerson("INSTITUTION"));
+  const [date, setDate] = useState(todayIso());
+  const [qty, setQty] = useState("");
+  const { errors, setErrors, save } = useSave(onClose);
+  const at = useMemo(() => reduce(app.vault!.events, date), [app.vault, date]);
+  const x = at.securities.get(secId) ?? secs.find((s) => s.id === secId);
+  const isSafe = x?.kind === "convertible";
+  return (
+    <Modal open onClose={onClose} title="Transfer">
+      <div className="stack">
+        <SecuritySelect secs={secs} value={secId} onChange={setSecId} />
+        <PersonPicker label="To" value={to} onChange={setTo} defaultType="INSTITUTION" />
+        <div className="grid2">
+          <Field
+            label={isSafe ? "Amount" : "Shares"}
+            hint={
+              x
+                ? isSafe
+                  ? `${money(x.amount, x.currency)} outstanding.`
+                  : `${shares(x.quantity)} outstanding.`
+                : undefined
+            }
+          >
+            <input className="inp num" value={qty} onChange={(e) => setQty(e.target.value)} />
+          </Field>
+          <Field label="Date">
+            <DateInput value={date} onChange={setDate} />
+          </Field>
+        </div>
+        <p className="meta">
+          {isSafe
+            ? "The new holder gets their own SAFE with the same cap and discount."
+            : "Vesting carries over unchanged. Options can't be transferred."}{" "}
+          Attach the signed transfer agreement from Documents.
+        </p>
+        <ErrorList errors={errors} />
+        <button
+          type="button"
+          className="btn primary"
+          onClick={() => {
+            const who = resolvePerson(to);
+            if (!who) return setErrors(["Enter who receives it."]);
+            const q = num(qty);
+            const r = b.transfer({
+              state: at,
+              securityId: secId,
+              toStakeholderId: who.id,
+              date,
+              ...(isSafe ? { amount: q } : { quantity: q }),
+            });
+            if ("error" in r) return setErrors([r.error]);
+            return save([...who.drafts, ...r.drafts]);
+          }}
+        >
+          Record transfer
+        </button>
       </div>
     </Modal>
   );

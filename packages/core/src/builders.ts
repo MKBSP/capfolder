@@ -1,9 +1,11 @@
 // Pure builders: one function per founder action, returning OCF/app event drafts ready for appendEvents.
 // They never write anything; appendEvents validates and checks invariants.
 import { monotonicFactory } from "ulid";
-import { addMonths } from "./dates";
+import { addMonths, MAX_DATE } from "./dates";
+import { fmtInt, parseDec, subDec, toInt } from "./num";
+import { liveEvents, reduce } from "./reduce";
 import { securityVested } from "./rows";
-import type { Data, EventDraft, State } from "./types";
+import type { Data, EventDraft, State, VaultEvent } from "./types";
 import { startConditionId } from "./vesting";
 
 /** OCF Monetary. The company currency comes from the vault (capfolder.json); USD when not given. */
@@ -280,6 +282,7 @@ export function safe(p: {
   mfn: boolean;
   date: string;
   securityId?: string;
+  timing?: string;
 }): EventDraft {
   const securityId = p.securityId ?? nextSecurityId(p.state, "SAFE");
   return ocf("TX_CONVERTIBLE_ISSUANCE", {
@@ -303,7 +306,7 @@ export function safe(p: {
           conversion_mechanism: {
             type: "SAFE_CONVERSION",
             conversion_mfn: p.mfn,
-            conversion_timing: "POST_MONEY",
+            conversion_timing: p.timing ?? "POST_MONEY",
             ...(p.cap ? { conversion_valuation_cap: money(p.cap, p.currency) } : {}),
             ...(p.discount ? { conversion_discount: p.discount } : {}),
           },
@@ -457,5 +460,147 @@ export const docLinked = (p: { docId: string; target: string }) =>
   app("doc_linked", { doc_id: p.docId, target: p.target });
 export const stakeholderAlias = (p: { stakeholderId: string; alias: string }) =>
   app("stakeholder_alias", { stakeholder_id: p.stakeholderId, alias: p.alias });
+export const docUnlinked = (p: { docId: string; target: string }) =>
+  app("doc_unlinked", { doc_id: p.docId, target: p.target });
 export const docRemoved = (p: { docId: string; movedTo: string }) =>
   app("doc_removed", { doc_id: p.docId, moved_to: p.movedTo });
+
+/** "1234567.5" → "1,234,567.5" */
+const fmtDec = (v: string) => {
+  const [i, f] = v.split(".");
+  return `${fmtInt(BigInt(i!))}${f ? `.${f}` : ""}`;
+};
+/** Marks issuances made by a transfer, so gaps don't ask for an 83(b) the original holder already filed. */
+export const TRANSFER_NOTE = "transferred from ";
+
+/**
+ * F-20: shares or a SAFE move to someone else. Strict OCF: the new holder gets a new security; with part of a
+ * stock holding, the rest is re-issued to the old holder (balance_security_id). Vesting carries over unchanged.
+ */
+export function transfer(p: {
+  state: State;
+  securityId: string;
+  toStakeholderId: string;
+  quantity?: string;
+  amount?: string;
+  date: string;
+}): { drafts: EventDraft[] } | { error: string } {
+  const x = p.state.securities.get(p.securityId);
+  if (!x) return { error: "That holding isn't on the cap table on that date." };
+  if (p.toStakeholderId === x.stakeholderId) return { error: "Pick someone other than the holder." };
+  if (x.kind === "equity")
+    return { error: "Options can't be transferred. Record an exercise first, then transfer the shares." };
+  const note = { note: `${TRANSFER_NOTE}${x.id}` };
+  if (x.kind === "convertible") {
+    if (x.convertibleType !== "SAFE") return { error: "Only SAFEs can be transferred here." };
+    let left: string;
+    try {
+      if (parseDec(p.amount ?? "").v <= 0n) throw new Error();
+      left = subDec(x.amount ?? "0", p.amount!);
+    } catch {
+      return { error: "Enter how much of the SAFE moves." };
+    }
+    if (parseDec(left).v < 0n)
+      return { error: `Only ${fmtDec(x.amount ?? "0")} of this SAFE is outstanding.` };
+    const newSafe = nextSecurityId(p.state, "SAFE");
+    const issue = safe({
+      state: p.state,
+      stakeholderId: p.toStakeholderId,
+      amount: p.amount!,
+      cap: x.cap,
+      discount: x.discount,
+      mfn: x.mfn === true,
+      timing: x.timing,
+      currency: x.currency,
+      date: p.date,
+      securityId: newSafe,
+    });
+    return {
+      drafts: [
+        ocf("TX_CONVERTIBLE_TRANSFER", {
+          id: newId("tx"),
+          date: p.date,
+          security_id: x.id,
+          amount: money(p.amount!, x.currency),
+          resulting_security_ids: [newSafe],
+        }),
+        { ...issue, meta: note },
+      ],
+    };
+  }
+  let q: bigint;
+  try {
+    q = toInt(p.quantity ?? "");
+  } catch {
+    q = 0n;
+  }
+  if (q <= 0n) return { error: "Enter how many shares move." };
+  if (q > x.quantity) return { error: `Only ${fmtInt(x.quantity)} shares are outstanding on ${x.id}.` };
+  const partial = q < x.quantity;
+  const stopped = x.stoppedAt !== undefined && x.stoppedAt <= p.date;
+  if (partial && !stopped && x.vestings?.length)
+    return { error: "This holding has a custom vesting schedule, so only all of it can be transferred." };
+  const n = nextSecurityIdNumber(p.state, "CS");
+  const [toId, restId] = [`CS-${n}`, `CS-${n + 1}`];
+  // after a repurchase or cancellation stopped vesting, what's left is vested: the new holdings carry no schedule
+  const vesting = stopped
+    ? {}
+    : { vestingTermsId: x.vestingTermsId, vestingStart: x.vestingStart?.date ?? x.date };
+  const issue = (stakeholderId: string, quantity: bigint, securityId: string) =>
+    stockIssuance({
+      state: p.state,
+      stakeholderId,
+      classId: x.classId!,
+      quantity: quantity.toString(),
+      price: x.price ?? "0",
+      currency: x.priceCurrency,
+      date: p.date,
+      securityId,
+      ...vesting,
+    }).map((d, i) => {
+      if (i > 0) return d;
+      if (!partial && !stopped && x.vestings?.length) d.data.vestings = x.vestings;
+      return { ...d, meta: note };
+    });
+  return {
+    drafts: [
+      ocf("TX_STOCK_TRANSFER", {
+        id: newId("tx"),
+        date: p.date,
+        security_id: x.id,
+        quantity: q.toString(),
+        resulting_security_ids: [toId],
+        ...(partial ? { balance_security_id: restId } : {}),
+      }),
+      ...issue(p.toStakeholderId, q, toId),
+      ...(partial ? issue(x.stakeholderId, x.quantity - q, restId) : []),
+    ],
+  };
+}
+
+/**
+ * F-21: two records for one person (often after an import). Every holding is re-pointed with a correction, documents
+ * are relinked, the old names become aliases (so sorting still recognizes them), and the duplicate is reversed.
+ */
+export function mergePeople(p: { events: VaultEvent[]; fromId: string; intoId: string }): EventDraft[] {
+  if (p.fromId === p.intoId) return [];
+  const live = liveEvents(p.events);
+  const versions = live.filter((e) => e.type === "STAKEHOLDER" && e.data.id === p.fromId);
+  const into = live.filter((e) => e.type === "STAKEHOLDER" && e.data.id === p.intoId).at(-1);
+  if (!versions.length || !into) return [];
+  const reason = `Same person as ${into.data.name?.legal_name ?? p.intoId}`;
+  const out: EventDraft[] = live
+    .filter((e) => e.kind === "ocf" && e.type !== "STAKEHOLDER" && e.data.stakeholder_id === p.fromId)
+    .map((e) => correction({ target: e.id, field: "stakeholder_id", old: p.fromId, new: p.intoId, reason }));
+  const s = reduce(p.events, MAX_DATE);
+  for (const [docId, d] of s.docs) {
+    if (d.removed || !d.links.has(p.fromId)) continue;
+    if (!d.links.has(p.intoId)) out.push(docLinked({ docId, target: p.intoId }));
+    out.push(docUnlinked({ docId, target: p.fromId }));
+  }
+  const names = new Set(versions.map((e) => e.data.name?.legal_name).filter(Boolean) as string[]);
+  for (const [alias, id] of s.aliases) if (id === p.fromId) names.add(alias);
+  for (const alias of names) out.push(stakeholderAlias({ stakeholderId: p.intoId, alias }));
+  for (const e of versions) out.push(reversal({ target: e.id, reason }));
+  return out;
+}

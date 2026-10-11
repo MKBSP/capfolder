@@ -103,6 +103,12 @@ export async function walk(
 
 // ---------- one file ----------
 
+/** A PDF signature field's byte range: the file was digitally signed (DocuSign, Adobe, Documenso…). */
+export function hasDigitalSignature(bytes: Uint8Array): boolean {
+  // ponytail: a raw byte search; a signature inside a compressed object stream is missed (it then asks the founder)
+  return new TextDecoder("latin1").decode(bytes).includes("/ByteRange");
+}
+
 export interface SortDeps {
   platform: Platform;
   rules?: DocRule[]; // from the rules pack
@@ -132,12 +138,13 @@ export async function sortOne(
     const read = await readText(bytes, file.name, d.platform.ocr);
     item.text = read.text;
     item.ocr = read.ocr;
-    let result = sortText(read.text, state, { corpus: d.corpus, rules: d.rules });
+    const signedPdf = hasDigitalSignature(bytes);
+    let result = sortText(read.text, state, { corpus: d.corpus, rules: d.rules, signedPdf });
     const ai = d.settings.ai;
     if (!result.type && ai.sortWithAi && ai.provider && ai.model && read.text.trim()) {
       const proposal = await aiSort(d.platform, { provider: ai.provider, model: ai.model }, read.text);
       if (proposal) {
-        result = sortText(read.text, state, { proposal });
+        result = sortText(read.text, state, { proposal, signedPdf });
         item.ai = `${PROVIDERS[ai.provider].label} · ${ai.model}`;
       }
     }
@@ -173,6 +180,7 @@ export async function fileDoc(
     date?: string;
     by?: string;
     extra?: EventDraft[];
+    draft?: boolean; // an unsigned draft: kept, but not counted as proof
   },
 ): Promise<{ ok: true; vault: Vault; filed: string } | { ok: false; errors: string[] }> {
   const r = await attachDocument(d.platform.fs, vault, d.ctx, {
@@ -183,7 +191,11 @@ export async function fileDoc(
     person: p.person,
     targets: p.targets,
     fields: p.fields as Record<string, string>,
-    flags: [`sorted:${p.by ?? item.result?.by ?? "founder"}`, ...(item.ocr ? ["ocr"] : [])],
+    flags: [
+      `sorted:${p.by ?? item.result?.by ?? "founder"}`,
+      ...(item.ocr ? ["ocr"] : []),
+      ...(p.draft ? ["draft"] : []),
+    ],
     extra: p.extra,
   });
   if (r.ok === "duplicate")

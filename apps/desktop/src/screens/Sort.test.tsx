@@ -186,4 +186,20 @@ describe("M4 review fixes", () => {
     await userEvent.click(screen.getByRole("button", { name: "Review" }));
     expect(screen.getByRole("button", { name: "Confirm & file" })).toBeTruthy();
   }, 20_000);
+
+  test("an unsigned draft waits for the founder, and filed as a draft it doesn't close the gap", async () => {
+    const fp = await sorting({
+      "joao-draft.pdf": await pdf(`DRAFT\n${fixture("grant-joao.txt")}`),
+    });
+    expect(screen.getByText(/filed ·/).textContent).toMatch(/0 filed · 1 need you/);
+    await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
+    expect(screen.getAllByText(/looks like an unsigned draft \("DRAFT"\)/).length).toBeGreaterThan(0);
+    expect(screen.getByRole("checkbox", { name: "This copy is signed" })).not.toBeChecked();
+    await userEvent.click(screen.getByRole("button", { name: "Confirm & file" }));
+    await screen.findByText(/docs\/grants\/2026-03-02_joao-silva_option-grant\.pdf/);
+    const added = events(fp.fs, fp.root)
+      .filter((e) => e.type === "doc_added")
+      .at(-1);
+    expect(added.data.flags).toContain("draft");
+  }, 20_000);
 });

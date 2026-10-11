@@ -44,6 +44,7 @@ export interface Security {
   cap?: string;
   discount?: string;
   timing?: string;
+  mfn?: boolean;
   vestingTermsId?: string;
   vestingStart?: { date: string; conditionId: string };
   vestings?: { date: string; amount: string }[];

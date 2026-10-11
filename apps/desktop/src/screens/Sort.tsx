@@ -243,6 +243,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
   const [remember, setRemember] = useState(
     !!r.suggestion && r.checks.some((c) => c.field === "name" && c.state === "differs"),
   );
+  const [signed, setSigned] = useState(!r.draft);
   const [errors, setErrors] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const targets = docTargets(s);
@@ -286,6 +287,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
         person: extraTarget ? fields.name! : holderName || "company",
         date: /^\d{4}-\d\d-\d\d$/.test(fields.date ?? "") ? fields.date : s.securities.get(target)?.date,
         by: r.by ? `${r.by}+founder` : "founder",
+        draft: !signed,
         extra: [
           ...(extraTarget?.drafts ?? []),
           ...(canRemember && remember
@@ -422,6 +424,12 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
             ))}
           </select>
         </Field>
+        {r.draft ? (
+          <label className="row small">
+            <input type="checkbox" checked={signed} onChange={(e) => setSigned(e.target.checked)} />
+            <span>This copy is signed</span>
+          </label>
+        ) : null}
         {canRemember ? (
           <label className="row small">
             <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />

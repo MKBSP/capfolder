@@ -1,5 +1,5 @@
 // Person history: the events that touch a stakeholder, in plain sentences (docs/08 copy rules).
-import { liveEvents, type State, type VaultEvent } from "@capfolder/core";
+import { builders, liveEvents, type State, type VaultEvent } from "@capfolder/core";
 import { money, moneyShort, shares } from "./fmt";
 
 export interface HistoryItem {
@@ -20,6 +20,8 @@ export function describe(e: VaultEvent, s: State): string {
     case "STAKEHOLDER":
       return `Added ${d.name?.legal_name}${d.contact_info?.emails?.[0] ? ` · ${d.contact_info.emails[0].email_address}` : ""}`;
     case "TX_STOCK_ISSUANCE":
+      if (e.meta?.note?.startsWith(builders.TRANSFER_NOTE))
+        return `Received ${n(d.quantity)} ${cls || "shares"} by transfer from ${e.meta.note.slice(builders.TRANSFER_NOTE.length)} (${d.security_id})`;
       return `Issued ${n(d.quantity)} ${cls || "shares"} at ${money(d.share_price?.amount, d.share_price?.currency)} (${d.security_id})`;
     case "TX_EQUITY_COMPENSATION_ISSUANCE":
     case "TX_PLAN_SECURITY_ISSUANCE":
@@ -39,6 +41,8 @@ export function describe(e: VaultEvent, s: State): string {
       return `Exercised ${n(d.quantity)} options on ${d.security_id}`;
     case "TX_STOCK_REPURCHASE":
       return `Repurchased ${n(d.quantity)} shares of ${d.security_id}${d.price ? ` at ${money(d.price.amount, d.price.currency)}` : ""}`;
+    case "TX_STOCK_TRANSFER":
+      return `Transferred ${n(d.quantity)} shares of ${d.security_id} (now ${d.resulting_security_ids?.join(", ")})${d.balance_security_id ? `, the rest kept as ${d.balance_security_id}` : ""}`;
     case "TX_CONVERTIBLE_TRANSFER":
       return `Transferred ${money(d.amount?.amount, d.amount?.currency)} of ${d.security_id}`;
     case "doc_added":
@@ -48,6 +52,7 @@ export function describe(e: VaultEvent, s: State): string {
     case "doc_removed":
       return `Moved a document to ${d.moved_to}`;
     case "correction":
+      if (d.field === "stakeholder_id") return `Moved from a duplicate record · ${d.reason}`;
       return `Corrected ${d.field}: ${String(d.old)} → ${String(d.new)} · ${d.reason}`;
     case "reversal":
       return `Reversed an entry · ${d.reason}`;

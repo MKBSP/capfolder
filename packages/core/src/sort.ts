@@ -53,6 +53,7 @@ export interface SortResult {
   problems: string[]; // why it needs the founder, in plain language
   person: string; // for the file name
   date?: string; // for the file name
+  draft?: string; // what makes it look unsigned ("DRAFT", "[Investor Name]"…): filed only as a draft unless the founder says it's signed
 }
 
 // ---------- classify ----------
@@ -192,6 +193,33 @@ export function classify(text: string, rules: DocRule[] = DOC_RULES): Classified
     for (const p of r.res)
       if (p.test(t)) return { type: "not_equity", rule: p.source, inTitle: p.test(title) };
   return null;
+}
+
+// ---------- signed or draft ----------
+
+/** Marks an e-signature service, a conformed signature or a signing certificate leaves on a signed copy. */
+const SIGNED =
+  /(\/s\/ *\p{L}|docusign envelope id|docusigned by|signed with documenso|electronically signed|signature certificate|certificate of completion|audit trail|dropbox sign|hellosign|adobe (acrobat )?sign|pandadoc|digitally signed by)/iu;
+
+/**
+ * Why this text looks like an unsigned draft, or undefined. A scanned signature can't be read as text, so blank
+ * signature lines prove nothing; only explicit draft markers count, and any sign of signing outweighs them.
+ */
+export function unsignedSignal(text: string, opts: { signedPdf?: boolean } = {}): string | undefined {
+  if (opts.signedPdf || SIGNED.test(text)) return undefined;
+  const title = titleOf(clean(text));
+  return (
+    /\bDRAFT\b/.exec(text)?.[0] ??
+    /\bdraft\b/i.exec(title)?.[0].toLowerCase() ??
+    /\bform of\b/i.exec(title)?.[0].toLowerCase() ??
+    /\b(for discussion purposes|not for execution|subject to (further )?(review|revision))/i
+      .exec(text)?.[0]
+      .toLowerCase() ??
+    // template blanks: [Investor Name], [Date], [●], [•], [_____]
+    /\[(?:[^\]\n]{0,30}\b(?:name|date|amount|address|title|company|investor)\b[^\]\n]{0,20}|[●•]|_{3,}|\s*)\]/i.exec(
+      text,
+    )?.[0]
+  );
 }
 
 // ---------- extract ----------
@@ -381,8 +409,14 @@ function hasDoc(s: State, targets: string[], type: string): boolean {
 export function sortText(
   text: string,
   s: State,
-  opts: { corpus?: CorpusEntry[]; proposal?: { type: SortType; fields: Fields }; rules?: DocRule[] } = {},
+  opts: {
+    corpus?: CorpusEntry[];
+    proposal?: { type: SortType; fields: Fields };
+    rules?: DocRule[];
+    signedPdf?: boolean; // the PDF carries a digital signature
+  } = {},
 ): SortResult {
+  const draft = unsignedSignal(text, { signedPdf: opts.signedPdf });
   const rule = opts.proposal ? null : classify(text, opts.rules);
   const knn = rule || opts.proposal ? null : nearest(termCounts(text), opts.corpus ?? []);
   const type: SortType | null = opts.proposal?.type ?? rule?.type ?? knn;
@@ -395,6 +429,7 @@ export function sortText(
     fields,
     targets: [] as string[],
     checks: [] as Check[],
+    ...(draft ? { draft } : {}),
   } as const;
   const name = (id: string) => String(s.stakeholders.get(id)?.name?.legal_name ?? id);
   const nameIs = (id: string) =>
@@ -404,7 +439,14 @@ export function sortText(
   const review = (problems: string[], extra: Partial<SortResult> = {}): SortResult => ({
     ...base,
     status: "review",
-    problems,
+    problems: [
+      ...(draft
+        ? [
+            `This looks like an unsigned draft ("${draft}"). File the signed copy, or file this one as a draft.`,
+          ]
+        : []),
+      ...problems,
+    ],
     person: extra.suggestion ? personOf(extra.suggestion) : (fields.name ?? "company"),
     date: isoDate(fields.date),
     ...extra,
@@ -421,8 +463,8 @@ export function sortText(
   // AI never files: everything it proposes goes through the founder (CLAUDE.md)
   const done = (targets: string[], found: string[], checks: Check[] = []): SortResult => {
     const problems = [...gate, ...found];
-    return problems.length || by === "ai"
-      ? review(problems.length ? problems : ["Sorted by AI: check it before filing."], {
+    return problems.length || by === "ai" || draft
+      ? review(problems.length || by !== "ai" ? problems : ["Sorted by AI: check it before filing."], {
           suggestion: targets.length === 1 ? targets[0] : undefined,
           checks,
         })

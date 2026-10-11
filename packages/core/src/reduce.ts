@@ -171,6 +171,15 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     return true;
   };
 
+  // A vesting start may be dated before the grant (vesting commencement before the board approved it, or shares
+  // that moved by transfer and keep their old schedule): it waits for the issuance of its security.
+  const issuedLater = new Set(
+    live
+      .filter(isTx)
+      .filter((e) => /_ISSUANCE$/.test(txType(e.type)))
+      .map((e) => e.data.security_id as string),
+  );
+  const pendingStart = new Map<string, Security["vestingStart"]>();
   for (const e of txs) guard(e, () => applyTx(e));
   function applyTx(e: VaultEvent): void {
     const d = e.data;
@@ -206,6 +215,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           note: e.meta?.note,
           price: (stock ? d.share_price : d.exercise_price)?.amount,
           priceCurrency: (stock ? d.share_price : d.exercise_price)?.currency,
+          vestingStart: pendingStart.get(d.security_id),
         });
         break;
       }
@@ -232,14 +242,20 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           cap,
           discount: mech?.conversion_discount,
           timing: mech?.conversion_timing,
+          mfn: mech?.conversion_mfn === true,
           earlyExercisable: false,
           note: e.meta?.note,
         });
         break;
       }
       case "TX_VESTING_START": {
-        const x = sec(e);
-        if (x) x.vestingStart = { date: d.date, conditionId: d.vesting_condition_id };
+        const start = { date: d.date, conditionId: d.vesting_condition_id };
+        if (!s.securities.has(d.security_id) && issuedLater.has(d.security_id))
+          pendingStart.set(d.security_id, start);
+        else {
+          const x = sec(e);
+          if (x) x.vestingStart = start;
+        }
         break;
       }
       case "TX_STOCK_CANCELLATION":
@@ -260,6 +276,13 @@ export function reduce(events: VaultEvent[], asOf: string): State {
             `Exercise ${d.id}: ${fmtInt(q)} is more than the ${fmtInt(v.vested)} vested on ${d.date}`,
           );
         else if (consume(e, x, q, false)) x.exercised += q;
+        break;
+      }
+      case "TX_STOCK_TRANSFER": {
+        // the new holder's shares (and any balance) are issued by their own TX_STOCK_ISSUANCE
+        const x = sec(e);
+        const q = qty(e, "quantity");
+        if (x && q !== undefined) consume(e, x, q, false);
         break;
       }
       case "TX_CONVERTIBLE_TRANSFER": {
