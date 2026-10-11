@@ -1,0 +1,19 @@
+name: Import didn't match
+description: An export from Pulley, Carta, Cake or a spreadsheet didn't import right
+labels: [import, beta]
+body:
+  - type: markdown
+    attributes:
+      value: "**Don't attach your real export.** Describe the columns, or attach a copy with made-up names and numbers."
+  - type: input
+    id: source
+    attributes: { label: Where the file came from, placeholder: "Pulley · Cap table · CSV" }
+    validations: { required: true }
+  - type: textarea
+    id: columns
+    attributes: { label: The header row (column names only) }
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes: { label: What went wrong, description: "Columns mapped by hand, totals that didn't match, rows missing…" }
+    validations: { required: true }
