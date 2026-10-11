@@ -352,3 +352,55 @@ describe("M5 review", () => {
     expect((await app.request("/auth/verify", json({ email: ["a"], code: {} }))).status).toBe(400);
   });
 });
+
+describe("install ping (docs/11)", () => {
+  const ping = {
+    install_id: "3b9f0c2e-6a51-4c3e-9d0a-1f2b3c4d5e6f",
+    event: "first_run",
+    app_version: "0.1.0",
+    os: "macos",
+    imported: true,
+    has_documents: false,
+    sent_envelope: false,
+  };
+  function withPings() {
+    const rows: unknown[] = [];
+    const app = createApp({
+      documenso: fakeDocumenso().api,
+      secret: SECRET,
+      now: () => clock,
+      sendMail: async () => {},
+      recordPing: async (r) => void rows.push(r),
+      clientIp: () => "203.0.113.9",
+    });
+    return { app, rows };
+  }
+  test("stores exactly the allowed fields and the day, nothing else (no IP)", async () => {
+    const { app, rows } = withPings();
+    const r = await app.request("/ping", json({ ...ping, company: "Acme Inc.", email: "x@y.z" }));
+    expect(r.status).toBe(204);
+    expect(rows).toEqual([{ day: "2026-10-10", ...ping }]);
+    expect(JSON.stringify(rows)).not.toContain("203.0.113.9");
+  });
+  test("anything off-format is refused", async () => {
+    const { app, rows } = withPings();
+    for (const bad of [
+      { ...ping, install_id: "Acme Inc." },
+      { ...ping, event: "opened_cap_table" },
+      { ...ping, os: "amiga" },
+      { ...ping, imported: "yes" },
+      { ...ping, app_version: "x".repeat(40) },
+    ])
+      expect((await app.request("/ping", json(bad))).status).toBe(400);
+    expect(rows).toEqual([]);
+  });
+  test("rate limited per network", async () => {
+    const { app } = withPings();
+    let last = 0;
+    for (let i = 0; i < 31; i++) last = (await app.request("/ping", json(ping))).status;
+    expect(last).toBe(429);
+  });
+  test("a relay without a ping store just says no content", async () => {
+    expect((await setup().app.request("/ping", json(ping))).status).toBe(204);
+  });
+});

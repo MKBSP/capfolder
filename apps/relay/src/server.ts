@@ -1,4 +1,7 @@
 // Runs the relay on Node. Config is env only (docs/05): DOCUMENSO_URL, DOCUMENSO_API_TOKEN, RELAY_SECRET, SMTP_*.
+
+import { appendFile, mkdir } from "node:fs/promises";
+import { dirname } from "node:path";
 import { serve } from "@hono/node-server";
 import { getConnInfo } from "@hono/node-server/conninfo";
 import { createTransport } from "nodemailer";
@@ -34,6 +37,12 @@ const app = createApp({
     process.env.TRUST_PROXY === "true" ? undefined : (c) => getConnInfo(c).remote.address ?? "unknown",
   secret,
   now: () => Date.now(),
+  // ponytail: one JSON line per ping in a file (PING_FILE); move to Postgres if the counts ever need queries
+  recordPing: async (row) => {
+    const file = process.env.PING_FILE ?? "data/pings.jsonl";
+    await mkdir(dirname(file), { recursive: true });
+    await appendFile(file, `${JSON.stringify(row)}\n`);
+  },
   sendMail: async (to, subject, text) => {
     await mail.sendMail({ from, to, subject, text });
   },

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { maybePing } from "../ping";
 import { cachedRules, fetchRules } from "../rules";
 import { useApp } from "../state";
 import { Modal } from "./ui";
@@ -40,13 +41,21 @@ export function Background() {
         // offline or GitHub unreachable: try again later
       }
     };
+    const ping = async () => {
+      const a = latest.current;
+      const next = await maybePing(platform, a.settings, a.vault, version);
+      if (next) await latest.current.setSettings({ ...latest.current.settings, ping: next.ping });
+    };
     (async () => {
       version = await platform.updater.version().catch(() => "0.0.0");
       const cached = await cachedRules(platform, version);
       if (cached !== latest.current.rules) latest.current.setRules(cached);
-      await Promise.all([rules(), updates()]);
+      await Promise.all([rules(), updates(), ping()]);
     })();
-    const daily = setInterval(rules, 24 * HOUR);
+    const daily = setInterval(() => {
+      rules();
+      ping();
+    }, 24 * HOUR);
     const sixHourly = setInterval(updates, 6 * HOUR);
     return () => {
       clearInterval(daily);

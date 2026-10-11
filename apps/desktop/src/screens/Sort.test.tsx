@@ -142,7 +142,7 @@ describe("sorting a messy folder (F-09)", () => {
       {
         relay: {
           fetch: async (url: string, init?: RequestInit) => {
-            if (!url.startsWith("http://localhost:")) return new Response("", { status: 404 }); // rules pack check
+            if (!/^http:\/\/localhost:(11434|1234)\//.test(url)) return new Response("", { status: 404 }); // rules pack, ping
             asked.push(url);
             expect(JSON.parse(String(init?.body)).messages[1].content).toMatch(/^<document>/);
             return new Response(JSON.stringify({ message: { content: JSON.stringify(answer) } }));

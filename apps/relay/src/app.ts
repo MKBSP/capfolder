@@ -13,6 +13,43 @@ export interface RelayDeps {
   sendMail(to: string, subject: string, text: string): Promise<void>;
   /** Who's calling, for rate limits. Default: the last X-Forwarded-For hop (the one our proxy added). */
   clientIp?(c: Context): string;
+  /** docs/11: where anonymous install pings go (one row each). Without it pings are accepted and dropped. */
+  recordPing?(row: PingRow): Promise<void>;
+}
+
+export interface PingRow {
+  day: string; // only the date, not the time
+  install_id: string;
+  event: "first_run" | "weekly";
+  app_version: string;
+  os: "macos" | "windows" | "linux";
+  imported: boolean;
+  has_documents: boolean;
+  sent_envelope: boolean;
+}
+
+/** The ping, if it's exactly the documented shape; everything else in the body is ignored, never stored. */
+function readPing(b: Record<string, unknown>, day: string): PingRow | null {
+  const bool = (k: string) => typeof b[k] === "boolean";
+  if (
+    typeof b.install_id !== "string" ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(b.install_id)
+  )
+    return null;
+  if (b.event !== "first_run" && b.event !== "weekly") return null;
+  if (typeof b.app_version !== "string" || !/^\d+\.\d+\.\d+$/.test(b.app_version)) return null;
+  if (b.os !== "macos" && b.os !== "windows" && b.os !== "linux") return null;
+  if (!bool("imported") || !bool("has_documents") || !bool("sent_envelope")) return null;
+  return {
+    day,
+    install_id: b.install_id,
+    event: b.event,
+    app_version: b.app_version,
+    os: b.os,
+    imported: b.imported as boolean,
+    has_documents: b.has_documents as boolean,
+    sent_envelope: b.sent_envelope as boolean,
+  };
 }
 
 /** Rate-limit key for an address: IPv4 as is, IPv6 by its /64 (one customer network). */
@@ -103,6 +140,7 @@ export function createApp(d: RelayDeps) {
   const startPerIp = new Limit(20, 3600e3, d.now);
   const verifyPerIp = new Limit(60, 3600e3, d.now);
   const sendsPerEmail = new Limit(20, 864e5, d.now);
+  const pingsPerIp = new Limit(30, 3600e3, d.now);
   const ipOf = (c: Context) => clientKey(rawIp(c));
   const rawIp = (c: Context) =>
     // The last hop is the one our proxy added; anything before it the client could have written itself.
@@ -122,6 +160,20 @@ export function createApp(d: RelayDeps) {
   });
 
   app.get("/health", (c) => c.json({ ok: true, service: "capfolder-relay" }));
+
+  // Anonymous install counts (docs/11): the IP is used for the rate limit only and never stored.
+  app.post(
+    "/ping",
+    bodyLimit({ maxSize: 2048, onError: (c) => c.json({ error: "Too large." }, 413) }),
+    async (c) => {
+      if (!pingsPerIp.take(ipOf(c))) return c.json({ error: "Too many." }, 429);
+      const body = await c.req.json<Record<string, unknown>>().catch(() => ({}));
+      const row = readPing(body, new Date(d.now()).toISOString().slice(0, 10));
+      if (!row) return c.json({ error: "Not a Capfolder ping." }, 400);
+      await d.recordPing?.(row);
+      return c.body(null, 204);
+    },
+  );
 
   app.post("/auth/start", async (c) => {
     const body = await c.req.json<{ email?: unknown }>().catch(() => ({}) as { email?: unknown });

@@ -7,7 +7,7 @@ export interface Settings {
   deviceId: string;
   lock: "password" | "none";
   idleMinutes: 0 | 5 | 15 | 60; // 0 = only when I quit
-  telemetry: boolean; // stored now; the anonymous ping is wired in M8 (docs/11)
+  telemetry: boolean; // the anonymous install ping (docs/11), disclosed in the terms; off in Settings → Privacy
   recentVaults: { name: string; root: string }[];
   termsAccepted: string; // TERMS_VERSION the founder accepted; "" = not yet
   region: string; // the founder's country (regions.ts): number format and how typed dates are read
@@ -16,6 +16,7 @@ export interface Settings {
   relayToken: string; // device token from the relay; "" = not verified
   relayTokens: Record<string, string>; // tokens for relays used before (F-37: old envelopes finish on their relay)
   ai: { provider: "" | "ollama" | "lmstudio"; model: string; sortWithAi: boolean }; // F-10, local models only
+  ping: { installId: string; firstRunSent: boolean; last: string }; // docs/11, only used while telemetry is on
   updates: "auto" | "ask" | "off"; // F-38: auto downloads in the background; installing always waits for a restart
 }
 
@@ -39,6 +40,7 @@ const defaults = (): Settings => ({
   relayTokens: {},
   ai: { provider: "", model: "", sortWithAi: false },
   updates: "auto",
+  ping: { installId: "", firstRunSent: false, last: "" },
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {
