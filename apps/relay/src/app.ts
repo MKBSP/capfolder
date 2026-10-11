@@ -29,7 +29,8 @@ export interface PingRow {
 }
 
 /** The ping, if it's exactly the documented shape; everything else in the body is ignored, never stored. */
-function readPing(b: Record<string, unknown>, day: string): PingRow | null {
+function readPing(b: Record<string, unknown> | null, day: string): PingRow | null {
+  if (!b || typeof b !== "object" || Array.isArray(b)) return null;
   const bool = (k: string) => typeof b[k] === "boolean";
   if (
     typeof b.install_id !== "string" ||
@@ -37,7 +38,8 @@ function readPing(b: Record<string, unknown>, day: string): PingRow | null {
   )
     return null;
   if (b.event !== "first_run" && b.event !== "weekly") return null;
-  if (typeof b.app_version !== "string" || !/^\d+\.\d+\.\d+$/.test(b.app_version)) return null;
+  if (typeof b.app_version !== "string" || !/^\d+\.\d+\.\d+(-[0-9A-Za-z.]{1,20})?$/.test(b.app_version))
+    return null;
   if (b.os !== "macos" && b.os !== "windows" && b.os !== "linux") return null;
   if (!bool("imported") || !bool("has_documents") || !bool("sent_envelope")) return null;
   return {
@@ -141,6 +143,11 @@ export function createApp(d: RelayDeps) {
   const verifyPerIp = new Limit(60, 3600e3, d.now);
   const sendsPerEmail = new Limit(20, 864e5, d.now);
   const pingsPerIp = new Limit(30, 3600e3, d.now);
+  // Anyone can post a ping, so fake installs are bounded: 3 install ids per network and 50,000 rows per day.
+  // ponytail: in memory, reset daily; a restart resets it too (the proxy's rate limit is the outer fence)
+  let pingDay = "";
+  let pingRows = 0;
+  const idsByNet = new Map<string, Set<string>>();
   const ipOf = (c: Context) => clientKey(rawIp(c));
   const rawIp = (c: Context) =>
     // The last hop is the one our proxy added; anything before it the client could have written itself.
@@ -166,10 +173,26 @@ export function createApp(d: RelayDeps) {
     "/ping",
     bodyLimit({ maxSize: 2048, onError: (c) => c.json({ error: "Too large." }, 413) }),
     async (c) => {
-      if (!pingsPerIp.take(ipOf(c))) return c.json({ error: "Too many." }, 429);
-      const body = await c.req.json<Record<string, unknown>>().catch(() => ({}));
-      const row = readPing(body, new Date(d.now()).toISOString().slice(0, 10));
+      // JSON only: a web page can send text/plain without a CORS preflight, but not application/json
+      if (!/^application\/json\b/i.test(c.req.header("content-type") ?? ""))
+        return c.json({ error: "Send JSON." }, 415);
+      const net = ipOf(c);
+      if (!pingsPerIp.take(net)) return c.json({ error: "Too many." }, 429);
+      const body = await c.req.json<Record<string, unknown> | null>().catch(() => null);
+      const day = new Date(d.now()).toISOString().slice(0, 10);
+      const row = readPing(body, day);
       if (!row) return c.json({ error: "Not a Capfolder ping." }, 400);
+      if (day !== pingDay || idsByNet.size > 200_000) {
+        pingDay = day;
+        pingRows = 0;
+        idsByNet.clear();
+      }
+      const ids = idsByNet.get(net) ?? new Set<string>();
+      if ((!ids.has(row.install_id) && ids.size >= 3) || pingRows >= 50_000)
+        return c.json({ error: "Too many." }, 429);
+      ids.add(row.install_id);
+      idsByNet.set(net, ids);
+      pingRows++;
       await d.recordPing?.(row);
       return c.body(null, 204);
     },

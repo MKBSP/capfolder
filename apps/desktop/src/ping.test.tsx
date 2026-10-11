@@ -87,3 +87,40 @@ test("nothing is sent before the founder accepts the terms that disclose it", as
   await new Promise((r) => setTimeout(r, 50));
   expect(sent).toEqual([]);
 });
+
+test("a brand-new install is counted as soon as the terms are accepted (not only on the next launch)", async () => {
+  const { fakePlatform } = await import("./test/fakePlatform");
+  const { default: userEvent } = await import("@testing-library/user-event");
+  const sent: string[] = [];
+  const fp = fakePlatform({
+    relay: {
+      fetch: async (url: string, init?: RequestInit) => {
+        if (url.endsWith("/ping")) sent.push(JSON.parse(String(init?.body)).event);
+        return new Response(null, { status: url.endsWith("/ping") ? 204 : 404 });
+      },
+    },
+  });
+  render(<App platform={fp.platform} />);
+  await userEvent.click(await screen.findByLabelText("No lock"));
+  expect(sent).toEqual([]);
+  await userEvent.click(screen.getByLabelText(/I accept the/));
+  await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+  await waitFor(() => expect(sent).toEqual(["first_run"]));
+});
+
+test("a garbled last-ping date doesn't stop the weekly ping", async () => {
+  const { maybePing } = await import("./ping");
+  const { TERMS_VERSION } = await import("./copy");
+  const fp = acmePlatform({ relay: { fetch: async () => new Response(null, { status: 204 }) } });
+  const s = {
+    ...JSON.parse(fp.fs.readSync("/appdata/settings.json")),
+    telemetry: true,
+    termsAccepted: TERMS_VERSION,
+    relayUrl: "http://relay.test",
+    ping: { installId: "3b9f0c2e-6a51-4c3e-9d0a-1f2b3c4d5e6f", firstRunSent: true, last: "garbage" },
+  };
+  expect(await maybePing(fp.platform, s, null, "0.1.0")).not.toBeNull();
+  expect(
+    await maybePing(fp.platform, { ...s, ping: { ...s.ping, last: "2099-01-01T00:00:00Z" } }, null, "0.1.0"),
+  ).not.toBeNull();
+});

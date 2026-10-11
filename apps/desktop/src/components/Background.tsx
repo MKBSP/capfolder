@@ -18,6 +18,25 @@ export function Background() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // The install ping (docs/11): one at a time, at start, daily, and right after the terms are accepted on Welcome
+  const pinging = useRef(false);
+  const pingNow = useRef(async () => {
+    if (pinging.current) return;
+    pinging.current = true;
+    try {
+      const a = latest.current;
+      const version = await a.platform.updater.version().catch(() => "0.0.0");
+      const next = await maybePing(a.platform, a.settings, a.vault, version);
+      if (next) await latest.current.setSettings({ ...latest.current.settings, ping: next.ping });
+    } finally {
+      pinging.current = false;
+    }
+  });
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-check whenever consent or the toggle changes
+  useEffect(() => {
+    pingNow.current();
+  }, [app.settings.termsAccepted, app.settings.telemetry]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: start once; the timers read the latest settings
   useEffect(() => {
     const { platform } = latest.current;
@@ -41,20 +60,15 @@ export function Background() {
         // offline or GitHub unreachable: try again later
       }
     };
-    const ping = async () => {
-      const a = latest.current;
-      const next = await maybePing(platform, a.settings, a.vault, version);
-      if (next) await latest.current.setSettings({ ...latest.current.settings, ping: next.ping });
-    };
     (async () => {
       version = await platform.updater.version().catch(() => "0.0.0");
       const cached = await cachedRules(platform, version);
       if (cached !== latest.current.rules) latest.current.setRules(cached);
-      await Promise.all([rules(), updates(), ping()]);
+      await Promise.all([rules(), updates()]);
     })();
     const daily = setInterval(() => {
       rules();
-      ping();
+      pingNow.current();
     }, 24 * HOUR);
     const sixHourly = setInterval(updates, 6 * HOUR);
     return () => {

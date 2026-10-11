@@ -15,10 +15,10 @@ Capfolder is a desktop app (Tauri, AGPL-3.0) that keeps the cap table as plain f
 - `docs/`: your signed documents, sorted by type and linked to the holdings they prove.
 
 What it does today:
-- Import from Pulley/Carta/Cake spreadsheets or any OCF export. It refuses to save until totals match the old tool to the share.
+- Import a spreadsheet export (Pulley, Carta, Cake: you confirm the column mapping) or any OCF export. It checks the totals against the old tool's and makes you note any difference before saving.
 - Point it at a messy folder of PDFs and scans. It reads them locally (PDF.js, tesseract.js), files the ones it's sure of, and asks about the rest. When it isn't sure, it asks.
 - Vesting, the option pool, SAFEs, a "what's missing" checklist (83(b)s, IP assignments, board consents), exports for any date, and a zip for your lawyer.
-- Signatures go through a small relay in front of self-hosted Documenso. It's the only server involved, and it deletes the document once it's signed and back in your folder. You can self-host it.
+- Signatures go through a small relay in front of self-hosted Documenso. It's the only server that sees your documents, and it deletes each one once it's signed and back in your folder. You can self-host it. (The app also sends an anonymous install count, which you can turn off.)
 - Optional local AI (Ollama/LM Studio) for documents the rules can't sort. It only proposes; you click.
 
 It's free. Code, tests and the golden cap-table fixtures are on GitHub: https://github.com/MKBSP/capfolder

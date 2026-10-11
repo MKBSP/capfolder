@@ -17,10 +17,14 @@ jobs:
     environment: { name: github-pages, url: "${{ steps.deploy.outputs.page_url }}" }
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm i --frozen-lockfile && pnpm --filter @capfolder/website test # no placeholders or false claims
       - name: Only the public files
         run: |
           mkdir _site
-          cd apps/website && cp index.html *.png *.ico *.svg site.webmanifest ../../_site/ && { [ -f CNAME ] && cp CNAME ../../_site/ || true; }
+          cd apps/website && cp -r index.html *.png *.ico *.svg site.webmanifest fonts ../../_site/ && { [ -f CNAME ] && cp CNAME ../../_site/ || true; }
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
       - id: deploy

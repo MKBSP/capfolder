@@ -51,3 +51,22 @@ test("acknowledged npm packages carry the license our license check found", () =
     ]).toEqual([pkg, true]);
   expect(html.match(/data-npm="/g)?.length ?? 0).toBeGreaterThanOrEqual(6);
 });
+
+test("visitors' browsers only talk to what the privacy section names (M8 review)", () => {
+  expect(html).not.toContain("fonts.googleapis.com");
+  expect(html).not.toMatch(/<script[^>]+tally\.so\/widgets\/embed\.js/); // Tally loads on click only
+  expect(html).toContain('id="privacy"');
+  const privacy = html.slice(html.indexOf('id="privacy"'));
+  for (const named of ["Plausible", "Tally", "GitHub", "install ping", "Settings", "relay"])
+    expect([named, privacy.includes(named)]).toEqual([named, true]);
+});
+
+test("no claims the hosted relay can't back yet, and privacy answered honestly", () => {
+  for (const bad of [
+    "waits on the relay, encrypted",
+    "Who can see my data?</h3><p>Only you.",
+    "your AI, can be local",
+    "Click any number",
+  ])
+    expect([bad, html.includes(bad)]).toEqual([bad, false]);
+});

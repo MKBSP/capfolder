@@ -33,3 +33,17 @@ test("the docs/11 pass/fail table from pings, GitHub snapshots and donations", (
     { signal: "Donations", value: 2, pass: 1, ok: true },
   ]);
 });
+
+test("a truncated last line (a crash mid-write) is skipped, not fatal", () => {
+  const good = JSON.stringify({
+    day: "2026-12-01",
+    install_id: "a",
+    event: "first_run",
+    app_version: "0.1.0",
+    os: "macos",
+    imported: false,
+    has_documents: false,
+    sent_envelope: false,
+  });
+  expect(dashboard(`${good}\n{"day":"2026-12-0`, "date,downloads,stars\n", 0)[1]!.value).toBe(1);
+});

@@ -46,7 +46,8 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Website: enable GitHub Pages (Settings → Pages → GitHub Actions), point capfolder.com at it, then add `apps/website/CNAME` with `capfolder.com`.
 - [ ] Plausible: add the site `capfolder.com` (paid; or tell me to switch to Umami Cloud's free tier).
 - [ ] Check the site's personal story is right ("28 investors", "YC W22", the name "Mads Petersen") and re-check the comparison table against vendors' pages in launch week.
-- [ ] Relay hosting: set `PING_FILE` to a persistent path.
+- [ ] Relay hosting: set `PING_FILE` to a persistent path; turn off reverse-proxy access logs for `/ping` (IP + time would undo "no IP"). The site says "with our hosted signing relay": host it (Documenso storage encrypted at rest) before launch, or drop that line.
+- [ ] Privacy contact: the site's privacy section points to GitHub issues; add a contact email (and your legal name/address if the lawyer says so, GDPR Art. 13). Lawyer: is the random install id OK without a deletion route?
 - [ ] Post `docs/launch/show-hn.md` and `docs/launch/bookface.md` (edit first).
 
 ## Missing in the desktop app (M3)
@@ -225,6 +226,14 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Rules packs are shape-checked (guides, steps, types, phrases), so one bad signed pack can't break the Import screen.
 - Minors: the local AI bridge has a total deadline and an 8 MB cap; release.yml checks every Apple secret, accepts a passwordless .pfx, and sends unsigned test builds to their own prerelease; the publish checklist checks latest.json has all four platforms.
 - Declined: whether webkitgtk exposes `crypto.subtle` on `tauri://` (if not, Linux stays on the bundled rules pack), and LM Studio listening only on `::1`.
+
+## M8 final review: fixed (each with a test that failed first)
+- Downloads metric counted updater fetches (latest.json, .tar.gz): now installers only, one row per day.
+- `/ping` could be filled by anyone: JSON only (a text/plain post from another website is refused, 415), 3 install ids per network per day, 50,000 rows per day; null body → 400; prerelease versions accepted.
+- A fresh install wasn't counted until its second launch: the ping now goes as soon as the terms are accepted; a garbled or future last-ping date no longer stops weekly pings.
+- Site: no Google Fonts (self-hosted IBM Plex, OFL), Tally loads only on click, a Privacy section naming every third party and the install ping, honest "who can see my data", no "encrypted" claim before the relay is hosted; launch drafts no longer overstate import.
+- Minors: dashboard survives a truncated line and paths with spaces; Tally popup closes itself; aria-live on the download links; ✦ hidden from screen readers; manifest icons relative; site tests run before deploy; metrics runs one at a time.
+- Not done (minor): animation pause controls (only reduced-motion stops them), table row headers, settings write race when toggling Privacy within the same moment as a ping save.
 
 ## M7 decisions (rulings)
 - Rules pack served from `raw.githubusercontent.com` (CORS), not a release tag.

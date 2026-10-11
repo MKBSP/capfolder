@@ -4,6 +4,10 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Fixed — M8 review (2026-10-11)
+- Downloads count installers only (not updater checks). `/ping` takes JSON only and caps fake installs (3 ids per network per day, 50,000 rows per day). A new install is counted right after the terms are accepted.
+- Site: self-hosted fonts, Tally loaded on click, a Privacy section, honest answers about the relay and the install count; launch drafts describe import accurately.
+
 ### Added — M8 · website + launch (2026-10-11)
 - `apps/website` (`pnpm dev:web`): the launch page, with copy matched to what the app does. "Get the download" opens the Tally form, then links to the latest GitHub release for each OS. Live star count, real acknowledgements with licenses, cookieless Plausible. Deployed by `.github/workflows/website.yml` (GitHub Pages).
 - Anonymous install ping (docs/11): relay `POST /ping` keeps only the documented fields and the day (no IP). The app sends `first_run` once and then weekly, only after the terms are accepted and while Settings → Privacy allows it.

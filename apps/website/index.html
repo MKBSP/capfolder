@@ -12,8 +12,15 @@
 <meta name="description" content="Free, open-source cap table app. Your equity records live in a folder on your computer, not in someone else's cloud.">
 <!-- docs/11: cookieless visit counts, no banner. Needs a Plausible site for capfolder.com. -->
 <script defer data-domain="capfolder.com" src="https://plausible.io/js/script.js"></script>
-<script async src="https://tally.so/widgets/embed.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<!-- fonts are served from this site (no Google Fonts request); SIL OFL, fonts/OFL.txt -->
+<style>
+@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:700;font-display:swap;src:url(fonts/ibm-plex-sans-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
+</style>
 <style>
 body{margin:0;background:#FAFAF8}
 a{color:#1F6F4A}a:hover{color:#16543A}
@@ -174,7 +181,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
           </div>
           <p style="font-size: 14px; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · we'll only email you about new versions · or <a href="https://github.com/MKBSP/capfolder">read the source</a></p>
         </div>
-        <div id="dlthanks" hidden>
+        <div id="dlthanks" hidden aria-live="polite">
           <div class="fade-in" style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left; box-shadow: 0 20px 40px -24px rgba(31,111,74,.35)">
             <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
@@ -303,7 +310,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
       <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
         <div style="margin-bottom: 22px; font-size: 13px; padding: 10px 12px; border-radius: 8px; background: #F6F7F4; line-height: 1.5" aria-hidden="true"><span class="num">10,000</span> = <span class="num">40,000</span> × 12/48 months<br><span style="color: #5B606B">cliff passed Oct 7, 2026</span></div>
         <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Math you can check</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Click any number to see how it was computed. Tests are public.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Click a holding to see how its numbers were computed. Tests are public.</p>
       </div>
       <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
         <div style="display: flex; gap: 8px; margin-bottom: 22px; font-size: 13px" aria-hidden="true">
@@ -330,7 +337,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
           <th style="padding: 16px 16px; border-bottom: 1px solid #E4E4E0; font-weight: 600; width: 28%">Hosted cap table tools<br><span style="font-weight: 400; font-size: 13px; color: #5B606B">Carta · Mantle · Cake Equity · Eqvista · Ledgy · Pulley</span></th>
           <th style="padding: 16px 22px; border-bottom: 1px solid #E4E4E0; font-weight: 600">Spreadsheet<br><span style="font-weight: 400; font-size: 13px; color: #5B606B">Excel · Google Sheets</span></th>
         </tr></thead>
-        <tbody><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Where your data lives</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">A folder on your computer</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Their servers</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">A file on your computer</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Still works if the company behind it shuts down</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">Pulley shuts down Dec 8, 2026</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Open source, auditable math</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">—</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Price</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">Free<br><span style="color:#5B606B;font-size:13px">pay what you want</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free tiers for up to 20 stakeholders, then about $1,000–15,000/yr<br><span style="color:#5B606B;font-size:13px">Carta: typically $3,000–8,000/yr under 50 stakeholders; median $15,450/yr</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Import from Pulley / Carta / OCF</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Investors sign from a link</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Vesting tracked, missing documents flagged</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">By hand</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Reads messy PDFs and sorts them</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span><br><span style="color:#5B606B;font-size:13px">your AI, can be local</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Mantle only</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Export Excel, CSV and OCF</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Varies<br><span style="color:#5B606B;font-size:13px">Carta exports an OCX report</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Excel</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">409A valuations, multiple admins, employee portals</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">not yet</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr></tbody>
+        <tbody><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Where your data lives</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">A folder on your computer</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Their servers</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">A file on your computer</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Still works if the company behind it shuts down</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">Pulley shuts down Dec 8, 2026</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Open source, auditable math</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">—</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Price</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">Free<br><span style="color:#5B606B;font-size:13px">pay what you want</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free tiers for up to 20 stakeholders, then about $1,000–15,000/yr<br><span style="color:#5B606B;font-size:13px">Carta: typically $3,000–8,000/yr under 50 stakeholders; median $15,450/yr</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Import from Pulley / Carta / OCF</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Investors sign from a link</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Vesting tracked, missing documents flagged</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">By hand</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Reads messy PDFs and sorts them</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span><br><span style="color:#5B606B;font-size:13px">your local AI</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Mantle only</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Export Excel, CSV and OCF</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Varies<br><span style="color:#5B606B;font-size:13px">Carta exports an OCX report</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Excel</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">409A valuations, multiple admins, employee portals</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">not yet</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr></tbody>
       </table>
     </div>
     <p style="margin: 14px 0 0 0; font-size: 13px; color: #5B606B; line-height: 1.55">Features vary by vendor and plan. Free tiers: Cake Equity ≤5, Eqvista ≤20, Carta Launch ≤25 stakeholders (and under $1M raised), Ledgy ≤25; Mantle has a free plan. Paid entry points: Cake $1,000/yr, Mantle $1,200/yr, Ledgy from €5,000/yr; Carta doesn't publish prices, so its figures are from Vendr purchase data (Feb 2026). AngelList stopped taking new cap-table customers in 2026. Checked October 2026; check each vendor before deciding. Spotted something wrong? <a href="https://github.com/MKBSP/capfolder/issues">Open an issue</a>.</p>
@@ -341,7 +348,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
       <div class="reveal" style="max-width: 760px">
         <div class="eyebrow" style="color: #4E3F86">Signatures</div>
         <h2 class="h2" style="margin-top: 14px">The only thing in the cloud is the unsigned document.</h2>
-        <p class="lead" style="margin-top: 18px">It waits on the relay, encrypted, until everyone has signed. Then it comes back to your folder, is checked against your original, and the relay deletes its copy.</p>
+        <p class="lead" style="margin-top: 18px">It waits on the relay until everyone has signed. Then it comes back to your folder, is checked against your original, and the relay deletes its copy.</p>
       </div>
       <div class="reveal2" style="margin-top: 48px; background: #fff; border-radius: 18px; border: 1px solid #E2DEEF; padding: 28px 12px 8px 12px; overflow: hidden">
         <div class="lane" role="img" aria-label="A document travels from your folder to the relay, to the investor, and back">
@@ -353,7 +360,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
           <div class="node" style="left: 50%">
             <span class="nodeicon" style="background: #EEEBF7; color: #4E3F86"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg></span>
             <b style="font-weight: 600">Relay</b>
-            <span class="counter" style="font-size: 13px"><span style="color: #5B606B">empty</span><span class="cloudA" style="color: #4E3F86; background: #fff">holding 1 · encrypted</span><span class="cloudB" style="color: #16543A; background: #fff">copy deleted</span></span>
+            <span class="counter" style="font-size: 13px"><span style="color: #5B606B">empty</span><span class="cloudA" style="color: #4E3F86; background: #fff">holding 1</span><span class="cloudB" style="color: #16543A; background: #fff">copy deleted</span></span>
           </div>
           <div class="node" style="left: 92%">
             <span class="nodeicon sig" style="background: #F0F1EE; color: #3A3E46"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
@@ -483,7 +490,7 @@ cd capfolder/apps/relay
   <section id="faq" class="wrap" style="padding-bottom: 112px">
     <h2 class="h2 reveal">Questions</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px 56px; margin-top: 32px">
-      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Who can see my data?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Only you. The relay holds a document only until it's signed. Local AI never sends anything out.</p></div>
+      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Who can see my data?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Your cap table and documents stay on your computer. A document you send for signature sits on the relay until it's signed, and whoever runs the relay could read it (self-host it if that matters). The app sends an anonymous install count; turn it off in Settings. Details below.</p></div>
       <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Can I move from Pulley or Carta?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Import their export (spreadsheet or OCF). Totals are checked against it before anything is saved. Then drop in your signed documents and they're sorted for you.</p></div>
       <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">What does it cost?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">The app is free. Pay what you want if it helps you. A paid hosted relay for teams may come later.</p></div>
       <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Which companies does it support?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Delaware C-corps first. More jurisdictions after.</p></div>
@@ -503,29 +510,50 @@ cd capfolder/apps/relay
     </div>
   </section>
 
+  <section id="privacy" class="wrap" style="padding-bottom: 96px">
+    <h2 class="h2" style="font-size: 32px">Privacy</h2>
+    <div style="max-width: 760px; font-size: 15px; line-height: 1.65; color: #3A3E46">
+      <p><b>This page.</b> Fonts and images come from this site. Visits are counted with <a href="https://plausible.io/data-policy">Plausible</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
+      <p><b>The download form.</b> When you click "Get the download", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Ask through a GitHub issue to be removed, or reply to any email.</p>
+      <p><b>The app.</b> Your cap table and documents stay in your folder. Documents you send for signature pass through the signing relay until everyone has signed, then the relay deletes them. The app sends an anonymous install ping (a random install id, the app version, your operating system, and yes/no for "imported", "has documents", "sent for signature") once on first run and then weekly, only after you accept the terms. The relay keeps the day, not the time or your IP address. Turn it off in Settings → Privacy. The code that sends and stores it is public in the repo.</p>
+    </div>
+  </section>
+
   <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; color: #5B606B">
     <span>Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta</span>
-    <span style="display: flex; flex-wrap: wrap; gap: 18px"><a href="https://github.com/MKBSP/capfolder">GitHub</a><a href="https://github.com/MKBSP/capfolder/fork">Fork it</a><a href="#thanks">Acknowledgements</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a></span>
+    <span style="display: flex; flex-wrap: wrap; gap: 18px"><a href="https://github.com/MKBSP/capfolder">GitHub</a><a href="https://github.com/MKBSP/capfolder/fork">Fork it</a><a href="#thanks">Acknowledgements</a><a href="#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a></span>
   </footer>
 </div>
 
 <script>
 // Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
-// Links point at the latest published GitHub release; without JS they open the release page.
+// Links point at the latest published GitHub release (until one is published, the releases page).
 var params = new URLSearchParams(location.search);
 function showDownloads() {
   document.getElementById("gate").hidden = true;
   document.getElementById("dlthanks").hidden = false;
 }
-document.getElementById("getdl").addEventListener("click", () => {
-  if (!window.Tally) { location.href = `https://tally.so/r/rjxQjR?${params.toString()}`; return; } // blocked: open the form page
+document.getElementById("getdl").addEventListener("click", () => openForm());
+// Tally is loaded only when someone asks for the download (no third-party request before that)
+function openForm() {
+  if (window.Tally) return popup();
+  const s = document.createElement("script");
+  s.src = "https://tally.so/widgets/embed.js";
+  s.onload = popup;
+  s.onerror = () => {
+    location.href = `https://tally.so/r/rjxQjR?${params.toString()}`;
+  };
+  document.head.appendChild(s);
+}
+function popup() {
   window.Tally.openPopup("rjxQjR", {
     layout: "modal",
     hideTitle: true,
     hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
+    autoClose: 800, // close Tally's own thank-you and show the download links on the page
     onSubmit: showDownloads,
   });
-});
+}
 fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
   .then((r) => r.ok ? r.json() : null)
   .then((rel) => {

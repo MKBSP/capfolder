@@ -5,7 +5,7 @@
 Hi all, Mads here (Capfolder). Pulley closes on December 8. If your SAFEs and grants live there, export them now: Dashboard → Download Cap Table, and download every signed document.
 
 I built Capfolder because we lost track of our own SAFE paperwork. It's a free, open-source desktop app that keeps the cap table as plain files on your computer:
-- imports the Pulley export and checks the totals match to the share before saving;
+- imports the Pulley spreadsheet export (you confirm the columns) and checks the totals against Pulley's, noting any difference, before saving;
 - sorts your folder of signed PDFs and scans, matches each to the right holding, and flags what's missing (83(b)s, IP assignments, consents);
 - sends new SAFEs for signature through a relay that deletes them once signed.
 

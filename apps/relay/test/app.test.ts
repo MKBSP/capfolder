@@ -404,3 +404,51 @@ describe("install ping (docs/11)", () => {
     expect((await setup().app.request("/ping", json(ping))).status).toBe(204);
   });
 });
+
+describe("install ping hardening (M8 review)", () => {
+  const ping = (id: string) => ({
+    install_id: id,
+    event: "first_run",
+    app_version: "0.1.0",
+    os: "linux",
+    imported: false,
+    has_documents: false,
+    sent_envelope: false,
+  });
+  const uuid = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
+  function withPings(ip = () => "203.0.113.9") {
+    const rows: unknown[] = [];
+    const app = createApp({
+      documenso: fakeDocumenso().api,
+      secret: SECRET,
+      now: () => clock,
+      sendMail: async () => {},
+      recordPing: async (r) => void rows.push(r),
+      clientIp: ip,
+    });
+    return { app, rows };
+  }
+  test("only JSON is accepted, so other websites can't post pings without a CORS preflight", async () => {
+    const { app, rows } = withPings();
+    const r = await app.request("/ping", {
+      method: "POST",
+      headers: { "content-type": "text/plain", origin: "https://evil.example" },
+      body: JSON.stringify(ping(uuid(1))),
+    });
+    expect(r.status).toBe(415);
+    expect(rows).toEqual([]);
+  });
+  test("one network can add at most 3 new installs a day", async () => {
+    const { app, rows } = withPings();
+    for (let i = 0; i < 6; i++) await app.request("/ping", json(ping(uuid(i))));
+    expect(rows).toHaveLength(3);
+  });
+  test("a null body or a prerelease version", async () => {
+    const { app, rows } = withPings();
+    expect((await app.request("/ping", json(null))).status).toBe(400);
+    expect((await app.request("/ping", json({ ...ping(uuid(9)), app_version: "0.1.1-beta.2" }))).status).toBe(
+      204,
+    );
+    expect(rows).toHaveLength(1);
+  });
+});

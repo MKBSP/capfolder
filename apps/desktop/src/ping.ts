@@ -20,7 +20,8 @@ export async function maybePing(
   // only after the founder accepted the terms that disclose it (it's on by default, so consent comes from there)
   if (!s.telemetry || s.termsAccepted !== TERMS_VERSION || !s.relayUrl) return null;
   const p = s.ping;
-  const event = !p.firstRunSent ? "first_run" : !p.last || now - Date.parse(p.last) >= WEEK ? "weekly" : null;
+  const age = now - Date.parse(p.last); // NaN (garbled) or negative (clock moved) counts as due
+  const event = !p.firstRunSent ? "first_run" : !(age >= 0 && age < WEEK) ? "weekly" : null;
   if (!event) return null;
   const installId = p.installId || crypto.randomUUID();
   const events = vault?.events ?? [];

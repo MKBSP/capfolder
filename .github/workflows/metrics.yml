@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency: { group: metrics, cancel-in-progress: false }
 jobs:
   snapshot:
     runs-on: ubuntu-latest
@@ -21,9 +22,12 @@ jobs:
       - name: Append today's numbers
         env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
         run: |
-          downloads=$(gh api --paginate "repos/${{ github.repository }}/releases" --jq '[.[] | select(.draft == false) | .assets[].download_count] | add // 0' | awk '{s+=$1} END {print s+0}')
+          downloads=$(gh api --paginate "repos/${{ github.repository }}/releases" --jq '[.[] | select(.draft == false) | .assets[] | select(.name | test("(\\.dmg|\\.msi|-setup\\.exe|\\.AppImage|\\.deb|\\.rpm)$")) | .download_count] | add // 0' | awk '{s+=$1} END {print s+0}')
           stars=$(gh api "repos/${{ github.repository }}" --jq .stargazers_count)
           [ -f github.csv ] || echo "date,downloads,stars" > github.csv
+          # installers only: latest.json and .tar.gz/.sig are fetched by the updater, not by new users.
+          # (Windows/Linux updates re-download the installer, so this still over-counts a little.)
+          grep -v "^$(date -u +%F)," github.csv > github.tmp || true; mv github.tmp github.csv  # one row per day
           echo "$(date -u +%F),$downloads,$stars" >> github.csv
       - name: Commit
         run: |
