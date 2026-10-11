@@ -1,0 +1,53 @@
+// The launch page must not ship placeholders or claim things the app doesn't do (docs/09 M8).
+import { readFileSync } from "node:fs";
+import { expect, test } from "vitest";
+
+const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
+const licenses = readFileSync(new URL("../../THIRD_PARTY_LICENSES.md", import.meta.url), "utf8");
+
+test("no placeholders, old names or dead links", () => {
+  for (const bad of ["[stars]", "[repo]", "[contact]", "[check", "Plainshare", 'href="#"', "[download link]"])
+    expect([bad, html.includes(bad)]).toEqual([bad, false]);
+});
+
+test("no features that aren't built", () => {
+  for (const bad of [
+    "SQLite",
+    "MCP server",
+    "your key",
+    "answers questions",
+    "Standard templates, filled from a short form",
+    "hash-match",
+    "One docker command",
+  ])
+    expect([bad, html.includes(bad)]).toEqual([bad, false]);
+});
+
+test("download goes through the Tally form, then GitHub Releases; donations through Revolut", () => {
+  expect(html).toContain("https://tally.so/widgets/embed.js");
+  expect(html).toContain('"rjxQjR"');
+  expect(html).toContain("https://api.github.com/repos/MKBSP/capfolder/releases/latest");
+  expect(html).toContain("https://github.com/MKBSP/capfolder/releases/latest");
+  expect(html).toContain("https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df");
+});
+
+test("cookieless analytics, no banner (docs/11)", () => {
+  expect(html).toMatch(
+    /<script defer data-domain="capfolder\.com" src="https:\/\/plausible\.io\/js\/script\.js"><\/script>/,
+  );
+});
+
+test("acknowledged npm packages carry the license our license check found", () => {
+  for (const [pkg, license] of [
+    ...html.matchAll(/data-npm="([^"]+)"[^>]*>[^<]*<\/a><\/td><td[^>]*>[^<]*<\/td><td[^>]*>([^<]+)</g),
+  ].map((m) => [m[1]!, m[2]!.trim()]))
+    expect([
+      pkg,
+      licenses.includes(`- ${pkg} `) &&
+        licenses
+          .split("\n")
+          .find((l) => l.startsWith(`- ${pkg} `))
+          ?.endsWith(`: ${license}`),
+    ]).toEqual([pkg, true]);
+  expect(html.match(/data-npm="/g)?.length ?? 0).toBeGreaterThanOrEqual(6);
+});

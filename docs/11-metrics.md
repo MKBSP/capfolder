@@ -21,7 +21,13 @@
   "imported": true, "has_documents": true, "sent_envelope": false }
 ```
 - **Never sent:** company names, people, numbers, file names, emails, IP addresses (the endpoint drops them).
-- The endpoint is `POST /ping` on the relay, which stores rows in Postgres and keeps nothing else.
+- The endpoint is `POST /ping` on the relay. It stores each row (the fields above plus the day, no time, no IP) as one JSON line in `PING_FILE`, and keeps nothing else. Ruling (M8): a file, not Postgres, until the counts need queries.
+- The app sends nothing until the founder has accepted the terms that disclose it, and never when it's off in Settings → Privacy.
+
+## Built (M8, 2026-10-11)
+- Site: Plausible script (`data-domain="capfolder.com"`), Tally popup with `utm_source`/`ref` hidden fields, release links read from the GitHub API.
+- `.github/workflows/metrics.yml`: daily downloads + stars into `github.csv` on the `metrics` branch.
+- `pnpm --filter @capfolder/relay dashboard <pings.jsonl> <github.csv> <donations>` prints the table below. "Real envelopes sent" is counted as installs that sent at least one (the ping is a boolean).
 - The source is in the repo, so anyone can verify it.
 
 ## Launch dashboard (pass/fail, 30 days after Show HN)

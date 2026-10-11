@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#1F6F4A">
+<title>Capfolder — Your cap table, in a folder you own</title>
+<meta name="description" content="Free, open-source cap table app. Your equity records live in a folder on your computer, not in someone else's cloud.">
+<!-- docs/11: cookieless visit counts, no banner. Needs a Plausible site for capfolder.com. -->
+<script defer data-domain="capfolder.com" src="https://plausible.io/js/script.js"></script>
+<script async src="https://tally.so/widgets/embed.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAF8}
+a{color:#1F6F4A}a:hover{color:#16543A}
+:root{--ease-out:cubic-bezier(0.23,1,0.32,1);--ease-io:cubic-bezier(0.77,0,0.175,1)}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.h2{font-weight:600;font-size:46px;line-height:1.08;letter-spacing:-0.03em;margin:0}
+.lead{font-size:18px;line-height:1.6;margin:0;color:#3A3E46}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;padding:15px 22px;border-radius:10px;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform 160ms var(--ease-out),box-shadow 200ms ease,background-color 200ms ease}
+.btn:active{transform:scale(0.97)}
+.btn-p{background:#1F6F4A;color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 8px 20px -8px rgba(31,111,74,.6)}
+.btn-s{background:#fff;color:#111311;border-color:#D9DAD6}
+@media (hover:hover) and (pointer:fine){
+  .btn-p:hover{background:#18603F;color:#fff}
+  .btn-s:hover{background:#F3F4F1;color:#111311}
+  .lift{transition:transform 250ms var(--ease-out),box-shadow 250ms ease}
+  .lift:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(17,19,17,.25)}
+  .navlink:hover{color:#111311}
+}
+
+/* hero headline: words rise in once */
+.w{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(18px);animation:rise 800ms var(--ease-out) forwards}
+@keyframes rise{to{opacity:1;filter:blur(0);transform:translateY(0)}}
+.fade-in{opacity:0;animation:fadeup 700ms var(--ease-out) forwards}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mark{position:relative;white-space:nowrap}
+.mark::after{content:"";position:absolute;left:-4px;right:-4px;bottom:6px;height:16px;background:#BFE3CC;z-index:-1;border-radius:4px;clip-path:inset(0 100% 0 0);animation:draw 700ms var(--ease-io) 1000ms forwards}
+@keyframes draw{to{clip-path:inset(0 0 0 0)}}
+
+/* hero demo: messy -> sorted */
+.demo{position:relative;background:#fff;border:1px solid #E4E4E0;border-radius:18px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(31,111,74,.35)}
+.scan{position:absolute;left:0;right:0;top:56px;height:52px;background:linear-gradient(180deg,rgba(79,191,133,0) 0%,rgba(79,191,133,.18) 50%,rgba(79,191,133,0) 100%);border-bottom:2px solid #4FBF85;pointer-events:none;opacity:0;animation:scan 9s var(--ease-io) infinite}
+@keyframes scan{0%,14%{opacity:0;transform:translateY(0)}18%{opacity:1;transform:translateY(0)}48%{opacity:1;transform:translateY(260px)}54%,100%{opacity:0;transform:translateY(260px)}}
+.drow{display:grid;grid-template-columns:minmax(0,1fr);height:52px;align-items:center;padding:0 22px;border-bottom:1px solid #EFEFEC;font-size:15px}
+.drow > *{grid-area:1/1}
+.raw{display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#5B606B;animation:rawout 9s var(--ease-out) infinite}
+.parsed{display:flex;flex-wrap:wrap;align-items:center;gap:10px;opacity:0;animation:parsedin 9s var(--ease-out) infinite}
+@keyframes rawout{0%,20%{opacity:1;filter:blur(0);transform:none}25%,88%{opacity:0;filter:blur(4px);transform:translateX(-8px)}94%,100%{opacity:1;filter:blur(0);transform:none}}
+@keyframes parsedin{0%,20%{opacity:0;filter:blur(4px);transform:translateX(10px)}25%,88%{opacity:1;filter:blur(0);transform:none}94%,100%{opacity:0;filter:blur(4px)}}
+.r1 > *{animation-delay:0s}.r2 > *{animation-delay:.45s}.r3 > *{animation-delay:.9s}.r4 > *{animation-delay:1.35s}.r5 > *{animation-delay:1.8s}
+.pill{font-size:12px;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.counter{display:grid}.counter > *{grid-area:1/1}
+.cA{animation:cA 9s steps(1) infinite}.cB{opacity:0;animation:cB 9s steps(1) infinite}
+@keyframes cA{0%,52%{opacity:1}53%,93%{opacity:0}94%,100%{opacity:1}}
+@keyframes cB{0%,52%{opacity:0}53%,93%{opacity:1}94%,100%{opacity:0}}
+
+/* marquee */
+.marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.track{display:flex;gap:56px;width:max-content;animation:slide 32s linear infinite}
+.track span{font-size:20px;font-weight:600;color:#3A3E46;white-space:nowrap;display:inline-flex;align-items:center;gap:10px}
+@keyframes slide{to{transform:translateX(-50%)}}
+@media (hover:hover){.marquee:hover .track{animation-play-state:paused}}
+
+/* lost docs */
+.lost{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E4E4E0;border-radius:10px;padding:12px 16px;font-size:14px;position:relative}
+.lost .s{position:relative}
+.lost .s::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:#C0392B;transform-origin:left;transform:scaleX(0)}
+
+/* signing round trip */
+.lane{position:relative;height:200px}
+.node{position:absolute;top:28px;width:150px;margin-left:-75px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:14px}
+.nodeicon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.rail{position:absolute;left:8%;right:8%;top:60px;height:2px;background:repeating-linear-gradient(90deg,#C9CBC6 0 8px,transparent 8px 14px)}
+.mover{position:absolute;left:8%;width:84%;top:46px;height:28px;animation:travel 8s var(--ease-io) infinite}
+.doc{position:absolute;left:0;top:0;margin-left:-38px;width:76px;height:28px;border-radius:7px;background:#fff;border:1px solid #9C8FBF;box-shadow:0 6px 14px -6px rgba(78,63,134,.5);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#4E3F86;overflow:hidden}
+.doc > span{grid-area:1/1}.docw{display:grid}
+.d1{animation:d1 8s steps(1) infinite}.d2{opacity:0;color:#16543A;animation:d2 8s steps(1) infinite}
+@keyframes travel{0%,6%{transform:translateX(0)}22%,30%{transform:translateX(50%)}44%,58%{transform:translateX(100%)}84%,100%{transform:translateX(0)}}
+@keyframes d1{0%,50%{opacity:1}51%,100%{opacity:0}}
+@keyframes d2{0%,50%{opacity:0}51%,99%{opacity:1}100%{opacity:0}}
+.cloudA{animation:cloudA 8s steps(1) infinite}.cloudB{opacity:0;animation:cloudB 8s steps(1) infinite}
+@keyframes cloudA{0%,19%{opacity:0}20%,70%{opacity:1}71%,100%{opacity:0}}
+@keyframes cloudB{0%,70%{opacity:0}71%,96%{opacity:1}97%,100%{opacity:0}}
+.ping{animation:ping 8s var(--ease-out) infinite}
+@keyframes ping{0%,84%{box-shadow:0 0 0 0 rgba(31,111,74,0)}86%{box-shadow:0 0 0 0 rgba(31,111,74,.45)}96%,100%{box-shadow:0 0 0 18px rgba(31,111,74,0)}}
+.sig{animation:sig 8s var(--ease-out) infinite}
+@keyframes sig{0%,46%{box-shadow:0 0 0 0 rgba(78,63,134,0)}48%{box-shadow:0 0 0 0 rgba(78,63,134,.45)}58%,100%{box-shadow:0 0 0 18px rgba(78,63,134,0)}}
+
+/* kill switch */
+.appwin{transition:filter 400ms var(--ease-out),opacity 400ms var(--ease-out),transform 400ms var(--ease-out)}
+.appwin.dead{filter:grayscale(1) blur(2px);opacity:.35;transform:scale(0.98)}
+.folder{transition:transform 400ms var(--ease-out),box-shadow 400ms ease}
+.folder.hero{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgba(31,111,74,.5)}
+.frow{display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:14px;border-bottom:1px solid #EFEFEC}
+
+/* chat */
+.typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#9AA09A;margin-right:4px;animation:blink 1.2s ease infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+/* scroll reveals (progressive) */
+@supports (animation-timeline: view()){
+  .reveal{animation:fadeup linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+  .reveal2{animation:fadeup linear both;animation-timeline:view();animation-range:entry 10% entry 50%}
+  .reveal3{animation:fadeup linear both;animation-timeline:view();animation-range:entry 20% entry 60%}
+  .lost .s::after{animation:strike linear both;animation-timeline:view();animation-range:cover 30% cover 45%}
+  .msg1{animation:fadeup linear both;animation-timeline:view();animation-range:entry 30% cover 30%}
+  .msg2{animation:fadeup linear both;animation-timeline:view();animation-range:entry 50% cover 36%}
+  .msg3{animation:fadeup linear both;animation-timeline:view();animation-range:entry 70% cover 42%}
+  .msg4{animation:fadeup linear both;animation-timeline:view();animation-range:entry 90% cover 48%}
+}
+@keyframes strike{to{transform:scaleX(1)}}
+
+@media (prefers-reduced-motion: reduce){
+  .w,.fade-in{animation:none;opacity:1;filter:none;transform:none}
+  .mark::after{animation:none;clip-path:none}
+  .track,.mover,.scan,.ping,.sig{animation:none}
+  .raw{animation:none;opacity:0}.parsed{animation:none;opacity:1;filter:none;transform:none}
+  .cA{animation:none;opacity:0}.cB{animation:none;opacity:1}
+  .reveal,.reveal2,.reveal3,.msg1,.msg2,.msg3,.msg4{animation:none}
+  .appwin,.folder{transition:opacity 200ms ease}
+}
+</style>
+</head>
+<body>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #111311; background: #FAFAF8; overflow-x: hidden">
+
+  <nav aria-label="Main" class="wrap" style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; padding-top: 20px; padding-bottom: 20px">
+    <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111311; font-weight: 600; font-size: 18px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>
+      Capfolder
+    </a>
+    <div style="margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 22px; font-size: 15px">
+      <a href="#story" class="navlink" style="color: #3A3E46; text-decoration: none">Why</a>
+      <a href="#compare" class="navlink" style="color: #3A3E46; text-decoration: none">Compare</a>
+      <a href="#signing" class="navlink" style="color: #3A3E46; text-decoration: none">Signing</a>
+      <a href="#ai" class="navlink" style="color: #3A3E46; text-decoration: none">AI</a>
+      <a href="#open" class="navlink" style="color: #3A3E46; text-decoration: none">Open source</a>
+      <a href="https://github.com/MKBSP/capfolder" class="btn btn-s" style="font-size: 14px; font-weight: 500; padding: 9px 14px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 15 8.6l6.7 1-4.9 4.7 1.2 6.7L12 17.8 6 21l1.2-6.7-4.9-4.7 6.7-1z"/></svg>
+        Star <span class="num stars" style="color: #5B606B"></span>
+      </a>
+      <a href="#download" class="btn btn-p" style="font-size: 14px; padding: 10px 16px">Download</a>
+    </div>
+  </nav>
+
+  <header class="wrap" style="padding-top: 80px; padding-bottom: 40px; text-align: center; position: relative">
+    <div aria-hidden="true" style="position: absolute; inset: 0 -200px auto -200px; height: 560px; background-image: radial-gradient(#D5DED7 1px, transparent 1px); background-size: 22px 22px; mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 65%); -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 65%); z-index: 0"></div>
+    <div style="position: relative; z-index: 1">
+      <a href="#open" class="fade-in" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #C9DECF; color: #16543A; text-decoration: none">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #4FBF85; box-shadow: 0 0 0 3px #DDF1E5"></span>
+        100% open source · AGPL-3.0 →
+      </a>
+      <h1 style="font-weight: 600; font-size: 80px; line-height: 1.02; letter-spacing: -0.04em; margin: 28px auto 0 auto; max-width: 940px; isolation: isolate">
+        <span class="w" style="animation-delay: 80ms">Your</span> <span class="w" style="animation-delay: 140ms">cap</span> <span class="w" style="animation-delay: 200ms">table,</span> <span class="w" style="animation-delay: 260ms">in</span> <span class="w" style="animation-delay: 320ms">a</span> <span class="w mark" style="animation-delay: 380ms">folder you own.</span>
+      </h1>
+      <p class="lead fade-in" style="margin: 26px auto 0 auto; max-width: 620px; font-size: 20px; animation-delay: 650ms">Issue SAFEs and options, track everyone's vesting, collect signatures. Plain files on your computer. Investors sign from any browser.</p>
+      <div id="download" class="fade-in" style="max-width: 560px; margin: 34px auto 0 auto; animation-delay: 800ms">
+        <div id="gate">
+          <div style="display: flex; justify-content: center">
+            <button type="button" class="btn btn-p" id="getdl" style="font-size: 17px; padding: 14px 22px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+              Get the download
+            </button>
+          </div>
+          <p style="font-size: 14px; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · we'll only email you about new versions · or <a href="https://github.com/MKBSP/capfolder">read the source</a></p>
+        </div>
+        <div id="dlthanks" hidden>
+          <div class="fade-in" style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left; box-shadow: 0 20px 40px -24px rgba(31,111,74,.35)">
+            <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              Your download is ready
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
+              <a id="dl-mac" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
+              <a id="dl-win" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
+              <a id="dl-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
+            </div>
+            <div style="font-size: 13px; color: #5B606B; margin-top: 10px">
+              <a id="dl-mac-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECECE8">
+              <span style="flex: 1 1 240px; font-size: 15px; line-height: 1.5; color: #3A3E46">Capfolder is free. If it saves you a headache, <b style="font-weight: 600; color: #111311">pay what you want.</b></span>
+              <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>
+                Buy me a coffee
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="wrap fade-in" aria-label="Live demo: sorting a messy folder" style="padding-bottom: 96px; animation-delay: 1000ms">
+    <div class="demo">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 0 22px; height: 56px; border-bottom: 1px solid #E4E4E0; background: #FBFBFA">
+        <span style="display: flex; gap: 6px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span></span>
+        <span style="font-weight: 600; font-size: 14px">Add your messy folder</span>
+        <span class="counter num" style="margin-left: auto; font-size: 13px">
+          <span class="cA" style="color: #5B606B">Reading 5 files…</span>
+          <span class="cB" style="color: #16543A">5 sorted · 1 needs you</span>
+        </span>
+      </div>
+      <div class="drow r1"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>SAFE_YC_signed.pdf</span><span class="parsed"><b style="font-weight: 600">SAFE</b> · Y Combinator · <span class="num">$500,000</span> · cap <span class="num">$10M</span><span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
+      <div class="drow r2"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>scan_0042.pdf</span><span class="parsed"><b style="font-weight: 600">SAFE</b> · Fund X · <span class="num">$250,000</span> · cap unreadable<span class="pill" style="margin-left: auto; background: #FDF1E3; color: #8A3E05">Needs you</span></span></div>
+      <div class="drow r3"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>Re_ docs - FINAL v3.pdf</span><span class="parsed"><b style="font-weight: 600">SAFE</b> · Angel A · <span class="num">$150,000</span> · 20% discount<span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
+      <div class="drow r4"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>lisa grant (1).pdf</span><span class="parsed"><b style="font-weight: 600">Option grant</b> · Lisa Moreau · <span class="num">40,000</span> @ <span class="num">$0.12</span><span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
+      <div class="drow r5" style="border-bottom: none"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>IMG_2231_83b.jpg</span><span class="parsed"><b style="font-weight: 600">83(b) election</b> · Mads Petersen · filed 2021<span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
+      <div class="scan" aria-hidden="true"></div>
+    </div>
+    <p style="text-align: center; margin: 18px 0 0 0; font-size: 14px; color: #5B606B">Any file name, any layout. Read on your computer, matched to your cap table.</p>
+  </section>
+
+  <section aria-label="Built on open source" style="padding-bottom: 104px">
+    <div class="eyebrow" style="text-align: center; color: #5B606B; margin-bottom: 22px">Built on open source</div>
+    <div class="marquee">
+      <div class="track">
+        <span>Tauri</span><span style="color: #C9CBC6">✦</span><span>Open Cap Format</span><span style="color: #C9CBC6">✦</span><span>Documenso</span><span style="color: #C9CBC6">✦</span><span>PDF.js</span><span style="color: #C9CBC6">✦</span><span>pdf-lib</span><span style="color: #C9CBC6">✦</span><span>Tesseract</span><span style="color: #C9CBC6">✦</span><span>Ollama</span><span style="color: #C9CBC6">✦</span><span>tesseract.js</span><span style="color: #C9CBC6">✦</span>
+        <span aria-hidden="true">Tauri</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Open Cap Format</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Documenso</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">PDF.js</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">pdf-lib</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Tesseract</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Ollama</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">tesseract.js</span><span style="color: #C9CBC6" aria-hidden="true">✦</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="story" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: 112px; padding-bottom: 112px">
+    <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
+      <div style="flex: 1 1 440px; min-width: 0" class="reveal">
+        <div class="eyebrow" style="color: #1F6F4A">Why we built this</div>
+        <h2 class="h2" style="margin-top: 14px">We lost our cap table paperwork.</h2>
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px; font-size: 18px; line-height: 1.65; color: #2B2E33">
+          <p style="margin: 0">We raised our seed on SAFEs from 28 investors. Some signed in Pulley. Some sent their own paperwork. Some signed by email.</p>
+          <p style="margin: 0">When we needed the documents, the data was gone. We're now digging through old inboxes and asking investors to sign again.</p>
+          <p style="margin: 0">A cap table is the most important record a company has. It shouldn't depend on a vendor, a subscription or a login. So we built one that lives in a folder you own, and open-sourced it so it can't disappear.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 24px; font-size: 15px">
+          <span style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; background: #E3E9E4; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #16543A">MP</span>
+          <span><b style="font-weight: 600">Mads Petersen</b><br><span style="color: #5B606B">Founder, previously YC W22</span></span>
+        </div>
+      </div>
+      <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px" role="group" aria-label="Where our documents ended up">
+        <div class="lost reveal"><span style="flex-shrink: 0; font-size: 12px; padding: 3px 8px; border-radius: 6px; background: #F0F1EE; color: #5B606B">Pulley</span><span class="s">SAFE · Y Combinator · signed</span></div>
+        <div class="lost reveal2"><span style="flex-shrink: 0; font-size: 12px; padding: 3px 8px; border-radius: 6px; background: #F0F1EE; color: #5B606B">Gmail</span><span class="s">Re: Re: Fwd: docs FINAL v3</span></div>
+        <div class="lost reveal3"><span style="flex-shrink: 0; font-size: 12px; padding: 3px 8px; border-radius: 6px; background: #F0F1EE; color: #5B606B">Their paper</span><span class="s">Fund X SAFE (scanned)</span></div>
+        <div class="lost reveal3"><span style="flex-shrink: 0; font-size: 12px; padding: 3px 8px; border-radius: 6px; background: #F0F1EE; color: #5B606B">Downloads</span><span class="s">IMG_2231.jpg</span></div>
+        <div class="reveal3" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 10px; background: #E8F3EC; color: #16543A; font-size: 15px; font-weight: 500">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Now: one folder, every document matched to a row
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top: 112px; padding-bottom: 112px">
+    <div class="reveal" style="max-width: 640px">
+      <div class="eyebrow" style="color: #1F6F4A">What it does</div>
+      <h2 class="h2" style="margin-top: 14px">Everything Pulley did that you actually used.</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 40px">
+      <div class="lift reveal" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px" aria-hidden="true">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5B606B"><span>Mads</span><span class="num">75%</span></div>
+          <div style="height: 8px; border-radius: 4px; background: #E9ECE8; overflow: hidden"><div class="reveal2" style="width: 75%; height: 100%; background: #1F6F4A; border-radius: 4px"></div></div>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5B606B"><span>Lisa</span><span class="num">25%</span></div>
+          <div style="height: 8px; border-radius: 4px; background: #E9ECE8; overflow: hidden"><div class="reveal3" style="width: 25%; height: 100%; background: #1F6F4A; border-radius: 4px"></div></div>
+        </div>
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">The cap table is the first screen</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Who owns what, with everyone's vesting, on one page.</p>
+      </div>
+      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; font-size: 13px" aria-hidden="true">
+          <div style="display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; background: #FFFBF4; color: #8A3E05"><span style="width: 7px; height: 7px; border-radius: 50%; background: #D97706"></span>83(b) missing · Ana</div>
+          <div style="display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; background: #FDF3F1; color: #A1261A"><span style="width: 7px; height: 7px; border-radius: 50%; background: #C0392B"></span>No signed SAFE · Fund X</div>
+        </div>
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">What's missing, flagged</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Found before an investor's lawyer finds it.</p>
+      </div>
+      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <div style="display: flex; gap: 8px; margin-bottom: 22px" aria-hidden="true">
+          <span style="font-size: 13px; padding: 8px 12px; border-radius: 8px; background: #1F6F4A; color: #fff">+ SAFE</span>
+          <span style="font-size: 13px; padding: 8px 12px; border-radius: 8px; background: #F0F1EE">+ Grant</span>
+          <span style="font-size: 13px; padding: 8px 12px; border-radius: 8px; background: #F0F1EE">+ Shares</span>
+        </div>
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">SAFEs, grants and shares in two minutes</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Record them from a short form, then send your signed-off PDF for signature. Capfolder adds the signature page.</p>
+      </div>
+      <div class="lift reveal" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <div class="num" style="display: flex; gap: 8px; margin-bottom: 22px; font-size: 13px" aria-hidden="true">
+          <span style="padding: 8px 12px; border-radius: 8px; background: #F0F1EE">captable.xlsx</span>
+          <span style="padding: 8px 12px; border-radius: 8px; background: #F0F1EE">as of 2025-12-31</span>
+        </div>
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Excel or CSV, any date</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">For the auditor, the bank or the tax office.</p>
+      </div>
+      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <div style="margin-bottom: 22px; font-size: 13px; padding: 10px 12px; border-radius: 8px; background: #F6F7F4; line-height: 1.5" aria-hidden="true"><span class="num">10,000</span> = <span class="num">40,000</span> × 12/48 months<br><span style="color: #5B606B">cliff passed Oct 7, 2026</span></div>
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Math you can check</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Click any number to see how it was computed. Tests are public.</p>
+      </div>
+      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <div style="display: flex; gap: 8px; margin-bottom: 22px; font-size: 13px" aria-hidden="true">
+          <span style="padding: 8px 12px; border-radius: 8px; background: #E8F3EC; color: #16543A">Works offline</span>
+          <span style="padding: 8px 12px; border-radius: 8px; background: #F0F1EE">~15 MB</span>
+        </div>
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">A real desktop app</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Fast, small, and no login screen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare" class="wrap" style="padding-top: 112px; padding-bottom: 112px">
+    <div class="reveal" style="max-width: 760px">
+      <div class="eyebrow" style="color: #1F6F4A">Compare</div>
+      <h2 class="h2" style="margin-top: 14px">Rent your cap table, or own it.</h2>
+      <p class="lead" style="margin-top: 18px">Hosted tools do more today. Capfolder is the one that can't disappear with your data.</p>
+    </div>
+    <div class="reveal2" style="margin-top: 36px; background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; overflow-x: auto">
+      <table style="width: 100%; border-collapse: collapse; min-width: 820px; font-size: 15px; line-height: 1.45">
+        <thead><tr style="text-align: left; font-size: 14px; vertical-align: top">
+          <th style="padding: 16px 22px; border-bottom: 1px solid #E4E4E0; width: 30%"></th>
+          <th style="padding: 16px 16px; border-bottom: 1px solid #C9DECF; background: #E8F3EC; color: #16543A; font-weight: 600; width: 22%">Capfolder</th>
+          <th style="padding: 16px 16px; border-bottom: 1px solid #E4E4E0; font-weight: 600; width: 28%">Hosted cap table tools<br><span style="font-weight: 400; font-size: 13px; color: #5B606B">Carta · Mantle · Cake Equity · Eqvista · Ledgy · Pulley</span></th>
+          <th style="padding: 16px 22px; border-bottom: 1px solid #E4E4E0; font-weight: 600">Spreadsheet<br><span style="font-weight: 400; font-size: 13px; color: #5B606B">Excel · Google Sheets</span></th>
+        </tr></thead>
+        <tbody><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Where your data lives</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">A folder on your computer</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Their servers</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">A file on your computer</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Still works if the company behind it shuts down</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">Pulley shuts down Dec 8, 2026</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Open source, auditable math</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">—</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Price</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">Free<br><span style="color:#5B606B;font-size:13px">pay what you want</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free tiers for up to 20 stakeholders, then about $1,000–15,000/yr<br><span style="color:#5B606B;font-size:13px">Carta: typically $3,000–8,000/yr under 50 stakeholders; median $15,450/yr</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Import from Pulley / Carta / OCF</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Investors sign from a link</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Vesting tracked, missing documents flagged</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">By hand</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Reads messy PDFs and sorts them</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span><br><span style="color:#5B606B;font-size:13px">your AI, can be local</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Mantle only</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">Export Excel, CSV and OCF</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Varies<br><span style="color:#5B606B;font-size:13px">Carta exports an OCX report</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Excel</td></tr><tr><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top">409A valuations, multiple admins, employee portals</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">not yet</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr></tbody>
+      </table>
+    </div>
+    <p style="margin: 14px 0 0 0; font-size: 13px; color: #5B606B; line-height: 1.55">Features vary by vendor and plan. Free tiers: Cake Equity ≤5, Eqvista ≤20, Carta Launch ≤25 stakeholders (and under $1M raised), Ledgy ≤25; Mantle has a free plan. Paid entry points: Cake $1,000/yr, Mantle $1,200/yr, Ledgy from €5,000/yr; Carta doesn't publish prices, so its figures are from Vendr purchase data (Feb 2026). AngelList stopped taking new cap-table customers in 2026. Checked October 2026; check each vendor before deciding. Spotted something wrong? <a href="https://github.com/MKBSP/capfolder/issues">Open an issue</a>.</p>
+  </section>
+
+  <section id="signing" style="background: #F3F1F9; padding-top: 112px; padding-bottom: 112px">
+    <div class="wrap">
+      <div class="reveal" style="max-width: 760px">
+        <div class="eyebrow" style="color: #4E3F86">Signatures</div>
+        <h2 class="h2" style="margin-top: 14px">The only thing in the cloud is the unsigned document.</h2>
+        <p class="lead" style="margin-top: 18px">It waits on the relay, encrypted, until everyone has signed. Then it comes back to your folder, is checked against your original, and the relay deletes its copy.</p>
+      </div>
+      <div class="reveal2" style="margin-top: 48px; background: #fff; border-radius: 18px; border: 1px solid #E2DEEF; padding: 28px 12px 8px 12px; overflow: hidden">
+        <div class="lane" role="img" aria-label="A document travels from your folder to the relay, to the investor, and back">
+          <div class="rail"></div>
+          <div class="node" style="left: 8%">
+            <span class="nodeicon ping" style="background: #E8F3EC; color: #16543A"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+            <b style="font-weight: 600">Your folder</b><span style="color: #5B606B; font-size: 13px">original + hash</span>
+          </div>
+          <div class="node" style="left: 50%">
+            <span class="nodeicon" style="background: #EEEBF7; color: #4E3F86"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg></span>
+            <b style="font-weight: 600">Relay</b>
+            <span class="counter" style="font-size: 13px"><span style="color: #5B606B">empty</span><span class="cloudA" style="color: #4E3F86; background: #fff">holding 1 · encrypted</span><span class="cloudB" style="color: #16543A; background: #fff">copy deleted</span></span>
+          </div>
+          <div class="node" style="left: 92%">
+            <span class="nodeicon sig" style="background: #F0F1EE; color: #3A3E46"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+            <b style="font-weight: 600">Investor</b><span style="color: #5B606B; font-size: 13px">signs in browser</span>
+          </div>
+          <div class="mover" aria-hidden="true"><div class="doc"><span class="docw"><span class="d1">SAFE</span><span class="d2">✓ Signed</span></span></div></div>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 18px">
+        <div class="reveal" style="background: #fff; border-radius: 14px; padding: 20px; font-size: 15px; line-height: 1.55"><b style="font-weight: 600">No account for signers.</b> <span style="color: #3A3E46">A link in their email, that's it.</span></div>
+        <div class="reveal2" style="background: #fff; border-radius: 14px; padding: 20px; font-size: 15px; line-height: 1.55"><b style="font-weight: 600">Matched to your original.</b> <span style="color: #3A3E46">Every page you sent must come back with the same text and nothing added on top.</span></div>
+        <div class="reveal3" style="background: #fff; border-radius: 14px; padding: 20px; font-size: 15px; line-height: 1.55"><b style="font-weight: 600">Self-host the relay.</b> <span style="color: #3A3E46">Documenso plus a small API, both in the repo, if you want zero cloud.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai" class="wrap" style="padding-top: 112px; padding-bottom: 112px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
+    <div class="reveal" style="flex: 1 1 380px; min-width: 0">
+      <div class="eyebrow" style="color: #1F6F4A">Bring your own AI</div>
+      <h2 class="h2" style="margin-top: 14px">Plug in your local AI. Give your folder superpowers.</h2>
+      <p class="lead" style="margin-top: 18px">Ollama or LM Studio keep everything on your machine. The AI reads the odd PDFs the rules can't, and fills in a proposal. Every field is checked against the cap table, and nothing is saved until you click.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; font-family: 'IBM Plex Mono', monospace; font-size: 12px">
+        <span style="padding: 5px 10px; border-radius: 999px; background: #E8F3EC; color: #16543A">Ollama · local</span>
+        <span style="padding: 5px 10px; border-radius: 999px; background: #E8F3EC; color: #16543A">LM Studio · local</span>
+        <span style="padding: 5px 10px; border-radius: 999px; background: #F0F1EE; color: #5B606B">Claude Code, Codex, MCP · coming later</span>
+      </div>
+    </div>
+    <div style="flex: 1 1 440px; min-width: 0; background: #fff; border: 1px solid #E4E4E0; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 14px; font-size: 15px; line-height: 1.55; box-shadow: 0 40px 80px -50px rgba(17,19,17,.35)">
+      <div class="msg1" style="align-self: flex-end; max-width: 80%; background: #1F6F4A; color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px">Sort my old Pulley folder (14 files)</div>
+      <div class="msg2" style="max-width: 92%; background: #F3F4F1; border-radius: 14px 14px 14px 4px; padding: 10px 14px">11 filed. 3 need you. <span class="num">scan_0042.pdf</span> looks like Fund X's SAFE (<span class="num">$250k</span>, Mar 14, 2023), signed as “Fund X Ventures I, L.P.” Same investor?</div>
+      <div class="msg3" style="align-self: flex-end; max-width: 80%; background: #1F6F4A; color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px">Yes. Remember that name.</div>
+      <div class="msg4" style="max-width: 92%; background: #F3F4F1; border-radius: 14px 14px 14px 4px; padding: 10px 14px">Filed as <span class="num">docs/safes/2023-03-14_fund-x_safe.pdf</span>. Next time it’s automatic.</div>
+      <div class="typing" aria-hidden="true" style="padding: 4px 6px"><span></span><span></span><span></span></div>
+      <div style="font-size: 12px; color: #5B606B; border-top: 1px solid #E4E4E0; padding-top: 12px">Ollama · running on this Mac · nothing sent out</div>
+    </div>
+  </section>
+
+  <section style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: 112px; padding-bottom: 112px">
+    <div class="wrap">
+      <div class="reveal" style="max-width: 720px">
+        <div class="eyebrow" style="color: #1F6F4A">Try it</div>
+        <h2 class="h2" style="margin-top: 14px">What happens if we shut down?</h2>
+        <p class="lead" style="margin-top: 18px">Press the button. That's the point of owning the folder.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 36px; align-items: stretch">
+        <div class="appwin" id="appwin" style="flex: 1 1 380px; min-width: 0; background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; overflow: hidden">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #E4E4E0; font-size: 14px"><b style="font-weight: 600">Capfolder app</b><span style="margin-left: auto; font-size: 12px; color: #16543A" data-k="appStatus">Running</span></div>
+          <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px; font-size: 14px">
+            <div style="display: flex; justify-content: space-between"><span>Mads Petersen</span><span class="num">50.00%</span></div>
+            <div style="height: 6px; border-radius: 3px; background: #E9ECE8"><div style="width: 75%; height: 100%; background: #1F6F4A; border-radius: 3px"></div></div>
+            <div style="display: flex; justify-content: space-between"><span>Ana Ribeiro</span><span class="num">37.50%</span></div>
+            <div style="height: 6px; border-radius: 3px; background: #E9ECE8"><div style="width: 75%; height: 100%; background: #1F6F4A; border-radius: 3px"></div></div>
+            <div style="display: flex; justify-content: space-between"><span>Signing relay</span><span style="color: #16543A" data-k="relayStatus">Online</span></div>
+          </div>
+        </div>
+        <div class="folder" id="folderwin" style="flex: 1 1 380px; min-width: 0; background: #fff; border: 1px solid #C9DECF; border-radius: 16px; overflow: hidden">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #E4E4E0; font-size: 14px; background: #F6FAF7">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F6F4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <b style="font-weight: 600" class="num">~/Documents/Acme</b><span style="margin-left: auto; font-size: 12px; color: #16543A"><span data-k="folderStatus">On your disk</span></span>
+          </div>
+          <div class="frow num"><span>README.txt</span><span style="margin-left: auto; color: #5B606B; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px">how to read this folder</span></div>
+          <div class="frow num"><span>captable.csv</span><span style="margin-left: auto; color: #5B606B; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px"><span data-k="csvHint">always up to date</span></span></div>
+          <div class="frow num"><span>events.jsonl</span><span style="margin-left: auto; color: #5B606B; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px">214 events</span></div>
+          <div class="frow num" style="border-bottom: none"><span>docs/</span><span style="margin-left: auto; color: #5B606B; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px">16 signed PDFs</span></div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: center; margin-top: 28px">
+        <button type="button" class="btn btn-p" id="killbtn">Shut Capfolder down</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="open" class="wrap" style="padding-top: 112px; padding-bottom: 112px">
+    <div class="reveal" style="max-width: 760px">
+      <div class="eyebrow" style="color: #1F6F4A">Open source</div>
+      <h2 class="h2" style="margin-top: 14px">Every line is public. Fork it, audit it, run it yourself.</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 40px">
+      <div class="lift reveal" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Use it as is</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Download the app. Free, with our hosted signing relay.</p>
+        <a href="#download" class="btn btn-p" style="margin-top: 20px; font-size: 15px; padding: 12px 18px">Download</a>
+      </div>
+      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Self-host the relay</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Keep even unsigned documents on your own server.</p>
+        <pre class="num" style="margin: 18px 0 0 0; background: #F6F7F4; border: 1px solid #E4E4E0; border-radius: 8px; padding: 12px 14px; font-size: 13px; overflow-x: auto">git clone https://github.com/MKBSP/capfolder
+cd capfolder/apps/relay
+# then follow README.md</pre>
+      </div>
+      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Read the code</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">App, engine, relay and the cap-table test suite. AGPL-3.0.</p>
+        <a href="https://github.com/MKBSP/capfolder" class="btn btn-s" style="margin-top: 20px; font-size: 15px; padding: 12px 18px">View on GitHub<span class="num stars-sep"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="thanks" class="wrap" style="padding-bottom: 112px">
+    <div class="reveal">
+      <div class="eyebrow" style="color: #1F6F4A">Standing on shoulders</div>
+      <h2 class="h2" style="margin-top: 14px">Open source we use, with thanks.</h2>
+    </div>
+    <div class="reveal2" style="margin-top: 32px; background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; overflow-x: auto">
+      <table style="width: 100%; border-collapse: collapse; min-width: 620px; font-size: 15px">
+        <thead><tr style="font-size: 13px; color: #5B606B; text-align: left"><th style="padding: 14px 22px; font-weight: 500; border-bottom: 1px solid #E4E4E0">Project</th><th style="padding: 14px 12px; font-weight: 500; border-bottom: 1px solid #E4E4E0">What we use it for</th><th style="padding: 14px 22px; font-weight: 500; border-bottom: 1px solid #E4E4E0">License</th></tr></thead>
+        <tbody>
+                    <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/tauri-apps/tauri" style="font-weight: 600">Tauri</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The desktop app</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT / Apache-2.0</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/Open-Cap-Table-Coalition/Open-Cap-Format-OCF" style="font-weight: 600">Open Cap Format</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The data model and export</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">OCF Schema and Documentation License</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/documenso/documenso" style="font-weight: 600">Documenso</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The signing relay</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">AGPL-3.0</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/mozilla/pdf.js" data-npm="pdfjs-dist" style="font-weight: 600">PDF.js</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading PDFs and checking signed copies</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">Apache-2.0</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/Hopding/pdf-lib" data-npm="pdf-lib" style="font-weight: 600">pdf-lib</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Signature pages and PDF exports</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/naptha/tesseract.js" data-npm="tesseract.js" style="font-weight: 600">tesseract.js</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading scans, offline</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">Apache-2.0</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/ollama/ollama" style="font-weight: 600">Ollama</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Running local AI models (optional)</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/facebook/react" data-npm="react" style="font-weight: 600">React</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The app's screens</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/mholt/PapaParse" data-npm="papaparse" style="font-weight: 600">Papa Parse</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading CSV exports</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/101arrowz/fflate" data-npm="fflate" style="font-weight: 600">fflate</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Excel files and zips</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/ajv-validator/ajv" data-npm="ajv" style="font-weight: 600">Ajv</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Checking every record against OCF</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/honojs/hono" data-npm="hono" style="font-weight: 600">Hono</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The relay's API</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/paulmillr/noble-ed25519" data-npm="@noble/ed25519" style="font-weight: 600">noble-ed25519</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Checking the signed rules pack</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin: 14px 0 0 0; font-size: 13px; color: #5B606B">Every package with its license: <a href="https://github.com/MKBSP/capfolder/blob/main/THIRD_PARTY_LICENSES.md">THIRD_PARTY_LICENSES.md</a>.</p>
+  </section>
+
+  <section id="faq" class="wrap" style="padding-bottom: 112px">
+    <h2 class="h2 reveal">Questions</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px 56px; margin-top: 32px">
+      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Who can see my data?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Only you. The relay holds a document only until it's signed. Local AI never sends anything out.</p></div>
+      <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Can I move from Pulley or Carta?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Import their export (spreadsheet or OCF). Totals are checked against it before anything is saved. Then drop in your signed documents and they're sorted for you.</p></div>
+      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">What does it cost?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">The app is free. Pay what you want if it helps you. A paid hosted relay for teams may come later.</p></div>
+      <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Which companies does it support?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Delaware C-corps first. More jurisdictions after.</p></div>
+      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Is this legal advice?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">No. Capfolder records what you and your lawyer decided; it doesn't write your documents. Have a lawyer review them.</p></div>
+    </div>
+  </section>
+
+  <section style="background: #1F6F4A; color: #fff; padding-top: 120px; padding-bottom: 120px; text-align: center; position: relative; overflow: hidden">
+    <div aria-hidden="true" style="position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1px); background-size: 22px 22px"></div>
+    <div class="wrap reveal" style="position: relative">
+      <h2 class="h2" style="font-size: 60px">Own your cap table.</h2>
+      <p class="lead" style="color: #D6EBDD; margin: 18px auto 0 auto; max-width: 520px">Free, open source, on your computer.</p>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px">
+        <a href="#download" class="btn" style="background: #fff; color: #16543A">Download for macOS</a>
+        <a href="https://github.com/MKBSP/capfolder" class="btn" style="border-color: rgba(255,255,255,.45); color: #fff">Star on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; color: #5B606B">
+    <span>Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 18px"><a href="https://github.com/MKBSP/capfolder">GitHub</a><a href="https://github.com/MKBSP/capfolder/fork">Fork it</a><a href="#thanks">Acknowledgements</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a></span>
+  </footer>
+</div>
+
+<script>
+// Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
+// Links point at the latest published GitHub release; without JS they open the release page.
+var params = new URLSearchParams(location.search);
+function showDownloads() {
+  document.getElementById("gate").hidden = true;
+  document.getElementById("dlthanks").hidden = false;
+}
+document.getElementById("getdl").addEventListener("click", () => {
+  if (!window.Tally) { location.href = `https://tally.so/r/rjxQjR?${params.toString()}`; return; } // blocked: open the form page
+  window.Tally.openPopup("rjxQjR", {
+    layout: "modal",
+    hideTitle: true,
+    hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
+    onSubmit: showDownloads,
+  });
+});
+fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
+  .then((r) => r.ok ? r.json() : null)
+  .then((rel) => {
+    if (!rel) return;
+    var find = (re) => { var a = (rel.assets || []).find((x) => re.test(x.name)); return a && a.browser_download_url; };
+    var set = (id, url) => { if (url) document.getElementById(id).href = url; };
+    set("dl-mac", find(/aarch64\.dmg$/));
+    set("dl-mac-intel", find(/x64\.dmg$/));
+    set("dl-win", find(/x64-setup\.exe$/) || find(/\.msi$/));
+    set("dl-linux", find(/\.AppImage$/) || find(/\.deb$/));
+  })
+  .catch(() => {});
+fetch("https://api.github.com/repos/MKBSP/capfolder")
+  .then((r) => r.ok ? r.json() : null)
+  .then((repo) => {
+    if (!repo) return;
+    var n = repo.stargazers_count;
+    document.querySelectorAll(".stars").forEach((el) => { el.textContent = n; });
+    document.querySelectorAll(".stars-sep").forEach((el) => { el.textContent = ` · ${n} ★`; });
+  })
+  .catch(() => {});
+// "What if we shut down?" switch
+(() => {
+  var dead = false, btn = document.getElementById('killbtn');
+  var T = { appStatus: ['Running','Company shut down'], relayStatus: ['Online','Offline'],
+            folderStatus: ['On your disk','Still here. Still yours.'], csvHint: ['always up to date','opens in Excel ✓'] };
+  btn.addEventListener('click', () => {
+    dead = !dead;
+    document.getElementById('appwin').classList.toggle('dead', dead);
+    document.getElementById('folderwin').classList.toggle('hero', dead);
+    document.querySelectorAll('[data-k]').forEach((el) => {
+      var k = el.getAttribute('data-k'); el.textContent = T[k][dead ? 1 : 0];
+      if (k === 'appStatus' || k === 'relayStatus') el.style.color = dead ? '#A1261A' : '#16543A';
+    });
+    btn.textContent = dead ? 'Bring Capfolder back' : 'Shut Capfolder down';
+    btn.className = `btn ${dead ? 'btn-s' : 'btn-p'}`;
+  });
+})();
+</script>
+</body>
+</html>

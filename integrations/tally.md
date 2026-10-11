@@ -13,7 +13,7 @@
 
 **Thank-you page:** "Your download is ready", with download links per OS (placeholders `[download link]`; replace with GitHub Releases URLs), then "Capfolder is free. If it saves you a headache, pay what you want." linking to https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df
 
-## Wiring the website
+## Wiring the website (done in M8: `apps/website/index.html` opens the popup with `Tally.openPopup` and shows the release links `onSubmit`; if Tally's script is blocked it opens tally.so/r/rjxQjR)
 - Replace the mock gate in `design/website/index.html` (`#getdl` click handler) with Tally's popup embed:
 ```html
 <script async src="https://tally.so/widgets/embed.js"></script>

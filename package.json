@@ -14,7 +14,8 @@
     "licenses:check": "node scripts/check-licenses.mjs",
     "dev:desktop": "pnpm --filter @capfolder/desktop tauri dev",
     "build:desktop": "pnpm --filter @capfolder/desktop tauri build",
-    "rules:sign": "node apps/desktop/scripts/rules.mjs sign"
+    "rules:sign": "node apps/desktop/scripts/rules.mjs sign",
+    "dev:web": "pnpm --filter @capfolder/website dev"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",

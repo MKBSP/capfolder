@@ -23,7 +23,7 @@ Updated 2026-10-11 (after M4). Milestones and acceptance tests: `docs/09-build-p
 | M5 Signing | Done 2026-10-10, runs locally; hosting relay.capfolder.com is Mads' decision |
 | M4 Document sorting | Done 2026-10-11 (rules + kNN + local AI, OCR; tested on a synthetic folder, run the pilot's folder when it arrives) |
 | M7 Updates + release | Built 2026-10-11 (updater, release workflow, signed rules pack). The v0.1.0 → v0.1.1 check runs once the certificates and secrets exist |
-| M8 Website + launch | Not started |
+| M8 Website + launch | Built 2026-10-11 (`apps/website`, install ping, metrics workflow, dashboard, launch drafts in `docs/launch/`); going live is Mads' list below |
 
 Order changed 2026-10-10 so the full product can be tested sooner: M3 → M6 → M2 → M5 → M4 → M7 → M8.
 
@@ -42,7 +42,12 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Decide where the relay + Documenso run (relay.capfolder.com), and which email service sends codes and signing emails (SMTP). Then a production signing certificate (self-signed works; an AATL certificate shows a green check in Acrobat).
 - [ ] Source the YC post-money SAFE template so New SAFE can fill it (today the founder attaches the filled PDF).
 - [ ] Lawyer review of the in-app terms and conditions (`apps/desktop/src/copy.ts`, TERMS).
-- [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`).
+- [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`). Its hidden fields must be named `utm_source` and `ref`.
+- [ ] Website: enable GitHub Pages (Settings → Pages → GitHub Actions), point capfolder.com at it, then add `apps/website/CNAME` with `capfolder.com`.
+- [ ] Plausible: add the site `capfolder.com` (paid; or tell me to switch to Umami Cloud's free tier).
+- [ ] Check the site's personal story is right ("28 investors", "YC W22", the name "Mads Petersen") and re-check the comparison table against vendors' pages in launch week.
+- [ ] Relay hosting: set `PING_FILE` to a persistent path.
+- [ ] Post `docs/launch/show-hn.md` and `docs/launch/bookface.md` (edit first).
 
 ## Missing in the desktop app (M3)
 - Not built yet (shown as Coming soon): AI through CLIs (Claude Code, Codex, Gemini) or API keys, chat and the MCP server; updates (M7), Touch ID / Windows Hello (M7).

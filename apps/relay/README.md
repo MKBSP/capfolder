@@ -21,6 +21,7 @@ Point the desktop app at `http://localhost:8787` (Settings → Signing). Every e
 | `RELAY_SECRET` | ≥ 32 random characters; rotating it signs every device out |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | email for the codes |
 | `PORT` (8787), `HOST` | where it listens |
+| `PING_FILE` (`data/pings.jsonl`) | where anonymous install pings go, one JSON line each (docs/11). No IPs are stored |
 | `TRUST_PROXY` | `true` only behind a reverse proxy: rate limits then use the last X-Forwarded-For hop (the one your proxy adds) |
 
 ## Tests

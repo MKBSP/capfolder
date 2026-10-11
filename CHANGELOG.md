@@ -4,6 +4,11 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added — M8 · website + launch (2026-10-11)
+- `apps/website` (`pnpm dev:web`): the launch page, with copy matched to what the app does. "Get the download" opens the Tally form, then links to the latest GitHub release for each OS. Live star count, real acknowledgements with licenses, cookieless Plausible. Deployed by `.github/workflows/website.yml` (GitHub Pages).
+- Anonymous install ping (docs/11): relay `POST /ping` keeps only the documented fields and the day (no IP). The app sends `first_run` once and then weekly, only after the terms are accepted and while Settings → Privacy allows it.
+- `metrics.yml` (daily downloads and stars), a launch dashboard script, and Show HN / Bookface drafts in `docs/launch/`.
+
 ### Added — M7 · updates and release (2026-10-11), version 0.1.0
 - Signed app updates (Tauri updater) from GitHub Releases. Settings → Updates: Automatic (download in the background, then "Restart now"), Ask, or Off, plus "Check now", the version, and the rules version in use. A bar at the bottom right shows "What changed".
 - Signed rules pack (`rules/rules.json`, ed25519): Import's export steps and the document-sorting phrases. A copy ships in the app; newer packs are fetched daily, used only if signed with our key, newer, and made for this version, then swapped in without a restart.

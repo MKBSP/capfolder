@@ -1,0 +1,33 @@
+# docs/11: daily snapshot of release downloads and stars, appended to github.csv on the `metrics` branch.
+name: metrics
+on:
+  schedule: [{ cron: "15 6 * * *" }]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Switch to the metrics branch
+        run: |
+          if git ls-remote --exit-code --heads origin metrics >/dev/null; then
+            git checkout metrics
+          else
+            git checkout --orphan metrics && git rm -rfq . && git clean -fdq
+          fi
+      - name: Append today's numbers
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          downloads=$(gh api --paginate "repos/${{ github.repository }}/releases" --jq '[.[] | select(.draft == false) | .assets[].download_count] | add // 0' | awk '{s+=$1} END {print s+0}')
+          stars=$(gh api "repos/${{ github.repository }}" --jq .stargazers_count)
+          [ -f github.csv ] || echo "date,downloads,stars" > github.csv
+          echo "$(date -u +%F),$downloads,$stars" >> github.csv
+      - name: Commit
+        run: |
+          git config user.name "capfolder-metrics"
+          git config user.email "metrics@users.noreply.github.com"
+          git add github.csv
+          git commit -qm "metrics $(date -u +%F)" && git push -q origin metrics

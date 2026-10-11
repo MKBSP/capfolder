@@ -49,7 +49,7 @@
 - Tauri updater with signed builds, notarized macOS, signed Windows. Rules pack channel.
 - **Accept:** v0.1.0 → v0.1.1 auto-updates on all three OS. A rules-pack change shows up with no restart.
 
-## M8 · Website + launch (by ~Nov 23)
+## M8 · Website + launch (by ~Nov 23) — built 2026-10-11; launch steps are Mads' (domain, Plausible, Pages, publish the Tally form, post)
 - `apps/website` from `design/website/index.html`, with the Tally form wired (`integrations/tally.md`), download links to GitHub Releases, Revolut link, acknowledgements with real licenses.
 - Metrics wired per `docs/11-metrics.md`: Plausible/Umami on the site, `/ping` on the relay + the toggle on the Welcome screen, a daily cron for GitHub downloads and stars.
 - Show HN post + Bookface post. Pass/fail table in `docs/11-metrics.md`.

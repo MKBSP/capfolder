@@ -1,0 +1,14 @@
+{
+  "name": "@capfolder/website",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 4321",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vite": "8.3.1"
+  }
+}
