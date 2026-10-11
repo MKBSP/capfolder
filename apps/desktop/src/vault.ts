@@ -330,7 +330,7 @@ export function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string):
   return exclusive(v.root, async () => {
     const doc = reduce(v.events, MAX_DATE).docs.get(docId);
     if (!doc || doc.removed) return { ok: false, errors: ["That document isn't in the folder."] };
-    if (!isSafeDocPath(doc.data.path))
+    if (!(await isPlainDocPath(fs, v.root, doc.data.path)))
       return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
     const from = join(v.root, doc.data.path);
     const to = await freePath(fs, join(v.root, "docs", "_removed"), baseName(from));
@@ -367,7 +367,7 @@ export function renameDocument(
     if (blocked) return { ok: false, errors: blocked };
     const doc = reduce(v.events, MAX_DATE).docs.get(docId);
     if (!doc || doc.removed) return { ok: false, errors: ["That document isn't in the folder."] };
-    if (!isSafeDocPath(doc.data.path))
+    if (!(await isPlainDocPath(fs, v.root, doc.data.path)))
       return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
     const stem = fileStem(name);
     if (!stem) return { ok: false, errors: ["Enter a name."] };
@@ -406,7 +406,7 @@ export function replaceDocument(
     const s = reduce(v.events, MAX_DATE);
     const old = s.docs.get(docId);
     if (!old || old.removed) return { ok: false, errors: ["That document isn't in the folder."] };
-    if (!isSafeDocPath(old.data.path))
+    if (!(await isPlainDocPath(fs, v.root, old.data.path)))
       return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
     const sha256 = await sha256Bytes(p.bytes);
     if (sha256 === old.data.sha256) return { ok: false, errors: ["That's the same file."] };

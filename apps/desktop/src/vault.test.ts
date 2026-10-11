@@ -314,6 +314,14 @@ describe("rename and replace a document (F-28)", () => {
     expect((await verifyChain(r.vault.log)).ok).toBe(true);
   });
 
+  test("a symlinked folder inside docs/ is left alone (rename, replace, remove)", async () => {
+    const { v, docId } = await withDoc();
+    fs.linkSync(`${v.root}/docs/founders`, "/Users/me/elsewhere");
+    expect((await renameDocument(fs, v, ctx, docId, "x")).ok).toBe(false);
+    expect((await replaceDocument(fs, v, ctx, docId, { originalName: "s.pdf", bytes: signed })).ok).toBe(false);
+    expect((await removeDocument(fs, v, ctx, docId)).ok).toBe(false);
+  });
+
   test("replacing with the same file is refused", async () => {
     const { v, docId } = await withDoc();
     const r = await replaceDocument(fs, v, ctx, docId, { originalName: "same.pdf", bytes: pdf });
