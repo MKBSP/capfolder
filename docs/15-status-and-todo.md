@@ -22,7 +22,8 @@ Updated 2026-10-11 (after M4). Milestones and acceptance tests: `docs/09-build-p
 | M2 Import | Done 2026-10-10 (OCF + generic spreadsheet). Still to come: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
 | M5 Signing | Done 2026-10-10, runs locally; hosting relay.capfolder.com is Mads' decision |
 | M4 Document sorting | Done 2026-10-11 (rules + kNN + local AI, OCR; tested on a synthetic folder, run the pilot's folder when it arrives) |
-| M7 Updates · M8 Website + launch | Not started |
+| M7 Updates + release | Built 2026-10-11 (updater, release workflow, signed rules pack). The v0.1.0 → v0.1.1 check runs once the certificates and secrets exist |
+| M8 Website + launch | Not started |
 
 Order changed 2026-10-10 so the full product can be tested sooner: M3 → M6 → M2 → M5 → M4 → M7 → M8.
 
@@ -34,6 +35,9 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Lawyer review of `CLA.md` / `CCLA.md` (incl. explicit "relicense" wording, docs/13).
 - [ ] Register capfolder.com; trademark search (USPTO, EUIPO).
 - [ ] Apple Developer ID + Windows code-signing certificate (M7).
+- [ ] **Back up offline** `~/.tauri/capfolder-updater.key` (lose it and installed apps can never update) and `~/.capfolder/rules-signing.key`.
+- [ ] GitHub secrets for `release.yml`: `TAURI_SIGNING_PRIVATE_KEY` (the updater key file's contents; it has no password, so set `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` empty or regenerate it with one), `APPLE_CERTIFICATE` (.p12, base64), `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD` (app-specific), `APPLE_TEAM_ID`, `WINDOWS_CERTIFICATE` (.pfx, base64), `WINDOWS_CERTIFICATE_PASSWORD`.
+- [ ] First release: tag v0.1.0, publish the draft; then v0.1.1 to see the update arrive on each OS (M7 acceptance).
 - [ ] Send real Pulley / Carta / Cake export files (anonymize names/emails, keep numbers): each gets a detector + golden test.
 - [ ] Decide where the relay + Documenso run (relay.capfolder.com), and which email service sends codes and signing emails (SMTP). Then a production signing certificate (self-signed works; an AATL certificate shows a green check in Acrobat).
 - [ ] Source the YC post-money SAFE template so New SAFE can fill it (today the founder attaches the filled PDF).
@@ -202,6 +206,20 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - An unreadable field, a second document for a holding that already has one, or a name that only matches through the number all go to Needs you (the "0 filed wrong" rule wins over the 80%).
 - Only local AI (Ollama, LM Studio over localhost). The CLIs need the Tauri shell plugin and the cloud privacy toggle: later.
 - PDF pages with almost no text are OCR'd at scale 2 (~150 dpi), rendered with `intent: "print"` so a hidden window doesn't stall.
+
+## M4 final review: fixed (each with a test that failed first)
+- Wrong-row filing (Critical): consents linked any grant whose holder and count appeared anywhere; plan-headed grant notices, exercise notices, award agreements and plan amendments were filed as the plan; side letters, SAFE amendments, exercise notices, offer letters and stock certificates were filed as what they mention; a merged-text SPA became an 83(b). Now a document files itself only when its kind is in the title, with no caution word there; consents are read per resolution (`review-m4.test.ts` C1–C4).
+- AI or kNN "not equity" skipped files unseen (`I5`); a 83(b)/consent linked to a holding ticked its agreement (`I6`, core gaps + `checklist.test.ts`); no date with two holdings of that kind (`I7`); consent review lost its links (`I15`).
+- Local AI unreachable from the packaged app (CORS): a Rust localhost bridge, ports 11434/1234 only (`localai.rs` tests). Not RED-tested in the webview: jsdom has no CORS.
+- Minors fixed too: folder walk, 500-file notice, Remember default, provenance flags, learn failure, add-SAFE duplicate person, leaving Sort mid-run, OCR worker rebuild.
+
+## M7 decisions (rulings)
+- Rules pack served from `raw.githubusercontent.com` (CORS), not a release tag.
+- ed25519 via `@noble/ed25519` (pure JS) rather than WebCrypto Ed25519, which not every webview has.
+- Automatic updates download only; installing waits for Restart (Windows installers close the app).
+- Plugins pinned to versions at least two weeks old that work with tauri 2.11: updater 2.12.0, process 2.3.1.
+- The updater key was generated without a password (in `~/.tauri/`, mode 600). Regenerate with a password before the first release if you prefer; the public key in `tauri.conf.json` changes with it.
+- Touch ID / Windows Hello: not in M7 (needs a native plugin); Welcome says "Coming later".
 
 ## M4 not built (known limits)
 - Signature detection: an unsigned draft looks like a signed document.

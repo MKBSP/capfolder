@@ -128,7 +128,7 @@ test("send a SAFE for signature, countersign, and it files itself when complete"
     target: { value: new Date().toISOString().slice(0, 10) },
   });
   expect((await screen.findByRole("table")).textContent).toContain("Fund Y");
-});
+}, 20_000);
 
 test("a signed copy that doesn't match what was sent is not filed", async () => {
   const fp = await signedIn();

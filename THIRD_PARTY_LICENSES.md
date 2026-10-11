@@ -18,6 +18,7 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - @hono/node-server 2.1.1: MIT
 - @napi-rs/canvas 1.0.11: MIT
 - @napi-rs/canvas-darwin-x64 1.0.11: MIT
+- @noble/ed25519 3.2.0: MIT
 - @pdf-lib/standard-fonts 1.0.0: MIT
 - @pdf-lib/upng 1.0.1: MIT
 - @tesseract.js-data/eng 1.0.0: MIT
@@ -46,6 +47,8 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - @tauri-apps/plugin-dialog 2.7.3: MIT OR Apache-2.0
 - @tauri-apps/plugin-fs 2.5.2: MIT OR Apache-2.0
 - @tauri-apps/plugin-opener 2.5.5: MIT OR Apache-2.0
+- @tauri-apps/plugin-process 2.3.1: MIT OR Apache-2.0
+- @tauri-apps/plugin-updater 2.12.0: MIT OR Apache-2.0
 - nodemailer 10.0.10: MIT-0
 - @fontsource/ibm-plex-mono 5.3.0: OFL-1.1
 - @fontsource/ibm-plex-sans 5.3.0: OFL-1.1

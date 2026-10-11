@@ -45,7 +45,7 @@
 - xlsx/csv as-of export, lawyer zip, OCF export.
 - **Accept:** exported OCF re-imports into Capfolder with identical state (round trip).
 
-## M7 · Updates + release (week 4)
+## M7 · Updates + release (week 4) ✅ built 2026-10-11 (acceptance needs a real v0.1.0 → v0.1.1 release with Mads' certificates)
 - Tauri updater with signed builds, notarized macOS, signed Windows. Rules pack channel.
 - **Accept:** v0.1.0 → v0.1.1 auto-updates on all three OS. A rules-pack change shows up with no restart.
 

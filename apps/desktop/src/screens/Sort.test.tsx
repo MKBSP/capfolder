@@ -104,7 +104,7 @@ describe("sorting a messy folder (F-09)", () => {
       alias: "Fund X Ventures I, L.P.",
     });
     expect(ev.at(-1)).toMatchObject({ type: "doc_linked", data: { target: "SAFE-3" } });
-    expect(ev.filter((e) => e.type === "doc_added").at(-1).data.flags).toEqual(["sorted:founder"]);
+    expect(ev.filter((e) => e.type === "doc_added").at(-1).data.flags).toEqual(["sorted:rule+founder"]);
     expect(JSON.parse(fp.fs.readSync("/appdata/sorting.json")).docs).toHaveLength(1);
   }, 20_000);
 
@@ -142,6 +142,7 @@ describe("sorting a messy folder (F-09)", () => {
       {
         relay: {
           fetch: async (url: string, init?: RequestInit) => {
+            if (!url.startsWith("http://localhost:")) return new Response("", { status: 404 }); // rules pack check
             asked.push(url);
             expect(JSON.parse(String(init?.body)).messages[1].content).toMatch(/^<document>/);
             return new Response(JSON.stringify({ message: { content: JSON.stringify(answer) } }));
@@ -170,4 +171,19 @@ describe("AI answers are checked", () => {
     expect(parseAnswer('{"type":"wire_transfer","fields":{}}')).toBeNull();
     expect(parseAnswer("I think it's a SAFE")).toBeNull();
   });
+});
+
+describe("M4 review fixes", () => {
+  test("a folder named like a file (Fund X Ventures I, L.P) is still searched", async () => {
+    const { walk } = await import("../docsort");
+    const fp = acmePlatform();
+    fp.fs.writeSync("/home/me/messy/Fund X Ventures I, L.P/safe.pdf", "x");
+    fp.fs.writeSync("/home/me/messy/notes.txt", "x");
+    expect((await walk(fp.fs, "/home/me/messy", null)).files.map((f) => f.name)).toEqual(["safe.pdf"]);
+  });
+  test("a skipped file can still be opened and filed", async () => {
+    await sorting({ "receipt.pdf": await pdf(fixture("receipt.txt")) });
+    await userEvent.click(screen.getByRole("button", { name: "Review" }));
+    expect(screen.getByRole("button", { name: "Confirm & file" })).toBeTruthy();
+  }, 20_000);
 });

@@ -110,7 +110,7 @@ export function Import() {
               ))}
             </div>
             <ol className="small" style={{ margin: 0, paddingLeft: 20 }}>
-              {src.steps.map((s) => (
+              {(app.rules.export_guides[source]?.steps ?? src.steps).map((s) => (
                 <li key={s}>{s}</li>
               ))}
             </ol>

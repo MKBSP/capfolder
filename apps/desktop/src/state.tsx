@@ -4,6 +4,7 @@ import { createContext, type ReactNode, useContext, useMemo, useRef, useState } 
 import { configureFormat, todayIso } from "./fmt";
 import type { Platform } from "./platform";
 import { regionOf } from "./regions";
+import { BUNDLED_RULES, type RulesPack } from "./rules";
 import type { Settings } from "./settings";
 import { appendToVault, type Vault } from "./vault";
 
@@ -33,6 +34,9 @@ export interface App {
   run(drafts: EventDraft[]): Promise<string[] | null>;
   route: Route;
   go(r: Route): void;
+  /** The rules pack in use (bundled, cached or freshly downloaded; swapped in without a restart). */
+  rules: RulesPack;
+  setRules(r: RulesPack): void;
 }
 
 const Ctx = createContext<App | null>(null);
@@ -68,6 +72,7 @@ export function AppProvider(p: {
   };
   const [asOf, setAsOf] = useState(todayIso());
   const [route, go] = useState<Route>(p.initialRoute);
+  const [rules, setRules] = useState<RulesPack>(BUNDLED_RULES);
   const ctx: AppendCtx = useMemo(
     () => ({ now: () => new Date(), newId: () => builders.newId("evt"), deviceId: settings.deviceId }),
     [settings.deviceId],
@@ -103,6 +108,8 @@ export function AppProvider(p: {
         saving.current = false;
       }
     },
+    rules,
+    setRules,
     route,
     go(r) {
       go(r);

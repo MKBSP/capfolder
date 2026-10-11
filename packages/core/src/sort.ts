@@ -57,31 +57,45 @@ export interface SortResult {
 
 // ---------- classify ----------
 
-const RULES: { type: SortType; phrases: RegExp[] }[] = [
-  { type: "83b", phrases: [/section 83\s?\(b\)/, /83\s?\(b\) election/] },
-  { type: "safe", phrases: [/simple agreement for future equity/, /\bsafe\b.*purchase amount/] },
+/** Phrases per type (regex sources, matched on lower-cased text, multi-line). The rules pack can replace them. */
+export interface DocRule {
+  type: SortType;
+  phrases: string[];
+}
+export const DOC_RULES: DocRule[] = [
+  { type: "83b", phrases: ["section 83\\s?\\(b\\)", "83\\s?\\(b\\) election"] },
+  { type: "safe", phrases: ["simple agreement for future equity", "\\bsafe\\b.*purchase amount"] },
   {
     type: "option_grant",
-    phrases: [/stock option grant notice/, /notice of stock option grant/, /stock option agreement/],
+    phrases: ["stock option grant notice", "notice of stock option grant", "stock option agreement"],
   },
-  { type: "spa", phrases: [/stock purchase agreement/] },
+  { type: "spa", phrases: ["stock purchase agreement"] },
   {
     type: "ciiaa",
-    phrases: [/invention assignment/, /proprietary information and inventions?/, /\bciiaa\b|\bpiiaa?\b/],
+    phrases: ["invention assignment", "proprietary information and inventions?", "\\bciiaa\\b|\\bpiiaa?\\b"],
   },
   {
     type: "board_consent",
     phrases: [
-      /written consent of the (board|directors)/,
-      /consent of the board of directors/,
-      /board resolutions/,
+      "written consent of the (board|directors)",
+      "consent of the board of directors",
+      "board resolutions",
     ],
   },
-  { type: "company_certificate", phrases: [/certificate of incorporation/] },
-  { type: "company_bylaws", phrases: [/^\s*(amended and restated )?bylaws\b/m] },
-  { type: "plan", phrases: [/equity incentive plan/, /stock (option )?plan\b/] },
+  { type: "company_certificate", phrases: ["certificate of incorporation"] },
+  { type: "company_bylaws", phrases: ["^\\s*(amended and restated )?bylaws\\b"] },
+  { type: "plan", phrases: ["equity incentive plan", "stock (option )?plan\\b"] },
+  { type: "not_equity", phrases: ["\\b(invoice|receipt|order confirmation|total due|amount paid|vat)\\b"] },
 ];
-const NOT_EQUITY = /\b(invoice|receipt|order confirmation|total due|amount paid|vat)\b/;
+const compiled = new WeakMap<DocRule[], { type: SortType; res: RegExp[] }[]>();
+const compile = (rules: DocRule[]) => {
+  let c = compiled.get(rules);
+  if (!c) {
+    c = rules.map((r) => ({ type: r.type, res: r.phrases.map((p) => new RegExp(p, "m")) }));
+    compiled.set(rules, c);
+  }
+  return c;
+};
 
 const clean = (text: string) =>
   text
@@ -93,22 +107,60 @@ const clean = (text: string) =>
     .join("\n");
 
 /** The document type by rules: a phrase in the title counts double; ties go to the more specific type. */
-export function classify(text: string): { type: SortType; rule: string } | null {
+/**
+ * The heading block: short lines without a "label:" near the top, ending at the first clause or label line after it
+ * (a legend before the heading is skipped). Clauses and labels mention other documents; headings name this one.
+ */
+function titleOf(t: string): string {
+  const out: string[] = [];
+  for (const l of t.split("\n").slice(0, 12)) {
+    const heading = l.length <= 100 && !l.includes(":");
+    if (heading) out.push(l);
+    else if (out.length) break;
+    if (out.length >= 8) break;
+  }
+  return out.join("\n");
+}
+
+/** Title words that mean "related to, but not, the document itself": these always go to the founder. */
+const CAUTION =
+  /\b(amendments?|amending|side letter|exercise|offer letter|stock certificate|secretary'?s certificate|awards?|rsus?|restricted stock units?|termination|waiver)\b/;
+
+export interface Classified {
+  type: SortType;
+  rule: string;
+  inTitle: boolean; // a phrase in the title, not only somewhere in the text
+  caution?: string; // a title word that makes it something else (amendment, exercise, side letter…)
+}
+
+export function classify(text: string, rules: DocRule[] = DOC_RULES): Classified | null {
   const t = clean(text).toLowerCase();
-  // the title: short lines near the top (headings), not the first clauses, which mention other documents
-  const title = t
-    .split("\n")
-    .slice(0, 8)
-    .filter((l) => l.length <= 100)
-    .join("\n");
+  const title = titleOf(t);
+  const all = compile(rules);
   let best: { type: SortType; rule: string; score: number } | null = null;
-  for (const r of RULES)
-    for (const p of r.phrases) {
+  for (const r of all) {
+    if (r.type === "not_equity") continue;
+    for (const p of r.res) {
       const score = p.test(title) ? 2 : p.test(t) ? 1 : 0;
       if (score > (best?.score ?? 0)) best = { type: r.type, rule: p.source, score };
     }
-  if (best) return { type: best.type, rule: best.rule };
-  return NOT_EQUITY.test(t) ? { type: "not_equity", rule: NOT_EQUITY.source } : null;
+  }
+  if (best) {
+    const caution =
+      CAUTION.exec(title)?.[0] ??
+      // a heading like "2025 EQUITY INCENTIVE PLAN" also tops grant notices and award letters
+      (best.type === "plan"
+        ? /\b(notice|grant|award|exercise|agreement|option)\b/.exec(
+            title.replace(/stock option plan/g, ""),
+          )?.[0]
+        : undefined);
+    return { type: best.type, rule: best.rule, inTitle: best.score === 2, caution };
+  }
+  // not equity only when nothing equity-like matched (an invoice for drafting an SPA is still about the SPA)
+  for (const r of all.filter((x) => x.type === "not_equity"))
+    for (const p of r.res)
+      if (p.test(t)) return { type: "not_equity", rule: p.source, inTitle: p.test(title) };
+  return null;
 }
 
 // ---------- extract ----------
@@ -298,9 +350,9 @@ function hasDoc(s: State, targets: string[], type: string): boolean {
 export function sortText(
   text: string,
   s: State,
-  opts: { corpus?: CorpusEntry[]; proposal?: { type: SortType; fields: Fields } } = {},
+  opts: { corpus?: CorpusEntry[]; proposal?: { type: SortType; fields: Fields }; rules?: DocRule[] } = {},
 ): SortResult {
-  const rule = opts.proposal ? null : classify(text);
+  const rule = opts.proposal ? null : classify(text, opts.rules);
   const knn = rule || opts.proposal ? null : nearest(termCounts(text), opts.corpus ?? []);
   const type: SortType | null = opts.proposal?.type ?? rule?.type ?? knn;
   const by = opts.proposal ? "ai" : rule ? "rule" : knn ? "knn" : null;
@@ -330,9 +382,15 @@ export function sortText(
     const x = s.securities.get(target);
     return x ? name(x.stakeholderId) : s.stakeholders.has(target) ? name(target) : "company";
   };
+  // Only a rule that matched the title, with no "amendment / exercise / side letter" there, may file by itself
+  const gate = [
+    ...(rule && !rule.inTitle ? ["Its kind was found only in the text, not in the title."] : []),
+    ...(rule?.caution ? [`The title says "${rule.caution}": check what this document is.`] : []),
+  ];
   // AI never files: everything it proposes goes through the founder (CLAUDE.md)
-  const done = (targets: string[], problems: string[], checks: Check[] = []): SortResult =>
-    problems.length || by === "ai"
+  const done = (targets: string[], found: string[], checks: Check[] = []): SortResult => {
+    const problems = [...gate, ...found];
+    return problems.length || by === "ai"
       ? review(problems.length ? problems : ["Sorted by AI: check it before filing."], {
           suggestion: targets.length === 1 ? targets[0] : undefined,
           checks,
@@ -346,9 +404,14 @@ export function sortText(
           person: targets.length ? personOf(targets[0]!) : "company",
           date: isoDate(fields.date) ?? s.securities.get(targets[0] ?? "")?.date,
         };
+  };
 
   if (!type || type === "other") return review(["Couldn't tell what kind of document this is."]);
-  if (type === "not_equity") return { ...base, status: "skip", problems: [], person: "company" };
+  if (type === "not_equity")
+    // only a rule may drop a file unseen; AI or past choices saying "not equity" still ask
+    return by === "rule"
+      ? { ...base, status: "skip", problems: [], person: "company" }
+      : review(["This looks like it isn't an equity document."]);
   const unreadable = (Object.keys(fields) as FieldName[]).filter((f) => fields[f] === UNREADABLE);
   const unreadableProblem = unreadable.length ? [`Couldn't read: ${unreadable.join(", ")}.`] : [];
   const flat = normName(text);
@@ -369,21 +432,34 @@ export function sortText(
     return done([id], hasDoc(s, [id], "plan") ? ["That plan already has its document filed."] : []);
   }
   if (type === "board_consent") {
+    // Each resolution on its own: a grant is linked only when its holder and its exact share count are in the same
+    // resolution (a director's name elsewhere, or 40,000 inside 140,000, must not link it); a plan when one adopts it.
+    const resolutions = clean(text)
+      .split(/\n|(?=\bresolved\b)/i)
+      .map((seg) => ({ raw: seg, norm: normName(seg) }));
+    const count = (n: bigint) => new RegExp(`(?<![\\d.,])(${fmtInt(n)}|${n})(?![\\d]|[.,]\\d)`);
     const targets = [
       ...[...s.plans.entries()]
-        .filter(([, p]) => flat.includes(normName(String(p.data.plan_name))))
+        .filter(([, p]) =>
+          resolutions.some(
+            (r) => r.norm.includes(normName(String(p.data.plan_name))) && /adopt|approv/.test(r.norm),
+          ),
+        )
         .map(([id]) => id),
       ...[...s.securities.values()]
         .filter(
           (x) =>
             x.kind === "equity" &&
             isOpen(x) &&
-            flat.includes(normName(name(x.stakeholderId))) &&
-            text.includes(fmtInt(x.originalQuantity)),
+            resolutions.some(
+              (r) =>
+                r.norm.includes(normName(name(x.stakeholderId))) && count(x.originalQuantity).test(r.raw),
+            ),
         )
         .map((x) => x.id),
     ];
-    return done(targets, unreadableProblem);
+    const r = done(targets, unreadableProblem);
+    return r.status === "review" ? { ...r, targets, suggestion: undefined } : r;
   }
   if (type === "ciiaa") {
     const people = [...s.stakeholders.keys()].filter(
@@ -424,7 +500,11 @@ export function sortText(
   }
   const x = both[0]!;
   const checks = compare(x);
+  const siblings = candidates.filter((y) => y.stakeholderId === x.stakeholderId).length;
   const problems = [
+    ...(!isoDate(fields.date) && siblings > 1
+      ? [`No date found, and ${name(x.stakeholderId)} has ${siblings} of these: check it's the right one.`]
+      : []),
     ...checks
       .filter((c) => c.state === "differs")
       .map((c) => `The ${c.field} in the document (${c.found}) differs from the cap table (${c.expected}).`),

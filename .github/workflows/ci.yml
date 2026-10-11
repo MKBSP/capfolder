@@ -31,4 +31,5 @@ jobs:
         with: { workspaces: apps/desktop/src-tauri }
       - run: pnpm i --frozen-lockfile
       - run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml
-      - run: pnpm build:desktop # unsigned bundles; signing + notarization arrive in M7
+      # unsigned test bundles without updater artifacts (those need the private key; release.yml has it)
+      - run: pnpm --filter @capfolder/desktop tauri build --config src-tauri/tauri.ci.conf.json

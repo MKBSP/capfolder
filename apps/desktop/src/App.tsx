@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Background } from "./components/Background";
 import { useIdle } from "./idle";
 import { type Platform, tauriPlatform } from "./platform";
 import { Screen } from "./screens";
@@ -65,7 +66,10 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
       {locked ? (
         <Unlock verify={(p) => platform.lock.verify(p)} onUnlock={() => setLocked(false)} />
       ) : (
-        <Screen />
+        <>
+          <Background />
+          <Screen />
+        </>
       )}
     </AppProvider>
   );

@@ -140,10 +140,7 @@ export function Settings() {
         </section>
         <AiSection />
         <SigningSection />
-        <section className="card stack">
-          <h2>Updates</h2>
-          <ComingSoon milestone="M7">Signed app updates and a signed rules pack.</ComingSoon>
-        </section>
+        <UpdatesSection />
       </main>
     </>
   );
@@ -353,6 +350,63 @@ function AiSection() {
         Claude Code, Codex and Gemini subscriptions, API keys, asking questions about your vault, and the MCP
         server for Claude Desktop.
       </ComingSoon>
+    </section>
+  );
+}
+
+/** F-38: how app updates arrive, and which rules pack is in use. */
+function UpdatesSection() {
+  const app = useApp();
+  const [version, setVersion] = useState("");
+  const [msg, setMsg] = useState<string | null>(null);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: read the version once
+  useEffect(() => {
+    app.platform.updater.version().then(setVersion, () => {});
+  }, []);
+  return (
+    <section className="card stack" aria-label="Updates">
+      <h2>Updates</h2>
+      <Field label="App updates" hint="Updates are signed. Installing always waits until you restart.">
+        <select
+          className="inp"
+          value={app.settings.updates}
+          onChange={(e) => app.setSettings({ ...app.settings, updates: e.target.value as S["updates"] })}
+        >
+          <option value="auto">Automatic: download in the background, ask to restart</option>
+          <option value="ask">Ask me before downloading</option>
+          <option value="off">Off: I'll check myself</option>
+        </select>
+      </Field>
+      <div className="row wrap">
+        <button
+          type="button"
+          className="btn small"
+          onClick={async () => {
+            setMsg("Checking…");
+            try {
+              const u = await app.platform.updater.check();
+              setMsg(
+                u
+                  ? `Capfolder ${u.version} is available. It will appear at the bottom right.`
+                  : "You have the latest version.",
+              );
+              if (u) app.setSettings({ ...app.settings }); // nudge: the background check shows the bar
+            } catch (e) {
+              setMsg(`Couldn't check (${(e as Error).message ?? e}).`);
+            }
+          }}
+        >
+          Check now
+        </button>
+        <span className="meta">
+          Version {version || "…"} · Rules {app.rules.version}
+        </span>
+      </div>
+      {msg ? (
+        <p className="small muted" style={{ margin: 0 }}>
+          {msg}
+        </p>
+      ) : null}
     </section>
   );
 }

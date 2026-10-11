@@ -2,6 +2,7 @@
 import {
   type AppendCtx,
   type CorpusEntry,
+  type DocRule,
   type EventDraft,
   type Fields,
   MAX_DATE,
@@ -62,35 +63,49 @@ export async function learn(fs: Fs, dir: string, e: { sha256: string; type: Sort
 
 const SKIP_DIRS = /^(\.|node_modules$|_removed$|_voided$|_imports$)/;
 
-/** Readable files in a folder and its subfolders (not the vault's own docs/). ponytail: stops at 500 files. */
+const MAX_FILES = 500;
+/** Names that are surely files: not worth asking the disk whether they are folders. */
+const OTHER_FILE =
+  /\.(txt|rtf|docx?|xlsx?|csv|zip|json|md|pptx?|key|pages|numbers|eml|msg|html?|gif|heic|tiff?|mp4|mov)$/i;
+
+/**
+ * Readable files in a folder and its subfolders. A name like "Fund X Ventures I, L.P" may be a folder, so anything
+ * that isn't a known file type is tried as one. ponytail: stops at 500 files (`truncated` tells the screen).
+ */
 export async function walk(
   fs: Fs,
   dir: string,
   skip: string | null,
-  depth = 0,
-): Promise<{ path: string; name: string }[]> {
-  if (depth > 6 || dir === skip) return [];
-  let names: string[];
-  try {
-    names = await fs.list(dir);
-  } catch {
-    return [];
-  }
-  const out: { path: string; name: string }[] = [];
-  for (const name of names.sort()) {
-    if (out.length >= 500) break;
-    const path = join(dir, name);
-    if (isReadable(name)) out.push({ path, name });
-    else if (!SKIP_DIRS.test(name) && !/\.[a-z0-9]{1,5}$/i.test(name))
-      out.push(...(await walk(fs, path, skip, depth + 1)));
-  }
-  return out.slice(0, 500);
+): Promise<{ files: { path: string; name: string }[]; truncated: boolean }> {
+  const files: { path: string; name: string }[] = [];
+  let truncated = false;
+  const visit = async (d: string, depth: number): Promise<void> => {
+    if (depth > 6 || d === skip || truncated) return;
+    let names: string[];
+    try {
+      names = await fs.list(d);
+    } catch {
+      return; // a file, or a folder we can't read
+    }
+    for (const name of names.sort()) {
+      if (files.length >= MAX_FILES) {
+        truncated = true;
+        return;
+      }
+      const path = join(d, name);
+      if (isReadable(name)) files.push({ path, name });
+      else if (!SKIP_DIRS.test(name) && !OTHER_FILE.test(name)) await visit(path, depth + 1);
+    }
+  };
+  await visit(dir, 0);
+  return { files, truncated };
 }
 
 // ---------- one file ----------
 
 export interface SortDeps {
   platform: Platform;
+  rules?: DocRule[]; // from the rules pack
   settings: Settings;
   ctx: AppendCtx;
   corpus: CorpusEntry[];
@@ -117,7 +132,7 @@ export async function sortOne(
     const read = await readText(bytes, file.name, d.platform.ocr);
     item.text = read.text;
     item.ocr = read.ocr;
-    let result = sortText(read.text, state, { corpus: d.corpus });
+    let result = sortText(read.text, state, { corpus: d.corpus, rules: d.rules });
     const ai = d.settings.ai;
     if (!result.type && ai.sortWithAi && ai.provider && ai.model && read.text.trim()) {
       const proposal = await aiSort(d.platform, { provider: ai.provider, model: ai.model }, read.text);

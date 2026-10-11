@@ -74,7 +74,7 @@ export function Welcome() {
         <div className="opt off" aria-disabled="true">
           <input type="radio" name="lock" disabled />
           <span>
-            <b>Touch ID or your Mac password</b> <span className="chip">Coming soon (M7)</span>
+            <b>Touch ID or your Mac password</b> <span className="chip">Coming later</span>
           </span>
         </div>
         <label className={`opt ${lock === "password" ? "on" : ""}`}>

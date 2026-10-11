@@ -53,9 +53,12 @@ export function Sort() {
   const [items, setItems] = useState<SortItem[]>([]);
   const [running, setRunning] = useState(false);
   const [reviewing, setReviewing] = useState<number | null>(null);
+  const [truncated, setTruncated] = useState(false);
+  const runningRef = useRef(false);
   const latest = useRef(app);
   latest.current = app;
-  useEffect(() => () => void endOcr(), []);
+  // leaving mid-run: the loop finishes on its own and frees OCR itself
+  useEffect(() => () => void (runningRef.current || endOcr()), []);
 
   async function deps(): Promise<SortDeps> {
     const a = latest.current;
@@ -63,6 +66,7 @@ export function Sort() {
       platform: a.platform,
       settings: a.settings,
       ctx: a.ctx,
+      rules: a.rules.doc_types,
       corpus: await loadCorpus(a.platform.fs, await a.platform.appDataDir()),
     };
   }
@@ -70,6 +74,7 @@ export function Sort() {
   async function run(files: { path: string; name: string }[]) {
     if (!files.length || !latest.current.vault) return;
     setRunning(true);
+    runningRef.current = true;
     setReviewing(null);
     const list: SortItem[] = files.map((f) => ({ ...f, status: "waiting" }));
     setItems([...list]);
@@ -77,6 +82,8 @@ export function Sort() {
     let vault = latest.current.vault!;
     const seen = new Set<string>();
     for (let i = 0; i < list.length; i++) {
+      const app = latest.current.vault;
+      if (app && app.events.length > vault.events.length) vault = app; // the founder saved something meanwhile
       list[i] = { ...list[i]!, status: "reading" };
       setItems([...list]);
       const r = await sortOne(d, vault, list[i]!, seen);
@@ -88,6 +95,7 @@ export function Sort() {
       setItems([...list]);
     }
     await endOcr();
+    runningRef.current = false;
     setRunning(false);
   }
 
@@ -95,7 +103,8 @@ export function Sort() {
   const queue = items.map((x, i) => ({ x, i })).filter(({ x }) => x.status === "review");
   const update = (i: number, x: SortItem) => setItems((all) => all.map((y, j) => (j === i ? x : y)));
 
-  if (reviewing !== null && items[reviewing]?.status === "review") {
+  const reviewable = (x?: SortItem) => x?.status === "review" || (x?.status === "skipped" && !!x.result);
+  if (reviewing !== null && reviewable(items[reviewing])) {
     const pos = queue.findIndex((q) => q.i === reviewing);
     return (
       <>
@@ -132,7 +141,10 @@ export function Sort() {
             disabled={running}
             onClick={async () => {
               const dir = await app.platform.pickFolder("Choose a folder of documents");
-              if (dir) await run(await walk(app.platform.fs, dir, app.vault?.root ?? null));
+              if (!dir) return;
+              const w = await walk(app.platform.fs, dir, app.vault?.root ?? null);
+              setTruncated(w.truncated);
+              await run(w.files);
             }}
           >
             Choose a folder…
@@ -151,6 +163,12 @@ export function Sort() {
               : "No AI connected: rules and your past choices only (Settings → AI)"}
           </span>
         </div>
+        {truncated ? (
+          <div className="banner amber small">
+            That folder has more than 500 documents: these are the first 500. Choose its subfolders one at a
+            time for the rest.
+          </div>
+        ) : null}
         {items.length ? (
           <section className="card stack">
             <div className="row spread wrap">
@@ -188,7 +206,7 @@ export function Sort() {
                     </span>
                   ) : null}
                 </span>
-                {x.status === "review" && !running ? (
+                {reviewable(x) && !running ? (
                   <button type="button" className="btn small" onClick={() => setReviewing(i)}>
                     Review
                   </button>
@@ -216,10 +234,15 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
   const r = p.item.result!;
   const s = app.latest!;
   const initial = r.targets[0] ?? r.suggestion ?? "";
-  const [type, setType] = useState<SortType | "">(r.type && r.type !== "other" ? r.type : "");
+  const [type, setType] = useState<SortType | "">(
+    r.type && r.type !== "other" && r.type !== "not_equity" ? r.type : "",
+  );
   const [fields, setFields] = useState<Fields>(r.fields);
   const [target, setTarget] = useState(initial);
-  const [remember, setRemember] = useState(true);
+  // on only when the number matched and just the name differed; otherwise an odd name would stick as an alias
+  const [remember, setRemember] = useState(
+    !!r.suggestion && r.checks.some((c) => c.field === "name" && c.state === "differs"),
+  );
   const [errors, setErrors] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const targets = docTargets(s);
@@ -262,7 +285,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
         targets: linked,
         person: extraTarget ? fields.name! : holderName || "company",
         date: /^\d{4}-\d\d-\d\d$/.test(fields.date ?? "") ? fields.date : s.securities.get(target)?.date,
-        by: "founder",
+        by: r.by ? `${r.by}+founder` : "founder",
         extra: [
           ...(extraTarget?.drafts ?? []),
           ...(canRemember && remember
@@ -272,11 +295,12 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
       });
       if (!res.ok) return setErrors(res.errors);
       app.setVault(res.vault);
+      // filed is filed: a failure to remember the example mustn't strand the item
       await learn(app.platform.fs, await app.platform.appDataDir(), {
         sha256: p.item.sha256!,
         type,
         text: p.item.text ?? "",
-      });
+      }).catch(() => {});
       p.onDone({ ...p.item, status: "filed", filed: res.filed, result: { ...r, type } });
     } finally {
       setBusy(false);
@@ -284,12 +308,16 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
   }
 
   async function addSafe() {
-    const person = b.newId("sh");
+    // someone already on the cap table under that name keeps their record (no second "Angel A")
+    const existing = [...s.stakeholders.entries()].find(
+      ([, x]) => normName(String(x.name?.legal_name ?? "")) === normName(fields.name!),
+    )?.[0];
+    const person = existing ?? b.newId("sh");
     const id = `SAFE-${nextSecurityIdNumber(reduce(app.vault!.events, MAX_DATE), "SAFE")}`;
     await file({
       id,
       drafts: [
-        b.stakeholder({ id: person, name: fields.name!, type: "INSTITUTION" }),
+        ...(existing ? [] : [b.stakeholder({ id: person, name: fields.name!, type: "INSTITUTION" })]),
         b.safe({
           currency: app.currency,
           state: s,

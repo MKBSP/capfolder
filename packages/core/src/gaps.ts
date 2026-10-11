@@ -9,6 +9,17 @@ export interface Gap {
   severity: "red" | "amber";
 }
 
+/** Documents about a holding that aren't its own signed agreement (an 83(b), a consent, an IP assignment…). */
+export const SIDE_DOC_TYPES = new Set([
+  "83b",
+  "ciiaa",
+  "board_consent",
+  "plan",
+  "company_certificate",
+  "company_bylaws",
+]);
+export const isHoldingProof = (docType: unknown) => !SIDE_DOC_TYPES.has(String(docType ?? ""));
+
 // doc_type values used for gap checks (docs/03): 83b, ciiaa, board_consent, plus any doc linked to a plan id.
 export function computeGaps(s: State): Gap[] {
   const gaps: Gap[] = [];
@@ -17,6 +28,8 @@ export function computeGaps(s: State): Gap[] {
     [...s.docs.values()].some(
       (d) => !d.removed && d.links.has(target) && (!type || d.data.doc_type === type),
     );
+  const proof = (target: string) =>
+    [...s.docs.values()].some((d) => !d.removed && d.links.has(target) && isHoldingProof(d.data.doc_type));
   const label = (x: Security) =>
     x.kind === "convertible"
       ? (x.convertibleType ?? "convertible")
@@ -31,7 +44,7 @@ export function computeGaps(s: State): Gap[] {
   const people = new Set<string>();
   for (const x of open) {
     const who = name(x.stakeholderId);
-    if (!linked(x.id) && !linked(x.txId))
+    if (!proof(x.id) && !proof(x.txId))
       gaps.push({
         kind: "no_signed_doc",
         target: x.id,

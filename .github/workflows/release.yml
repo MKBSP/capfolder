@@ -1,0 +1,86 @@
+# F-38 (docs/07): signed builds for every OS into a draft release with latest.json for the updater.
+# Push a tag like v0.1.1 (after bumping the version in package.json, Cargo.toml and tauri.conf.json), check the
+# draft on GitHub, then publish it: installed apps update to the latest published release.
+name: release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      allow_unsigned:
+        description: "Build without macOS/Windows code signing (testing only; never publish these)"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest, args: "--target aarch64-apple-darwin", rust: aarch64-apple-darwin }
+          - { os: macos-latest, args: "--target x86_64-apple-darwin", rust: x86_64-apple-darwin }
+          - { os: windows-latest, args: "", rust: "" }
+          - { os: ubuntu-22.04, args: "", rust: "" }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ship nothing unsigned
+        shell: bash
+        env:
+          UPDATER_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          ALLOW_UNSIGNED: ${{ inputs.allow_unsigned }}
+        run: |
+          [ -n "$UPDATER_KEY" ] || { echo "TAURI_SIGNING_PRIVATE_KEY is missing"; exit 1; }
+          [ "$ALLOW_UNSIGNED" = "true" ] && exit 0
+          case "${{ runner.os }}" in
+            macOS) [ -n "$APPLE_CERTIFICATE" ] && [ -n "$APPLE_ID" ] || { echo "Apple signing secrets are missing"; exit 1; } ;;
+            Windows) [ -n "$WINDOWS_CERTIFICATE" ] || { echo "WINDOWS_CERTIFICATE is missing"; exit 1; } ;;
+          esac
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: "${{ matrix.rust }}" }
+      - uses: swatinem/rust-cache@v2
+        with: { workspaces: apps/desktop/src-tauri }
+      - run: pnpm i --frozen-lockfile
+      - name: Windows certificate → thumbprint
+        if: runner.os == 'Windows' && inputs.allow_unsigned != true
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP "cert.pfx"
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
+          $pw = ConvertTo-SecureString $env:WINDOWS_CERTIFICATE_PASSWORD -AsPlainText -Force
+          $cert = Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $pw
+          Remove-Item $pfx
+          $conf = @{ bundle = @{ windows = @{ certificateThumbprint = $cert.Thumbprint; digestAlgorithm = "sha256"; timestampUrl = "http://timestamp.digicert.com" } } } | ConvertTo-Json -Depth 5
+          Set-Content -Path apps/desktop/src-tauri/tauri.windows.conf.json -Value $conf
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        with:
+          projectPath: apps/desktop
+          tagName: v__VERSION__
+          releaseName: Capfolder v__VERSION__
+          releaseBody: "See CHANGELOG.md. Downloads are signed; installed apps update themselves once this release is published."
+          releaseDraft: true
+          includeUpdaterJson: true
+          args: ${{ matrix.args }}

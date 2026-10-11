@@ -1,0 +1,113 @@
+{
+  "format": "capfolder-rules/1",
+  "version": "2026.10.11-1",
+  "min_app_version": "0.1.0",
+  "export_guides": {
+    "pulley": {
+      "title": "Pulley",
+      "steps": [
+        "Dashboard → Download Cap Table (uncheck “All Time” for an as-of date), or Company → Reports → Detailed Cap Table → Generate.",
+        "Also download every signed document before Pulley closes on Dec 8, 2026.",
+        "Choose the .xlsx (or .csv) here. You'll check the columns next."
+      ]
+    },
+    "carta": {
+      "title": "Carta",
+      "steps": [
+        "Cap Table → Run reports → “Open Cap Table report” if it's listed, otherwise the Cap table report (Detailed).",
+        "Also the Vesting report and Stakeholder details, and download your signed documents separately.",
+        "Choose the .xlsx (or .csv) here. You'll check the columns next."
+      ]
+    },
+    "cake": {
+      "title": "Cake Equity",
+      "steps": [
+        "Compliance → Reporting → Exports: Cap table (XLSX). SAFEs are in Noteholders (CSV).",
+        "Choose one file here. You'll check the columns next; import the SAFEs into the same sheet or add them after."
+      ]
+    },
+    "ocf": {
+      "title": "An OCF export (.zip)",
+      "steps": [
+        "Any tool that exports Open Cap Table Format gives a .zip with a manifest. It imports with its full history."
+      ]
+    },
+    "sheet": {
+      "title": "Any spreadsheet",
+      "steps": [
+        "One row per holding: name, type, shares, dates, and SAFE amounts. You'll match the columns next."
+      ]
+    }
+  },
+  "doc_types": [
+    {
+      "type": "83b",
+      "phrases": [
+        "section 83\\s?\\(b\\)",
+        "83\\s?\\(b\\) election"
+      ]
+    },
+    {
+      "type": "safe",
+      "phrases": [
+        "simple agreement for future equity",
+        "\\bsafe\\b.*purchase amount"
+      ]
+    },
+    {
+      "type": "option_grant",
+      "phrases": [
+        "stock option grant notice",
+        "notice of stock option grant",
+        "stock option agreement"
+      ]
+    },
+    {
+      "type": "spa",
+      "phrases": [
+        "stock purchase agreement"
+      ]
+    },
+    {
+      "type": "ciiaa",
+      "phrases": [
+        "invention assignment",
+        "proprietary information and inventions?",
+        "\\bciiaa\\b|\\bpiiaa?\\b"
+      ]
+    },
+    {
+      "type": "board_consent",
+      "phrases": [
+        "written consent of the (board|directors)",
+        "consent of the board of directors",
+        "board resolutions"
+      ]
+    },
+    {
+      "type": "company_certificate",
+      "phrases": [
+        "certificate of incorporation"
+      ]
+    },
+    {
+      "type": "company_bylaws",
+      "phrases": [
+        "^\\s*(amended and restated )?bylaws\\b"
+      ]
+    },
+    {
+      "type": "plan",
+      "phrases": [
+        "equity incentive plan",
+        "stock (option )?plan\\b"
+      ]
+    },
+    {
+      "type": "not_equity",
+      "phrases": [
+        "\\b(invoice|receipt|order confirmation|total due|amount paid|vat)\\b"
+      ]
+    }
+  ]
+}

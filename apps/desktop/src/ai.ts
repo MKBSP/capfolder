@@ -5,24 +5,24 @@ import { type Fields, SORT_TYPES, type SortType } from "@capfolder/core";
 import type { Platform } from "./platform";
 
 export type ProviderId = "ollama" | "lmstudio";
-export const PROVIDERS: Record<ProviderId, { label: string; base: string; install: string }> = {
-  ollama: { label: "Ollama", base: "http://localhost:11434", install: "https://ollama.com" },
-  lmstudio: { label: "LM Studio", base: "http://localhost:1234", install: "https://lmstudio.ai" },
+export const PROVIDERS: Record<ProviderId, { label: string; port: number; install: string }> = {
+  ollama: { label: "Ollama", port: 11434, install: "https://ollama.com" },
+  lmstudio: { label: "LM Studio", port: 1234, install: "https://lmstudio.ai" },
 };
 
 /** Which local providers answer, and their models. Never throws: a provider that isn't running is just "not found". */
 export async function detect(platform: Platform): Promise<{ id: ProviderId; models: string[] | null }[]> {
-  const get = async (url: string) => {
+  const get = async (port: number, path: string) => {
     try {
-      const r = await platform.fetch(url, { signal: AbortSignal.timeout(2000) });
-      return r.ok ? await r.json() : null;
+      const r = await platform.localAi(port, "GET", path, undefined, 3000);
+      return r.status === 200 ? JSON.parse(r.body) : null;
     } catch {
       return null;
     }
   };
   const [ollama, lmstudio] = await Promise.all([
-    get(`${PROVIDERS.ollama.base}/api/tags`),
-    get(`${PROVIDERS.lmstudio.base}/v1/models`),
+    get(PROVIDERS.ollama.port, "/api/tags"),
+    get(PROVIDERS.lmstudio.port, "/v1/models"),
   ]);
   return [
     { id: "ollama", models: ollama ? (ollama.models ?? []).map((m: { name: string }) => m.name) : null },
@@ -82,30 +82,30 @@ export async function aiSort(
       content: `<document>\n${text.slice(0, 12000).replaceAll("</document>", "")}\n</document>`,
     },
   ];
-  const base = PROVIDERS[ai.provider].base;
+  const port = PROVIDERS[ai.provider].port;
   try {
     const r =
       ai.provider === "ollama"
-        ? await platform.fetch(`${base}/api/chat`, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({
+        ? await platform.localAi(
+            port,
+            "POST",
+            "/api/chat",
+            JSON.stringify({
               model: ai.model,
               messages,
               stream: false,
               format: "json",
               options: { temperature: 0 },
             }),
-            signal: AbortSignal.timeout(120_000),
-          })
-        : await platform.fetch(`${base}/v1/chat/completions`, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ model: ai.model, messages, temperature: 0 }),
-            signal: AbortSignal.timeout(120_000),
-          });
-    if (!r.ok) return null;
-    const j = await r.json();
+          )
+        : await platform.localAi(
+            port,
+            "POST",
+            "/v1/chat/completions",
+            JSON.stringify({ model: ai.model, messages, temperature: 0 }),
+          );
+    if (r.status !== 200) return null;
+    const j = JSON.parse(r.body);
     return parseAnswer(
       String(ai.provider === "ollama" ? j.message?.content : j.choices?.[0]?.message?.content),
     );

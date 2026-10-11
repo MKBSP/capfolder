@@ -1,5 +1,5 @@
 // Puts tesseract.js (worker, core, English data) in public/ocr/ so OCR runs from the app itself, never a CDN.
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { build } from "vite";
@@ -18,21 +18,21 @@ for (const f of [
 ])
   copyFileSync(join(core, f), join(out, f));
 copyFileSync(join(eng, "4.0.0_best_int/eng.traineddata.gz"), join(out, "eng.traineddata.gz"));
-if (!existsSync(join(out, "worker.min.js")))
-  await build({
-    configFile: false,
-    publicDir: false,
-    logLevel: "warn",
-    build: {
-      outDir: out,
-      emptyOutDir: false,
-      lib: {
-        entry: join(tess, "src/worker-script/browser/index.js"),
-        formats: ["iife"],
-        name: "TesseractWorker",
-        fileName: () => "worker.min.js",
-      },
+// rebuilt every time (about a second), so it always matches the installed tesseract.js-core
+await build({
+  configFile: false,
+  publicDir: false,
+  logLevel: "warn",
+  build: {
+    outDir: out,
+    emptyOutDir: false,
+    lib: {
+      entry: join(tess, "src/worker-script/browser/index.js"),
+      formats: ["iife"],
+      name: "TesseractWorker",
+      fileName: () => "worker.min.js",
     },
-    define: { global: "self" },
-  });
+  },
+  define: { global: "self" },
+});
 console.log("ocr assets ready in public/ocr/");

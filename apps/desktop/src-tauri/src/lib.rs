@@ -1,3 +1,4 @@
+mod localai;
 mod lock;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -8,7 +9,10 @@ pub fn run() {
         .plugin(tauri_plugin_persisted_scope::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![lock::lock_set, lock::lock_verify, lock::lock_is_set, lock::lock_clear])
+        // F-38: signed updates from GitHub Releases, and relaunch after installing one
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
+        .invoke_handler(tauri::generate_handler![lock::lock_set, lock::lock_verify, lock::lock_is_set, lock::lock_clear, localai::local_ai])
         .run(tauri::generate_context!())
         .expect("error while running Capfolder");
 }

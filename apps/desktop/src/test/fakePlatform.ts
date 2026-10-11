@@ -10,6 +10,8 @@ export function fakePlatform(
     pickFiles?: { path: string; name: string }[];
     /** What OCR "reads" from an image or a scanned page. */
     ocrText?: string;
+    /** What the updater finds; installs are recorded in `updates`. */
+    update?: { version: string; notes: string } | null;
     /** Where relay calls go (see fakeRelay); without one the app is "offline". */
     relay?: { fetch(url: string, init?: RequestInit): Promise<Response> };
   } = {},
@@ -21,6 +23,7 @@ export function fakePlatform(
   const saved: Record<string, string> = {};
   const savedBytes: Record<string, Uint8Array> = {};
   const opened: string[] = [];
+  const updates: string[] = [];
   const platform: Platform = {
     fs,
     appDataDir: async () => "/appdata",
@@ -44,6 +47,26 @@ export function fakePlatform(
     openUrl: async (url) => {
       opened.push(url);
     },
+    localAi: async (port, method, path, body) => {
+      if (!opts.relay) throw new Error("connection refused");
+      const r = await opts.relay.fetch(`http://localhost:${port}${path}`, { method, body });
+      return { status: r.status, body: await r.text() };
+    },
+    updater: {
+      version: async () => "0.1.0",
+      check: async () => {
+        updates.push("check");
+        const u = opts.update;
+        return u
+          ? {
+              ...u,
+              download: async () => void updates.push(`download ${u.version}`),
+              install: async () => void updates.push(`install ${u.version}`),
+            }
+          : null;
+      },
+      relaunch: async () => void updates.push("relaunch"),
+    },
     lock: {
       set: async (p) => {
         password = p;
@@ -55,5 +78,5 @@ export function fakePlatform(
       },
     },
   };
-  return { platform, fs, saved, savedBytes, opened };
+  return { platform, fs, saved, savedBytes, opened, updates };
 }

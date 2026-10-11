@@ -1,5 +1,5 @@
 // Where each tool hides its export (docs/04, "Export instructions shown to the user").
-// ponytail: bundled for now; moves to the signed rules pack in M7 so steps can change without a release.
+// The steps here are the fallback; the signed rules pack (rules/rules.json, export_guides) can replace them live.
 
 export type SourceId = "pulley" | "carta" | "cake" | "ocf" | "sheet";
 

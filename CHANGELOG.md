@@ -4,6 +4,20 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added — M7 · updates and release (2026-10-11), version 0.1.0
+- Signed app updates (Tauri updater) from GitHub Releases. Settings → Updates: Automatic (download in the background, then "Restart now"), Ask, or Off, plus "Check now", the version, and the rules version in use. A bar at the bottom right shows "What changed".
+- Signed rules pack (`rules/rules.json`, ed25519): Import's export steps and the document-sorting phrases. A copy ships in the app; newer packs are fetched daily, used only if signed with our key, newer, and made for this version, then swapped in without a restart.
+- `release.yml`: a `v*` tag builds macOS (Apple Silicon and Intel), Windows and Linux into a draft release with `latest.json`. It refuses to build without code-signing secrets unless started by hand as a test.
+
+### Fixed — M4 review (2026-10-11)
+- Sorting files a document by itself only when its kind is in the title, with no "amendment / exercise / side letter / offer letter / award / stock certificate" there. Grant notices headed with the plan name are no longer filed as the plan.
+- Board consents link a grant only when the holder and the exact share count are in the same resolution (not a director's name elsewhere, not 40,000 inside 140,000), and link a plan only when a resolution adopts it.
+- No date found and the holder has more than one holding of that kind: goes to Needs you.
+- Only a rule may skip a file unseen: AI or past choices saying "not an equity document" go to Needs you, and skipped files can be opened.
+- An 83(b), consent or IP assignment linked to a holding no longer counts as its signed agreement (What's missing and the checklist).
+- Local AI is reached through the app itself (Ollama and LM Studio don't allow the app's web origin), on 127.0.0.1 ports 11434 and 1234 only.
+- Folders named like files ("Fund X Ventures I, L.P") are searched, and over 500 files says so. "Remember this name" is on only for a name-only mismatch. Add to cap table reuses an existing person with that name. Flags keep how a file was sorted (e.g. `sorted:ai+founder`).
+
 ### Added — M4 · document sorting (2026-10-11)
 - Documents → **Add documents** (and Start → "I only have documents"): choose a folder or files (PDFs, scans, photos). Each is read on this computer: the PDF's text, or OCR (tesseract.js, bundled; no CDN) for scans and photos.
 - Sorting: rules first (YC SAFE and investor-form SAFEs, grant notices, purchase agreements, 83(b), IP assignments, board consents, plans, certificate, bylaws), then documents you confirmed before (nearest match, 4 of 5 must agree), then your local AI if connected. Fields are read (investor, amount, cap, discount, shares, price, date); a value OCR couldn't read is marked unreadable, never guessed.

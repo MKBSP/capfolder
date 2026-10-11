@@ -61,6 +61,8 @@
           "url": "http://localhost:*"
         }
       ]
-    }
+    },
+    "updater:default",
+    "process:allow-restart"
   ]
 }

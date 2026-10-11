@@ -9,6 +9,7 @@
       "!docs",
       "!**/src/ocf/schemas-*.json",
       "!**/public/ocr",
+      "!rules",
       "!**/src-tauri/target",
       "!**/src-tauri/gen",
       "!**/dist"
