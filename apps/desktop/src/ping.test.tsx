@@ -15,7 +15,7 @@ function boot(settings: object, sent: { url: string; body: Record<string, unknow
   const s = JSON.parse(fp.fs.readSync("/appdata/settings.json"));
   fp.fs.writeSync(
     "/appdata/settings.json",
-    JSON.stringify({ ...s, relayUrl: "http://relay.test", ...settings }),
+    JSON.stringify({ ...s, relayUrl: "http://relay.test", termsAccepted: "2026-10-10", ...settings }),
   );
   const realNow = Date.now;
   Date.now = () => now;
@@ -75,6 +75,14 @@ test("a week later: one weekly ping", async () => {
 test("off in Settings: nothing is sent", async () => {
   const sent: { url: string; body: Record<string, unknown> }[] = [];
   boot({ telemetry: false }, sent);
+  await screen.findByText("Fully diluted");
+  await new Promise((r) => setTimeout(r, 50));
+  expect(sent).toEqual([]);
+});
+
+test("nothing is sent before the founder accepts the terms that disclose it", async () => {
+  const sent: { url: string; body: Record<string, unknown> }[] = [];
+  boot({ telemetry: true, termsAccepted: "" }, sent);
   await screen.findByText("Fully diluted");
   await new Promise((r) => setTimeout(r, 50));
   expect(sent).toEqual([]);

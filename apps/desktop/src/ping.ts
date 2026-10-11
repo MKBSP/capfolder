@@ -1,4 +1,5 @@
 // docs/11: the anonymous install ping. Off in Settings → nothing is sent. Never names, numbers, files or emails.
+import { TERMS_VERSION } from "./copy";
 import type { Platform } from "./platform";
 import type { Settings } from "./settings";
 import type { Vault } from "./vault";
@@ -16,7 +17,8 @@ export async function maybePing(
   appVersion: string,
   now = Date.now(),
 ): Promise<Settings | null> {
-  if (!s.telemetry || !s.relayUrl) return null;
+  // only after the founder accepted the terms that disclose it (it's on by default, so consent comes from there)
+  if (!s.telemetry || s.termsAccepted !== TERMS_VERSION || !s.relayUrl) return null;
   const p = s.ping;
   const event = !p.firstRunSent ? "first_run" : !p.last || now - Date.parse(p.last) >= WEEK ? "weekly" : null;
   if (!event) return null;
