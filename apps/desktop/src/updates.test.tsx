@@ -62,6 +62,15 @@ describe("app updates (F-38)", () => {
   });
 });
 
+test("Check now in Settings offers the update, even when updates are Off", async () => {
+  const fp = boot({ update: { version: "0.1.1", notes: "" } }, { updates: "off" });
+  await userEvent.click(await screen.findByRole("button", { name: "Settings" }));
+  await userEvent.click(screen.getByRole("button", { name: "Check now" }));
+  await screen.findByText("Capfolder 0.1.1 is available.", { exact: false });
+  await userEvent.click(screen.getByRole("button", { name: "Update now" }));
+  await waitFor(() => expect(fp.updates).toEqual(["check", "download 0.1.1", "install 0.1.1", "relaunch"]));
+});
+
 describe("rules pack (docs/07 §2)", () => {
   const pack = (over: Partial<RulesPack> = {}) => ({ ...BUNDLED_RULES, version: "2026.12.01-1", ...over });
   const pub = async () => hex(await ed.getPublicKeyAsync(testKey));
@@ -86,6 +95,15 @@ describe("rules pack (docs/07 §2)", () => {
     expect(await acceptPack(future, await sign(future), BUNDLED_RULES, "0.1.0", k)).toBeNull();
     const odd = enc({ ...pack(), format: "capfolder-rules/2" });
     expect(await acceptPack(odd, await sign(odd), BUNDLED_RULES, "0.1.0", k)).toBeNull();
+    for (const broken of [
+      pack({ export_guides: null as never }),
+      pack({ export_guides: { pulley: { title: "P", steps: "do this" as never } } }),
+      pack({ doc_types: [{ type: "wire_transfer" as never, phrases: ["x"] }] }),
+      pack({ doc_types: [{ type: "safe", phrases: [1 as never] }] }),
+    ]) {
+      const b = enc(broken);
+      expect(await acceptPack(b, await sign(b), BUNDLED_RULES, "0.1.0", k)).toBeNull();
+    }
     const badRegex = enc(pack({ doc_types: [{ type: "safe", phrases: ["(unclosed"] }] }));
     expect(await acceptPack(badRegex, await sign(badRegex), BUNDLED_RULES, "0.1.0", k)).toBeNull();
   });

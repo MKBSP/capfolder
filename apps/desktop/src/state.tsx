@@ -2,7 +2,7 @@
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
 import { createContext, type ReactNode, useContext, useMemo, useRef, useState } from "react";
 import { configureFormat, todayIso } from "./fmt";
-import type { Platform } from "./platform";
+import type { AppUpdate, Platform } from "./platform";
 import { regionOf } from "./regions";
 import { BUNDLED_RULES, type RulesPack } from "./rules";
 import type { Settings } from "./settings";
@@ -37,6 +37,9 @@ export interface App {
   /** The rules pack in use (bundled, cached or freshly downloaded; swapped in without a restart). */
   rules: RulesPack;
   setRules(r: RulesPack): void;
+  /** An app update found (and maybe downloaded); kept here so it survives the idle lock and Settings → Check now. */
+  update: { u: AppUpdate; ready: boolean } | null;
+  setUpdate(u: { u: AppUpdate; ready: boolean } | null): void;
 }
 
 const Ctx = createContext<App | null>(null);
@@ -73,6 +76,7 @@ export function AppProvider(p: {
   const [asOf, setAsOf] = useState(todayIso());
   const [route, go] = useState<Route>(p.initialRoute);
   const [rules, setRules] = useState<RulesPack>(BUNDLED_RULES);
+  const [update, setUpdate] = useState<App["update"]>(null);
   const ctx: AppendCtx = useMemo(
     () => ({ now: () => new Date(), newId: () => builders.newId("evt"), deviceId: settings.deviceId }),
     [settings.deviceId],
@@ -110,6 +114,8 @@ export function AppProvider(p: {
     },
     rules,
     setRules,
+    update,
+    setUpdate,
     route,
     go(r) {
       go(r);

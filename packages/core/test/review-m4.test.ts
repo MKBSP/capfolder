@@ -120,3 +120,60 @@ describe("M4 review: a holding's own document, not any linked one", () => {
     expect(missing).toContain("OPT-1");
   });
 });
+
+describe("M7 review: real PDFs wrap their lines", () => {
+  const { readdirSync, readFileSync } = require("node:fs") as typeof import("node:fs");
+  const DIR = new URL("../../../fixtures/acme-docs/", import.meta.url);
+  const expected = JSON.parse(readFileSync(new URL("expected.json", DIR), "utf8"));
+  const wrap = (t: string) =>
+    t
+      .split("\n")
+      .flatMap((l) => l.match(/.{1,90}(\s|$)|\S+/g)?.map((x) => x.trim()) ?? [""])
+      .join("\n");
+  test.each(readdirSync(DIR).filter((f: string) => f.endsWith(".txt")))("%s wrapped at 90 columns", (f) => {
+    const r = sort(wrap(readFileSync(new URL(f, DIR), "utf8")));
+    expect({ status: r.status, targets: r.targets }).toEqual({
+      status: expected[f].status,
+      targets: expected[f].targets,
+    });
+  });
+  test("a real YC legend before the heading doesn't hide it", () => {
+    const legend =
+      "THIS INSTRUMENT AND ANY SECURITIES ISSUABLE PURSUANT HERETO HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AS AMENDED (THE “SECURITIES ACT”), OR UNDER THE SECURITIES LAWS OF CERTAIN STATES. THESE SECURITIES MAY NOT BE OFFERED, SOLD OR OTHERWISE TRANSFERRED, PLEDGED OR HYPOTHECATED EXCEPT AS PERMITTED UNDER THE ACT AND APPLICABLE STATE SECURITIES LAWS PURSUANT TO AN EFFECTIVE REGISTRATION STATEMENT OR AN EXEMPTION THEREFROM.";
+    const yc = readFileSync(new URL("yc-safe.txt", DIR), "utf8").split("\n").slice(1).join("\n");
+    expect(sort(wrap(`${legend}\n${yc}`)).status).toBe("auto");
+  });
+  test("a grant notice whose first paragraph mentions the Notice of Exercise is still a grant", () => {
+    const g = readFileSync(new URL("grant-lisa.txt", DIR), "utf8").replace(
+      "and the Option Agreement.",
+      "and the Option Agreement, the Notice of Exercise and the Plan, all of which are attached.",
+    );
+    expect(sort(wrap(g)).status).toBe("auto");
+  });
+});
+
+describe("M7 review: papers about an agreement are not the agreement", () => {
+  test.each([
+    "JOINDER TO STOCK PURCHASE AGREEMENT",
+    "SPOUSAL CONSENT\nSTOCK PURCHASE AGREEMENT",
+    "NOTICE OF REPURCHASE\nRESTRICTED STOCK PURCHASE AGREEMENT",
+    "STOCK TRANSFER\nSTOCK PURCHASE AGREEMENT",
+  ])("%s", (title) => {
+    expect(sort(`${title}\nPurchaser: Ana Ribeiro\nShares: 3,000,000\nDate: September 14, 2021`).status).toBe(
+      "review",
+    );
+  });
+  test.each(["MFN LETTER", "PRO RATA RIGHTS LETTER"])("%s over a SAFE", (title) => {
+    expect(
+      sort(
+        `${title}\nSIMPLE AGREEMENT FOR FUTURE EQUITY\nInvestor: Y Combinator\nPurchase Amount: $500,000\nDate: January 10, 2022`,
+      ).status,
+    ).toBe("review");
+  });
+  test("a resolution cancelling a grant doesn't link it as its approval", () => {
+    const r = sort(`ACME INC.
+ACTION BY UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS
+RESOLVED, that the option to purchase 40,000 shares held by João Silva is hereby cancelled.`);
+    expect(r.targets).toEqual([]);
+  });
+});

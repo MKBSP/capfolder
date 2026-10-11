@@ -1,6 +1,6 @@
 // The rules pack (docs/07 §2): export guides and document-sorting phrases that can change without a release.
 // A copy ships in the app; newer packs are fetched daily, used only if signed with our key, and swapped in live.
-import type { DocRule } from "@capfolder/core";
+import { type DocRule, SORT_TYPES } from "@capfolder/core";
 import * as ed from "@noble/ed25519";
 import bundled from "../../../rules/rules.json";
 import { join } from "./fs/types";
@@ -46,7 +46,15 @@ export async function acceptPack(
     if (p.format !== "capfolder-rules/1" || !/^\d{4}\.\d\d\.\d\d-\d+$/.test(p.version)) return null;
     if (compareVersions(p.version, current.version) <= 0) return null;
     if (compareVersions(p.min_app_version, appVersion) > 0) return null;
-    if (typeof p.export_guides !== "object" || !Array.isArray(p.doc_types)) return null;
+    // shape checks too: one bad (even if signed) pack must not break every installed app
+    const strings = (a: unknown) => Array.isArray(a) && a.every((x) => typeof x === "string");
+    if (!p.export_guides || typeof p.export_guides !== "object" || Array.isArray(p.export_guides))
+      return null;
+    if (Object.values(p.export_guides).some((g) => !g || typeof g.title !== "string" || !strings(g.steps)))
+      return null;
+    if (!Array.isArray(p.doc_types)) return null;
+    if (p.doc_types.some((r) => !(SORT_TYPES as readonly string[]).includes(r?.type) || !strings(r.phrases)))
+      return null;
     for (const r of p.doc_types) for (const ph of r.phrases) new RegExp(ph, "m"); // throws on a bad phrase
     return p;
   } catch {

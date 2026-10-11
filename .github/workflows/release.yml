@@ -32,13 +32,18 @@ jobs:
           UPDATER_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
           ALLOW_UNSIGNED: ${{ inputs.allow_unsigned }}
         run: |
           [ -n "$UPDATER_KEY" ] || { echo "TAURI_SIGNING_PRIVATE_KEY is missing"; exit 1; }
           [ "$ALLOW_UNSIGNED" = "true" ] && exit 0
           case "${{ runner.os }}" in
-            macOS) [ -n "$APPLE_CERTIFICATE" ] && [ -n "$APPLE_ID" ] || { echo "Apple signing secrets are missing"; exit 1; } ;;
+            # all of them: without the password/team/identity Tauri skips notarization with only a warning
+            macOS) for v in APPLE_CERTIFICATE APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID APPLE_SIGNING_IDENTITY; do
+                     [ -n "${!v}" ] || { echo "$v is missing"; exit 1; }; done ;;
             Windows) [ -n "$WINDOWS_CERTIFICATE" ] || { echo "WINDOWS_CERTIFICATE is missing"; exit 1; } ;;
           esac
       - if: runner.os == 'Linux'
@@ -60,8 +65,12 @@ jobs:
         run: |
           $pfx = Join-Path $env:RUNNER_TEMP "cert.pfx"
           [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
-          $pw = ConvertTo-SecureString $env:WINDOWS_CERTIFICATE_PASSWORD -AsPlainText -Force
-          $cert = Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $pw
+          if ($env:WINDOWS_CERTIFICATE_PASSWORD) {
+            $pw = ConvertTo-SecureString $env:WINDOWS_CERTIFICATE_PASSWORD -AsPlainText -Force
+            $cert = Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $pw
+          } else {
+            $cert = Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My
+          }
           Remove-Item $pfx
           $conf = @{ bundle = @{ windows = @{ certificateThumbprint = $cert.Thumbprint; digestAlgorithm = "sha256"; timestampUrl = "http://timestamp.digicert.com" } } } | ConvertTo-Json -Depth 5
           Set-Content -Path apps/desktop/src-tauri/tauri.windows.conf.json -Value $conf
@@ -78,8 +87,10 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           projectPath: apps/desktop
-          tagName: v__VERSION__
-          releaseName: Capfolder v__VERSION__
+          # a test build without code signing goes to its own prerelease, never into the real draft
+          tagName: ${{ inputs.allow_unsigned && 'v__VERSION__-unsigned' || 'v__VERSION__' }}
+          releaseName: ${{ inputs.allow_unsigned && 'Capfolder v__VERSION__ (UNSIGNED TEST, do not publish)' || 'Capfolder v__VERSION__' }}
+          prerelease: ${{ inputs.allow_unsigned == true }}
           releaseBody: "See CHANGELOG.md. Downloads are signed; installed apps update themselves once this release is published."
           releaseDraft: true
           includeUpdaterJson: true

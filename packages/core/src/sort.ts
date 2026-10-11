@@ -107,24 +107,54 @@ const clean = (text: string) =>
     .join("\n");
 
 /** The document type by rules: a phrase in the title counts double; ties go to the more specific type. */
+/** Mostly capitals ("ELECTION UNDER SECTION 83(b)" counts). */
+const caps = (l: string) => {
+  const letters = l.replace(/[^\p{L}]/gu, "");
+  const upper = letters.replace(/[^\p{Lu}]/gu, "").length;
+  return letters.length > 0 && upper / letters.length >= 0.9;
+};
+/** A heading-like line: short, or all capitals; no "label:", no trailing comma or sentence end (short names may). */
+const headingLike = (l: string) =>
+  !l.includes(":") &&
+  !/[,;]$/.test(l) &&
+  (l.length <= 60 ? !(l.length > 25 && /\.$/.test(l)) : caps(l) && l.length <= 100);
+
 /**
- * The heading block: short lines without a "label:" near the top, ending at the first clause or label line after it
- * (a legend before the heading is skipped). Clauses and labels mention other documents; headings name this one.
+ * The heading block near the top. Real PDFs wrap paragraphs into lines, so a run of long all-capital lines is a
+ * legend, not a heading (skipped), and the block ends at the first line that reads like body text.
  */
 function titleOf(t: string): string {
+  const lines = t.split("\n").slice(0, 30);
+  const longCaps = (i: number) => (lines[i]?.length ?? 0) > 60 && caps(lines[i]!);
   const out: string[] = [];
-  for (const l of t.split("\n").slice(0, 12)) {
-    const heading = l.length <= 100 && !l.includes(":");
-    if (heading) out.push(l);
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i]!;
+    // a long capital line wrapped onto another capital line, or continuing one, is a legend paragraph
+    const legend =
+      (longCaps(i) && (caps(lines[i + 1] ?? "") || longCaps(i - 1))) ||
+      (caps(l) && longCaps(i - 1) && !out.length);
+    if (!legend && headingLike(l)) out.push(l);
     else if (out.length) break;
     if (out.length >= 8) break;
   }
   return out.join("\n");
 }
 
+/** Lines joined back into paragraphs where a PDF wrapped them (no sentence end, or the next starts lower-case). */
+function paragraphs(t: string): string[] {
+  const out: string[] = [];
+  for (const l of t.split("\n")) {
+    const prev = out.at(-1);
+    if (prev !== undefined && (/^[a-z(]/.test(l) || (prev.length > 60 && !/[.:;!?]$/.test(prev))))
+      out[out.length - 1] = `${prev} ${l}`;
+    else out.push(l);
+  }
+  return out;
+}
+
 /** Title words that mean "related to, but not, the document itself": these always go to the founder. */
 const CAUTION =
-  /\b(amendments?|amending|side letter|exercise|offer letter|stock certificate|secretary'?s certificate|awards?|rsus?|restricted stock units?|termination|waiver)\b/;
+  /\b(amendments?|amending|side letter|letter|exercise|offer letter|stock certificate|secretary'?s certificate|awards?|rsus?|restricted stock units?|termination|waiver|joinder|spousal|repurchase|transfer|mfn|most favou?red|pro rata|addendum|supplement|rider|acknowledge?ment|cancell?ation)\b/;
 
 export interface Classified {
   type: SortType;
@@ -134,8 +164,9 @@ export interface Classified {
 }
 
 export function classify(text: string, rules: DocRule[] = DOC_RULES): Classified | null {
-  const t = clean(text).toLowerCase();
-  const title = titleOf(t);
+  const c = clean(text);
+  const t = c.toLowerCase();
+  const title = titleOf(c).toLowerCase(); // on the original case: capitals tell headings and legends apart
   const all = compile(rules);
   let best: { type: SortType; rule: string; score: number } | null = null;
   for (const r of all) {
@@ -434,9 +465,11 @@ export function sortText(
   if (type === "board_consent") {
     // Each resolution on its own: a grant is linked only when its holder and its exact share count are in the same
     // resolution (a director's name elsewhere, or 40,000 inside 140,000, must not link it); a plan when one adopts it.
-    const resolutions = clean(text)
-      .split(/\n|(?=\bresolved\b)/i)
-      .map((seg) => ({ raw: seg, norm: normName(seg) }));
+    const resolutions = paragraphs(clean(text))
+      .flatMap((p) => p.split(/(?=\bresolved\b)/i))
+      // a resolution that cancels, reprices or amends a grant isn't its approval
+      .filter((seg) => !/\b(cancel|terminat|repric|amend|forfeit)/i.test(seg))
+      .map((seg) => ({ raw: seg, norm: ` ${normName(seg)} ` }));
     const count = (n: bigint) => new RegExp(`(?<![\\d.,])(${fmtInt(n)}|${n})(?![\\d]|[.,]\\d)`);
     const targets = [
       ...[...s.plans.entries()]

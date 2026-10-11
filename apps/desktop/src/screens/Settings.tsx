@@ -387,10 +387,10 @@ function UpdatesSection() {
               const u = await app.platform.updater.check();
               setMsg(
                 u
-                  ? `Capfolder ${u.version} is available. It will appear at the bottom right.`
+                  ? `Capfolder ${u.version} is available: see the bar at the bottom right.`
                   : "You have the latest version.",
               );
-              if (u) app.setSettings({ ...app.settings }); // nudge: the background check shows the bar
+              if (u && app.update?.u.version !== u.version) app.setUpdate({ u, ready: false });
             } catch (e) {
               setMsg(`Couldn't check (${(e as Error).message ?? e}).`);
             }

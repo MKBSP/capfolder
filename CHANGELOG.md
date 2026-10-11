@@ -9,6 +9,10 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 - Signed rules pack (`rules/rules.json`, ed25519): Import's export steps and the document-sorting phrases. A copy ships in the app; newer packs are fetched daily, used only if signed with our key, newer, and made for this version, then swapped in without a restart.
 - `release.yml`: a `v*` tag builds macOS (Apple Silicon and Intel), Windows and Linux into a draft release with `latest.json`. It refuses to build without code-signing secrets unless started by hand as a test.
 
+### Fixed — M7 review (2026-10-11)
+- Sorting works on real, line-wrapped PDF text (legends, wrapped consents). Joinders, spousal consents, repurchase notices, transfers and SAFE side letters go to Needs you instead of counting as the agreement.
+- Settings → Check now shows the update right away, also when updates are Off. Rules packs are shape-checked. Release workflow and local AI bridge hardened.
+
 ### Fixed — M4 review (2026-10-11)
 - Sorting files a document by itself only when its kind is in the title, with no "amendment / exercise / side letter / offer letter / award / stock certificate" there. Grant notices headed with the plan name are no longer filed as the plan.
 - Board consents link a grant only when the holder and the exact share count are in the same resolution (not a director's name elsewhere, not 40,000 inside 140,000), and link a plan only when a resolution adopts it.

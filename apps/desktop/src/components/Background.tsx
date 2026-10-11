@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import type { AppUpdate } from "../platform";
 import { cachedRules, fetchRules } from "../rules";
 import { useApp } from "../state";
 import { Modal } from "./ui";
@@ -14,7 +13,6 @@ export function Background() {
   const app = useApp();
   const latest = useRef(app);
   latest.current = app;
-  const [update, setUpdate] = useState<{ u: AppUpdate; ready: boolean } | null>(null);
   const [notes, setNotes] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,11 +31,11 @@ export function Background() {
       if (mode === "off") return;
       try {
         const u = await platform.updater.check();
-        if (!u) return;
+        if (!u || latest.current.update?.u.version === u.version) return; // already offered: no second download
         if (mode === "auto") {
           await u.download();
-          setUpdate({ u, ready: true });
-        } else setUpdate({ u, ready: false });
+          latest.current.setUpdate({ u, ready: true });
+        } else latest.current.setUpdate({ u, ready: false });
       } catch {
         // offline or GitHub unreachable: try again later
       }
@@ -56,8 +54,8 @@ export function Background() {
     };
   }, []);
 
-  if (!update) return null;
-  const { u, ready } = update;
+  if (!app.update) return null;
+  const { u, ready } = app.update;
   return (
     <div
       className="banner purple row spread wrap"
@@ -81,7 +79,7 @@ export function Background() {
         {error ? <span className="meta"> {error}</span> : null}
       </span>
       <span className="row">
-        <button type="button" className="btn small" onClick={() => setUpdate(null)}>
+        <button type="button" className="btn small" onClick={() => app.setUpdate(null)}>
           Later
         </button>
         <button

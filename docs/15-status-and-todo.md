@@ -213,6 +213,14 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Local AI unreachable from the packaged app (CORS): a Rust localhost bridge, ports 11434/1234 only (`localai.rs` tests). Not RED-tested in the webview: jsdom has no CORS.
 - Minors fixed too: folder walk, 500-file notice, Remember default, provenance flags, learn failure, add-SAFE duplicate person, leaving Sort mid-run, OCR worker rebuild.
 
+## M7 final review: fixed (each with a test that failed first)
+- Real PDFs wrap lines: titles now skip capital legend paragraphs and stop at body text; consents are read per paragraph. The whole acme-docs folder is also tested wrapped at 90 columns (`review-m4.test.ts`).
+- Papers about an agreement filed as the agreement: joinder, spousal consent, repurchase, transfer, MFN or pro rata letters, addenda and similar now go to Needs you. A resolution that cancels or reprices a grant no longer links it, and names match whole words only.
+- Settings → Check now did nothing until the next 6-hour check, and nothing in Off mode: the found update now shows straight away (`updates.test.tsx`). Update state lives above the lock, so a downloaded update isn't fetched again.
+- Rules packs are shape-checked (guides, steps, types, phrases), so one bad signed pack can't break the Import screen.
+- Minors: the local AI bridge has a total deadline and an 8 MB cap; release.yml checks every Apple secret, accepts a passwordless .pfx, and sends unsigned test builds to their own prerelease; the publish checklist checks latest.json has all four platforms.
+- Declined: whether webkitgtk exposes `crypto.subtle` on `tauri://` (if not, Linux stays on the bundled rules pack), and LM Studio listening only on `::1`.
+
 ## M7 decisions (rulings)
 - Rules pack served from `raw.githubusercontent.com` (CORS), not a release tag.
 - ed25519 via `@noble/ed25519` (pure JS) rather than WebCrypto Ed25519, which not every webview has.

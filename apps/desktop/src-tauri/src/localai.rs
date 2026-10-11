@@ -2,9 +2,10 @@
 // subject to CORS and those servers don't allow the app's origin by default. Only these two ports on 127.0.0.1.
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpStream};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 const PORTS: [u16; 2] = [11434, 1234];
+const MAX_RESPONSE: usize = 8 * 1024 * 1024;
 
 #[derive(serde::Serialize)]
 pub struct LocalResponse {
@@ -26,7 +27,7 @@ fn send(port: u16, method: &str, path: &str, body: Option<&str>, timeout: Durati
     let method = if method == "POST" { "POST" } else { "GET" };
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
     let mut s = TcpStream::connect_timeout(&addr, Duration::from_secs(2)).map_err(|e| e.to_string())?;
-    s.set_read_timeout(Some(timeout)).map_err(|e| e.to_string())?;
+    s.set_write_timeout(Some(Duration::from_secs(10))).map_err(|e| e.to_string())?;
     let body = body.unwrap_or("");
     // HTTP/1.0: the server answers with a plain body and closes, so no chunked decoding is needed
     let head = format!(
@@ -34,8 +35,22 @@ fn send(port: u16, method: &str, path: &str, body: Option<&str>, timeout: Durati
         body.len()
     );
     s.write_all(head.as_bytes()).and_then(|_| s.write_all(body.as_bytes())).map_err(|e| e.to_string())?;
+    // one deadline for the whole answer and a size cap, so a slow or chatty local server can't hold a thread forever
+    let deadline = Instant::now() + timeout;
     let mut raw = Vec::new();
-    s.read_to_end(&mut raw).map_err(|e| e.to_string())?;
+    let mut buf = [0u8; 16 * 1024];
+    loop {
+        let left = deadline.checked_duration_since(Instant::now()).ok_or("the local AI took too long")?;
+        let _ = s.set_read_timeout(Some(left.max(Duration::from_millis(1)))); // macOS refuses once the peer closed; the read then ends
+        let n = s.read(&mut buf).map_err(|e| e.to_string())?;
+        if n == 0 {
+            break;
+        }
+        raw.extend_from_slice(&buf[..n]);
+        if raw.len() > MAX_RESPONSE {
+            return Err("the local AI's answer is too large".into());
+        }
+    }
     let text = String::from_utf8_lossy(&raw);
     let (head, body) = text.split_once("\r\n\r\n").ok_or("no response")?;
     let status = head.split(' ').nth(1).and_then(|c| c.parse().ok()).ok_or("bad status line")?;
@@ -60,6 +75,25 @@ mod tests {
     fn refuses_other_ports_and_bad_paths() {
         assert!(request(8787, "GET", "/", None, Duration::from_secs(1)).is_err());
         assert!(request(11434, "GET", "/x HTTP/1.1\r\nHost: evil", None, Duration::from_secs(1)).is_err());
+    }
+
+    fn serve(reply: Vec<u8>) -> u16 {
+        let l = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = l.local_addr().unwrap().port();
+        std::thread::spawn(move || {
+            let (mut c, _) = l.accept().unwrap();
+            let mut buf = [0u8; 1024];
+            let _ = c.read(&mut buf);
+            let _ = c.write_all(&reply);
+        });
+        port
+    }
+
+    #[test]
+    fn refuses_huge_answers() {
+        let mut reply = b"HTTP/1.0 200 OK\r\n\r\n".to_vec();
+        reply.resize(MAX_RESPONSE + 1024, b'x');
+        assert!(send(serve(reply), "GET", "/", None, Duration::from_secs(5)).is_err());
     }
 
     #[test]
