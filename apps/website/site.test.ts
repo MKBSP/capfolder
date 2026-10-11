@@ -77,3 +77,15 @@ test("a11y: moving content can be paused (WCAG 2.2.2), the comparison table has 
   const rows = html.match(/<tbody>[\s\S]*?<\/tbody>/)![0];
   expect(rows.match(/<tr>/g)!.length).toBe(rows.match(/<th scope="row"/g)!.length);
 });
+
+test("HN-friendly download: email optional, works without JS, unsigned-beta steps, exact disclaimer in the footer", () => {
+  expect(html).toMatch(/id="skipdl"[^>]*>No thanks, just download</);
+  expect(html).toMatch(/<noscript>[\s\S]*releases\/latest[\s\S]*<\/noscript>/);
+  expect(html).toContain("Open Anyway");
+  expect(html).toContain("More info → Run anyway");
+  const footer = html.match(/<footer[\s\S]*?<\/footer>/)![0];
+  expect(footer).toContain(
+    "Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.",
+  );
+  expect(html).not.toMatch(/then the relay deletes them\./);
+});

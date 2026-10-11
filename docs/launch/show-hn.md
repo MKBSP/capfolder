@@ -18,7 +18,7 @@ What it does today:
 - Import a spreadsheet export (Pulley, Carta, Cake: you confirm the column mapping) or any OCF export. It checks the totals against the old tool's and makes you note any difference before saving.
 - Point it at a messy folder of PDFs and scans. It reads them locally (PDF.js, tesseract.js), files the ones it's sure of, and asks about the rest. When it isn't sure, it asks.
 - Vesting, the option pool, SAFEs, a "what's missing" checklist (83(b)s, IP assignments, board consents), exports for any date, and a zip for your lawyer.
-- Signatures go through a small relay in front of self-hosted Documenso. It's the only server that sees your documents, and it deletes each one once it's signed and back in your folder. You can self-host it. (The app also sends an anonymous install count, which you can turn off.)
+- Signatures go through a small relay in front of self-hosted Documenso. It's the only server that sees your documents, and it deletes each one within 7 days of signing. You can self-host it. (The app also sends an anonymous install count, which you can turn off.)
 - Optional local AI (Ollama/LM Studio) for documents the rules can't sort. It only proposes; you click.
 
 It's free. Code, tests and the golden cap-table fixtures are on GitHub: https://github.com/MKBSP/capfolder

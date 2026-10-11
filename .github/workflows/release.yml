@@ -8,11 +8,18 @@ on:
   workflow_dispatch:
     inputs:
       allow_unsigned:
-        description: "Build without macOS/Windows code signing (testing only; never publish these)"
+        description: "Beta: build without Apple/Microsoft certificates (macOS ad-hoc signed). Publish it as a normal release so testers and the updater find it."
         type: boolean
         default: false
 permissions:
   contents: write
+env:
+  BETA_NOTES: |
+    Beta. These installers aren't signed with Apple or Microsoft certificates yet, so your computer warns before the first start. Installed apps update themselves from here.
+    - macOS: open the .dmg and drag Capfolder to Applications. Open it once; when macOS says it can't check it, go to System Settings → Privacy & Security, scroll down and click "Open Anyway". (Or run: xattr -dr com.apple.quarantine /Applications/Capfolder.app)
+    - Windows: run the -setup.exe. On "Windows protected your PC", click More info → Run anyway.
+    - Linux: the .AppImage (chmod +x, then run it) or the .deb.
+    Found a bug? https://github.com/MKBSP/capfolder/issues
 jobs:
   build:
     strategy:
@@ -81,17 +88,19 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # beta: "-" is ad-hoc signing, which Apple Silicon needs to open the app at all ("damaged" otherwise)
+          APPLE_SIGNING_IDENTITY: ${{ inputs.allow_unsigned && '-' || secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ inputs.allow_unsigned && '' || secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ inputs.allow_unsigned && '' || secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ inputs.allow_unsigned && '' || secrets.APPLE_TEAM_ID }}
         with:
           projectPath: apps/desktop
-          # a test build without code signing goes to its own prerelease, never into the real draft
-          tagName: ${{ inputs.allow_unsigned && 'v__VERSION__-unsigned' || 'v__VERSION__' }}
-          releaseName: ${{ inputs.allow_unsigned && 'Capfolder v__VERSION__ (UNSIGNED TEST, do not publish)' || 'Capfolder v__VERSION__' }}
-          prerelease: ${{ inputs.allow_unsigned == true }}
-          releaseBody: "See CHANGELOG.md. Downloads are signed; installed apps update themselves once this release is published."
+          # Beta builds are ordinary releases (not prereleases): /releases/latest, the website links and the updater
+          # only see those. Versions stay plain x.y.z (Windows MSI rejects "-beta"); the name says beta.
+          tagName: v__VERSION__
+          releaseName: ${{ inputs.allow_unsigned && 'Capfolder v__VERSION__ (beta, unsigned)' || 'Capfolder v__VERSION__' }}
+          prerelease: false
+          releaseBody: ${{ inputs.allow_unsigned && env.BETA_NOTES || 'See CHANGELOG.md. Downloads are signed; installed apps update themselves once this release is published.' }}
           releaseDraft: true
           includeUpdaterJson: true
           args: ${{ matrix.args }}
