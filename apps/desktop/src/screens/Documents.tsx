@@ -5,9 +5,9 @@ import { AttachModal } from "../components/AttachModal";
 import { MainHeader } from "../components/Header";
 import { LawyerDialog } from "../components/LawyerDialog";
 import { SendDialog } from "../components/SendDialog";
-import { ErrorList, Modal } from "../components/ui";
+import { ErrorList, Field, Modal } from "../components/ui";
 import { useApp } from "../state";
-import { removeDocument } from "../vault";
+import { removeDocument, renameDocument, replaceDocument } from "../vault";
 
 /** Documents.html (F-26, F-27): the due-diligence checklist, attach and remove. */
 export function Documents() {
@@ -15,12 +15,17 @@ export function Documents() {
   const s = app.state;
   const [attach, setAttach] = useState<{ target?: string; docType?: string } | null>(null);
   const [remove, setRemove] = useState<CheckItem | null>(null);
+  const [rename, setRename] = useState<string | null>(null);
+  const [replace, setReplace] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
   const [sending, setSending] = useState(false);
   const [saved, setSaved] = useState<string | null>(null);
   if (!s) return null;
   const c = checklist(s, computeGaps(s));
   const missing = c.total - c.done;
+  const all = [...s.docs.entries()]
+    .filter(([, d]) => !d.removed)
+    .sort(([, a], [, b]) => String(a.data.path).localeCompare(String(b.data.path)));
   return (
     <>
       <MainHeader>
@@ -146,7 +151,34 @@ export function Documents() {
               );
             })}
         </div>
+        {all.length ? (
+          <section className="card" aria-label="All documents" style={{ marginTop: 16 }}>
+            <h2 style={{ marginTop: 0 }}>All documents</h2>
+            {all.map(([id, d]) => (
+              <div
+                key={id}
+                className="row"
+                style={{ padding: "8px 0", borderTop: "1px solid var(--row-divider)" }}
+              >
+                <span className="grow mono small">{String(d.data.path)}</span>
+                {d.data.flags?.includes?.("draft") ? (
+                  <span className="chip amber" title="Filed as an unsigned draft: it doesn't count as proof">
+                    draft
+                  </span>
+                ) : null}
+                <button type="button" className="btn link small" onClick={() => setRename(id)}>
+                  Rename…
+                </button>
+                <button type="button" className="btn link small" onClick={() => setReplace(id)}>
+                  Replace…
+                </button>
+              </div>
+            ))}
+          </section>
+        ) : null}
       </main>
+      {rename ? <RenameDialog docId={rename} onClose={() => setRename(null)} /> : null}
+      {replace ? <ReplaceDialog docId={replace} onClose={() => setReplace(null)} /> : null}
       <AttachModal
         open={!!attach}
         target={attach?.target}
@@ -197,6 +229,97 @@ function RemoveDialog({ item, onClose }: { item: CheckItem; onClose(): void }) {
             }}
           >
             Remove
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+function RenameDialog({ docId, onClose }: { docId: string; onClose(): void }) {
+  const app = useApp();
+  const path = String(app.latest?.docs.get(docId)?.data.path ?? "");
+  const file = path.split("/").at(-1) ?? "";
+  const ext = /\.[a-z0-9]+$/i.exec(file)?.[0] ?? "";
+  const [name, setName] = useState(file.slice(0, file.length - ext.length));
+  const [errors, setErrors] = useState<string[] | null>(null);
+  return (
+    <Modal open onClose={onClose} title="Rename document">
+      <div className="stack">
+        <Field
+          label="File name"
+          hint={`Stays in ${path.slice(0, path.lastIndexOf("/") + 1)}, as ${ext || "is"}.`}
+        >
+          <input className="inp" value={name} onChange={(e) => setName(e.target.value)} />
+        </Field>
+        <ErrorList errors={errors} />
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <button type="button" className="btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={async () => {
+              if (!app.vault) return;
+              const r = await renameDocument(app.platform.fs, app.vault, app.ctx, docId, name);
+              if (!r.ok) return setErrors(r.errors);
+              app.setVault(r.vault);
+              onClose();
+            }}
+          >
+            Rename
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+function ReplaceDialog({ docId, onClose }: { docId: string; onClose(): void }) {
+  const app = useApp();
+  const path = String(app.latest?.docs.get(docId)?.data.path ?? "");
+  const [file, setFile] = useState<{ path: string; name: string } | null>(null);
+  const [errors, setErrors] = useState<string[] | null>(null);
+  return (
+    <Modal open onClose={onClose} title="Replace document">
+      <div className="stack">
+        <p className="small">
+          A better copy (the signed one, a cleaner scan) takes the place of{" "}
+          <span className="mono">{path}</span>, with the same links. The old file moves to docs/_removed/.
+        </p>
+        <div className="row">
+          <button
+            type="button"
+            className="btn"
+            onClick={async () => setFile(await app.platform.pickFile("Choose the new copy"))}
+          >
+            Choose file…
+          </button>
+          {file ? <span className="mono small">{file.name}</span> : null}
+        </div>
+        <ErrorList errors={errors} />
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <button type="button" className="btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            disabled={!file}
+            onClick={async () => {
+              if (!app.vault || !file) return;
+              const bytes = await app.platform.fs.readBytes(file.path);
+              const r = await replaceDocument(app.platform.fs, app.vault, app.ctx, docId, {
+                originalName: file.name,
+                bytes,
+              });
+              if (!r.ok) return setErrors(r.errors);
+              app.setVault(r.vault);
+              onClose();
+            }}
+          >
+            Replace
           </button>
         </div>
       </div>

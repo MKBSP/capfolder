@@ -8,6 +8,8 @@ import {
   exportCsv,
   openVault,
   removeDocument,
+  renameDocument,
+  replaceDocument,
   type Vault,
 } from "./vault";
 
@@ -255,5 +257,66 @@ describe("untrusted paths", () => {
     await expect(
       createVault(fs, ctx, { parent: "/Users/me/Documents", company: { ...company, name: "../../evil" } }),
     ).rejects.toMatchObject({ message: "A company name can't contain / or \\ or start with a dot." });
+  });
+});
+
+describe("rename and replace a document (F-28)", () => {
+  const pdf = new TextEncoder().encode("%PDF-1.4 draft");
+  const signed = new TextEncoder().encode("%PDF-1.4 signed");
+  async function withDoc() {
+    const v = await founded();
+    const a = await attachDocument(fs, v, ctx, {
+      originalName: "spa.pdf",
+      bytes: pdf,
+      docType: "spa",
+      date: "2026-01-02",
+      person: "Ana",
+      target: "CS-1",
+      flags: ["draft"],
+    });
+    if (a.ok !== true) throw new Error("attach");
+    const docId = a.vault.events.find((e) => e.type === "doc_added")!.data.doc_id as string;
+    return { v: a.vault, docId };
+  }
+
+  test("rename renames the file in its folder, keeps the extension, and records the new path", async () => {
+    const { v, docId } = await withDoc();
+    const r = await renameDocument(fs, v, ctx, docId, "Ana SPA (countersigned)");
+    if (!r.ok) throw new Error(r.errors.join());
+    expect(fs.existsSync(`${v.root}/docs/founders/2026-01-02_ana_spa.pdf`)).toBe(false);
+    expect(fs.existsSync(`${v.root}/docs/founders/Ana SPA (countersigned).pdf`)).toBe(true);
+    expect(reduce(r.vault.events, "9999-12-31").docs.get(docId)!.data.path).toBe(
+      "docs/founders/Ana SPA (countersigned).pdf",
+    );
+  });
+
+  test("rename refuses path tricks and empty names", async () => {
+    const { v, docId } = await withDoc();
+    const r = await renameDocument(fs, v, ctx, docId, "../../evil");
+    if (!r.ok) throw new Error(r.errors.join());
+    expect(reduce(r.vault.events, "9999-12-31").docs.get(docId)!.data.path).toBe("docs/founders/evil.pdf");
+    expect((await renameDocument(fs, v, ctx, docId, "  ")).ok).toBe(false);
+  });
+
+  test("replace files the new copy with the same links, retires the old one to _removed", async () => {
+    const { v, docId } = await withDoc();
+    const r = await replaceDocument(fs, v, ctx, docId, { originalName: "spa-signed.pdf", bytes: signed });
+    if (!r.ok) throw new Error(r.errors.join());
+    const s = reduce(r.vault.events, "9999-12-31");
+    const old = s.docs.get(docId)!;
+    const fresh = [...s.docs.entries()].find(([id, d]) => id !== docId && !d.removed)!;
+    expect(old.removed).toBe(true);
+    expect(fresh[1].links).toEqual(new Set(["CS-1"]));
+    expect(fresh[1].data.flags).not.toContain("draft");
+    expect(fs.existsSync(`${v.root}/${fresh[1].data.path}`)).toBe(true);
+    expect(fs.existsSync(`${v.root}/docs/_removed/2026-01-02_ana_spa.pdf`)).toBe(true);
+    expect(r.vault.events.map((e) => e.type)).toContain("doc_replaced");
+    expect((await verifyChain(r.vault.log)).ok).toBe(true);
+  });
+
+  test("replacing with the same file is refused", async () => {
+    const { v, docId } = await withDoc();
+    const r = await replaceDocument(fs, v, ctx, docId, { originalName: "same.pdf", bytes: pdf });
+    expect(r).toEqual({ ok: false, errors: ["That's the same file."] });
   });
 });

@@ -55,9 +55,16 @@ export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {
   return s;
 }
 
-export async function saveSettings(fs: Fs, dir: string, s: Settings): Promise<void> {
-  await fs.mkdir(dir);
-  await fs.writeText(join(dir, "settings.json"), `${JSON.stringify(s, null, 2)}\n`);
+let writing: Promise<unknown> = Promise.resolve();
+/** Writes one after another, so a slow earlier save can't land after (and undo) a later one. */
+export function saveSettings(fs: Fs, dir: string, s: Settings): Promise<void> {
+  const text = `${JSON.stringify(s, null, 2)}\n`;
+  const next = writing.then(async () => {
+    await fs.mkdir(dir);
+    await fs.writeText(join(dir, "settings.json"), text);
+  });
+  writing = next.catch(() => {});
+  return next;
 }
 
 export const addRecent = (list: Settings["recentVaults"], v: { name: string; root: string }) =>

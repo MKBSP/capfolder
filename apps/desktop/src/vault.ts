@@ -345,6 +345,115 @@ export function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string):
   });
 }
 
+/** A name the founder typed, as a safe file name: no folders, no hidden files, no characters Windows rejects. */
+const fileStem = (name: string) =>
+  name
+    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/^[.\s]+|[.\s]+$/g, "")
+    .slice(0, 120);
+
+/** F-28. Renames the file in its folder (the extension stays), then records the new path. */
+export function renameDocument(
+  fs: Fs,
+  v: Vault,
+  ctx: AppendCtx,
+  docId: string,
+  name: string,
+): Promise<Result> {
+  return exclusive(v.root, async () => {
+    const blocked = await writeBlocked(fs, v);
+    if (blocked) return { ok: false, errors: blocked };
+    const doc = reduce(v.events, MAX_DATE).docs.get(docId);
+    if (!doc || doc.removed) return { ok: false, errors: ["That document isn't in the folder."] };
+    if (!isSafeDocPath(doc.data.path))
+      return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
+    const stem = fileStem(name);
+    if (!stem) return { ok: false, errors: ["Enter a name."] };
+    const from = join(v.root, doc.data.path);
+    const dir = from.slice(0, from.lastIndexOf("/"));
+    const ext = /\.[a-z0-9]+$/i.exec(doc.data.path)?.[0] ?? "";
+    if (`${stem}${ext}` === baseName(from)) return { ok: true, vault: v };
+    const to = await freePath(fs, dir, `${stem}${ext}`);
+    // the file moves first: a record pointing at a file that isn't there is worse than an unrecorded rename
+    await fs.rename(from, to);
+    const r = await appendUnlocked(
+      fs,
+      v,
+      [b.docRenamed({ docId, path: to.slice(v.root.length + 1) })],
+      ctx,
+    ).catch((e) => ({ ok: false as const, errors: [String((e as Error).message ?? e)] }));
+    if (!r.ok) await fs.rename(to, from).catch(() => {});
+    return r;
+  });
+}
+
+/**
+ * F-28. A better copy (the signed one, a clean scan) takes the old one's place: filed like an attach, with the same
+ * type, fields and links, and the old file retired to docs/_removed/. One write records all of it.
+ */
+export function replaceDocument(
+  fs: Fs,
+  v: Vault,
+  ctx: AppendCtx,
+  docId: string,
+  p: { originalName: string; bytes: Uint8Array; draft?: boolean },
+): Promise<Result> {
+  return exclusive(v.root, async () => {
+    const blocked = await writeBlocked(fs, v);
+    if (blocked) return { ok: false, errors: blocked };
+    const s = reduce(v.events, MAX_DATE);
+    const old = s.docs.get(docId);
+    if (!old || old.removed) return { ok: false, errors: ["That document isn't in the folder."] };
+    if (!isSafeDocPath(old.data.path))
+      return { ok: false, errors: ["That document's path isn't inside docs/, so it was left alone."] };
+    const sha256 = await sha256Bytes(p.bytes);
+    if (sha256 === old.data.sha256) return { ok: false, errors: ["That's the same file."] };
+    for (const d of s.docs.values())
+      if (!d.removed && d.data.sha256 === sha256)
+        return { ok: false, errors: [`That file is already in the folder (${d.data.path}).`] };
+    const oldAbs = join(v.root, old.data.path);
+    const dir = oldAbs.slice(0, oldAbs.lastIndexOf("/"));
+    const ext = /\.[a-z0-9]+$/i.exec(p.originalName)?.[0].toLowerCase() ?? ".pdf";
+    const stem = baseName(oldAbs).replace(/\.[a-z0-9]+$/i, "");
+    const removedTo = await freePath(fs, join(v.root, "docs", "_removed"), baseName(oldAbs));
+    // the old file leaves first, so the new copy can take its exact name
+    if (await fs.exists(oldAbs)) await fs.rename(oldAbs, removedTo);
+    const abs = await freePath(fs, dir, `${stem}${ext}`);
+    await fs.writeBytes(abs, p.bytes);
+    const newDoc = b.newId("doc");
+    const flags = ((old.data.flags as string[]) ?? []).filter((f) => f !== "draft");
+    const drafts = [
+      b.docAdded({
+        docId: newDoc,
+        path: abs.slice(v.root.length + 1),
+        sha256,
+        docType: old.data.doc_type,
+        originalName: p.originalName,
+        fields: old.data.fields,
+        flags: [...flags, ...(p.draft ? ["draft"] : [])],
+      }),
+      ...[...old.links].map((target) => b.docLinked({ docId: newDoc, target })),
+      b.docReplaced({ docId, by: newDoc }),
+      b.docRemoved({ docId, movedTo: removedTo.slice(v.root.length + 1) }),
+    ];
+    const undo = async () => {
+      await fs
+        .rename(abs, await freePath(fs, join(v.root, "docs", "_removed"), baseName(abs)))
+        .catch(() => {});
+      if (!(await fs.exists(oldAbs))) await fs.rename(removedTo, oldAbs).catch(() => {});
+    };
+    try {
+      const r = await appendUnlocked(fs, v, drafts, ctx);
+      if (!r.ok) await undo();
+      return r;
+    } catch (e) {
+      await undo();
+      throw e;
+    }
+  });
+}
+
 /** F-29. The cap table as of any date, in captable.csv format. */
 export const exportCsv = (v: Vault, asOf: string): string => captableCsv(v.events, asOf);
 

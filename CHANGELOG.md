@@ -4,6 +4,18 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added (2026-10-11)
+- Transfer shares or a SAFE to someone else (Person → Transfer…): vesting carries over, part of a holding splits in two.
+- Merge a duplicate person (Person → Edit → A duplicate of someone else here): holdings and documents move, the old name is remembered for sorting.
+- Documents: every filed document is listed, with Rename… and Replace… (the signed copy takes the draft's place).
+- Sorting spots unsigned drafts (DRAFT, "Form of", [Investor Name] blanks) and asks; a document filed as a draft doesn't count as proof.
+- Drop files or folders anywhere on the window to sort them.
+- Website: a Pause animations button, row headers on the comparison table.
+
+### Fixed (2026-10-11)
+- A vesting start dated before its grant was rejected; it now applies once the grant exists.
+- Settings saves happen in order, so a background save can't undo a Privacy toggle.
+
 ### Fixed — M8 review (2026-10-11)
 - Downloads count installers only (not updater checks). `/ping` takes JSON only and caps fake installs (3 ids per network per day, 50,000 rows per day). A new install is counted right after the terms are accepted.
 - Site: self-hosted fonts, Tally loaded on click, a Privacy section, honest answers about the relay and the install count; launch drafts describe import accurately.

@@ -24,6 +24,7 @@ export function fakePlatform(
   const savedBytes: Record<string, Uint8Array> = {};
   const opened: string[] = [];
   const updates: string[] = [];
+  const dropHandlers = new Set<(paths: string[]) => void>();
   const platform: Platform = {
     fs,
     appDataDir: async () => "/appdata",
@@ -32,6 +33,10 @@ export function fakePlatform(
     pickFolder: async () => opts.pickFolder ?? null,
     pickFile: async () => opts.pickFile ?? null,
     pickFiles: async () => opts.pickFiles ?? [],
+    onDrop: (cb) => {
+      dropHandlers.add(cb);
+      return () => void dropHandlers.delete(cb);
+    },
     ocr: { image: async () => opts.ocrText ?? "", pdfPage: async () => opts.ocrText ?? "" },
     saveText: async (name, text) => {
       saved[name] = text;
@@ -78,5 +83,8 @@ export function fakePlatform(
       },
     },
   };
-  return { platform, fs, saved, savedBytes, opened, updates };
+  const drop = (paths: string[]) => {
+    for (const h of dropHandlers) h(paths);
+  };
+  return { platform, fs, saved, savedBytes, opened, updates, drop };
 }

@@ -18,6 +18,15 @@ export function Background() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Drag and drop anywhere on the window: with a company open, the files go to sorting
+  useEffect(
+    () =>
+      latest.current.platform.onDrop((paths) => {
+        if (latest.current.vault && paths.length) latest.current.go({ name: "sort", dropped: paths });
+      }),
+    [],
+  );
+
   // The install ping (docs/11): one at a time, at start, daily, and right after the terms are accepted on Welcome
   const pinging = useRef(false);
   const pingNow = useRef(async () => {
@@ -27,7 +36,7 @@ export function Background() {
       const a = latest.current;
       const version = await a.platform.updater.version().catch(() => "0.0.0");
       const next = await maybePing(a.platform, a.settings, a.vault, version);
-      if (next) await latest.current.setSettings({ ...latest.current.settings, ping: next.ping });
+      if (next) await latest.current.setSettings((prev) => ({ ...prev, ping: next.ping }));
     } finally {
       pinging.current = false;
     }

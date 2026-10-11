@@ -462,6 +462,10 @@ export const stakeholderAlias = (p: { stakeholderId: string; alias: string }) =>
   app("stakeholder_alias", { stakeholder_id: p.stakeholderId, alias: p.alias });
 export const docUnlinked = (p: { docId: string; target: string }) =>
   app("doc_unlinked", { doc_id: p.docId, target: p.target });
+export const docRenamed = (p: { docId: string; path: string }) =>
+  app("doc_renamed", { doc_id: p.docId, path: p.path });
+export const docReplaced = (p: { docId: string; by: string }) =>
+  app("doc_replaced", { doc_id: p.docId, by: p.by });
 export const docRemoved = (p: { docId: string; movedTo: string }) =>
   app("doc_removed", { doc_id: p.docId, moved_to: p.movedTo });
 

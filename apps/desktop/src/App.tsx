@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Background } from "./components/Background";
 import { useIdle } from "./idle";
 import { type Platform, tauriPlatform } from "./platform";
@@ -15,6 +15,8 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
   const [boot, setBoot] = useState<Boot | null>(null);
   // Settings live here (one source of truth) so the lock gate always sees the current lock choice.
   const [settings, setSettings] = useState<Settings | null>(null);
+  const current = useRef<Settings | null>(null);
+  current.current ??= settings;
   const [locked, setLocked] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,8 +59,10 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
       platform={platform}
       settings={settings}
       saveSettings={async (s) => {
-        setSettings(s);
-        await saveSettings(platform.fs, boot.dataDir, s);
+        const next = typeof s === "function" ? s(current.current!) : s;
+        current.current = next;
+        setSettings(next);
+        await saveSettings(platform.fs, boot.dataDir, next);
       }}
       initialVault={boot.vault}
       initialRoute={boot.route}

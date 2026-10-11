@@ -70,3 +70,10 @@ test("no claims the hosted relay can't back yet, and privacy answered honestly",
   ])
     expect([bad, html.includes(bad)]).toEqual([bad, false]);
 });
+
+test("a11y: moving content can be paused (WCAG 2.2.2), the comparison table has row headers", () => {
+  expect(html).toMatch(/<button[^>]*id="pause-motion"[^>]*aria-pressed="false"/);
+  expect(html).toContain(".motion-paused *");
+  const rows = html.match(/<tbody>[\s\S]*?<\/tbody>/)![0];
+  expect(rows.match(/<tr>/g)!.length).toBe(rows.match(/<th scope="row"/g)!.length);
+});

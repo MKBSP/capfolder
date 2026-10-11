@@ -52,7 +52,8 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 
 ## Missing in the desktop app (M3)
 - Not built yet (shown as Coming soon): AI through CLIs (Claude Code, Codex, Gemini) or API keys, chat and the MCP server; updates (M7), Touch ID / Windows Hello (M7).
-- Not built, no placeholder: SAFE/share transfer (F-20), merge duplicate people (F-21), replace/rename a document (F-28), two-laptop forks (F-35), rebaseline after an outside edit (F-31), document generation from templates.
+- Built 2026-10-11: SAFE/share transfer (F-20), merge duplicate people (F-21), replace/rename a document (F-28), unsigned-draft detection, drag and drop.
+- Not built, no placeholder: two-laptop forks (F-35), rebaseline after an outside edit (F-31), document generation from templates.
 - Founder detection is a heuristic (common stock issued on the formation date or with vesting) until stakeholder roles exist.
 - Options recorded without a strike are stored at $0 (with a 409A warning).
 - Reset of a forgotten app password is manual (remove the "Capfolder" keychain item).
@@ -233,7 +234,7 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - A fresh install wasn't counted until its second launch: the ping now goes as soon as the terms are accepted; a garbled or future last-ping date no longer stops weekly pings.
 - Site: no Google Fonts (self-hosted IBM Plex, OFL), Tally loads only on click, a Privacy section naming every third party and the install ping, honest "who can see my data", no "encrypted" claim before the relay is hosted; launch drafts no longer overstate import.
 - Minors: dashboard survives a truncated line and paths with spaces; Tally popup closes itself; aria-live on the download links; ✦ hidden from screen readers; manifest icons relative; site tests run before deploy; metrics runs one at a time.
-- Not done (minor): animation pause controls (only reduced-motion stops them), table row headers, settings write race when toggling Privacy within the same moment as a ping save.
+- Minors fixed 2026-10-11: a Pause animations button, row headers on the comparison table, settings saves serialized (a ping save can't undo a Privacy toggle).
 
 ## M7 decisions (rulings)
 - Rules pack served from `raw.githubusercontent.com` (CORS), not a release tag.
@@ -244,9 +245,8 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Touch ID / Windows Hello: not in M7 (needs a native plugin); Welcome says "Coming later".
 
 ## M4 not built (known limits)
-- Signature detection: an unsigned draft looks like a signed document.
+- Signature detection (2026-10-11): only explicit markers count as a draft (DRAFT, "Form of", template blanks, "for discussion"); e-signature stamps, /s/ and PDF signature fields count as signed. A draft without markers still looks signed.
 - Terms diff against the YC template (needs the template).
-- Drag and drop onto the window (Tauri fs scope for dropped paths); use Choose a folder.
 - A page that mixes a text header with a scanned body isn't OCR'd. Only English OCR data is bundled.
 - Board consents link to the plan and grants they name (name + share count); other resolutions aren't read.
 

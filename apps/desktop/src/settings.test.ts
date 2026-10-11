@@ -53,3 +53,22 @@ test("suggested synced folders that exist", async () => {
     { name: "Dropbox", path: "/Users/me/Dropbox" },
   ]);
 });
+
+test("saves land in the order they were made, even when a write is slow", async () => {
+  const fs = new MemoryFs();
+  const s = await loadSettings(fs, "/app");
+  const write = fs.writeText.bind(fs);
+  let first = true;
+  fs.writeText = async (p, t) => {
+    if (first) {
+      first = false;
+      await new Promise((r) => setTimeout(r, 30)); // the ping's save, still writing
+    }
+    return write(p, t);
+  };
+  await Promise.all([
+    saveSettings(fs, "/app", { ...s, telemetry: true }),
+    saveSettings(fs, "/app", { ...s, telemetry: false }), // the founder's toggle, a moment later
+  ]);
+  expect((await loadSettings(fs, "/app")).telemetry).toBe(false);
+});

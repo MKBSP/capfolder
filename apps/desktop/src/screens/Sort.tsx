@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { DOC_TYPES, docTargets } from "../components/AttachModal";
 import { CrumbHeader } from "../components/Header";
 import { ErrorList, Field } from "../components/ui";
-import { endOcr } from "../docread";
+import { endOcr, isReadable } from "../docread";
 import { fileDoc, learn, loadCorpus, type SortDeps, type SortItem, sortOne, walk } from "../docsort";
 import { money, shares } from "../fmt";
 import { useApp } from "../state";
@@ -99,6 +99,29 @@ export function Sort() {
     setRunning(false);
   }
 
+  // dropped on the window: folders are walked like "Choose a folder", files are taken as they are
+  const dropped = app.route.name === "sort" ? app.route.dropped : undefined;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: once per drop
+  useEffect(() => {
+    if (!dropped?.length || runningRef.current) return;
+    (async () => {
+      const a = latest.current;
+      const files: { path: string; name: string }[] = [];
+      let cut = false;
+      for (const p of dropped) {
+        const name = p.split(/[\\/]/).at(-1) ?? p;
+        if (isReadable(name)) files.push({ path: p, name });
+        else {
+          const w = await walk(a.platform.fs, p, a.vault?.root ?? null);
+          files.push(...w.files);
+          cut ||= w.truncated;
+        }
+      }
+      setTruncated(cut);
+      await run(files);
+    })();
+  }, [dropped]);
+
   const count = (s: SortItem["status"]) => items.filter((x) => x.status === s).length;
   const queue = items.map((x, i) => ({ x, i })).filter(({ x }) => x.status === "review");
   const update = (i: number, x: SortItem) => setItems((all) => all.map((y, j) => (j === i ? x : y)));
@@ -130,9 +153,9 @@ export function Sort() {
       <main className="medium stack">
         <h1 style={{ margin: 0 }}>Add documents</h1>
         <p className="muted" style={{ margin: 0 }}>
-          Choose a folder or files: signed SAFEs, grant notices, purchase agreements, 83(b)s, consents, scans
-          and photos. Capfolder reads each one on this computer, files what it's sure of and asks you about
-          the rest. Your originals are never moved or changed.
+          Choose a folder or files, or drop them on this window: signed SAFEs, grant notices, purchase
+          agreements, 83(b)s, consents, scans and photos. Capfolder reads each one on this computer, files
+          what it's sure of and asks you about the rest. Your originals are never moved or changed.
         </p>
         <div className="row wrap">
           <button

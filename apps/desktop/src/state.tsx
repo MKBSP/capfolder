@@ -11,14 +11,16 @@ import { appendToVault, type Vault } from "./vault";
 export type Route =
   | { name: "welcome" | "email" | "create" | "start" | "wizard" | "home" | "people" | "import" }
   | { name: "documents"; imported?: boolean }
-  | { name: "newSafe" | "newGrant" | "newShares" | "pool" | "newPerson" | "signatures" | "settings" | "sort" }
+  | { name: "newSafe" | "newGrant" | "newShares" | "pool" | "newPerson" | "signatures" | "settings" }
+  | { name: "sort"; dropped?: string[] }
   | { name: "person"; id: string }
   | { name: "comingSoon"; title: string; milestone: string; text?: string };
 
 export interface App {
   platform: Platform;
   settings: Settings;
-  setSettings(s: Settings): Promise<void>;
+  /** A function gets the newest settings (not a render's copy), so background saves don't undo a toggle. */
+  setSettings(s: Settings | ((prev: Settings) => Settings)): Promise<void>;
   vault: Vault | null;
   setVault(v: Vault | null): void;
   asOf: string;
@@ -52,7 +54,7 @@ export const useApp = (): App => {
 export function AppProvider(p: {
   platform: Platform;
   settings: Settings;
-  saveSettings(s: Settings): Promise<void>;
+  saveSettings(s: Settings | ((prev: Settings) => Settings)): Promise<void>;
   initialVault: Vault | null;
   initialRoute: Route;
   children: ReactNode;

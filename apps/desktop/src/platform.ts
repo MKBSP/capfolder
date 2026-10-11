@@ -1,6 +1,7 @@
 // Everything that needs the Tauri runtime, behind one object, so screens can be tested with a fake.
 import { getVersion } from "@tauri-apps/api/app";
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import { appDataDir, documentDir, homeDir } from "@tauri-apps/api/path";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
@@ -18,6 +19,8 @@ export interface Platform {
   pickFolder(title: string): Promise<string | null>;
   pickFile(title: string, extensions?: string[]): Promise<{ path: string; name: string } | null>;
   pickFiles(title: string): Promise<{ path: string; name: string }[]>;
+  /** Files or folders dropped on the window (already readable). Returns the unsubscribe. */
+  onDrop(cb: (paths: string[]) => void): () => void;
   /** Local OCR for scans and photos (F-09). */
   ocr: Ocr;
   saveText(defaultName: string, text: string): Promise<string | null>;
@@ -91,6 +94,10 @@ export const tauriPlatform: Platform = {
       path: p,
       name: p.split(/[\\/]/).at(-1) ?? p,
     }));
+  },
+  onDrop: (cb) => {
+    const off = listen<string[]>("files-dropped", (e) => cb(e.payload));
+    return () => void off.then((f) => f());
   },
   ocr: browserOcr,
   saveText: async (defaultName, text) => {

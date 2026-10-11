@@ -203,3 +203,22 @@ describe("M4 review fixes", () => {
     expect(added.data.flags).toContain("draft");
   }, 20_000);
 });
+
+test("files or a folder dropped on the window are sorted", async () => {
+  const fp = acmePlatform();
+  fp.fs.writeSync("/home/me/Downloads/drop/joao.pdf", await pdf(fixture("grant-joao.txt")));
+  fp.fs.writeSync("/home/me/Downloads/drop/sub/receipt.pdf", await pdf(fixture("receipt.txt")));
+  render(<App platform={fp.platform} />);
+  await screen.findByText("Fully diluted");
+  fp.drop(["/home/me/Downloads/drop"]);
+  await screen.findByRole("heading", { name: "Add documents" });
+  await waitFor(
+    () =>
+      expect(screen.getByText(/filed ·/).textContent).toMatch(
+        /1 filed · 0 need you · 0 duplicate · 1 not equity/,
+      ),
+    {
+      timeout: 15_000,
+    },
+  );
+}, 20_000);

@@ -341,6 +341,9 @@ export function reduce(events: VaultEvent[], asOf: string): State {
       case "doc_removed":
         if (doc) doc.removed = true;
         break;
+      case "doc_renamed":
+        if (doc && typeof d.path === "string") doc.data = { ...doc.data, path: d.path };
+        break;
       case "stakeholder_alias":
         if (typeof d.alias === "string" && typeof d.stakeholder_id === "string")
           s.aliases.set(normName(d.alias), d.stakeholder_id);
