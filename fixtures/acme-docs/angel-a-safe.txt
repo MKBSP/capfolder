@@ -1,0 +1,11 @@
+SIMPLE AGREEMENT FOR FUTURE EQUITY
+(Investor form, with discount)
+Company: Acme Inc.
+Investor: Angel A
+Investment Amount: $150,000
+Date: February 20, 2023
+Valuation Cap: $8,000,000
+Discount: 20%
+The Investor pays the Investment Amount to the Company in exchange for the right to receive shares of the Company's capital stock at the next equity financing, at the lower of the price based on the Valuation Cap and the price per share less the Discount.
+Signed: Mads Petersen, CEO, Acme Inc.
+Signed: Angel A

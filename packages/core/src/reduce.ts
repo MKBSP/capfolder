@@ -1,11 +1,11 @@
 import { datePart } from "./dates";
 import { fmtInt, parseDec, subDec, toInt } from "./num";
 import { securityVested } from "./rows";
+import { normName } from "./text";
 import type { Data, Security, State, VaultEvent } from "./types";
 
 const APP_IGNORED = new Set([
   "vault_created",
-  "stakeholder_alias",
   "note",
   "rebaseline",
   "schema_migrated",
@@ -59,6 +59,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     vestingTerms: new Map(),
     securities: new Map(),
     docs: new Map(),
+    aliases: new Map(),
     unknownEventTypes: [],
     violations: [],
     allSecurityIds: new Set(),
@@ -316,6 +317,10 @@ export function reduce(events: VaultEvent[], asOf: string): State {
         break;
       case "doc_removed":
         if (doc) doc.removed = true;
+        break;
+      case "stakeholder_alias":
+        if (typeof d.alias === "string" && typeof d.stakeholder_id === "string")
+          s.aliases.set(normName(d.alias), d.stakeholder_id);
         break;
       default:
         if (!APP_IGNORED.has(e.type)) unknown(e.type);

@@ -1,0 +1,7 @@
+INVOICE #2023-118
+WeWork Lisbon
+Bill to: Acme Inc.
+Hot desk, March 2023    €290.00
+VAT 23%                 €66.70
+Total due               €356.70
+Thank you for your payment.

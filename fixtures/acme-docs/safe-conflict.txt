@@ -1,0 +1,4 @@
+SAFE
+(Simple Agreement for Future Equity)
+THIS CERTIFIES THAT in exchange for the payment by Y Combinator (the "Investor") of $500,000 (the "Purchase Amount") on or about January 10, 2022, Acme Inc., a Delaware corporation (the "Company"), issues to the Investor the right to certain shares of the Company's Capital Stock.
+The "Post-Money Valuation Cap" is $12,000,000.

@@ -1,0 +1,15 @@
+THIS INSTRUMENT AND ANY SECURITIES ISSUABLE PURSUANT HERETO HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AS AMENDED.
+ACME INC.
+SAFE
+(Simple Agreement for Future Equity)
+THIS CERTIFIES THAT in exchange for the payment by Y Combinator (the "Investor") of $500,000 (the "Purchase Amount") on or about January 10, 2022, Acme Inc., a Delaware corporation (the "Company"), issues to the Investor the right to certain shares of the Company's Capital Stock, subject to the terms described below.
+This Safe is one of the forms available at http://ycombinator.com/documents.
+The "Post-Money Valuation Cap" is $10,000,000.
+See Section 2 for certain additional defined terms.
+1. Events
+(a) Equity Financing. If there is an Equity Financing before the termination of this Safe, on the initial closing of such Equity Financing, this Safe will automatically convert into the number of shares of Safe Preferred Stock equal to the Purchase Amount divided by the Conversion Price.
+IN WITNESS WHEREOF, the undersigned have caused this Safe to be duly executed and delivered.
+ACME INC.
+By: /s/ Mads Petersen
+INVESTOR: Y Combinator
+By: /s/ Authorized Signatory

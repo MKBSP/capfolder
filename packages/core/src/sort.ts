@@ -1,0 +1,473 @@
+// Document sorting (F-09, docs/06): rules → nearest confirmed documents → (AI, in the app) → match to a cap-table
+// row. Pure: text in, a proposal out. Only a rule or kNN type with an exact, uncontradicted match files itself.
+import { parseDate } from "./import/build";
+import { fmtInt, parseDec, parseLocalNumber, subDec } from "./num";
+import { normName } from "./text";
+import type { Security, State } from "./types";
+
+export const SORT_TYPES = [
+  "safe",
+  "option_grant",
+  "spa",
+  "83b",
+  "ciiaa",
+  "board_consent",
+  "plan",
+  "company_certificate",
+  "company_bylaws",
+  "other",
+  "not_equity",
+] as const;
+export type SortType = (typeof SORT_TYPES)[number];
+
+/** Extracted values: plain numbers ("250000", "0.20"), ISO dates, names. "unreadable" = present but not legible. */
+export interface Fields {
+  name?: string;
+  company?: string;
+  amount?: string;
+  cap?: string;
+  discount?: string;
+  shares?: string;
+  price?: string;
+  date?: string;
+}
+export type FieldName = keyof Fields;
+export const UNREADABLE = "unreadable";
+
+export interface Check {
+  field: FieldName;
+  state: "match" | "differs" | "unreadable" | "missing";
+  found?: string;
+  expected?: string;
+}
+
+export interface SortResult {
+  status: "auto" | "review" | "skip";
+  type: SortType | null;
+  by: "rule" | "knn" | "ai" | null;
+  rule?: string;
+  fields: Fields;
+  targets: string[]; // links when filed (auto, or confirmed in review)
+  suggestion?: string; // a likely holding when it can't file itself
+  checks: Check[]; // the fields compared with the matched or suggested holding
+  problems: string[]; // why it needs the founder, in plain language
+  person: string; // for the file name
+  date?: string; // for the file name
+}
+
+// ---------- classify ----------
+
+const RULES: { type: SortType; phrases: RegExp[] }[] = [
+  { type: "83b", phrases: [/section 83\s?\(b\)/, /83\s?\(b\) election/] },
+  { type: "safe", phrases: [/simple agreement for future equity/, /\bsafe\b.*purchase amount/] },
+  {
+    type: "option_grant",
+    phrases: [/stock option grant notice/, /notice of stock option grant/, /stock option agreement/],
+  },
+  { type: "spa", phrases: [/stock purchase agreement/] },
+  {
+    type: "ciiaa",
+    phrases: [/invention assignment/, /proprietary information and inventions?/, /\bciiaa\b|\bpiiaa?\b/],
+  },
+  {
+    type: "board_consent",
+    phrases: [
+      /written consent of the (board|directors)/,
+      /consent of the board of directors/,
+      /board resolutions/,
+    ],
+  },
+  { type: "company_certificate", phrases: [/certificate of incorporation/] },
+  { type: "company_bylaws", phrases: [/^\s*(amended and restated )?bylaws\b/m] },
+  { type: "plan", phrases: [/equity incentive plan/, /stock (option )?plan\b/] },
+];
+const NOT_EQUITY = /\b(invoice|receipt|order confirmation|total due|amount paid|vat)\b/;
+
+const clean = (text: string) =>
+  text
+    .replace(/[“”„]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .split("\n")
+    .map((l) => l.replace(/[ \t ]+/g, " ").trim())
+    .filter(Boolean)
+    .join("\n");
+
+/** The document type by rules: a phrase in the title counts double; ties go to the more specific type. */
+export function classify(text: string): { type: SortType; rule: string } | null {
+  const t = clean(text).toLowerCase();
+  // the title: short lines near the top (headings), not the first clauses, which mention other documents
+  const title = t
+    .split("\n")
+    .slice(0, 8)
+    .filter((l) => l.length <= 100)
+    .join("\n");
+  let best: { type: SortType; rule: string; score: number } | null = null;
+  for (const r of RULES)
+    for (const p of r.phrases) {
+      const score = p.test(title) ? 2 : p.test(t) ? 1 : 0;
+      if (score > (best?.score ?? 0)) best = { type: r.type, rule: p.source, score };
+    }
+  if (best) return { type: best.type, rule: best.rule };
+  return NOT_EQUITY.test(t) ? { type: "not_equity", rule: NOT_EQUITY.source } : null;
+}
+
+// ---------- extract ----------
+
+const DATE = String.raw`([A-Z][a-z]+\.? \d{1,2},? \d{4})`;
+const LABELS: [RegExp, FieldName | "discountRate"][] = [
+  [
+    /^(investor|investor name|optionholder|optionee|participant|grantee|purchaser|name of taxpayer|taxpayer|employee|holder)$/,
+    "name",
+  ],
+  [/^company$/, "company"],
+  [/^(purchase amount|investment amount|amount)$/, "amount"],
+  [/^(post-money valuation cap|valuation cap|cap)$/, "cap"],
+  [/^discount rate$/, "discountRate"],
+  [/^discount$/, "discount"],
+  [/^(number of shares( subject to option)?|shares|total shares|number of option shares)$/, "shares"],
+  [
+    /^(exercise price|exercise price per share|price per share|purchase price per share|strike price)$/,
+    "price",
+  ],
+  [/^(date of grant|grant date|date|effective date|date of safe|dated)$/, "date"],
+];
+const PROSE: [RegExp, FieldName | "discountRate"][] = [
+  [
+    /([^()"\n]{2,120}?)\s*\(the "(?:Investor|Purchaser|Optionholder|Optionee|Participant|Employee|Holder)"\)/,
+    "name",
+  ],
+  [
+    /([A-Z][\w&.' -]{1,80}?),? an? [A-Z][a-z]+(?: [A-Z][a-z]+)? (?:corporation|company)\s*\(the "Company"\)/,
+    "company",
+  ],
+  [/of \$\s*(\S+?)\s*\(the "Purchase Amount"\)/, "amount"],
+  [/"Post-Money Valuation Cap" is \$?\s*(\S+)/, "cap"],
+  [/"Discount Rate" is (\S+?)%/, "discountRate"],
+  [/([\d,]+) shares of (?:the )?(?:Company's )?(?:Common |Capital |Preferred )?Stock/i, "shares"],
+  [/at a price of \$\s*([\d.,]+) per share/, "price"],
+  [new RegExp(`"Purchase Amount"\\) on or about ${DATE}`), "date"],
+  [new RegExp(`entered into as of ${DATE}`), "date"],
+  [new RegExp(`property was transferred (?:is|was)?:?\\s*${DATE}`), "date"],
+  [new RegExp(`effective ${DATE}`, "i"), "date"],
+];
+const FIELDS_FOR: Record<SortType, FieldName[]> = {
+  safe: ["name", "company", "amount", "date", "cap", "discount"],
+  option_grant: ["name", "shares", "price", "date"],
+  spa: ["name", "shares", "price", "date"],
+  "83b": ["name", "shares", "date"],
+  ciiaa: ["name", "date"],
+  board_consent: ["date", "company"],
+  plan: ["date", "company"],
+  company_certificate: ["company"],
+  company_bylaws: ["company"],
+  other: ["name", "date"],
+  not_equity: [],
+};
+
+const num = (raw: string) => parseLocalNumber(raw.replace(/\.$/, ""), ".");
+const whole = (raw: string) => {
+  const v = num(raw);
+  return v && /^\d+(\.0+)?$/.test(v) && !/^0+$/.test(v) ? v.split(".")[0]! : null;
+};
+/** "20" → "0.20": a percentage as a fraction, without floating point. */
+const fraction = (pct: string) => {
+  const { v, scale } = parseDec(pct);
+  const sc = scale + 2;
+  const s = v.toString().padStart(sc + 1, "0");
+  return `${s.slice(0, -sc)}.${s.slice(-sc)}`;
+};
+const personName = (raw: string) => {
+  const cut = raw.split(/\b(?:by|and|to|between)\s+/).at(-1)!;
+  const v = cut.replace(/^[\s,]+|[\s,]+$/g, "");
+  return v && !/^you$/i.test(v) && v.length <= 80 ? v : null;
+};
+const PARSE: Record<FieldName | "discountRate", (raw: string) => string | null> = {
+  name: personName,
+  company: (raw) => raw.trim() || null,
+  amount: num,
+  cap: num,
+  price: num,
+  shares: whole,
+  date: (raw) => parseDate(raw, false, false),
+  discount: (raw) => {
+    const v = num(raw.replace(/%$/, ""));
+    return v ? fraction(v) : null;
+  },
+  discountRate: (raw) => {
+    const v = num(raw);
+    return v && parseDec(subDec("100", v)).v >= 0n ? fraction(subDec("100", v)) : null;
+  },
+};
+
+/** The fields this type of document carries: labelled lines first ("Optionholder: Lisa"), then template prose. */
+export function extract(type: SortType, text: string): Fields {
+  const t = clean(text);
+  const want = new Set<string>(FIELDS_FOR[type]);
+  if (want.has("discount")) want.add("discountRate");
+  const out: Record<string, string> = {};
+  const put = (field: FieldName | "discountRate", raw: string) => {
+    const key = field === "discountRate" ? "discount" : field;
+    if (!want.has(field) || out[key] !== undefined) return;
+    const v = PARSE[field](raw);
+    // a template phrase that was found but whose value didn't parse is unreadable (OCR damage), never guessed;
+    // a name that doesn't look like one ("you") is just not there
+    if (v) out[key] = v;
+    else if (field !== "name") out[key] = UNREADABLE;
+  };
+  for (const line of t.split("\n")) {
+    const m = /^([A-Za-z][A-Za-z ()/'-]{1,60}?)\s*:\s*(.+)$/.exec(line);
+    if (!m) continue;
+    const label = m[1]!
+      .toLowerCase()
+      .replace(/\(.*?\)/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    for (const [re, field] of LABELS) if (re.test(label)) put(field, m[2]!);
+  }
+  const flat = t.replace(/\n/g, " ");
+  for (const [re, field] of PROSE) {
+    const m = re.exec(flat);
+    if (m) put(field, m[1]!);
+  }
+  return out as Fields;
+}
+
+// ---------- nearest confirmed documents (kNN) ----------
+
+export interface CorpusEntry {
+  type: SortType;
+  terms: Record<string, number>;
+}
+
+/** Word counts for similarity: words of 3+ letters, numbers and names' case ignored. */
+export function termCounts(text: string): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const w of text.toLowerCase().match(/\p{L}{3,}/gu) ?? []) out[w] = (out[w] ?? 0) + 1;
+  return out;
+}
+
+const cosine = (a: Record<string, number>, b: Record<string, number>) => {
+  let dot = 0;
+  let na = 0;
+  let nb = 0;
+  for (const [k, v] of Object.entries(a)) {
+    na += v * v;
+    dot += v * (b[k] ?? 0);
+  }
+  for (const v of Object.values(b)) nb += v * v;
+  return na && nb ? dot / Math.sqrt(na * nb) : 0;
+};
+
+/**
+ * The type most of the 5 nearest confirmed documents share, if at least 4 of them do (docs/06).
+ * ponytail: word counts, not embeddings; use a local model's embed() once one is connected.
+ */
+export function nearest(
+  terms: Record<string, number>,
+  corpus: CorpusEntry[],
+  minSim = 0.35,
+): SortType | null {
+  const near = corpus
+    .map((c) => ({ type: c.type, sim: cosine(terms, c.terms) }))
+    .filter((x) => x.sim >= minSim)
+    .sort((a, b) => b.sim - a.sim)
+    .slice(0, 5);
+  const votes = new Map<SortType, number>();
+  for (const x of near) votes.set(x.type, (votes.get(x.type) ?? 0) + 1);
+  for (const [type, n] of votes) if (n >= 4) return type;
+  return null;
+}
+
+// ---------- match ----------
+
+const isoDate = (d?: string) => (d && /^\d{4}-\d\d-\d\d$/.test(d) ? d : undefined);
+const sameDec = (a: string, b: string) => /^-?0(\.0+)?$/.test(subDec(a, b));
+const daysApart = (a: string, b: string) => Math.abs(Date.parse(a) - Date.parse(b)) / 864e5;
+const isOpen = (x: Security) => (x.kind === "convertible" ? !!x.amount && x.amount !== "0" : x.quantity > 0n);
+
+/** Documents already filed for a target, of this type ("safe" also covers "safe_custom" etc.). */
+function hasDoc(s: State, targets: string[], type: string): boolean {
+  for (const d of s.docs.values()) {
+    const t = String(d.data.doc_type ?? "");
+    if (!d.removed && (t === type || t.startsWith(`${type}_`)) && targets.some((x) => d.links.has(x)))
+      return true;
+  }
+  return false;
+}
+
+export function sortText(
+  text: string,
+  s: State,
+  opts: { corpus?: CorpusEntry[]; proposal?: { type: SortType; fields: Fields } } = {},
+): SortResult {
+  const rule = opts.proposal ? null : classify(text);
+  const knn = rule || opts.proposal ? null : nearest(termCounts(text), opts.corpus ?? []);
+  const type: SortType | null = opts.proposal?.type ?? rule?.type ?? knn;
+  const by = opts.proposal ? "ai" : rule ? "rule" : knn ? "knn" : null;
+  const fields = opts.proposal?.fields ?? (type ? extract(type, text) : {});
+  const base = {
+    type,
+    by,
+    rule: rule?.rule,
+    fields,
+    targets: [] as string[],
+    checks: [] as Check[],
+  } as const;
+  const name = (id: string) => String(s.stakeholders.get(id)?.name?.legal_name ?? id);
+  const nameIs = (id: string) =>
+    !!fields.name &&
+    fields.name !== UNREADABLE &&
+    (normName(fields.name) === normName(name(id)) || s.aliases.get(normName(fields.name)) === id);
+  const review = (problems: string[], extra: Partial<SortResult> = {}): SortResult => ({
+    ...base,
+    status: "review",
+    problems,
+    person: extra.suggestion ? personOf(extra.suggestion) : (fields.name ?? "company"),
+    date: isoDate(fields.date),
+    ...extra,
+  });
+  const personOf = (target: string) => {
+    const x = s.securities.get(target);
+    return x ? name(x.stakeholderId) : s.stakeholders.has(target) ? name(target) : "company";
+  };
+  // AI never files: everything it proposes goes through the founder (CLAUDE.md)
+  const done = (targets: string[], problems: string[], checks: Check[] = []): SortResult =>
+    problems.length || by === "ai"
+      ? review(problems.length ? problems : ["Sorted by AI: check it before filing."], {
+          suggestion: targets.length === 1 ? targets[0] : undefined,
+          checks,
+        })
+      : {
+          ...base,
+          status: "auto",
+          targets,
+          checks,
+          problems: [],
+          person: targets.length ? personOf(targets[0]!) : "company",
+          date: isoDate(fields.date) ?? s.securities.get(targets[0] ?? "")?.date,
+        };
+
+  if (!type || type === "other") return review(["Couldn't tell what kind of document this is."]);
+  if (type === "not_equity") return { ...base, status: "skip", problems: [], person: "company" };
+  const unreadable = (Object.keys(fields) as FieldName[]).filter((f) => fields[f] === UNREADABLE);
+  const unreadableProblem = unreadable.length ? [`Couldn't read: ${unreadable.join(", ")}.`] : [];
+  const flat = normName(text);
+
+  if (type === "company_certificate" || type === "company_bylaws") {
+    const company = String(s.issuer?.legal_name ?? "");
+    if (!company || !flat.includes(normName(company)))
+      return review([`${company || "The company"}'s name isn't in it.`]);
+    return done([], hasType(s, type) ? ["The company already has one filed."] : []);
+  }
+  if (type === "plan") {
+    const named = [...s.plans.entries()].filter(([, p]) => flat.includes(normName(String(p.data.plan_name))));
+    if (named.length !== 1)
+      return review(["Couldn't tell which plan this is."], {
+        suggestion: s.plans.size === 1 ? [...s.plans.keys()][0] : undefined,
+      });
+    const id = named[0]![0];
+    return done([id], hasDoc(s, [id], "plan") ? ["That plan already has its document filed."] : []);
+  }
+  if (type === "board_consent") {
+    const targets = [
+      ...[...s.plans.entries()]
+        .filter(([, p]) => flat.includes(normName(String(p.data.plan_name))))
+        .map(([id]) => id),
+      ...[...s.securities.values()]
+        .filter(
+          (x) =>
+            x.kind === "equity" &&
+            isOpen(x) &&
+            flat.includes(normName(name(x.stakeholderId))) &&
+            text.includes(fmtInt(x.originalQuantity)),
+        )
+        .map((x) => x.id),
+    ];
+    return done(targets, unreadableProblem);
+  }
+  if (type === "ciiaa") {
+    const people = [...s.stakeholders.keys()].filter(
+      (id) => s.stakeholders.get(id)?.stakeholder_type === "INDIVIDUAL" && nameIs(id),
+    );
+    if (people.length !== 1)
+      return review([fields.name ? `No one named ${fields.name} on the cap table.` : "No name found."]);
+    return done(
+      people,
+      hasDoc(s, people, "ciiaa") ? [`${name(people[0]!)} already has an IP assignment filed.`] : [],
+    );
+  }
+
+  // A holding: SAFE, grant notice, SPA or 83(b)
+  const kind = type === "safe" ? "convertible" : type === "option_grant" ? "equity" : "stock";
+  const key: FieldName = type === "safe" ? "amount" : "shares";
+  const candidates = [...s.securities.values()].filter((x) => x.kind === kind && isOpen(x));
+  const value = (x: Security) => (type === "safe" ? (x.amount ?? "") : x.originalQuantity.toString());
+  const keyOk = fields[key] && fields[key] !== UNREADABLE;
+  const byNum = keyOk ? candidates.filter((x) => sameDec(value(x), fields[key]!)) : [];
+  const byName = candidates.filter((x) => nameIs(x.stakeholderId));
+  const both = byNum.filter((x) => byName.includes(x));
+  const what = type === "safe" ? "amount" : "share count";
+  if (both.length !== 1) {
+    const guess = byNum.length === 1 ? byNum[0] : byName.length === 1 ? byName[0] : undefined;
+    const problems =
+      byNum.length === 1
+        ? [
+            `The ${what} matches ${name(byNum[0]!.stakeholderId)}'s, but the name is ${fields.name ?? "missing"}.`,
+          ]
+        : byName.length === 1
+          ? [`${name(byName[0]!.stakeholderId)} is on the cap table, but the ${what} doesn't match.`]
+          : [`No holding matches this ${what} and name.`];
+    return review([...problems, ...unreadableProblem], {
+      suggestion: guess?.id,
+      checks: guess ? compare(guess) : [],
+    });
+  }
+  const x = both[0]!;
+  const checks = compare(x);
+  const problems = [
+    ...checks
+      .filter((c) => c.state === "differs")
+      .map((c) => `The ${c.field} in the document (${c.found}) differs from the cap table (${c.expected}).`),
+    ...unreadableProblem,
+    ...(hasDoc(s, [x.id, x.txId], type)
+      ? [`${name(x.stakeholderId)}'s ${x.id} already has this kind of document.`]
+      : []),
+  ];
+  return done([x.id], problems, checks);
+
+  function compare(x: Security): Check[] {
+    const pairs: (readonly [FieldName, string | undefined, (a: string, b: string) => boolean])[] = [
+      [key, value(x), sameDec],
+      ["date", x.date, (a, b) => daysApart(a, b) <= 3],
+      ...(type === "safe"
+        ? ([
+            ["cap", x.cap, sameDec],
+            ["discount", x.discount, sameDec],
+          ] as const)
+        : type === "option_grant"
+          ? ([["price", x.price, sameDec]] as const)
+          : []),
+    ];
+    const out: Check[] = [
+      {
+        field: "name",
+        state: nameIs(x.stakeholderId) ? "match" : "differs",
+        found: fields.name,
+        expected: name(x.stakeholderId),
+      },
+    ];
+    for (const [field, expected, eq] of pairs) {
+      const found = fields[field];
+      if (!found) out.push({ field, state: "missing", expected });
+      else if (found === UNREADABLE) out.push({ field, state: "unreadable", expected });
+      else if (expected && !eq(found, expected)) out.push({ field, state: "differs", found, expected });
+      else if (expected) out.push({ field, state: "match", found, expected });
+    }
+    return out;
+  }
+}
+
+function hasType(s: State, type: string): boolean {
+  for (const d of s.docs.values()) if (!d.removed && d.data.doc_type === type) return true;
+  return false;
+}

@@ -76,6 +76,7 @@ export interface State {
   vestingTerms: Map<string, Data>;
   securities: Map<string, Security>;
   docs: Map<string, Doc>;
+  aliases: Map<string, string>; // normalized other name → stakeholder id (stakeholder_alias, F-09 "Remember")
   unknownEventTypes: string[];
   violations: string[]; // problems found while replaying (invariants 4, 5, bad references, bad numbers)
   allSecurityIds: Set<string>; // every security_id in the log, regardless of asOf (for picking new ids)

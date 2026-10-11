@@ -25,6 +25,8 @@ export * from "./ocf-import";
 export * from "./reduce";
 export * from "./rows";
 export * from "./schedule";
+export * from "./sort";
+export * from "./text";
 export * from "./totals";
 export * from "./types";
 export * from "./vesting";

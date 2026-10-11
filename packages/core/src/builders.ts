@@ -455,5 +455,7 @@ export const docAdded = (p: {
   });
 export const docLinked = (p: { docId: string; target: string }) =>
   app("doc_linked", { doc_id: p.docId, target: p.target });
+export const stakeholderAlias = (p: { stakeholderId: string; alias: string }) =>
+  app("stakeholder_alias", { stakeholder_id: p.stakeholderId, alias: p.alias });
 export const docRemoved = (p: { docId: string; movedTo: string }) =>
   app("doc_removed", { doc_id: p.docId, moved_to: p.movedTo });

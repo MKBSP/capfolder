@@ -5,9 +5,12 @@ import { fmtInt, parseLocalNumber, subDec, sumDec } from "../num";
 import { validateOcf } from "../ocf/validate";
 import { reduce } from "../reduce";
 import { capTableRows } from "../rows";
+import { normName } from "../text";
 import { capTableTotals } from "../totals";
 import type { EventDraft, Row, VaultEvent } from "../types";
 import type { Field } from "./fields";
+
+export { normName };
 
 export interface ImportInput {
   header: string[];
@@ -57,7 +60,7 @@ const iso = (y: number, m: number, d: number) =>
 const numericParts = (v: string) => /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(v.trim());
 
 /** A spreadsheet date → ISO. Numeric a/b/yyyy is month-first unless the column is day-first. */
-function parseDate(raw: string, dayFirst: boolean, date1904: boolean): string | null {
+export function parseDate(raw: string, dayFirst: boolean, date1904: boolean): string | null {
   const v = raw.trim().toLowerCase().replace(/,/g, " ").replace(/\s+/g, " ");
   if (!v) return null;
   let m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[t ].*)?$/.exec(v);
@@ -99,13 +102,6 @@ function parseWhole(raw: string, decimalComma: boolean): bigint | null {
   const n = BigInt(v.split(".")[0]!);
   return n > 0n ? n : null;
 }
-
-const normName = (s: string) =>
-  s
-    .normalize("NFKC")
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, " ")
-    .trim();
 
 function kindOf(raw: string, has: { safe: boolean; strike: boolean }) {
   const k = raw.toLowerCase();

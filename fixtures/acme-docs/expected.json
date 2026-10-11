@@ -1,0 +1,19 @@
+{
+  "yc-safe.txt": { "status": "auto", "type": "safe", "targets": ["SAFE-1"] },
+  "angel-a-safe.txt": { "status": "auto", "type": "safe", "targets": ["SAFE-2"] },
+  "scan_0042.txt": { "status": "review", "type": "safe", "targets": [], "suggestion": "SAFE-3" },
+  "safe-conflict.txt": { "status": "review", "type": "safe", "targets": [], "suggestion": "SAFE-1" },
+  "grant-lisa.txt": { "status": "auto", "type": "option_grant", "targets": ["OPT-1"] },
+  "grant-joao.txt": { "status": "auto", "type": "option_grant", "targets": ["OPT-2"] },
+  "spa-mads.txt": { "status": "auto", "type": "spa", "targets": ["CS-1"] },
+  "spa-ana.txt": { "status": "auto", "type": "spa", "targets": ["CS-2"] },
+  "83b-ana.txt": { "status": "auto", "type": "83b", "targets": ["CS-2"] },
+  "ciiaa-lisa.txt": { "status": "auto", "type": "ciiaa", "targets": ["sh_lisa"] },
+  "ciiaa-mads.txt": { "status": "auto", "type": "ciiaa", "targets": ["sh_mads"] },
+  "board-consent-2025.txt": { "status": "auto", "type": "board_consent", "targets": ["plan_2025", "OPT-1"] },
+  "plan-2025.txt": { "status": "auto", "type": "plan", "targets": ["plan_2025"] },
+  "certificate.txt": { "status": "auto", "type": "company_certificate", "targets": [] },
+  "bylaws.txt": { "status": "auto", "type": "company_bylaws", "targets": [] },
+  "receipt.txt": { "status": "skip", "type": "not_equity", "targets": [] },
+  "lunch-note.txt": { "status": "review", "type": null, "targets": [] }
+}

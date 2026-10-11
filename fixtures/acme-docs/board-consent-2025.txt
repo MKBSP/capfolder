@@ -1,0 +1,6 @@
+ACME INC.
+ACTION BY UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS
+The undersigned, being all of the directors of Acme Inc., a Delaware corporation, adopt the following resolutions by written consent:
+Adoption of Plan. RESOLVED, that the 2025 Equity Incentive Plan, reserving 1,000,000 shares of Common Stock, is adopted and approved.
+Option Grants. RESOLVED, that the Company grants an option to purchase 40,000 shares of Common Stock to Lisa Moreau at an exercise price of $0.12 per share.
+Dated: September 30, 2025
