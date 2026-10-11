@@ -348,6 +348,7 @@ export function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string):
 /** A name the founder typed, as a safe file name: no folders, no hidden files, no characters Windows rejects. */
 const fileStem = (name: string) =>
   name
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: control characters are exactly what's removed
     .replace(/[\\/:*?"<>|\u0000-\u001f]/g, " ")
     .replace(/\s+/g, " ")
     .replace(/^[.\s]+|[.\s]+$/g, "")
