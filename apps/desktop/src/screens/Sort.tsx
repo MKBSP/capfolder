@@ -12,7 +12,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { DOC_TYPES, docTargets } from "../components/AttachModal";
 import { CrumbHeader } from "../components/Header";
-import { ErrorList, Field } from "../components/ui";
+import { ErrorList, Field, Modal } from "../components/ui";
 import { endOcr, isReadable } from "../docread";
 import { fileDoc, learn, loadCorpus, type SortDeps, type SortItem, sortOne, walk } from "../docsort";
 import { money, shares } from "../fmt";
@@ -266,7 +266,10 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
   const [remember, setRemember] = useState(
     !!r.suggestion && r.checks.some((c) => c.field === "name" && c.state === "differs"),
   );
-  const [signed, setSigned] = useState(!r.draft);
+  // no signature visible (or a draft marker): filing asks first, and only a ticked box files it as proof
+  const unsure = !!(r.draft || r.noSignature);
+  const [asking, setAsking] = useState(false);
+  const [override, setOverride] = useState(false);
   const [errors, setErrors] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const targets = docTargets(s);
@@ -284,7 +287,10 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
   const fmt = (f: FieldName, v?: string) =>
     !v ? "" : f === "amount" || f === "cap" ? money(v) : f === "shares" ? shares(BigInt(v)) : v;
 
-  async function file(extraTarget?: { id: string; drafts: ReturnType<typeof b.safe>[] }) {
+  async function file(
+    extraTarget?: { id: string; drafts: ReturnType<typeof b.safe>[] },
+    signed: boolean = !unsure,
+  ) {
     if (!type) return setErrors(["Choose what kind of document this is."]);
     if (!app.vault) return;
     setBusy(true);
@@ -311,6 +317,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
         date: /^\d{4}-\d\d-\d\d$/.test(fields.date ?? "") ? fields.date : s.securities.get(target)?.date,
         by: r.by ? `${r.by}+founder` : "founder",
         draft: !signed,
+        signedByFounder: unsure && signed,
         extra: [
           ...(extraTarget?.drafts ?? []),
           ...(canRemember && remember
@@ -447,12 +454,6 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
             ))}
           </select>
         </Field>
-        {r.draft ? (
-          <label className="row small">
-            <input type="checkbox" checked={signed} onChange={(e) => setSigned(e.target.checked)} />
-            <span>This copy is signed</span>
-          </label>
-        ) : null}
         {canRemember ? (
           <label className="row small">
             <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
@@ -483,10 +484,54 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
               Add to cap table & file
             </button>
           ) : null}
-          <button type="button" className="btn primary" disabled={busy} onClick={() => file()}>
+          <button
+            type="button"
+            className="btn primary"
+            disabled={busy}
+            onClick={() => (unsure ? setAsking(true) : file())}
+          >
             Confirm & file
           </button>
         </div>
+        {asking ? (
+          <Modal open onClose={() => setAsking(false)} title="No signature found">
+            <div className="stack">
+              <p>
+                {r.draft
+                  ? `This looks like an unsigned draft ("${r.draft}").`
+                  : "Capfolder can't see a signature in this copy: no e-signature, and it isn't a scan."}{" "}
+                Filed as a draft, it's kept but doesn't count as proof.
+              </p>
+              <label className="row small">
+                <input type="checkbox" checked={override} onChange={(e) => setOverride(e.target.checked)} />
+                <span>It has been signed: count this copy as the signed document</span>
+              </label>
+              <div className="row" style={{ justifyContent: "flex-end" }}>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    setAsking(false);
+                    file(undefined, false);
+                  }}
+                >
+                  File as draft
+                </button>
+                <button
+                  type="button"
+                  className="btn primary"
+                  disabled={!override}
+                  onClick={() => {
+                    setAsking(false);
+                    file(undefined, true);
+                  }}
+                >
+                  File as signed
+                </button>
+              </div>
+            </div>
+          </Modal>
+        ) : null}
         <div className="stack small">
           <b>How this was sorted</b>
           <ol style={{ margin: 0, paddingLeft: 18 }} className="muted">

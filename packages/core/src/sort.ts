@@ -53,6 +53,7 @@ export interface SortResult {
   problems: string[]; // why it needs the founder, in plain language
   person: string; // for the file name
   date?: string; // for the file name
+  noSignature?: true; // no sign of signing found (no PDF signature, e-sign stamp, /s/ or scan): the founder confirms
   draft?: string; // what makes it look unsigned ("DRAFT", "[Investor Name]"…): filed only as a draft unless the founder says it's signed
 }
 
@@ -196,6 +197,8 @@ export function classify(text: string, rules: DocRule[] = DOC_RULES): Classified
 }
 
 // ---------- signed or draft ----------
+
+const SIGNED_BY_PARTIES = new Set<string>(["safe", "option_grant", "spa", "83b", "ciiaa", "board_consent"]);
 
 /** Marks an e-signature service, a conformed signature or a signing certificate leaves on a signed copy. */
 const SIGNED =
@@ -415,14 +418,21 @@ export function sortText(
     proposal?: { type: SortType; fields: Fields };
     rules?: DocRule[];
     signedPdf?: boolean; // the PDF carries a digital signature
+    /** What the file itself shows: a PDF signature or a scan (wet ink) = true, a clean digital copy = false. */
+    signed?: boolean;
   } = {},
 ): SortResult {
-  const draft = unsignedSignal(text, { signedPdf: opts.signedPdf });
+  const draft = unsignedSignal(text, { signedPdf: opts.signedPdf || opts.signed });
   const rule = opts.proposal ? null : classify(text, opts.rules);
   const knn = rule || opts.proposal ? null : nearest(termCounts(text), opts.corpus ?? []);
   const type: SortType | null = opts.proposal?.type ?? rule?.type ?? knn;
   const by = opts.proposal ? "ai" : rule ? "rule" : knn ? "knn" : null;
   const fields = opts.proposal?.fields ?? (type ? extract(type, text) : {});
+  // only papers the parties sign need a signature; a known-unsigned copy (no PDF signature, not a scan) must show one
+  const noSignature =
+    !draft && opts.signed === false && type && SIGNED_BY_PARTIES.has(type) && !SIGNED.test(text)
+      ? (true as const)
+      : undefined;
   const base = {
     type,
     by,
@@ -431,6 +441,7 @@ export function sortText(
     targets: [] as string[],
     checks: [] as Check[],
     ...(draft ? { draft } : {}),
+    ...(noSignature ? { noSignature } : {}),
   } as const;
   const name = (id: string) => String(s.stakeholders.get(id)?.name?.legal_name ?? id);
   const nameIs = (id: string) =>
@@ -446,6 +457,7 @@ export function sortText(
             `This looks like an unsigned draft ("${draft}"). File the signed copy, or file this one as a draft.`,
           ]
         : []),
+      ...(noSignature ? ["Capfolder can't see a signature in this copy (no e-signature, no scan)."] : []),
       ...problems,
     ],
     person: extra.suggestion ? personOf(extra.suggestion) : (fields.name ?? "company"),
@@ -464,7 +476,7 @@ export function sortText(
   // AI never files: everything it proposes goes through the founder (CLAUDE.md)
   const done = (targets: string[], found: string[], checks: Check[] = []): SortResult => {
     const problems = [...gate, ...found];
-    return problems.length || by === "ai" || draft
+    return problems.length || by === "ai" || draft || noSignature
       ? review(problems.length || by !== "ai" ? problems : ["Sorted by AI: check it before filing."], {
           suggestion: targets.length === 1 ? targets[0] : undefined,
           checks,

@@ -58,3 +58,20 @@ describe("unsigned drafts never file themselves as proof", () => {
     expect(gaps.map((g) => g.target)).toContain("SAFE-1");
   });
 });
+
+describe("no visible signature: the founder confirms", () => {
+  test("a clean, filled-in copy with no signature evidence asks instead of filing itself", () => {
+    const r = sortText(safe.replace(/Signed: .*\n?/g, ""), state, { signed: false });
+    expect(r.status).toBe("review");
+    expect(r.noSignature).toBe(true);
+    expect(r.problems.join(" ")).toContain("can't see a signature");
+  });
+  test("a PDF signature, an e-sign stamp, or a scan (OCR) is evidence enough", () => {
+    expect(sortText(safe, state, { signed: true }).status).toBe("auto");
+    expect(sortText(`${safe}\nDocuSign Envelope ID: 12-AB`, state, { signed: false }).status).toBe("auto");
+  });
+  test("papers that aren't signed by parties (bylaws, certificate) don't need it", () => {
+    const bylaws = readFileSync(new URL("../../../fixtures/acme-docs/bylaws.txt", import.meta.url), "utf8");
+    expect(sortText(bylaws, state, { signed: false }).noSignature).toBeUndefined();
+  });
+});

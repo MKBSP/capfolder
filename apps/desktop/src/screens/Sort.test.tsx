@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { describe, expect, test } from "vitest";
@@ -11,7 +11,9 @@ import { acmePlatform } from "../test/acme";
 const DOCS = resolve(process.cwd(), "../../fixtures/acme-docs");
 const fixture = (f: string) => readFileSync(resolve(DOCS, f), "utf8");
 
-async function pdf(text: string) {
+/** A test PDF; signed by default (an e-signature stamp, as DocuSign leaves on every page). */
+async function pdf(text: string, signed = true) {
+  if (signed) text = `${text}\nDocuSign Envelope ID: 4F1C-TEST`;
   const d = await PDFDocument.create();
   const f = await d.embedFont(StandardFonts.Helvetica);
   const p = d.addPage([612, 792]);
@@ -30,6 +32,7 @@ const events = (fs: { readSync(p: string): string }, root: string) =>
     .map((l) => JSON.parse(l));
 
 /** Acme with these files in ~/Downloads/messy, picked through "Choose files…". */
+const sortingFiles = (files: Record<string, Uint8Array | string>) => sorting(files);
 async function sorting(
   files: Record<string, Uint8Array | string>,
   opts: Parameters<typeof acmePlatform>[0] = {},
@@ -189,13 +192,13 @@ describe("M4 review fixes", () => {
 
   test("an unsigned draft waits for the founder, and filed as a draft it doesn't close the gap", async () => {
     const fp = await sorting({
-      "joao-draft.pdf": await pdf(`DRAFT\n${fixture("grant-joao.txt")}`),
+      "joao-draft.pdf": await pdf(`DRAFT\n${fixture("grant-joao.txt")}`, false),
     });
     expect(screen.getByText(/filed ·/).textContent).toMatch(/0 filed · 1 need you/);
     await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
     expect(screen.getAllByText(/looks like an unsigned draft \("DRAFT"\)/).length).toBeGreaterThan(0);
-    expect(screen.getByRole("checkbox", { name: "This copy is signed" })).not.toBeChecked();
     await userEvent.click(screen.getByRole("button", { name: "Confirm & file" }));
+    await userEvent.click(await screen.findByRole("button", { name: "File as draft" }));
     await screen.findByText(/docs\/grants\/2026-03-02_joao-silva_option-grant\.pdf/);
     const added = events(fp.fs, fp.root)
       .filter((e) => e.type === "doc_added")
@@ -221,4 +224,22 @@ test("files or a folder dropped on the window are sorted", async () => {
       timeout: 15_000,
     },
   );
+}, 20_000);
+
+test("no signature found: filing asks, and only a ticked override counts it as proof", async () => {
+  const fp = await sortingFiles({ "joao.pdf": await pdf(fixture("grant-joao.txt"), false) });
+  expect(screen.getByText(/filed ·/).textContent).toMatch(/0 filed · 1 need you/);
+  await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
+  expect(screen.getAllByText(/can't see a signature/).length).toBeGreaterThan(0);
+  await userEvent.click(screen.getByRole("button", { name: "Confirm & file" }));
+  const dialog = await screen.findByRole("dialog", { name: "No signature found" });
+  expect(within(dialog).getByRole("button", { name: "File as signed" })).toBeDisabled();
+  await userEvent.click(within(dialog).getByRole("checkbox", { name: /It has been signed/ }));
+  await userEvent.click(within(dialog).getByRole("button", { name: "File as signed" }));
+  await screen.findByText(/docs\/grants\/2026-03-02_joao-silva_option-grant\.pdf/);
+  const added = events(fp.fs, fp.root)
+    .filter((e) => e.type === "doc_added")
+    .at(-1);
+  expect(added.data.flags).toContain("signed:founder");
+  expect(added.data.flags).not.toContain("draft");
 }, 20_000);

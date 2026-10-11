@@ -139,12 +139,14 @@ export async function sortOne(
     item.text = read.text;
     item.ocr = read.ocr;
     const signedPdf = hasDigitalSignature(bytes);
-    let result = sortText(read.text, state, { corpus: d.corpus, rules: d.rules, signedPdf });
+    // a scan or photo carries ink signatures OCR can't read: count it as showing a signature
+    const signed = signedPdf || read.ocr;
+    let result = sortText(read.text, state, { corpus: d.corpus, rules: d.rules, signedPdf, signed });
     const ai = d.settings.ai;
     if (!result.type && ai.sortWithAi && ai.provider && ai.model && read.text.trim()) {
       const proposal = await aiSort(d.platform, { provider: ai.provider, model: ai.model }, read.text);
       if (proposal) {
-        result = sortText(read.text, state, { proposal, signedPdf });
+        result = sortText(read.text, state, { proposal, signedPdf, signed });
         item.ai = `${PROVIDERS[ai.provider].label} · ${ai.model}`;
       }
     }
@@ -181,6 +183,7 @@ export async function fileDoc(
     by?: string;
     extra?: EventDraft[];
     draft?: boolean; // an unsigned draft: kept, but not counted as proof
+    signedByFounder?: boolean; // no signature visible, but the founder says it's signed
   },
 ): Promise<{ ok: true; vault: Vault; filed: string } | { ok: false; errors: string[] }> {
   const r = await attachDocument(d.platform.fs, vault, d.ctx, {
@@ -195,6 +198,7 @@ export async function fileDoc(
       `sorted:${p.by ?? item.result?.by ?? "founder"}`,
       ...(item.ocr ? ["ocr"] : []),
       ...(p.draft ? ["draft"] : []),
+      ...(p.signedByFounder ? ["signed:founder"] : []),
     ],
     extra: p.extra,
   });
