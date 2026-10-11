@@ -2,7 +2,7 @@ import { appendEvents, capTableRows, MAX_DATE, percentOf, type Row, reduce } fro
 import { useEffect, useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { ErrorList, Field, Stepper } from "../components/ui";
-import { day, shares as fmtShares, money, todayIso } from "../fmt";
+import { day, decimalInput, shares as fmtShares, money, todayIso, wholeInput, withCurrency } from "../fmt";
 import { useApp } from "../state";
 import { type FounderInput, type SafeInput, type WizardInput, wizardDrafts } from "../wizard";
 
@@ -19,8 +19,8 @@ export function Wizard() {
   const formation = (app.latest?.issuer?.formation_date as string) ?? todayIso();
   const [step, setStep] = useState(0);
   const [w, setW] = useState<WizardInput>({
-    authorized: "10,000,000",
-    par: "0.00001",
+    authorized: wholeInput("10000000"),
+    par: decimalInput("0.00001"),
     founders: [
       { name: "", email: "", shares: "", issueDate: formation, vesting: true, vestingStart: formation },
     ],
@@ -78,7 +78,7 @@ export function Wizard() {
             onChange={(e) => setW({ ...w, authorized: e.target.value })}
           />
         </Field>
-        <Field label="Par value (USD)">
+        <Field label={withCurrency("Par value")}>
           <input className="inp num" value={w.par} onChange={(e) => setW({ ...w, par: e.target.value })} />
         </Field>
       </div>
@@ -222,7 +222,7 @@ export function Wizard() {
             setW({
               ...w,
               pool: {
-                size: "1,000,000",
+                size: wholeInput("1000000"),
                 name: `${formation.slice(0, 4)} Equity Incentive Plan`,
                 approved: formation,
               },
@@ -246,14 +246,14 @@ export function Wizard() {
             />
           </Field>
           <div className="grid2">
-            <Field label="Amount (USD)">
+            <Field label={withCurrency("Amount")}>
               <input
                 className="inp num"
                 value={s.amount}
                 onChange={(e) => setSafe(i, { amount: e.target.value })}
               />
             </Field>
-            <Field label="Valuation cap (USD)">
+            <Field label={withCurrency("Valuation cap")}>
               <input
                 className="inp num"
                 value={s.cap}

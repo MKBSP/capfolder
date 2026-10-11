@@ -7,7 +7,7 @@ import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../co
 import { SendDialog } from "../components/SendDialog";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { day, money, moneyShort, num, todayIso } from "../fmt";
+import { day, money, moneyShort, num, todayIso, wholeInput, withCurrency } from "../fmt";
 import { useApp } from "../state";
 import { discountFraction } from "../wizard";
 
@@ -72,7 +72,7 @@ export function NewSafe() {
           <div className="meta">Template: YC post-money SAFE (valuation cap)</div>
           <PersonPicker label="Investor" value={who} onChange={setWho} defaultType="INSTITUTION" />
           <div className="grid2">
-            <Field label="Amount (USD)">
+            <Field label={withCurrency("Amount")}>
               <input
                 className="inp num"
                 value={amount}
@@ -80,12 +80,12 @@ export function NewSafe() {
                 placeholder="200,000"
               />
             </Field>
-            <Field label="Valuation cap (USD)">
+            <Field label={withCurrency("Valuation cap")}>
               <input
                 className="inp num"
                 value={cap}
                 onChange={(e) => setCap(e.target.value)}
-                placeholder="10,000,000"
+                placeholder={wholeInput("10000000")}
               />
             </Field>
             <Field label="Discount (optional)">

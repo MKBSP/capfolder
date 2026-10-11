@@ -23,6 +23,13 @@ export function configureFormat(p: { locale: string; currency: string; monthFirs
   cfg = { ...p, decimalMark: decimal === "," ? "," : "." };
 }
 export const formatConfig = () => cfg;
+/** "10000000" → "10,000,000" (US) or "10.000.000" (PT, DE…): a default the founder's own number parser accepts. */
+export const wholeInput = (digits: string) =>
+  digits.replace(/\B(?=(\d{3})+(?!\d))/g, cfg.decimalMark === "," ? "." : ",");
+/** "0.00001" → "0,00001" where the decimal mark is a comma. */
+export const decimalInput = (dec: string) => (cfg.decimalMark === "," ? dec.replace(".", ",") : dec);
+/** Field labels: "Amount (EUR)". */
+export const withCurrency = (label: string) => `${label} (${cfg.currency})`;
 /** A record's own currency, if Intl knows it (a hand-edited file could say anything). */
 const knownCurrency = (c: string) => {
   try {

@@ -18,7 +18,7 @@ export const DISCLAIMER =
   "Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.";
 
 const num = (s: string): Cell => (s === "" ? "" : { num: s });
-const CAP_HEADER = [
+const capHeader = (cur: string) => [
   "Stakeholder",
   "Type",
   "Class",
@@ -26,7 +26,7 @@ const CAP_HEADER = [
   "FD %",
   "Vested",
   "Unvested",
-  "SAFE amount (USD)",
+  `SAFE amount (${cur})`,
   "Valuation cap",
   "Discount",
   "As-converted %",
@@ -51,7 +51,12 @@ const capRow = (r: Row): Cell[] => [
 const holderOf = (s: State, r: Row) => s.securities.get(r.securityId)?.stakeholderId;
 
 /** The four tabs as of `asOf`. With stakeholderId, only that person's rows (company totals still show). */
-export function sheets(events: VaultEvent[], asOf: string, opts: { stakeholderId?: string } = {}): Sheet[] {
+export function sheets(
+  events: VaultEvent[],
+  asOf: string,
+  opts: { stakeholderId?: string; currency?: string } = {},
+): Sheet[] {
+  const cur = opts.currency ?? "USD";
   const s = reduce(events, asOf);
   const all = capTableRows(s);
   const totals = capTableTotals(all);
@@ -67,17 +72,17 @@ export function sheets(events: VaultEvent[], asOf: string, opts: { stakeholderId
       : [
           ["Fully diluted", totals.fullyDiluted],
           ["Option pool available", totals.poolAvailable],
-          ["SAFEs outstanding (USD)", num(totals.safeAmount)],
+          [`SAFEs outstanding (${cur})`, num(totals.safeAmount)],
         ]),
     [],
     [DISCLAIMER],
     [],
-    CAP_HEADER,
+    capHeader(cur),
     ...rows.map(capRow),
   ];
 
   const people: Cell[][] = [
-    ["Name", "Email", "Shares & options", "FD %", "Vested", "Unvested", "SAFE amount (USD)"],
+    ["Name", "Email", "Shares & options", "FD %", "Vested", "Unvested", `SAFE amount (${cur})`],
   ];
   for (const [id, p] of s.stakeholders) {
     if (opts.stakeholderId && id !== opts.stakeholderId) continue;
@@ -134,7 +139,7 @@ export function sheets(events: VaultEvent[], asOf: string, opts: { stakeholderId
   }
 
   const safes: Cell[][] = [
-    ["Holder", "Type", "Amount (USD)", "Valuation cap", "Discount", "Post-money %", "Document"],
+    ["Holder", "Type", `Amount (${cur})`, "Valuation cap", "Discount", "Post-money %", "Document"],
     ...rows
       .filter((r) => r.group === 3)
       .map((r) => [

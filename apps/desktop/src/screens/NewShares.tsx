@@ -5,7 +5,7 @@ import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { day, num, todayIso } from "../fmt";
+import { day, num, todayIso, withCurrency } from "../fmt";
 import { useApp } from "../state";
 import { standardTerms } from "../terms";
 
@@ -74,7 +74,7 @@ export function NewShares() {
             <Field label="Shares">
               <input className="inp num" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
             </Field>
-            <Field label="Price per share (USD)">
+            <Field label={withCurrency("Price per share")}>
               <input
                 className="inp num"
                 value={price}

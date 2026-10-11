@@ -26,10 +26,13 @@ export interface WizardInput {
   safes: SafeInput[];
 }
 
-/** "20" → "0.2"; "" → undefined. */
+/** "20" → "0.2", "33,3" → "0.333" (exact, in the founder's decimal mark); "" → undefined. */
 export const discountFraction = (pct: string) => {
-  const n = Number(pct);
-  return pct.trim() && n > 0 ? String(n / 100) : undefined;
+  const v = num(pct);
+  if (!/^\d+(\.\d+)?$/.test(v) || !/[1-9]/.test(v)) return undefined;
+  const [i, f = ""] = v.split(".");
+  const d = i!.padStart(3, "0");
+  return `${d.slice(0, -2).replace(/^0+(?=\d)/, "")}.${d.slice(-2)}${f}`.replace(/\.?0+$/, "");
 };
 const digits = num; // the founder's decimal mark (Settings → Your country)
 
@@ -59,7 +62,7 @@ export function wizardDrafts(latest: State, w: WizardInput, currency = "USD"): E
         stakeholderId: sh.data.id,
         classId,
         quantity: digits(f.shares),
-        price: w.par,
+        price: digits(w.par),
         date: f.issueDate,
         securityId: `CS-${cs++}`,
         ...(f.vesting ? { vestingTermsId: termsId, vestingStart: f.vestingStart } : {}),

@@ -11,7 +11,7 @@ import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { num, shares, todayIso } from "../fmt";
+import { num, shares, todayIso, withCurrency } from "../fmt";
 import { useApp } from "../state";
 import { standardTerms } from "../terms";
 
@@ -98,7 +98,7 @@ export function NewGrant() {
                 placeholder="40,000"
               />
             </Field>
-            <Field label="Strike price (USD)" hint="From your latest 409A valuation.">
+            <Field label={withCurrency("Strike price")} hint="From your latest 409A valuation.">
               <input
                 className="inp num"
                 value={strike}

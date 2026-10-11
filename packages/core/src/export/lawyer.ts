@@ -45,13 +45,14 @@ export async function lawyerPackage(p: {
   docs: Record<string, Uint8Array | null>; // from lawyerDocPaths; null = the file couldn't be read
   scope: LawyerScope;
   generatedAt: string;
+  currency?: string;
 }): Promise<Record<string, Uint8Array | string>> {
   const s = reduce(p.events, p.asOf);
   const ids = scopeIds(reduce(p.events, MAX_DATE), p.scope);
   const person = p.scope.kind === "person" ? p.scope.stakeholderId : undefined;
   const company = s.issuer?.legal_name ?? "Company";
   const who = person ? (s.stakeholders.get(person)?.name?.legal_name ?? person) : undefined;
-  const tabs = sheets(p.events, p.asOf, { stakeholderId: person });
+  const tabs = sheets(p.events, p.asOf, { stakeholderId: person, currency: p.currency });
   const out: Record<string, Uint8Array | string> = {
     "cap-table.xlsx": toXlsx(tabs),
     "cap-table.pdf": await toPdf(tabs, `${company}${who ? ` · ${who}` : ""} · cap table as of ${p.asOf}`),

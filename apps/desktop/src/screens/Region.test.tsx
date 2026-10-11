@@ -96,3 +96,38 @@ test("a bad currency in capfolder.json falls back to USD instead of crashing the
   expect(await screen.findByText("Fully diluted")).toBeInTheDocument();
   expect(screen.getByText("$900,000")).toBeInTheDocument();
 });
+
+test("Portugal end to end: the wizard's defaults parse with comma decimals, labels say EUR, the save works", async () => {
+  const { platform, fs } = fakePlatform();
+  render(<App platform={platform} />);
+  await userEvent.selectOptions(await screen.findByLabelText("Your country"), "PT");
+  await userEvent.click(screen.getByLabelText("No lock"));
+  await userEvent.click(screen.getByLabelText(/I accept the/));
+  await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+  await userEvent.click(await screen.findByRole("button", { name: "Skip for now" }));
+  await userEvent.type(await screen.findByLabelText("Legal name"), "Exemplo Lda");
+  await userEvent.type(screen.getByLabelText("Incorporated"), "2026-01-02");
+  await userEvent.click(screen.getByRole("button", { name: "Create folder" }));
+  await userEvent.click(await screen.findByRole("button", { name: /Start from zero/ }));
+  expect(await screen.findByLabelText(/^Authorized/)).toHaveValue("10.000.000");
+  expect(screen.getByLabelText("Par value (EUR)")).toBeInTheDocument();
+  const par = screen.getByLabelText("Par value (EUR)");
+  await userEvent.clear(par);
+  await userEvent.type(par, "0,0001");
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  await userEvent.type(screen.getByLabelText("Name"), "Ana");
+  await userEvent.type(screen.getByLabelText(/^Shares/), "4.000.000");
+  await userEvent.click(screen.getByRole("button", { name: "No vesting" }));
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  await userEvent.click(screen.getByRole("button", { name: "Add a SAFE" }));
+  await userEvent.type(screen.getByLabelText("Investor"), "Fundo");
+  await userEvent.type(screen.getByLabelText("Amount (EUR)"), "100.000");
+  await userEvent.type(screen.getByLabelText("Valuation cap (EUR)"), "5.000.000");
+  await userEvent.type(screen.getByLabelText(/Discount/), "33,3");
+  await userEvent.click(screen.getByRole("button", { name: /Save/ }));
+  await screen.findByText("Fully diluted");
+  const log = fs.readSync("/home/me/Documents/Exemplo Lda/events.jsonl");
+  expect(log).toContain('"share_price":{"amount":"0.0001","currency":"EUR"}');
+  expect(log).toContain('"conversion_discount":"0.333"');
+});

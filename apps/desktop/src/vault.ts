@@ -504,7 +504,10 @@ export function exportFile(
   const co = companySlug(v);
   if (format === "csv") return { name: `${co}-cap-table-${asOf}.csv`, data: exportCsv(v, asOf) };
   if (format === "xlsx")
-    return { name: `${co}-cap-table-${asOf}.xlsx`, data: toXlsx(sheets(v.events, asOf)) };
+    return {
+      name: `${co}-cap-table-${asOf}.xlsx`,
+      data: toXlsx(sheets(v.events, asOf, { currency: v.meta.currency as string | undefined })),
+    };
   return {
     name: `${co}-ocf-${asOf}.zip`,
     data: zip(toOcfExport(v.events, { asOf, generatedAt: ctx.now().toISOString() })),
@@ -589,6 +592,7 @@ export async function lawyerZip(
     docs,
     scope,
     generatedAt: ctx.now().toISOString(),
+    currency: v.meta.currency as string | undefined,
   });
   const who =
     scope.kind === "person"
