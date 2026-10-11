@@ -1,3 +1,4 @@
+import type { State } from "@capfolder/core";
 import { useEffect, useState } from "react";
 import { todayIso } from "../fmt";
 import { useApp } from "../state";
@@ -17,6 +18,24 @@ export const DOC_TYPES: { value: string; label: string }[] = [
   { value: "company_bylaws", label: "Bylaws" },
   { value: "other", label: "Other" },
 ];
+
+/** What a document can be proof for: a holding, a person or a plan. */
+export function docTargets(s: State): { id: string; label: string; person: string }[] {
+  const name = (id: string) => s.stakeholders.get(id)?.name?.legal_name ?? id;
+  return [
+    ...[...s.securities.values()].map((x) => ({
+      id: x.id,
+      label: `${name(x.stakeholderId)} · ${x.id}`,
+      person: name(x.stakeholderId),
+    })),
+    ...[...s.stakeholders.keys()].map((id) => ({ id, label: `${name(id)} (person)`, person: name(id) })),
+    ...[...s.plans.entries()].map(([id, pl]) => ({
+      id,
+      label: `${pl.data.plan_name} (plan)`,
+      person: "company",
+    })),
+  ];
+}
 
 /** F-26: pick a file → it's copied into docs/, hashed, and linked to a holding, person or plan. */
 export function AttachModal(p: { open: boolean; onClose(): void; target?: string; docType?: string }) {
@@ -49,20 +68,7 @@ export function AttachModal(p: { open: boolean; onClose(): void; target?: string
   }, [p.open, p.target, p.docType, s]);
   if (!s) return null;
 
-  const name = (id: string) => s.stakeholders.get(id)?.name?.legal_name ?? id;
-  const targets = [
-    ...[...s.securities.values()].map((x) => ({
-      id: x.id,
-      label: `${name(x.stakeholderId)} · ${x.id}`,
-      person: name(x.stakeholderId),
-    })),
-    ...[...s.stakeholders.keys()].map((id) => ({ id, label: `${name(id)} (person)`, person: name(id) })),
-    ...[...s.plans.entries()].map(([id, pl]) => ({
-      id,
-      label: `${pl.data.plan_name} (plan)`,
-      person: "company",
-    })),
-  ];
+  const targets = docTargets(s);
   const picked = targets.find((t) => t.id === target);
 
   async function save() {

@@ -27,12 +27,7 @@ const CARDS: { title: string; sub: string; steps: string[]; to: Route }[] = [
     title: "I only have documents",
     sub: "Your old tool is gone. Build it from PDFs.",
     steps: ["Drop the folder", "Each document becomes a row", "You confirm each one"],
-    to: {
-      name: "comingSoon",
-      title: "Documents",
-      milestone: "M4",
-      text: "Drop a messy folder; it gets sorted and matched.",
-    },
+    to: { name: "sort" },
   },
 ];
 

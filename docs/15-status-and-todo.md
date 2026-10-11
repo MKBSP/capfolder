@@ -1,6 +1,6 @@
 # 15 · Status, to do, missing things, future ideas
 
-Updated 2026-10-10 (after M3). Milestones and acceptance tests: `docs/09-build-plan.md`. History: `CHANGELOG.md`.
+Updated 2026-10-11 (after M4). Milestones and acceptance tests: `docs/09-build-plan.md`. History: `CHANGELOG.md`.
 
 ## Where the docs are
 | Topic | File |
@@ -21,7 +21,8 @@ Updated 2026-10-10 (after M3). Milestones and acceptance tests: `docs/09-build-p
 | M6 Export (xlsx, lawyer zip) | Done 2026-10-10 |
 | M2 Import | Done 2026-10-10 (OCF + generic spreadsheet). Still to come: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
 | M5 Signing | Done 2026-10-10, runs locally; hosting relay.capfolder.com is Mads' decision |
-| M4 Document sorting · M7 Updates · M8 Website + launch | Not started |
+| M4 Document sorting | Done 2026-10-11 (rules + kNN + local AI, OCR; tested on a synthetic folder, run the pilot's folder when it arrives) |
+| M7 Updates · M8 Website + launch | Not started |
 
 Order changed 2026-10-10 so the full product can be tested sooner: M3 → M6 → M2 → M5 → M4 → M7 → M8.
 
@@ -40,7 +41,7 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`).
 
 ## Missing in the desktop app (M3)
-- Not built yet (shown as Coming soon): document sorting/OCR (M4), AI and MCP (M4), updates (M7), Touch ID / Windows Hello (M7).
+- Not built yet (shown as Coming soon): AI through CLIs (Claude Code, Codex, Gemini) or API keys, chat and the MCP server; updates (M7), Touch ID / Windows Hello (M7).
 - Not built, no placeholder: SAFE/share transfer (F-20), merge duplicate people (F-21), replace/rename a document (F-28), two-laptop forks (F-35), rebaseline after an outside edit (F-31), document generation from templates.
 - Founder detection is a heuristic (common stock issued on the formation date or with vesting) until stakeholder roles exist.
 - Options recorded without a strike are stored at $0 (with a 409A warning).
@@ -193,6 +194,21 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Display formatting is set once per render from those two (module state in fmt.ts) instead of threading a formatter through every component — cost: none for the UI; a future multi-company window would need it per window.
 - Dates still read "6 Oct 2026" everywhere (Mads' earlier ask); the country only changes how typed numeric dates are read.
 - Not yet localized: export sheet headings say "(USD)", percentages in tables keep a "." decimal point, and money in the PDF uses plain numbers.
+
+## M4 decisions (rulings made during the build)
+- AI never files a document, even on an exact match: CLAUDE.md says no AI output reaches the log without a click, so AI-sorted documents always land in Needs you.
+- kNN is word counts (cosine), not embeddings: works with no model installed. Switch to `embed()` when a local model is connected.
+- Learned examples (`sorting.json`) live in app data, per computer. Aliases are vault events (`stakeholder_alias`), because they're facts about the company.
+- An unreadable field, a second document for a holding that already has one, or a name that only matches through the number all go to Needs you (the "0 filed wrong" rule wins over the 80%).
+- Only local AI (Ollama, LM Studio over localhost). The CLIs need the Tauri shell plugin and the cloud privacy toggle: later.
+- PDF pages with almost no text are OCR'd at scale 2 (~150 dpi), rendered with `intent: "print"` so a hidden window doesn't stall.
+
+## M4 not built (known limits)
+- Signature detection: an unsigned draft looks like a signed document.
+- Terms diff against the YC template (needs the template).
+- Drag and drop onto the window (Tauri fs scope for dropped paths); use Choose a folder.
+- A page that mixes a text header with a scanned body isn't OCR'd. Only English OCR data is bundled.
+- Board consents link to the plan and grants they name (name + share count); other resolutions aren't read.
 
 ## M5 rulings (so far)
 - Relay rate limits are in memory and bounded; when full the oldest key is evicted (availability over strictness). Two automated security reviews flagged each direction (fail-closed = global lockout; eviction = reset with ~200k fresh IPs/64s); a bounded in-memory limiter can't avoid both. A public relay must also rate-limit at its proxy (apps/relay/README.md) — Mads to confirm at deploy time.

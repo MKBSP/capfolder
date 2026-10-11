@@ -7,28 +7,42 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - pako 1.0.11: (MIT AND Zlib)
 - tslib 1.14.1: 0BSD
 - canonicalize 5.1.0: Apache-2.0
+- idb-keyval 6.3.0: Apache-2.0
 - pdfjs-dist 6.3.289: Apache-2.0
+- tesseract.js 7.0.0: Apache-2.0
+- tesseract.js-core 7.0.0: Apache-2.0
+- wasm-feature-detect 1.9.0: Apache-2.0
 - @tauri-apps/api 2.11.1: Apache-2.0 OR MIT
+- webidl-conversions 3.0.1: BSD-2-Clause
 - fast-uri 3.1.8: BSD-3-Clause
 - @hono/node-server 2.1.1: MIT
 - @napi-rs/canvas 1.0.11: MIT
 - @napi-rs/canvas-darwin-x64 1.0.11: MIT
 - @pdf-lib/standard-fonts 1.0.0: MIT
 - @pdf-lib/upng 1.0.1: MIT
+- @tesseract.js-data/eng 1.0.0: MIT
 - ajv 8.20.0: MIT
 - ajv-formats 3.0.1: MIT
+- bmp-js 0.1.0: MIT
 - fast-deep-equal 3.1.3: MIT
 - fflate 0.8.3: MIT
 - hono 4.13.9: MIT
+- is-url 1.2.4: MIT
 - js-md5 0.9.2: MIT
 - json-schema-traverse 1.0.0: MIT
+- node-fetch 2.7.0: MIT
+- opencollective-postinstall 2.0.3: MIT
 - papaparse 5.7.0: MIT
 - pdf-lib 1.17.1: MIT
 - react 19.3.0: MIT
 - react-dom 19.3.0: MIT
+- regenerator-runtime 0.13.11: MIT
 - require-from-string 2.0.2: MIT
 - scheduler 0.28.0: MIT
+- tr46 0.0.3: MIT
 - ulid 3.0.2: MIT
+- whatwg-url 5.0.0: MIT
+- zlibjs 0.3.1: MIT
 - @tauri-apps/plugin-dialog 2.7.3: MIT OR Apache-2.0
 - @tauri-apps/plugin-fs 2.5.2: MIT OR Apache-2.0
 - @tauri-apps/plugin-opener 2.5.5: MIT OR Apache-2.0

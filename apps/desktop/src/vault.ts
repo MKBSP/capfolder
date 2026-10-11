@@ -5,6 +5,7 @@ import {
   appendEvents,
   builders as b,
   captableCsv,
+  type Data,
   type EventDraft,
   type LawyerScope,
   lawyerDocPaths,
@@ -258,7 +259,7 @@ async function freePath(fs: Fs, dir: string, name: string): Promise<string> {
   }
 }
 
-async function sha256Bytes(bytes: Uint8Array): Promise<string> {
+export async function sha256Bytes(bytes: Uint8Array): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", bytes as BufferSource);
   return [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
@@ -275,6 +276,10 @@ export function attachDocument(
     date: string;
     person: string;
     target?: string;
+    targets?: string[]; // F-09: a board consent can prove several things
+    fields?: Data; // what sorting read from it (F-09)
+    flags?: string[];
+    extra?: EventDraft[]; // recorded in the same write, e.g. a stakeholder_alias the founder asked to remember
   },
 ): Promise<Result | { ok: "duplicate"; docId: string }> {
   return exclusive(v.root, async () => {
@@ -293,9 +298,19 @@ export function attachDocument(
     const rel = abs.slice(v.root.length + 1);
     await fs.writeBytes(abs, p.bytes);
     const docId = b.newId("doc");
+    const targets = [...new Set([...(p.target ? [p.target] : []), ...(p.targets ?? [])])];
     const drafts = [
-      b.docAdded({ docId, path: rel, sha256, docType: p.docType, originalName: p.originalName }),
-      ...(p.target ? [b.docLinked({ docId, target: p.target })] : []),
+      ...(p.extra ?? []),
+      b.docAdded({
+        docId,
+        path: rel,
+        sha256,
+        docType: p.docType,
+        originalName: p.originalName,
+        fields: p.fields,
+        flags: p.flags,
+      }),
+      ...targets.map((target) => b.docLinked({ docId, target })),
     ];
     const undo = async () =>
       fs.rename(abs, await freePath(fs, join(v.root, "docs", "_removed"), baseName(abs)));

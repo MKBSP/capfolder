@@ -8,6 +8,7 @@
       "!brand",
       "!docs",
       "!**/src/ocf/schemas-*.json",
+      "!**/public/ocr",
       "!**/src-tauri/target",
       "!**/src-tauri/gen",
       "!**/dist"

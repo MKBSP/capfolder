@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { appDataDir, documentDir, homeDir } from "@tauri-apps/api/path";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
+import { browserOcr, type Ocr } from "./docread";
 import { tauriFs } from "./fs/tauri";
 import type { Fs } from "./fs/types";
 
@@ -13,10 +14,13 @@ export interface Platform {
   documentDir(): Promise<string>;
   pickFolder(title: string): Promise<string | null>;
   pickFile(title: string, extensions?: string[]): Promise<{ path: string; name: string } | null>;
+  pickFiles(title: string): Promise<{ path: string; name: string }[]>;
+  /** Local OCR for scans and photos (F-09). */
+  ocr: Ocr;
   saveText(defaultName: string, text: string): Promise<string | null>;
   saveBytes(defaultName: string, bytes: Uint8Array): Promise<string | null>;
   reveal(path: string): Promise<void>;
-  /** Network calls to the signing relay (the only server the app talks to). */
+  /** Network calls: the signing relay, and a local AI (Ollama / LM Studio on localhost) if the founder connects one. */
   fetch(url: string, init?: RequestInit): Promise<Response>;
   /** Opens a link in the founder's browser (Documenso's signing page). */
   openUrl(url: string): Promise<void>;
@@ -52,6 +56,18 @@ export const tauriPlatform: Platform = {
     });
     return typeof r === "string" ? { path: r, name: r.split(/[\\/]/).at(-1) ?? r } : null;
   },
+  pickFiles: async (title) => {
+    const r = await open({
+      multiple: true,
+      title,
+      filters: [{ name: "Documents", extensions: ["pdf", "png", "jpg", "jpeg"] }],
+    });
+    return (Array.isArray(r) ? r : r ? [r] : []).map((p) => ({
+      path: p,
+      name: p.split(/[\\/]/).at(-1) ?? p,
+    }));
+  },
+  ocr: browserOcr,
   saveText: async (defaultName, text) => {
     const path = await save({ defaultPath: defaultName });
     if (!path) return null;

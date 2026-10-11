@@ -29,3 +29,25 @@ test("every screen in the nav renders", async () => {
     expect((await screen.findAllByText(text)).length).toBeGreaterThan(0);
   }
 });
+
+test("Settings → AI finds a local Ollama and uses the chosen model for sorting (F-10)", async () => {
+  const fp = acmePlatform({
+    relay: {
+      fetch: async (url: string) =>
+        url === "http://localhost:11434/api/tags"
+          ? new Response(JSON.stringify({ models: [{ name: "llama3.1:8b" }] }))
+          : Promise.reject(new TypeError("Failed to fetch")),
+    },
+  });
+  render(<App platform={fp.platform} />);
+  await userEvent.click(await screen.findByRole("button", { name: "Settings" }));
+  expect(await screen.findByText(/LM Studio/)).toBeInTheDocument();
+  expect(await screen.findByText(/Not running\. Install it from https:\/\/lmstudio\.ai/)).toBeInTheDocument();
+  await userEvent.selectOptions(await screen.findByLabelText("Ollama model"), "llama3.1:8b");
+  expect(JSON.parse(fp.fs.readSync("/appdata/settings.json")).ai).toEqual({
+    provider: "ollama",
+    model: "llama3.1:8b",
+    sortWithAi: true,
+  });
+  expect(screen.getByRole("checkbox", { name: "Use AI when sorting documents" })).toBeChecked();
+});

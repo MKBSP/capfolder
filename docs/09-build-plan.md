@@ -29,11 +29,11 @@
 - Home (cap table + What's missing), Person, Documents, guided from-zero form (F-08), New SAFE/Grant/Shares forms, Settings.
 - **Accept:** a founder goes from install to a populated cap table in under 5 minutes with the pilot data.
 
-## M4 · Document sorting (week 3)
+## M4 · Document sorting (week 3) ✅ done 2026-10-11 (synthetic acme-docs: 13/13 clean docs auto-filed, 0 wrong; re-run on the pilot's folder when it arrives)
 - PDF.js + tesseract.js, rules, kNN (local embeddings), AI extract, match, review UI (ImportReview screen), learning rules.
 - **Accept:** on the pilot's document folder, ≥80% are auto-filed correctly, the rest land in "Needs you", and 0 are filed against the wrong row.
 
-## M5 · Signing (weeks 3–4)
+## M5 · Signing (weeks 3–4) ✅ done 2026-10-10 (runs locally; hosting is Mads' decision)
 - `apps/relay` + Documenso docker-compose, email verification, envelopes, reminders, purge.
 - App: send, status, in-app founder signing, fetch + verify + file + purge.
 - **Accept:**

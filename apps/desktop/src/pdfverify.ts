@@ -5,7 +5,7 @@ import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 // pdf.js uses `globalThis.pdfjsWorker` when present: parsing runs in this thread (fine for contracts, and it
 // works the same in the Tauri webview and in tests, with no worker file to serve).
 let ready: Promise<void> | undefined;
-const loadWorker = () =>
+export const loadPdfWorker = () =>
   (ready ??= import("pdfjs-dist/legacy/build/pdf.worker.mjs").then((w) => {
     (globalThis as { pdfjsWorker?: unknown }).pdfjsWorker = w;
   }));
@@ -17,7 +17,7 @@ interface PageInfo {
 
 /** Each page's text (whitespace-normalized) and how many annotations sit on it. */
 export async function pageInfo(bytes: Uint8Array): Promise<PageInfo[]> {
-  await loadWorker();
+  await loadPdfWorker();
   // verbosity 0: text extraction doesn't need the standard font files pdf.js would otherwise warn about
   const task = pdfjs.getDocument({ data: bytes.slice(), useSystemFonts: false, verbosity: 0 });
   const doc = await task.promise;

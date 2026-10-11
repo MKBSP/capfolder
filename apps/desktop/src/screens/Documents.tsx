@@ -24,7 +24,7 @@ export function Documents() {
   return (
     <>
       <MainHeader>
-        <button type="button" className="btn" onClick={() => setAttach({})}>
+        <button type="button" className="btn" onClick={() => app.go({ name: "sort" })}>
           Add documents
         </button>
         <button type="button" className="btn" onClick={() => setSending(true)}>

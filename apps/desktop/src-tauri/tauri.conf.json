@@ -20,7 +20,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; img-src 'self' data: asset:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https: http://localhost:8787 http://127.0.0.1:8787"
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; img-src 'self' data: asset:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https: http://localhost:8787 http://127.0.0.1:8787 http://localhost:11434 http://127.0.0.1:11434 http://localhost:1234 http://127.0.0.1:1234"
     }
   },
   "bundle": {

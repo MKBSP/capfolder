@@ -1,5 +1,6 @@
 import { builders as b } from "@capfolder/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { detect, PROVIDERS, type ProviderId } from "../ai";
 import { EmailVerify } from "../components/EmailVerify";
 import { MainHeader } from "../components/Header";
 import { CompanyPlace, YourCountry } from "../components/RegionFields";
@@ -137,12 +138,7 @@ export function Settings() {
             Send anonymous usage counts (no company data)
           </label>
         </section>
-        <section className="card stack">
-          <h2>AI</h2>
-          <ComingSoon milestone="M4">
-            Bring your own AI (Ollama, LM Studio, Claude Code, Codex, an API key) to sort documents.
-          </ComingSoon>
-        </section>
+        <AiSection />
         <SigningSection />
         <section className="card stack">
           <h2>Updates</h2>
@@ -275,6 +271,88 @@ function SigningSection() {
       ) : (
         <EmailVerify onVerified={() => setChanging(false)} action="Verify" />
       )}
+    </section>
+  );
+}
+
+/** AiConnect.html (F-10): a model on this computer helps sort documents the rules can't. It only proposes. */
+function AiSection() {
+  const app = useApp();
+  const ai = app.settings.ai;
+  const [found, setFound] = useState<Awaited<ReturnType<typeof detect>> | null>(null);
+  const look = () => detect(app.platform).then(setFound);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: look once when Settings opens
+  useEffect(() => {
+    look();
+  }, []);
+  const save = (next: Partial<S["ai"]>) => app.setSettings({ ...app.settings, ai: { ...ai, ...next } });
+  return (
+    <section className="card stack" aria-label="AI">
+      <h2>AI</h2>
+      <p className="small muted" style={{ margin: 0 }}>
+        Optional. A model on this computer reads documents the rules can't sort. It only fills in a proposal:
+        you confirm every one, and nothing leaves this computer.
+      </p>
+      {(Object.keys(PROVIDERS) as ProviderId[]).map((id) => {
+        const f = found?.find((x) => x.id === id);
+        const models = f?.models ?? [];
+        return (
+          <div
+            key={id}
+            className="row wrap"
+            style={{ borderTop: "1px solid var(--row-divider)", paddingTop: 8 }}
+          >
+            <b style={{ width: 90 }}>{PROVIDERS[id].label}</b>
+            {!found ? (
+              <span className="meta">Looking…</span>
+            ) : f?.models === null ? (
+              <span className="meta">
+                Not running. Install it from {PROVIDERS[id].install}, start it, then look again.
+              </span>
+            ) : !models.length ? (
+              <span className="meta">Running, but no model is downloaded yet.</span>
+            ) : (
+              <>
+                <select
+                  className="inp"
+                  aria-label={`${PROVIDERS[id].label} model`}
+                  style={{ width: "auto" }}
+                  value={ai.provider === id ? ai.model : ""}
+                  onChange={(e) =>
+                    save({ provider: id, model: e.target.value, sortWithAi: !!e.target.value })
+                  }
+                >
+                  <option value="">Choose a model…</option>
+                  {models.map((m) => (
+                    <option key={m} value={m}>
+                      {m}
+                    </option>
+                  ))}
+                </select>
+                {ai.provider === id && ai.model ? <span className="chip green">in use</span> : null}
+              </>
+            )}
+          </div>
+        );
+      })}
+      <div className="row wrap">
+        <button type="button" className="btn small" onClick={look}>
+          Look again
+        </button>
+        <label className="row small">
+          <input
+            type="checkbox"
+            disabled={!ai.provider || !ai.model}
+            checked={ai.sortWithAi && !!ai.provider}
+            onChange={(e) => save({ sortWithAi: e.target.checked })}
+          />
+          Use AI when sorting documents
+        </label>
+      </div>
+      <ComingSoon milestone="a later release">
+        Claude Code, Codex and Gemini subscriptions, API keys, asking questions about your vault, and the MCP
+        server for Claude Desktop.
+      </ComingSoon>
     </section>
   );
 }

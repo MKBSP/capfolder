@@ -7,6 +7,9 @@ export function fakePlatform(
     password?: string;
     pickFolder?: string;
     pickFile?: { path: string; name: string };
+    pickFiles?: { path: string; name: string }[];
+    /** What OCR "reads" from an image or a scanned page. */
+    ocrText?: string;
     /** Where relay calls go (see fakeRelay); without one the app is "offline". */
     relay?: { fetch(url: string, init?: RequestInit): Promise<Response> };
   } = {},
@@ -25,6 +28,8 @@ export function fakePlatform(
     documentDir: async () => "/home/me/Documents",
     pickFolder: async () => opts.pickFolder ?? null,
     pickFile: async () => opts.pickFile ?? null,
+    pickFiles: async () => opts.pickFiles ?? [],
+    ocr: { image: async () => opts.ocrText ?? "", pdfPage: async () => opts.ocrText ?? "" },
     saveText: async (name, text) => {
       saved[name] = text;
       return `/home/me/Downloads/${name}`;

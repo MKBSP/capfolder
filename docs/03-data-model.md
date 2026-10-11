@@ -42,7 +42,7 @@ Acme/                         # any folder name; usually inside iCloud/Dropbox/D
 | `envelope_sent` / `envelope_signed` / `envelope_voided` | envelope_id, relay_ref, signers, doc sha256 | signing (F-11, F-16, F-17) |
 | `correction` | target event id, field, old, new, reason | F-18. The reducer applies it |
 | `reversal` | target event id, reason | F-18. The reducer ignores the target |
-| `stakeholder_alias` | stakeholder_id, alias | F-19, F-21 (matching only) |
+| `stakeholder_alias` | stakeholder_id, alias | F-09 "Remember", F-19, F-21: another name in documents; collected in `state.aliases` for matching |
 | `rebaseline` | from_seq, reason | F-31. Accepts outside edits as the new start |
 | `schema_migrated` | from, to | F-38 |
 | `note` | target, text | free notes |

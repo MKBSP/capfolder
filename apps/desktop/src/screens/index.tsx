@@ -15,6 +15,7 @@ import { Person } from "./Person";
 import { Pool } from "./Pool";
 import { Settings } from "./Settings";
 import { Signatures } from "./Signatures";
+import { Sort } from "./Sort";
 import { StartChoice } from "./StartChoice";
 import { Welcome } from "./Welcome";
 import { Wizard } from "./Wizard";
@@ -53,6 +54,8 @@ export function Screen() {
       return <Import />;
     case "documents":
       return <Documents />;
+    case "sort":
+      return <Sort />;
     case "people":
       return <People />;
     case "person":

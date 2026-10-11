@@ -15,6 +15,7 @@ export interface Settings {
   email: string; // verified with the relay (F-04); "" = not yet
   relayToken: string; // device token from the relay; "" = not verified
   relayTokens: Record<string, string>; // tokens for relays used before (F-37: old envelopes finish on their relay)
+  ai: { provider: "" | "ollama" | "lmstudio"; model: string; sortWithAi: boolean }; // F-10, local models only
 }
 
 /** The device token for a relay: the current one, or one kept from before a switch. */
@@ -35,6 +36,7 @@ const defaults = (): Settings => ({
   email: "",
   relayToken: "",
   relayTokens: {},
+  ai: { provider: "", model: "", sortWithAi: false },
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {
