@@ -135,7 +135,7 @@ pnpm test         # unit, golden and property tests
 pnpm typecheck
 pnpm lint
 pnpm dev:desktop  # the desktop app (first build takes a few minutes)
-pnpm dev:relay    # the signing relay + Documenso via Docker
+# the signing relay + Documenso: see apps/relay/README.md
 ```
 
 ```
