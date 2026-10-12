@@ -81,6 +81,21 @@ describe("createVault", () => {
     await openVault(fs, v.root, ctx);
     expect(fs.readSync(`${v.root}/AGENTS.md`)).toBe("my own rules");
   });
+  test("a dangling AGENTS.md symlink is left alone (the write would land at its target)", async () => {
+    const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });
+    fs.deleteSync(`${v.root}/AGENTS.md`);
+    fs.linkSync(`${v.root}/AGENTS.md`, "/Users/me/.zshrc");
+    const real = fs.exists.bind(fs);
+    fs.exists = async (p: string) => !(await fs.isSymlink(p)) && real(p); // a real fs: dangling link → false
+    const writes: string[] = [];
+    const w = fs.writeText.bind(fs);
+    fs.writeText = async (p: string, t: string) => {
+      writes.push(p);
+      return w(p, t);
+    };
+    await openVault(fs, v.root, ctx);
+    expect(writes).not.toContain(`${v.root}/AGENTS.md`);
+  });
   test("a non-empty target folder gets a vault folder inside, never overwritten", async () => {
     fs.writeSync("/Users/me/Documents/Test Co/notes.txt", "mine");
     const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });

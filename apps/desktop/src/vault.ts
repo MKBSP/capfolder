@@ -133,10 +133,14 @@ async function writeDerived(
   try {
     // AI instructions: written once; the founder's own edits win
     const company = events.find((e) => e.type === "ISSUER")?.data.legal_name ?? baseName(root);
-    if (!(await fs.exists(join(root, "AGENTS.md"))))
-      await fs.writeText(join(root, "AGENTS.md"), agentsMd(company));
-    if (!(await fs.exists(join(root, "CLAUDE.md"))))
-      await fs.writeText(join(root, "CLAUDE.md"), "@AGENTS.md\n");
+    for (const [name, text] of [
+      ["AGENTS.md", agentsMd(company)],
+      ["CLAUDE.md", "@AGENTS.md\n"],
+    ] as const) {
+      const p = join(root, name);
+      // a (dangling) symlink would redirect the write outside the folder
+      if (!(await fs.exists(p)) && !(await fs.isSymlink(p))) await fs.writeText(p, text);
+    }
     await fs.mkdir(join(root, "ocf"));
     const files = toOcfExport(events, { asOf, generatedAt: ctx.now().toISOString() });
     for (const [name, text] of Object.entries(files)) await fs.writeText(join(root, "ocf", name), text);
