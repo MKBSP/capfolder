@@ -5,10 +5,11 @@ import { fakeDocumenso } from "../src/fake-documenso.ts";
 
 const SECRET = "test-secret";
 let clock = Date.parse("2026-10-10T12:00:00Z");
-function setup() {
+function setup(extra: Partial<Parameters<typeof createApp>[0]> = {}) {
   const doc = fakeDocumenso();
   const mail: { to: string; text: string }[] = [];
   const app = createApp({
+    ...extra,
     documenso: doc.api,
     secret: SECRET,
     now: () => clock,
@@ -238,10 +239,12 @@ describe("abuse limits (security review)", () => {
       (await app.request("/auth/verify", json({ email: "v1@x.example", code: "123456" }, ip(3)))).status,
     ).toBe(429);
   });
-  test("a device can send at most 20 envelopes a day, 10 signers each, 15 MB", async () => {
+  test("a founder can send at most 5 envelopes a day, 10 signers each, 15 MB", async () => {
     const { app } = setup();
-    for (let i = 0; i < 20; i++) expect((await send(app, "busy@acme.example")).status).toBe(201);
-    expect((await send(app, "busy@acme.example")).status).toBe(429);
+    for (let i = 0; i < 5; i++) expect((await send(app, "busy@acme.example")).status).toBe(201);
+    const r = await send(app, "busy@acme.example");
+    expect(r.status).toBe(429);
+    expect((await r.json()).error).toBe("That's 5 documents today, the daily limit. Try again tomorrow.");
     const many = new FormData();
     many.append("pdf", new Blob([new Uint8Array([1])]), "x.pdf");
     many.append(
@@ -450,5 +453,29 @@ describe("install ping hardening (M8 review)", () => {
       204,
     );
     expect(rows).toHaveLength(1);
+  });
+});
+
+describe("fair use on the hosted relay", () => {
+  test("a total daily cap across all founders keeps email under the provider's limit", async () => {
+    const { app } = setup({ limits: { totalPerDay: 3 } });
+    for (let i = 0; i < 3; i++) expect((await send(app, `f${i}@acme.example`)).status).toBe(201);
+    const r = await send(app, "late@acme.example");
+    expect(r.status).toBe(429);
+    expect((await r.json()).error).toBe(
+      "The signing service is at today's limit. Try again tomorrow, or run your own relay (see capfolder.com).",
+    );
+    clock += 864e5;
+    expect((await send(app, "late@acme.example")).status).toBe(201);
+  });
+  test("paused: nothing new is sent, existing envelopes still work", async () => {
+    let paused = false;
+    const { app } = setup({ paused: () => paused });
+    const id = (await (await send(app)).json()).id;
+    paused = true;
+    const r = await send(app);
+    expect(r.status).toBe(503);
+    expect((await r.json()).error).toBe("Sending is paused on the signing service. Try again later.");
+    expect((await app.request(`/envelopes/${id}`, { headers: auth("mads@acme.example") })).status).toBe(200);
   });
 });

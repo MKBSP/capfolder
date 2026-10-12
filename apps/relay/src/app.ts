@@ -15,6 +15,10 @@ export interface RelayDeps {
   clientIp?(c: Context): string;
   /** docs/11: where anonymous install pings go (one row each). Without it pings are accepted and dropped. */
   recordPing?(row: PingRow): Promise<void>;
+  /** Fair use on a hosted relay: envelopes per founder per day (5) and across everyone per day (unlimited). */
+  limits?: { perEmailPerDay?: number; totalPerDay?: number };
+  /** Kill switch: true stops new envelopes; status, downloads and reminders keep working. */
+  paused?(): boolean;
 }
 
 export interface PingRow {
@@ -141,7 +145,10 @@ export function createApp(d: RelayDeps) {
   // Abuse limits: code emails and guesses per IP (across addresses), envelopes per verified email per day.
   const startPerIp = new Limit(20, 3600e3, d.now);
   const verifyPerIp = new Limit(60, 3600e3, d.now);
-  const sendsPerEmail = new Limit(20, 864e5, d.now);
+  const perEmail = d.limits?.perEmailPerDay ?? 5;
+  const sendsPerEmail = new Limit(perEmail, 864e5, d.now);
+  // the total keeps a hosted relay under its email provider's daily quota (~5 emails per envelope)
+  const sendsTotal = d.limits?.totalPerDay ? new Limit(d.limits.totalPerDay, 864e5, d.now) : null;
   const pingsPerIp = new Limit(30, 3600e3, d.now);
   // Anyone can post a ping, so fake installs are bounded: 3 install ids per network and 50,000 rows per day.
   // ponytail: in memory, reset daily; a restart resets it too (the proxy's rate limit is the outer fence)
@@ -280,8 +287,21 @@ export function createApp(d: RelayDeps) {
       if (signers.length > MAX_SIGNERS)
         return c.json({ error: `At most ${MAX_SIGNERS} signers per document.` }, 400);
       if (pdf.size > MAX_PDF) return c.json({ error: "The PDF is over 15 MB." }, 413);
+      if (d.paused?.())
+        return c.json({ error: "Sending is paused on the signing service. Try again later." }, 503);
       if (!sendsPerEmail.take(c.get("email")))
-        return c.json({ error: "That's 20 documents today, the daily limit. Try again tomorrow." }, 429);
+        return c.json(
+          { error: `That's ${perEmail} documents today, the daily limit. Try again tomorrow.` },
+          429,
+        );
+      if (sendsTotal && !sendsTotal.take("all"))
+        return c.json(
+          {
+            error:
+              "The signing service is at today's limit. Try again tomorrow, or run your own relay (see capfolder.com).",
+          },
+          429,
+        );
       const id = await d.documenso.create(
         {
           title: meta.title.trim().slice(0, 200),

@@ -1,5 +1,6 @@
 // Runs the relay on Node. Config is env only (docs/05): DOCUMENSO_URL, DOCUMENSO_API_TOKEN, RELAY_SECRET, SMTP_*.
 
+import { existsSync } from "node:fs";
 import { appendFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 import { serve } from "@hono/node-server";
@@ -37,6 +38,12 @@ const app = createApp({
     process.env.TRUST_PROXY === "true" ? undefined : (c) => getConnInfo(c).remote.address ?? "unknown",
   secret,
   now: () => Date.now(),
+  limits: {
+    perEmailPerDay: Number(process.env.RELAY_PER_EMAIL_DAY ?? 5),
+    totalPerDay: process.env.RELAY_TOTAL_DAY ? Number(process.env.RELAY_TOTAL_DAY) : undefined,
+  },
+  // kill switch without a restart: create this file to stop new envelopes, delete it to resume
+  paused: () => existsSync(process.env.PAUSE_FILE ?? "data/PAUSED"),
   // ponytail: one JSON line per ping in a file (PING_FILE); move to Postgres if the counts ever need queries
   recordPing: async (row) => {
     const file = process.env.PING_FILE ?? "data/pings.jsonl";

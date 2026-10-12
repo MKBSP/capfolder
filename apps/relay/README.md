@@ -22,6 +22,9 @@ Point the desktop app at `http://localhost:8787` (Settings → Signing). Every e
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | email for the codes |
 | `PORT` (8787), `HOST` | where it listens |
 | `PING_FILE` (`data/pings.jsonl`) | where anonymous install pings go, one JSON line each (docs/11). No IPs are stored |
+| `RELAY_PER_EMAIL_DAY` (5) | envelopes one founder can send per day |
+| `RELAY_TOTAL_DAY` (none) | envelopes everyone together can send per day; keep it under your email quota (~5 emails each) |
+| `PAUSE_FILE` (`data/PAUSED`) | kill switch: while this file exists, new envelopes are refused (status and downloads still work) |
 | `TRUST_PROXY` | `true` only behind a reverse proxy: rate limits then use the last X-Forwarded-For hop (the one your proxy adds) |
 
 ## Tests
