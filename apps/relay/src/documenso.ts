@@ -52,6 +52,19 @@ const META = {
   distributionMethod: "EMAIL",
   reminderSettings: { sendAfter: { unit: "day", amount: 3 }, repeatEvery: { unit: "day", amount: 4 } },
   envelopeExpirationPeriod: { unit: "day", amount: 30 },
+  // Signers get the request and the signed copy. Nothing goes to the relay's own account (it would collect every
+  // founder's documents), and no "deleted" mail when the purge removes a finished envelope. Fewer emails, too.
+  emailSettings: {
+    recipientSigningRequest: true,
+    recipientRemoved: true,
+    recipientSigned: false,
+    documentPending: false,
+    documentCompleted: true,
+    documentDeleted: false,
+    ownerDocumentCompleted: false,
+    ownerRecipientExpired: false,
+    ownerDocumentCreated: false,
+  },
 };
 
 export function httpDocumenso(baseUrl: string, token: string, publicUrl = baseUrl): Documenso {
