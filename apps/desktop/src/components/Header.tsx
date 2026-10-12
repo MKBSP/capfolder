@@ -48,6 +48,15 @@ export function MainHeader({ children }: { children?: ReactNode }) {
             },
           })),
           { label: "Add a company…", onClick: () => go({ name: "create" }) },
+          {
+            label: "Open a company folder…",
+            onClick: async () => {
+              const root = await platform.pickFolder("Open a Capfolder company folder");
+              if (!root) return;
+              setOpenError(null);
+              openCompany(app, root).catch((e) => setOpenError(`Couldn't open that folder: ${e.message}`));
+            },
+          },
         ]}
       />
       {openError ? <Chip tone="amber">{openError}</Chip> : null}

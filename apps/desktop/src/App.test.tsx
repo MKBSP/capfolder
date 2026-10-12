@@ -136,3 +136,18 @@ test("company switcher: lists companies, switches, and adds a company", async ()
   await userEvent.click(screen.getByRole("menuitem", { name: "Add a company…" }));
   expect(await screen.findByLabelText("Legal name")).toBeInTheDocument();
 });
+
+test("company switcher: open an existing company folder", async () => {
+  const fp = acmePlatform();
+  const ctx = { now: () => new Date(), newId: () => builders.newId("evt"), deviceId: "dev_t" };
+  const other = await createVault(fp.fs, ctx, {
+    parent: "/home/me/Dropbox",
+    company: { name: "Gamma Ltd", formationDate: "2026-01-02" },
+  });
+  const { platform } = fp;
+  platform.pickFolder = async () => other.root;
+  render(<App platform={platform} />);
+  await userEvent.click(await screen.findByRole("button", { name: /^Acme Inc\./ }));
+  await userEvent.click(screen.getByRole("menuitem", { name: "Open a company folder…" }));
+  expect(await screen.findByRole("button", { name: /^Gamma Ltd/ })).toBeInTheDocument();
+});
