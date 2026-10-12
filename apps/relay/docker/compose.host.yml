@@ -1,0 +1,84 @@
+# Hosted signing: Documenso + Postgres + the relay + a Cloudflare Tunnel. The same file runs on a laptop (beta)
+# or a server later. Secrets live in ./.host (gitignored), made by ./host-setup.sh. Start with ./host.sh up.
+# Nothing listens on the network: the tunnel carries relay.<domain> and sign.<domain> from Cloudflare to here.
+name: capfolder-signing
+
+services:
+  database:
+    image: postgres:15.14
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: documenso
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?run ./host-setup.sh}
+      POSTGRES_DB: documenso
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U documenso -d documenso"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  documenso:
+    image: documenso/documenso:v2.18.0
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file: ./.host/documenso.env
+    environment:
+      PORT: "3000"
+      NEXT_PUBLIC_WEBAPP_URL: ${SIGN_URL}
+      NEXT_PRIVATE_INTERNAL_WEBAPP_URL: http://localhost:3000
+      NEXT_PRIVATE_DATABASE_URL: postgres://documenso:${DB_PASSWORD}@database:5432/documenso
+      NEXT_PRIVATE_DIRECT_DATABASE_URL: postgres://documenso:${DB_PASSWORD}@database:5432/documenso
+      NEXT_PUBLIC_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-true} # only the relay has an account
+      NEXT_PRIVATE_SMTP_TRANSPORT: smtp-auth
+      NEXT_PRIVATE_SMTP_HOST: ${SMTP_HOST}
+      NEXT_PRIVATE_SMTP_PORT: ${SMTP_PORT}
+      NEXT_PRIVATE_SMTP_SECURE: ${SMTP_SECURE}
+      NEXT_PRIVATE_SMTP_USERNAME: ${SMTP_USER}
+      NEXT_PRIVATE_SMTP_PASSWORD: ${SMTP_PASS}
+      NEXT_PRIVATE_SMTP_FROM_NAME: Capfolder signing
+      NEXT_PRIVATE_SMTP_FROM_ADDRESS: ${MAIL_FROM}
+      NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH: /opt/documenso/cert.p12
+    ports:
+      - "127.0.0.1:3200:3000" # this computer only (setup + admin); the public reaches it through the tunnel
+    volumes:
+      - ./.host/cert.p12:/opt/documenso/cert.p12:ro
+
+  relay:
+    build: ..
+    restart: unless-stopped
+    depends_on: [documenso]
+    environment:
+      DOCUMENSO_URL: http://documenso:3000
+      DOCUMENSO_PUBLIC_URL: ${SIGN_URL}
+      DOCUMENSO_API_TOKEN: ${DOCUMENSO_API_TOKEN:-}
+      RELAY_SECRET: ${RELAY_SECRET}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: Capfolder <${MAIL_FROM}>
+      TRUST_PROXY: "true" # requests arrive through Cloudflare, which sets X-Forwarded-For
+      RELAY_PER_EMAIL_DAY: ${RELAY_PER_EMAIL_DAY:-5}
+      RELAY_TOTAL_DAY: ${RELAY_TOTAL_DAY:-15} # ~5 emails per envelope stays under Resend's free 100/day
+    ports:
+      - "127.0.0.1:8790:8787" # 8787 is the dev relay
+    volumes:
+      - relay-data:/app/data # pings.jsonl and the PAUSED switch
+
+  tunnel:
+    image: cloudflare/cloudflared:2025.9.1
+    restart: unless-stopped
+    depends_on: [relay, documenso]
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:-}
+    profiles: [tunnel] # ./host.sh up adds it once TUNNEL_TOKEN is set
+
+volumes:
+  database:
+  relay-data:
