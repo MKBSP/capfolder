@@ -81,18 +81,28 @@ jobs:
           Remove-Item $pfx
           $conf = @{ bundle = @{ windows = @{ certificateThumbprint = $cert.Thumbprint; digestAlgorithm = "sha256"; timestampUrl = "http://timestamp.digicert.com" } } } | ConvertTo-Json -Depth 5
           Set-Content -Path apps/desktop/src-tauri/tauri.windows.conf.json -Value $conf
+      # Tauri imports a certificate (and notarizes) whenever these variables exist, even empty, so a beta build must
+      # not set them at all. Release builds get them here.
+      - name: Apple certificate and notarization
+        if: runner.os == 'macOS' && inputs.allow_unsigned != true
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          for v in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
+            printf '%s<<__END__\n%s\n__END__\n' "$v" "${!v}" >> "$GITHUB_ENV"
+          done
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           # beta: "-" is ad-hoc signing, which Apple Silicon needs to open the app at all ("damaged" otherwise)
           APPLE_SIGNING_IDENTITY: ${{ inputs.allow_unsigned && '-' || secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ !inputs.allow_unsigned && secrets.APPLE_ID || '' }}
-          APPLE_PASSWORD: ${{ !inputs.allow_unsigned && secrets.APPLE_PASSWORD || '' }}
-          APPLE_TEAM_ID: ${{ !inputs.allow_unsigned && secrets.APPLE_TEAM_ID || '' }}
         with:
           projectPath: apps/desktop
           # Beta builds are ordinary releases (not prereleases): /releases/latest, the website links and the updater

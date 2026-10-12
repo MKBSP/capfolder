@@ -2,10 +2,12 @@
 import { copyFileSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { build } from "vite";
 
 const require = createRequire(import.meta.url);
-const out = new URL("../public/ocr/", import.meta.url).pathname;
+// fileURLToPath, not .pathname: on Windows .pathname is "/D:/..." and the drive letter gets doubled
+const out = fileURLToPath(new URL("../public/ocr/", import.meta.url));
 mkdirSync(out, { recursive: true });
 const tess = dirname(require.resolve("tesseract.js/package.json"));
 const core = dirname(require.resolve("tesseract.js-core/package.json"));
