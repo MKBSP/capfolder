@@ -96,6 +96,11 @@ describe("createVault", () => {
     await openVault(fs, v.root, ctx);
     expect(writes).not.toContain(`${v.root}/AGENTS.md`);
   });
+  test("creates a missing parent folder", async () => {
+    const v = await createVault(fs, ctx, { parent: "/Users/me/Documents/capfolder", company });
+    expect(v.root).toBe("/Users/me/Documents/capfolder/Test Co");
+    expect(fs.existsSync(`${v.root}/events.jsonl`)).toBe(true);
+  });
   test("a non-empty target folder gets a vault folder inside, never overwritten", async () => {
     fs.writeSync("/Users/me/Documents/Test Co/notes.txt", "mine");
     const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });

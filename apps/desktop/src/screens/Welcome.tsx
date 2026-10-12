@@ -2,11 +2,8 @@ import { useState } from "react";
 import { YourCountry } from "../components/RegionFields";
 import { ErrorList, Logo, Modal, Stepper } from "../components/ui";
 import { TERMS, TERMS_VERSION } from "../copy";
-import { baseName } from "../fs/types";
 import type { Settings } from "../settings";
-import { addRecent } from "../settings";
-import { useApp } from "../state";
-import { openVault } from "../vault";
+import { openCompany, useApp } from "../state";
 
 /** Welcome.html (F-02 + F-03). */
 export function Welcome() {
@@ -22,14 +19,7 @@ export function Welcome() {
 
   async function open(root: string) {
     try {
-      const v = await openVault(platform.fs, root, app.ctx);
-      const name = baseName(v.root);
-      await app.setSettings({
-        ...settings,
-        recentVaults: addRecent(settings.recentVaults, { name, root: v.root }),
-      });
-      app.setVault(v);
-      app.go({ name: "home" });
+      await openCompany(app, root);
     } catch (e) {
       setErrors([(e as Error).message]);
     }

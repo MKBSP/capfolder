@@ -1,9 +1,12 @@
-import { act, render, screen } from "@testing-library/react";
+import { builders } from "@capfolder/core";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
 import { App } from "./App";
 import { TERMS_VERSION } from "./copy";
+import { acmePlatform } from "./test/acme";
 import { fakePlatform } from "./test/fakePlatform";
+import { createVault } from "./vault";
 
 test("first run with no vault starts at Welcome", async () => {
   render(<App platform={fakePlatform().platform} />);
@@ -42,7 +45,7 @@ test("first run: no lock → skip email → create company → start choice → 
   await userEvent.type(screen.getByLabelText("Incorporated"), "2026-01-02");
   await userEvent.click(screen.getByRole("button", { name: "Create folder" }));
   expect(await screen.findByText("How do you want to start?")).toBeInTheDocument();
-  expect(fs.existsSync("/home/me/Documents/Test Co/events.jsonl")).toBe(true);
+  expect(fs.existsSync("/home/me/Documents/capfolder/Test Co/events.jsonl")).toBe(true);
   expect(JSON.parse(fs.readSync("/appdata/settings.json")).recentVaults[0].name).toBe("Test Co");
   await userEvent.click(screen.getByRole("button", { name: /Start from zero/ }));
   expect(await screen.findByText(/wizard|Authorized shares/)).toBeInTheDocument();
@@ -96,4 +99,40 @@ test("Welcome asks to accept the terms; the usage-count details live in the term
   await userEvent.click(screen.getByRole("button", { name: "Continue" }));
   expect(await screen.findByRole("button", { name: "Skip for now" })).toBeInTheDocument();
   expect(JSON.parse(fs.readSync("/appdata/settings.json")).termsAccepted).toBe(TERMS_VERSION);
+});
+
+test("company switcher: lists companies, switches, and adds a company", async () => {
+  const { platform, fs, root } = acmePlatform();
+  const ctx = { now: () => new Date(), newId: () => builders.newId("evt"), deviceId: "dev_t" };
+  const beta = await createVault(fs, ctx, {
+    parent: "/home/me/Documents/capfolder",
+    company: { name: "Beta Co", formationDate: "2026-01-02" },
+  });
+  const settings = JSON.parse(fs.readSync("/appdata/settings.json"));
+  settings.recentVaults.push({ name: "Beta Co", root: beta.root });
+  fs.writeSync("/appdata/settings.json", JSON.stringify(settings));
+  render(<App platform={platform} />);
+
+  const trigger = await screen.findByRole("button", { name: /^Acme Inc\./ });
+  expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+  await userEvent.click(trigger);
+  const menu = screen.getByRole("menu");
+  expect(within(menu).getByRole("menuitem", { name: /Acme/ })).toHaveAttribute("aria-current", "true");
+  expect(within(menu).getByRole("menuitem", { name: /Beta Co/ })).not.toHaveAttribute("aria-current");
+  await userEvent.keyboard("{Escape}");
+  expect(screen.queryByRole("menu")).toBeNull();
+  await userEvent.click(trigger);
+  await userEvent.click(document.body);
+  expect(screen.queryByRole("menu")).toBeNull();
+
+  await userEvent.click(trigger);
+  await userEvent.click(screen.getByRole("menuitem", { name: /Beta Co/ }));
+  const betaTrigger = await screen.findByRole("button", { name: /^Beta Co/ });
+  expect(
+    JSON.parse(fs.readSync("/appdata/settings.json")).recentVaults.map((r: { root: string }) => r.root),
+  ).toEqual([beta.root, root]);
+
+  await userEvent.click(betaTrigger);
+  await userEvent.click(screen.getByRole("menuitem", { name: "Add a company…" }));
+  expect(await screen.findByLabelText("Legal name")).toBeInTheDocument();
 });

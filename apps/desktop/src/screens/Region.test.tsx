@@ -75,7 +75,7 @@ test("first run: country on Welcome, then the company's country sets its currenc
   await userEvent.type(screen.getByLabelText("Incorporated"), "2026-01-02");
   await userEvent.click(screen.getByRole("button", { name: "Create folder" }));
   await screen.findByText("How do you want to start?");
-  const root = "/home/me/Documents/Exemplo Lda";
+  const root = "/home/me/Documents/capfolder/Exemplo Lda";
   expect(JSON.parse(fs.readSync(`${root}/capfolder.json`)).currency).toBe("EUR");
   const issuer = fs
     .readSync(`${root}/events.jsonl`)
@@ -127,7 +127,7 @@ test("Portugal end to end: the wizard's defaults parse with comma decimals, labe
   await userEvent.type(screen.getByLabelText(/Discount/), "33,3");
   await userEvent.click(screen.getByRole("button", { name: /Save/ }));
   await screen.findByText("Fully diluted");
-  const log = fs.readSync("/home/me/Documents/Exemplo Lda/events.jsonl");
+  const log = fs.readSync("/home/me/Documents/capfolder/Exemplo Lda/events.jsonl");
   expect(log).toContain('"share_price":{"amount":"0.0001","currency":"EUR"}');
   expect(log).toContain('"conversion_discount":"0.333"');
 });

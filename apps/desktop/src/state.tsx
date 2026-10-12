@@ -2,11 +2,12 @@
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
 import { createContext, type ReactNode, useContext, useMemo, useRef, useState } from "react";
 import { configureFormat, todayIso } from "./fmt";
+import { baseName } from "./fs/types";
 import type { AppUpdate, Platform } from "./platform";
 import { regionOf } from "./regions";
 import { BUNDLED_RULES, type RulesPack } from "./rules";
-import type { Settings } from "./settings";
-import { appendToVault, type Vault } from "./vault";
+import { addRecent, type Settings } from "./settings";
+import { appendToVault, openVault, type Vault } from "./vault";
 
 export type Route =
   | { name: "welcome" | "email" | "create" | "start" | "wizard" | "home" | "people" | "import" }
@@ -125,4 +126,15 @@ export function AppProvider(p: {
     },
   };
   return <Ctx.Provider value={app}>{p.children}</Ctx.Provider>;
+}
+
+/** Opens a company folder, puts it first in the recent list, then shows its cap table. Throws a plain-language error. */
+export async function openCompany(app: App, root: string) {
+  const v = await openVault(app.platform.fs, root, app.ctx);
+  await app.setSettings((s) => {
+    const name = s.recentVaults.find((r) => r.root === v.root)?.name ?? baseName(v.root);
+    return { ...s, recentVaults: addRecent(s.recentVaults, { name, root: v.root }) };
+  });
+  app.setVault(v);
+  app.go({ name: "home" });
 }

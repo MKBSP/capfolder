@@ -1,8 +1,8 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { type BackupStatus, backupStatus } from "../backup";
 import { baseName } from "../fs/types";
-import { type Route, useApp } from "../state";
-import { Chip, Logo } from "./ui";
+import { openCompany, type Route, useApp } from "../state";
+import { Chip, Logo, Menu } from "./ui";
 
 const NAV: { label: string; route: Route }[] = [
   { label: "Cap table", route: { name: "home" } },
@@ -14,8 +14,10 @@ const NAV: { label: string; route: Route }[] = [
 
 /** Main.html header: company, folder, backup chip, nav, then screen actions on the right. */
 export function MainHeader({ children }: { children?: ReactNode }) {
-  const { vault, route, go, platform, latest } = useApp();
+  const app = useApp();
+  const { vault, route, go, platform, latest } = app;
   const [backup, setBackup] = useState<BackupStatus | null>(null);
+  const [openError, setOpenError] = useState<string | null>(null);
   useEffect(() => {
     if (vault) backupStatus(vault.root, (p) => platform.fs.exists(p)).then(setBackup);
   }, [vault, platform]);
@@ -23,10 +25,32 @@ export function MainHeader({ children }: { children?: ReactNode }) {
   return (
     <header className="app-header">
       <Logo />
-      <div>
-        <div style={{ fontWeight: 600 }}>{name}</div>
-        <div className="mono meta">{vault?.root.replace(/^\/Users\/[^/]+/, "~")}</div>
-      </div>
+      <Menu
+        className="switcher"
+        align="left"
+        label={
+          <>
+            <span style={{ display: "block", fontWeight: 600 }}>{name}</span>
+            <span className="mono meta" style={{ display: "block" }}>
+              {vault?.root.replace(/^\/Users\/[^/]+/, "~")}
+            </span>
+          </>
+        }
+        items={[
+          ...app.settings.recentVaults.map((r) => ({
+            id: r.root,
+            label: r.name,
+            current: r.root === vault?.root,
+            onClick: () => {
+              if (r.root === vault?.root) return;
+              setOpenError(null);
+              openCompany(app, r.root).catch((e) => setOpenError(`Couldn't open ${r.name}: ${e.message}`));
+            },
+          })),
+          { label: "Add a company…", onClick: () => go({ name: "create" }) },
+        ]}
+      />
+      {openError ? <Chip tone="amber">{openError}</Chip> : null}
       {backup ? (
         backup.backedUp ? (
           <Chip tone="green">Backed up · {backup.by}</Chip>

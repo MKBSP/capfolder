@@ -4,7 +4,7 @@ import { DateInput } from "../components/DateInput";
 import { CompanyPlace } from "../components/RegionFields";
 import { ErrorList, Stepper } from "../components/ui";
 import { todayIso } from "../fmt";
-import { join } from "../fs/types";
+import { baseName, join } from "../fs/types";
 import { regionOf } from "../regions";
 import { addRecent } from "../settings";
 import { useApp } from "../state";
@@ -29,7 +29,7 @@ export function CreateCompany() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    platform.documentDir().then((d) => setParent((p) => p ?? d));
+    platform.documentDir().then((d) => setParent((p) => p ?? join(d, "capfolder")));
     platform.homeDir().then((h) => suggestedFolders(h, (p) => platform.fs.exists(p)).then(setSynced));
   }, [platform]);
   const folder = parent ? join(parent, name.trim() || "Company") : "";
@@ -128,11 +128,16 @@ export function CreateCompany() {
         <div className="card tight">
           <div className="meta">We'll create</div>
           <pre className="mono small" style={{ margin: "6px 0 0" }}>
-            {`${name.trim() || "Company"}/\n├── README.txt\n├── AGENTS.md\n├── events.jsonl\n├── captable.csv\n└── docs/`}
+            {`${parent ? baseName(parent) : ""}/\n└── ${name.trim() || "Company"}/\n    ├── README.txt\n    ├── AGENTS.md\n    ├── events.jsonl\n    ├── captable.csv\n    └── docs/`}
           </pre>
         </div>
         <ErrorList errors={errors} />
         <div className="row" style={{ justifyContent: "flex-end" }}>
+          {app.vault ? (
+            <button type="button" className="btn" onClick={() => app.go({ name: "home" })}>
+              Cancel
+            </button>
+          ) : null}
           <button className="btn primary" type="submit" disabled={busy}>
             Create folder
           </button>

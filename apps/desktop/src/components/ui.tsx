@@ -141,35 +141,62 @@ export function ShowMath({ math }: { math: Record<string, string> }) {
   );
 }
 
+/** A button that opens a list of actions. Escape or a click elsewhere closes it. */
 export function Menu(p: {
   label: ReactNode;
-  items: { label: string; onClick(): void }[];
+  items: { label: string; onClick(): void; id?: string; current?: boolean }[];
   primary?: boolean;
+  /** Replaces the button look (e.g. the header's company switcher). */
+  className?: string;
+  align?: "left";
 }) {
   const [open, setOpen] = useState(false);
+  const box = useRef<HTMLSpanElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: MouseEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      trigger.current?.focus();
+    };
+    document.addEventListener("mousedown", away);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", away);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
   return (
-    <span style={{ position: "relative" }}>
+    <span ref={box} style={{ position: "relative" }}>
       <button
         type="button"
-        className={`btn ${p.primary ? "primary" : ""}`}
+        ref={trigger}
+        className={p.className ?? `btn ${p.primary ? "primary" : ""}`}
         onClick={() => setOpen(!open)}
+        aria-haspopup="menu"
         aria-expanded={open}
       >
         {p.label}
       </button>
       {open ? (
-        <div className="menu" role="menu">
+        <div className={`menu ${p.align ?? ""}`} role="menu">
           {p.items.map((i) => (
             <button
               type="button"
               role="menuitem"
-              key={i.label}
+              key={i.id ?? i.label}
+              aria-current={i.current || undefined}
               onClick={() => {
                 setOpen(false);
                 i.onClick();
               }}
             >
               {i.label}
+              {i.current ? <span className="muted"> ✓</span> : null}
             </button>
           ))}
         </div>

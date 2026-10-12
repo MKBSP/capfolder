@@ -40,8 +40,10 @@ test("wizard: two founders, a pool and a SAFE → saved cap table", async () => 
   expect(within(live).getByText("50.00%")).toBeInTheDocument();
   expect(within(live).getByText("12.50%")).toBeInTheDocument();
   await userEvent.click(screen.getByRole("button", { name: "Save cap table" }));
-  await waitFor(() => expect(fs.readSync("/home/me/Documents/Test Co/captable.csv")).toContain("Ana"));
-  const csv = fs.readSync("/home/me/Documents/Test Co/captable.csv");
+  await waitFor(() =>
+    expect(fs.readSync("/home/me/Documents/capfolder/Test Co/captable.csv")).toContain("Ana"),
+  );
+  const csv = fs.readSync("/home/me/Documents/capfolder/Test Co/captable.csv");
   expect(csv).toContain("Ana,common,Common,4000000,50.00");
   expect(csv).toContain("Bo,common,Common,3000000,37.50,3000000,0");
   expect(csv).toContain("Y Combinator,safe,,,,,,500000,10000000,,5.00,missing");

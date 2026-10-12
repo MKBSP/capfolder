@@ -401,6 +401,23 @@ tr.click {
   cursor: pointer;
   color: var(--ink);
 }
+.menu.left {
+  left: 0;
+  right: auto;
+  transform-origin: top left;
+}
+.switcher {
+  display: block;
+  text-align: left;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 @keyframes pop {
   from {
     opacity: 0;
@@ -466,6 +483,7 @@ dialog.modal::backdrop {
   .opt:hover:not(.off) {
     border-color: var(--green-600);
   }
+  .switcher:hover,
   .menu button:hover {
     background: var(--pill);
   }
