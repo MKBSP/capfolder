@@ -28,7 +28,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .wrap{max-width:1160px;margin:0 auto;padding:0 24px;box-sizing:border-box}
 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
-.h2{font-weight:600;font-size:46px;line-height:1.08;letter-spacing:-0.03em;margin:0}
+.h2{font-weight:600;font-size:clamp(32px,7vw,46px);line-height:1.08;letter-spacing:-0.03em;margin:0}
 .lead{font-size:18px;line-height:1.6;margin:0;color:#3A3E46}
 
 /* buttons */
@@ -141,6 +141,13 @@ a{color:#1F6F4A}a:hover{color:#16543A}
   .reveal,.reveal2,.reveal3,.msg1,.msg2,.msg3,.msg4{animation:none}
   .appwin,.folder{transition:opacity 200ms ease}
 }
+@media (max-width:640px){
+  .node{width:96px;margin-left:-48px;font-size:12px}
+  .nodeicon{width:48px;height:48px;border-radius:12px}
+  .rail{top:52px}.mover{top:38px}
+  .drow{padding:0 14px;font-size:13px}.raw{font-size:12px}
+  #pause-motion{bottom:10px;left:10px;padding:7px 10px;font-size:12px}
+}
 </style>
 </head>
 <body>
@@ -172,7 +179,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
         <span style="width: 8px; height: 8px; border-radius: 50%; background: #4FBF85; box-shadow: 0 0 0 3px #DDF1E5"></span>
         100% open source · AGPL-3.0 →
       </a>
-      <h1 style="font-weight: 600; font-size: 80px; line-height: 1.02; letter-spacing: -0.04em; margin: 28px auto 0 auto; max-width: 940px; isolation: isolate">
+      <h1 style="font-weight: 600; font-size: clamp(40px, 10.5vw, 80px); line-height: 1.02; letter-spacing: -0.04em; margin: 28px auto 0 auto; max-width: 940px; isolation: isolate">
         <span class="w" style="animation-delay: 80ms">Your</span> <span class="w" style="animation-delay: 140ms">cap</span> <span class="w" style="animation-delay: 200ms">table,</span> <span class="w" style="animation-delay: 260ms">in</span> <span class="w" style="animation-delay: 320ms">a</span> <span class="w mark" style="animation-delay: 380ms">folder you own.</span>
       </h1>
       <p class="lead fade-in" style="margin: 26px auto 0 auto; max-width: 620px; font-size: 20px; animation-delay: 650ms">Issue SAFEs and options, track everyone's vesting, collect signatures. Plain files on your computer. Investors sign from any browser.</p>
@@ -215,7 +222,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </header>
 
-  <section class="wrap fade-in" aria-label="Live demo: sorting a messy folder" style="padding-bottom: 96px; animation-delay: 1000ms">
+  <section class="wrap fade-in" aria-label="Live demo: sorting a messy folder" style="padding-bottom: clamp(56px, 12vw, 96px); animation-delay: 1000ms">
     <div class="demo">
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 0 22px; height: 56px; border-bottom: 1px solid #E4E4E0; background: #FBFBFA">
         <span style="display: flex; gap: 6px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span></span>
@@ -235,7 +242,11 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     <p style="text-align: center; margin: 18px 0 0 0; font-size: 14px; color: #5B606B">Any file name, any layout. Read on your computer, matched to your cap table.</p>
   </section>
 
-  <section aria-label="Built on open source" style="padding-bottom: 104px">
+  <section class="wrap reveal" aria-label="What Capfolder is" style="padding-bottom: 72px">
+    <p style="max-width: 760px; margin: 0 auto; text-align: center; font-size: clamp(18px, 2.4vw, 22px); line-height: 1.55; color: #3A3E46">Capfolder does what <b style="font-weight: 600; color: #111311">Carta, Pulley, Cake Equity, Ledgy, Eqvista</b> and every other cap table and stakeholder platform do. The difference: <b style="font-weight: 600; color: #111311">it's free</b>, <b style="font-weight: 600; color: #111311">your data stays on your own devices</b>, and you can <b style="font-weight: 600; color: #111311">plug in your own AI</b> to make the annoying tasks disappear.</p>
+  </section>
+
+  <section aria-label="Built on open source" style="padding-bottom: clamp(56px, 12vw, 104px)">
     <div class="eyebrow" style="text-align: center; color: #5B606B; margin-bottom: 22px">Built on open source</div>
     <div class="marquee">
       <div class="track">
@@ -245,7 +256,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section id="story" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: 112px; padding-bottom: 112px">
+  <section id="story" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
       <div style="flex: 1 1 440px; min-width: 0" class="reveal">
         <div class="eyebrow" style="color: #1F6F4A">Why we built this</div>
@@ -273,7 +284,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section class="wrap" style="padding-top: 112px; padding-bottom: 112px">
+  <section class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="reveal" style="max-width: 640px">
       <div class="eyebrow" style="color: #1F6F4A">What it does</div>
       <h2 class="h2" style="margin-top: 14px">Everything Pulley did that you actually used.</h2>
@@ -330,7 +341,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section id="compare" class="wrap" style="padding-top: 112px; padding-bottom: 112px">
+  <section id="compare" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="reveal" style="max-width: 760px">
       <div class="eyebrow" style="color: #1F6F4A">Compare</div>
       <h2 class="h2" style="margin-top: 14px">Rent your cap table, or own it.</h2>
@@ -350,7 +361,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     <p style="margin: 14px 0 0 0; font-size: 13px; color: #5B606B; line-height: 1.55">Features vary by vendor and plan. Free tiers: Cake Equity ≤5, Eqvista ≤20, Carta Launch ≤25 stakeholders (and under $1M raised), Ledgy ≤25; Mantle has a free plan. Paid entry points: Cake $1,000/yr, Mantle $1,200/yr, Ledgy from €5,000/yr; Carta doesn't publish prices, so its figures are from Vendr purchase data (Feb 2026). AngelList stopped taking new cap-table customers in 2026. Checked October 2026; check each vendor before deciding. Spotted something wrong? <a href="https://github.com/MKBSP/capfolder/issues">Open an issue</a>.</p>
   </section>
 
-  <section id="signing" style="background: #F3F1F9; padding-top: 112px; padding-bottom: 112px">
+  <section id="signing" style="background: #F3F1F9; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="wrap">
       <div class="reveal" style="max-width: 760px">
         <div class="eyebrow" style="color: #4E3F86">Signatures</div>
@@ -384,7 +395,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section id="ai" class="wrap" style="padding-top: 112px; padding-bottom: 112px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
+  <section id="ai" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px); display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
     <div class="reveal" style="flex: 1 1 380px; min-width: 0">
       <div class="eyebrow" style="color: #1F6F4A">Bring your own AI</div>
       <h2 class="h2" style="margin-top: 14px">Plug in your local AI. Give your folder superpowers.</h2>
@@ -405,7 +416,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: 112px; padding-bottom: 112px">
+  <section style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="wrap">
       <div class="reveal" style="max-width: 720px">
         <div class="eyebrow" style="color: #1F6F4A">Try it</div>
@@ -440,7 +451,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section id="open" class="wrap" style="padding-top: 112px; padding-bottom: 112px">
+  <section id="open" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="reveal" style="max-width: 760px">
       <div class="eyebrow" style="color: #1F6F4A">Open source</div>
       <h2 class="h2" style="margin-top: 14px">Every line is public. Fork it, audit it, run it yourself.</h2>
@@ -466,7 +477,7 @@ cd capfolder/apps/relay
     </div>
   </section>
 
-  <section id="thanks" class="wrap" style="padding-bottom: 112px">
+  <section id="thanks" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="reveal">
       <div class="eyebrow" style="color: #1F6F4A">Standing on shoulders</div>
       <h2 class="h2" style="margin-top: 14px">Open source we use, with thanks.</h2>
@@ -494,7 +505,7 @@ cd capfolder/apps/relay
     <p style="margin: 14px 0 0 0; font-size: 13px; color: #5B606B">Every package with its license: <a href="https://github.com/MKBSP/capfolder/blob/main/THIRD_PARTY_LICENSES.md">THIRD_PARTY_LICENSES.md</a>.</p>
   </section>
 
-  <section id="faq" class="wrap" style="padding-bottom: 112px">
+  <section id="faq" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
     <h2 class="h2 reveal">Questions</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px 56px; margin-top: 32px">
       <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Who can see my data?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Your cap table and documents stay on your computer. A document you send for signature sits on the relay until it's signed, and whoever runs the relay could read it (self-host it if that matters). The app sends an anonymous install count; turn it off in Settings. Details below.</p></div>
@@ -505,10 +516,10 @@ cd capfolder/apps/relay
     </div>
   </section>
 
-  <section style="background: #1F6F4A; color: #fff; padding-top: 120px; padding-bottom: 120px; text-align: center; position: relative; overflow: hidden">
+  <section style="background: #1F6F4A; color: #fff; padding-top: clamp(56px, 12vw, 120px); padding-bottom: clamp(56px, 12vw, 120px); text-align: center; position: relative; overflow: hidden">
     <div aria-hidden="true" style="position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1px); background-size: 22px 22px"></div>
     <div class="wrap reveal" style="position: relative">
-      <h2 class="h2" style="font-size: 60px">Own your cap table.</h2>
+      <h2 class="h2" style="font-size: clamp(36px, 9vw, 60px)">Own your cap table.</h2>
       <p class="lead" style="color: #D6EBDD; margin: 18px auto 0 auto; max-width: 520px">Free, open source, on your computer.</p>
       <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px">
         <a href="#download" class="btn" style="background: #fff; color: #16543A">Download for macOS</a>
@@ -517,7 +528,7 @@ cd capfolder/apps/relay
     </div>
   </section>
 
-  <section id="privacy" class="wrap" style="padding-bottom: 96px">
+  <section id="privacy" class="wrap" style="padding-bottom: clamp(56px, 12vw, 96px)">
     <h2 class="h2" style="font-size: 32px">Privacy</h2>
     <div style="max-width: 760px; font-size: 15px; line-height: 1.65; color: #3A3E46">
       <p><b>This page.</b> Fonts and images come from this site. Visits are counted with <a href="https://plausible.io/data-policy">Plausible</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
