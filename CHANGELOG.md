@@ -2,7 +2,17 @@
 
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
-## [Unreleased]
+## [0.1.1] — 2026-10-12
+### Added
+- Company switcher: click the company name (top left) to switch companies, add one, or open a company folder.
+- New companies go in ~/Documents/capfolder/<Company>.
+- Every company folder gets an AGENTS.md (and CLAUDE.md) so your own AI assistant can work with it safely.
+### Changed
+- OCF imports with records Capfolder can't apply yet (conversions, splits, ...) are refused with a list, instead of
+  silently skipped.
+- Signing: 5 documents per founder per day on the hosted relay.
+
+## [0.1.0] — 2026-10-12 (first beta)
 
 ### Added (2026-10-11)
 - Transfer shares or a SAFE to someone else (Person → Transfer…): vesting carries over, part of a holding splits in two.
