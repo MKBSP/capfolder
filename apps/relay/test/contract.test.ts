@@ -1,4 +1,5 @@
-// Against the real local Documenso (docker/compose.dev.yml + dev-account.sh). Opt in: RELAY_CONTRACT=1 pnpm test
+// Against a real Documenso (docker/compose.dev.yml + dev-account.sh). Opt in: RELAY_CONTRACT=1 pnpm test
+// DOCUMENSO_URL / DOCUMENSO_API_TOKEN in the environment win over docker/.local/relay.env (e.g. the hosted stack).
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { createApp } from "../src/app.ts";
@@ -19,7 +20,9 @@ const env = Object.fromEntries(
 );
 
 describe.skipIf(!process.env.RELAY_CONTRACT)("contract: real Documenso", () => {
-  const doc = httpDocumenso(env.DOCUMENSO_URL!, env.DOCUMENSO_API_TOKEN!);
+  // this body runs even when skipped, and the env file is absent in CI: never crash here
+  const base = process.env.DOCUMENSO_URL ?? env.DOCUMENSO_URL ?? "http://localhost:3100";
+  const doc = httpDocumenso(base, process.env.DOCUMENSO_API_TOKEN ?? env.DOCUMENSO_API_TOKEN ?? "");
   const app = createApp({ documenso: doc, secret: "s", now: () => Date.now(), sendMail: async () => {} });
   const me = "founder@capfolder.local";
   const auth = { Authorization: `Bearer ${makeToken("s", me, Date.now())}` };
@@ -56,7 +59,7 @@ describe.skipIf(!process.env.RELAY_CONTRACT)("contract: real Documenso", () => {
     const url = (await (await app.request(`/envelopes/${id}/signing-url`, { headers: auth })).json()) as {
       url: string;
     };
-    expect(url.url).toMatch(/^http:\/\/localhost:3100\/sign\//);
+    expect(url.url.startsWith(`${base}/sign/`)).toBe(true);
     expect((await app.request(`/envelopes/${id}/remind`, { method: "POST", headers: auth })).status).toBe(
       200,
     );

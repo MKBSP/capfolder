@@ -28,8 +28,14 @@ case "${1:-}" in
   resume) dc exec relay rm -f data/PAUSED && echo "Resumed." ;;
   account)
     # The relay's own Documenso login, made once while sign-up is briefly open; then sign-up closes again.
+    # Sign-up must never be open to the internet: the tunnel goes down first, and sign-up closes again on any exit,
+    # error or Ctrl+C included (the tunnel stays down until ./host.sh up).
+    docker compose --env-file .host/host.env -f compose.host.yml --profile tunnel stop tunnel >/dev/null 2>&1 || true
+    # (Subshells: in sh, "VAR=x function" keeps VAR set after the call, which once left sign-up open.)
+    trap '(export DISABLE_SIGNUP=true; dc up -d documenso >/dev/null 2>&1) || echo "Run ./host.sh up now: sign-up may still be open." >&2' EXIT
+    trap 'exit 1' INT TERM
     # local address while we log in: with the https one its cookies are "secure" and plain localhost drops them
-    SIGN_URL=http://localhost:3200 DISABLE_SIGNUP=false dc up -d database documenso
+    (export SIGN_URL=http://localhost:3200 DISABLE_SIGNUP=false; dc up -d database documenso)
     D=http://localhost:3200
     printf 'waiting for Documenso'
     until curl -sf "$D/api/health" >/dev/null; do printf .; sleep 3; done; echo
@@ -53,7 +59,6 @@ case "${1:-}" in
     rm -f "$JAR"
     [ -n "$TOKEN" ] || { echo "Couldn't create the API token (see ./host.sh logs)." >&2; exit 1; }
     set_env DOCUMENSO_API_TOKEN "$TOKEN"
-    dc up -d documenso # sign-up closed again
-    echo "Relay account ready. Next: ./host.sh up" ;;
+    echo "Relay account ready (sign-up closes now). Next: ./host.sh up" ;;
   *) echo "usage: ./host.sh up | down | status | logs | account | pause | resume" >&2; exit 1 ;;
 esac
