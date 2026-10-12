@@ -153,7 +153,7 @@ brand/            logo and icons
 
 Bug reports and pull requests are welcome: [open an issue](https://github.com/MKBSP/capfolder/issues/new/choose) (please don't attach a real cap table). Security issues: see [SECURITY.md](SECURITY.md).
 
-Contributions need a CLA ([individual](CLA.md), [company](CCLA.md)); CLA Assistant asks on your first pull request. The golden tests in `fixtures/` gate CI: never edit an expected output to make a test pass.
+Contributions need a CLA ([individual](CLA.md), [company](CCLA.md)); CLA Assistant asks on your first pull request. Why a CLA: the hosted signing relay runs on the maintainer's server and costs money. The CLA keeps the option to fund it later (a paid hosted plan or a commercial licence) instead of shutting it down. The app itself stays AGPL and free. The golden tests in `fixtures/` gate CI: never edit an expected output to make a test pass.
 
 ## License
 

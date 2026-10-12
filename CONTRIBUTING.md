@@ -14,4 +14,4 @@ pnpm test && pnpm typecheck && pnpm lint
 - Read `CLAUDE.md` for the full list of non-negotiable rules.
 
 ## CLA
-Your first pull request asks you to sign the Contributor License Agreement (`CLA.md`) through CLA Assistant. Contributing for a company? See `CCLA.md`.
+Your first pull request asks you to sign the Contributor License Agreement (`CLA.md`) through CLA Assistant. Contributing for a company? See `CCLA.md`. Why a CLA: the hosted signing relay runs on the maintainer's server and costs money. The CLA keeps the option to fund it later (a paid hosted plan or a commercial licence) instead of shutting it down. The app itself stays AGPL and free.
