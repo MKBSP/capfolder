@@ -73,6 +73,14 @@ describe("createVault", () => {
     expect((await verifyChain(fs.readSync(`${v.root}/events.jsonl`))).ok).toBe(true);
     expect(v.events.map((e) => e.type)).toEqual(["vault_created", "ISSUER"]);
   });
+  test("AI instructions: AGENTS.md (+ CLAUDE.md pointing to it) on create and open, never overwritten", async () => {
+    const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });
+    expect(fs.readSync(`${v.root}/AGENTS.md`)).toContain("Never edit events.jsonl");
+    expect(fs.readSync(`${v.root}/CLAUDE.md`)).toBe("@AGENTS.md\n");
+    fs.writeSync(`${v.root}/AGENTS.md`, "my own rules");
+    await openVault(fs, v.root, ctx);
+    expect(fs.readSync(`${v.root}/AGENTS.md`)).toBe("my own rules");
+  });
   test("a non-empty target folder gets a vault folder inside, never overwritten", async () => {
     fs.writeSync("/Users/me/Documents/Test Co/notes.txt", "mine");
     const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });

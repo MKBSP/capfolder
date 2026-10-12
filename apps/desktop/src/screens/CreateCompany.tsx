@@ -128,7 +128,7 @@ export function CreateCompany() {
         <div className="card tight">
           <div className="meta">We'll create</div>
           <pre className="mono small" style={{ margin: "6px 0 0" }}>
-            {`${name.trim() || "Company"}/\n├── README.txt\n├── events.jsonl\n├── captable.csv\n└── docs/`}
+            {`${name.trim() || "Company"}/\n├── README.txt\n├── AGENTS.md\n├── events.jsonl\n├── captable.csv\n└── docs/`}
           </pre>
         </div>
         <ErrorList errors={errors} />

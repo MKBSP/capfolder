@@ -22,6 +22,7 @@ import {
   withSignaturePage,
   zip,
 } from "@capfolder/core";
+import { agentsMd } from "./agents-md";
 import { day } from "./fmt";
 import { baseName, type Fs, join } from "./fs/types";
 import type { Envelope, RelayClient } from "./signing";
@@ -130,6 +131,12 @@ async function writeDerived(
   }
   const next = { ...meta, captable_as_of: asOf };
   try {
+    // AI instructions: written once; the founder's own edits win
+    const company = events.find((e) => e.type === "ISSUER")?.data.legal_name ?? baseName(root);
+    if (!(await fs.exists(join(root, "AGENTS.md"))))
+      await fs.writeText(join(root, "AGENTS.md"), agentsMd(company));
+    if (!(await fs.exists(join(root, "CLAUDE.md"))))
+      await fs.writeText(join(root, "CLAUDE.md"), "@AGENTS.md\n");
     await fs.mkdir(join(root, "ocf"));
     const files = toOcfExport(events, { asOf, generatedAt: ctx.now().toISOString() });
     for (const [name, text] of Object.entries(files)) await fs.writeText(join(root, "ocf", name), text);
