@@ -12,5 +12,10 @@ export const tauriFs: Fs = {
   mkdir: (p) => tfs.mkdir(p, { recursive: true }),
   list: async (p) => (await tfs.readDir(p)).map((e) => e.name),
   rename: (a, b) => tfs.rename(a, b),
-  isSymlink: async (p) => (await tfs.exists(p)) && (await tfs.lstat(p)).isSymlink,
+  // lstat, not exists: exists follows the link, so a dangling one would read as "no file"
+  isSymlink: (p) =>
+    tfs.lstat(p).then(
+      (s) => s.isSymlink,
+      () => false,
+    ),
 };
