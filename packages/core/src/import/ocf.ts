@@ -1,3 +1,4 @@
+import { unappliedError } from "../append";
 import { fromOcfExport } from "../ocf-import";
 import type { EventDraft } from "../types";
 
@@ -7,7 +8,10 @@ export function ocfImportDrafts(
   vaultIssuerId: string | undefined,
 ): { drafts: EventDraft[] } | { errors: string[] } {
   const r = fromOcfExport(files);
-  if ("errors" in r || !vaultIssuerId) return r;
+  if ("errors" in r) return r;
+  const unapplied = unappliedError(r.drafts);
+  if (unapplied) return { errors: [unapplied] };
+  if (!vaultIssuerId) return r;
   return {
     drafts: r.drafts.map((d) => (d.type === "ISSUER" ? { ...d, data: { ...d.data, id: vaultIssuerId } } : d)),
   };

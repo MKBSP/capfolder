@@ -83,11 +83,33 @@ export async function appendEvent(log: string, draft: EventDraft, ctx: AppendCtx
 }
 
 /** Several drafts as one change: all are appended or none (e.g. a grant + its vesting start). */
+/** Why these drafts can't be saved: OCF types the reducer would skip. Asks the reducer itself, so it can't drift. */
+export function unappliedError(drafts: EventDraft[]): string | undefined {
+  const ocf = drafts.filter((d) => d.kind === "ocf");
+  const probe = ocf.map((d, i) => ({
+    seq: i,
+    id: `probe_${i}`,
+    ts: "0000-01-01T00:00:00Z",
+    kind: "ocf" as const,
+    type: d.type,
+    data: { ...d.data, date: "0000-01-01" },
+    meta: { source: "probe" },
+    prev: "",
+    hash: "",
+  }));
+  const unknown = reduce(probe, MAX_DATE).unknownEventTypes;
+  if (!unknown.length) return undefined;
+  const list = unknown.map((t) => `${t} (${ocf.filter((d) => d.type === t).length})`).join(", ");
+  return `Capfolder can't apply these records yet, so nothing was saved: ${list}. Priced rounds, SAFE conversions and splits are coming; until then the cap table would be wrong.`;
+}
+
 export async function appendEvents(
   log: string,
   drafts: EventDraft[],
   ctx: AppendCtx,
 ): Promise<{ ok: true; events: VaultEvent[]; text: string } | { ok: false; errors: string[] }> {
+  const unapplied = unappliedError(drafts);
+  if (unapplied) return { ok: false, errors: [unapplied] };
   let text = "";
   const events: VaultEvent[] = [];
   for (const draft of drafts) {

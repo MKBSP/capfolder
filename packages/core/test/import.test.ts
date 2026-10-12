@@ -306,3 +306,23 @@ test("blank rows in the middle are skipped, not the end of the import", () => {
   });
   expect(x.summary.fullyDiluted).toBe(15n);
 });
+
+test("an OCF export with a stock split is refused at import, with a plain reason", async () => {
+  const { toOcfExport } = await import("../src/ocf-export");
+  const { ocfImportDrafts } = await import("../src/import/ocf");
+  const { acmeEvents } = await import("./helpers");
+  const files = toOcfExport(acmeEvents(), { asOf: "2026-10-07", generatedAt: "2026-10-07T12:00:00Z" });
+  const tx = JSON.parse(files["Transactions.ocf.json"]!);
+  tx.items.push({
+    object_type: "TX_STOCK_CLASS_SPLIT",
+    id: "split_1",
+    date: "2026-06-01",
+    stock_class_id: "sc_common",
+    split_ratio: { numerator: "2", denominator: "1" },
+  });
+  files["Transactions.ocf.json"] = JSON.stringify(tx);
+  const r = ocfImportDrafts(files, undefined);
+  expect("errors" in r && r.errors[0]).toMatch(
+    /^Capfolder can't apply these records yet.*TX_STOCK_CLASS_SPLIT \(1\)/,
+  );
+});

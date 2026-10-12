@@ -133,3 +133,28 @@ test("a reversal can't be reversed (it would look like an undo but do nothing)",
     errors: ["A reversal can't be reversed. Enter what you need again instead."],
   });
 });
+
+test("OCF records the engine can't apply yet are refused up front, all listed, nothing written", async () => {
+  const { appendEvents } = await import("../src/append");
+  const tx = (type: string, id: string) => ({
+    kind: "ocf" as const,
+    type,
+    data: { object_type: type, id, date: "2026-01-01", security_id: "SAFE-1" },
+  });
+  const r = await appendEvents(
+    log,
+    [
+      stakeholder,
+      tx("TX_CONVERTIBLE_CONVERSION", "c1"),
+      tx("TX_CONVERTIBLE_CONVERSION", "c2"),
+      tx("TX_STOCK_CLASS_SPLIT", "s1"),
+    ],
+    ctx,
+  );
+  expect(r).toEqual({
+    ok: false,
+    errors: [
+      "Capfolder can't apply these records yet, so nothing was saved: TX_CONVERTIBLE_CONVERSION (2), TX_STOCK_CLASS_SPLIT (1). Priced rounds, SAFE conversions and splits are coming; until then the cap table would be wrong.",
+    ],
+  });
+});
