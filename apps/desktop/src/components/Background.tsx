@@ -126,7 +126,13 @@ export function Background() {
               await u.install();
               await app.platform.updater.relaunch();
             } catch (e) {
-              setError(`The update didn't install (${(e as Error).message ?? e}). Your data is unchanged.`);
+              const msg = String((e as Error).message ?? e);
+              // macOS: started from the opened .dmg, which can't be written to
+              setError(
+                /os error 30|read-only file system/i.test(msg)
+                  ? "Capfolder is running from the downloaded disk image, which can't be updated. Drag Capfolder to your Applications folder, eject the disk image, and open it from Applications. Your data is unchanged."
+                  : `The update didn't install (${msg}). Your data is unchanged.`,
+              );
             } finally {
               setBusy(false);
             }

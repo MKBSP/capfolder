@@ -62,6 +62,17 @@ describe("app updates (F-38)", () => {
   });
 });
 
+test("running from the disk image (macOS read-only): says to move the app to Applications", async () => {
+  boot(
+    { update: { version: "0.1.1", notes: "", installError: "Read-only file system (os error 30)" } },
+    { updates: "ask" },
+  );
+  await userEvent.click(await screen.findByRole("button", { name: "Update now" }));
+  expect(
+    await screen.findByText(/Capfolder is running from the downloaded disk image/, { exact: false }),
+  ).toBeTruthy();
+});
+
 test("Check now in Settings offers the update, even when updates are Off", async () => {
   const fp = boot({ update: { version: "0.1.1", notes: "" } }, { updates: "off" });
   await userEvent.click(await screen.findByRole("button", { name: "Settings" }));

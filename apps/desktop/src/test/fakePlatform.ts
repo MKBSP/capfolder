@@ -11,7 +11,7 @@ export function fakePlatform(
     /** What OCR "reads" from an image or a scanned page. */
     ocrText?: string;
     /** What the updater finds; installs are recorded in `updates`. */
-    update?: { version: string; notes: string } | null;
+    update?: { version: string; notes: string; installError?: string } | null;
     /** Where relay calls go (see fakeRelay); without one the app is "offline". */
     relay?: { fetch(url: string, init?: RequestInit): Promise<Response> };
   } = {},
@@ -66,7 +66,10 @@ export function fakePlatform(
           ? {
               ...u,
               download: async () => void updates.push(`download ${u.version}`),
-              install: async () => void updates.push(`install ${u.version}`),
+              install: async () => {
+                if (u.installError) throw new Error(u.installError);
+                updates.push(`install ${u.version}`);
+              },
             }
           : null;
       },

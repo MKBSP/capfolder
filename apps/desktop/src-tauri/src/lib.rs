@@ -85,7 +85,7 @@ mod tests {
         }
         let mut out = Vec::new();
         collect_documents(&d, 0, &mut out);
-        let names: Vec<_> = out.iter().map(|p| p.strip_prefix(&d).unwrap().to_string_lossy().into_owned()).collect();
+        let names: Vec<_> = out.iter().map(|p| p.strip_prefix(&d).unwrap().to_string_lossy().replace('\\', "/")).collect();
         assert_eq!(names, vec!["a.pdf", "sub/c.JPG"]);
         std::fs::remove_dir_all(&d).unwrap();
     }

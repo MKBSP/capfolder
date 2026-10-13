@@ -1,10 +1,9 @@
 # F-38 (docs/07): signed builds for every OS into a draft release with latest.json for the updater.
-# Push a tag like v0.1.1 (after bumping the version in package.json, Cargo.toml and tauri.conf.json), check the
-# draft on GitHub, then publish it: installed apps update to the latest published release.
+# Bump the version (package.json, Cargo.toml, tauri.conf.json), push, then run it: gh workflow run release.yml
+# (-f allow_unsigned=true for a beta). Check the draft on GitHub, then publish it: installed apps update to the latest
+# published release. No tag trigger: publishing creates the tag, which would start a second build.
 name: release
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
       allow_unsigned:

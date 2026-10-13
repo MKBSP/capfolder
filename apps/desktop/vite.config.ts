@@ -6,5 +6,6 @@ export default defineConfig({
   plugins: [react()],
   clearScreen: false,
   server: { port: 1420, strictPort: true, watch: { ignored: ["**/src-tauri/**"] } },
-  test: { environment: "jsdom", setupFiles: ["./src/test/setup.ts"] },
+  // whole-app UI tests take a few seconds on CI runners; 5 s (the default) timed out there
+  test: { environment: "jsdom", setupFiles: ["./src/test/setup.ts"], testTimeout: 20_000 },
 });

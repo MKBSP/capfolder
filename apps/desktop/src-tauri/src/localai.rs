@@ -69,7 +69,17 @@ pub async fn local_ai(port: u16, method: String, path: String, body: Option<Stri
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::net::TcpListener;
+    use std::net::{Shutdown, TcpListener};
+
+    /// Replies, then reads whatever the client still sends before closing: closing with unread input makes the OS
+    /// send a reset, which the client can see before it has read the reply (flaky on macOS CI).
+    fn answer(mut c: TcpStream, reply: &[u8]) {
+        let mut buf = [0u8; 1024];
+        let _ = c.read(&mut buf);
+        let _ = c.write_all(reply);
+        let _ = c.shutdown(Shutdown::Write);
+        let _ = c.read_to_end(&mut Vec::new());
+    }
 
     #[test]
     fn refuses_other_ports_and_bad_paths() {
@@ -81,10 +91,8 @@ mod tests {
         let l = TcpListener::bind("127.0.0.1:0").unwrap();
         let port = l.local_addr().unwrap().port();
         std::thread::spawn(move || {
-            let (mut c, _) = l.accept().unwrap();
-            let mut buf = [0u8; 1024];
-            let _ = c.read(&mut buf);
-            let _ = c.write_all(&reply);
+            let (c, _) = l.accept().unwrap();
+            answer(c, &reply);
         });
         port
     }
@@ -102,10 +110,8 @@ mod tests {
         let l = TcpListener::bind("127.0.0.1:0").unwrap();
         let port = l.local_addr().unwrap().port();
         std::thread::spawn(move || {
-            let (mut c, _) = l.accept().unwrap();
-            let mut buf = [0u8; 1024];
-            let _ = c.read(&mut buf);
-            c.write_all(b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n{\"models\":[]}").unwrap();
+            let (c, _) = l.accept().unwrap();
+            answer(c, b"HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n{\"models\":[]}");
         });
         let r = send(port, "POST", "/api/chat", Some("{}"), Duration::from_secs(2)).unwrap();
         assert_eq!((r.status, r.body.as_str()), (200, "{\"models\":[]}"));
