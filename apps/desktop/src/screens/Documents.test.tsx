@@ -56,3 +56,22 @@ test("every filed document is listed; rename it, then replace it with the signed
   expect(fp.fs.readSync(`${fp.root}/docs/safes/YC SAFE.pdf`)).toBe("%PDF-1.4 yc signed");
   expect(fp.fs.existsSync(`${fp.root}/docs/_removed/YC SAFE.pdf`)).toBe(true);
 });
+
+test("a missing document links to a free template; Series Seed copies into drafts/", async () => {
+  const fp = acmePlatform();
+  render(<App platform={fp.platform} />);
+  await userEvent.click(await screen.findByRole("button", { name: "Documents" }));
+  const bylaws = (await screen.findByText("Bylaws")).closest(".row") as HTMLElement;
+  await userEvent.click(within(bylaws).getByRole("button", { name: "Get a template" }));
+  expect(fp.opened).toEqual(["https://www.cooleygo.com/documents/"]);
+  const fundX = screen.getByText("Fund X · $250k").closest(".row") as HTMLElement;
+  await userEvent.click(within(fundX).getByRole("button", { name: "Get a template" }));
+  expect(fp.opened.at(-1)).toBe("https://www.ycombinator.com/documents");
+
+  const card = screen.getByRole("region", { name: "Templates" });
+  await userEvent.click(within(card).getByRole("button", { name: "Copy Series Seed to drafts/" }));
+  const ts = fp.fs.readSync(`${fp.root}/drafts/series-seed/Series Seed - Term Sheet.md`);
+  expect(ts).toContain("SERIES SEED PREFERRED STOCK");
+  expect(fp.fs.existsSync(`${fp.root}/drafts/series-seed/SOURCE.md`)).toBe(true);
+  expect(await within(card).findByText(/Copied 4 files to drafts\/series-seed/)).toBeInTheDocument();
+});

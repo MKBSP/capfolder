@@ -7,6 +7,7 @@ import { LawyerDialog } from "../components/LawyerDialog";
 import { SendDialog } from "../components/SendDialog";
 import { ErrorList, Field, Modal } from "../components/ui";
 import { useApp } from "../state";
+import { SERIES_SEED, TEMPLATE_LINKS } from "../templates";
 import { removeDocument, renameDocument, replaceDocument } from "../vault";
 
 /** Documents.html (F-26, F-27): the due-diligence checklist, attach and remove. */
@@ -137,13 +138,25 @@ export function Documents() {
                           </button>
                         </>
                       ) : (
-                        <button
-                          type="button"
-                          className="btn small"
-                          onClick={() => setAttach({ target: i.target, docType: i.docType })}
-                        >
-                          Attach
-                        </button>
+                        <>
+                          {TEMPLATE_LINKS[i.docType] ? (
+                            <button
+                              type="button"
+                              className="btn link small"
+                              title="Opens a free template in your browser"
+                              onClick={() => app.platform.openUrl(TEMPLATE_LINKS[i.docType]!)}
+                            >
+                              Get a template
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            className="btn small"
+                            onClick={() => setAttach({ target: i.target, docType: i.docType })}
+                          >
+                            Attach
+                          </button>
+                        </>
                       )}
                     </div>
                   ))}
@@ -151,6 +164,7 @@ export function Documents() {
               );
             })}
         </div>
+        <Templates />
         {all.length ? (
           <section className="card" aria-label="All documents" style={{ marginTop: 16 }}>
             <h2 style={{ marginTop: 0 }}>All documents</h2>
@@ -187,6 +201,54 @@ export function Documents() {
       />
       {remove ? <RemoveDialog item={remove} onClose={() => setRemove(null)} /> : null}
     </>
+  );
+}
+
+/** Starting points for a priced round: Series Seed (public domain) copied into drafts/ to fill in. */
+function Templates() {
+  const app = useApp();
+  const [done, setDone] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  if (!app.vault) return null;
+  const root = app.vault.root;
+  return (
+    <section className="card" aria-label="Templates" style={{ marginTop: 16 }}>
+      <h2 style={{ marginTop: 0 }}>Templates</h2>
+      <p className="small">
+        <b>Series Seed</b>: a standard set for a priced seed round (term sheet, investment agreement,
+        charter), public domain, by Fenwick &amp; West. Copied into your folder as text to fill in; have a
+        lawyer review it. SAFEs use Y Combinator's template (New → SAFE).
+      </p>
+      <div className="row">
+        <button
+          type="button"
+          className="btn small"
+          onClick={async () => {
+            setError(null);
+            try {
+              await app.platform.fs.mkdir(`${root}/drafts/series-seed`);
+              for (const [name, text] of Object.entries(SERIES_SEED))
+                await app.platform.fs.writeText(`${root}/drafts/series-seed/${name}`, text);
+              setDone(`Copied ${Object.keys(SERIES_SEED).length} files to drafts/series-seed.`);
+            } catch (e) {
+              setError(`Couldn't copy the templates: ${(e as Error).message ?? e}`);
+            }
+          }}
+        >
+          Copy Series Seed to drafts/
+        </button>
+        {done ? (
+          <button
+            type="button"
+            className="btn link small"
+            onClick={() => app.platform.reveal(`${root}/drafts/series-seed`)}
+          >
+            {done} Show
+          </button>
+        ) : null}
+      </div>
+      {error ? <ErrorList errors={[error]} /> : null}
+    </section>
   );
 }
 

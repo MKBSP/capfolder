@@ -47,6 +47,9 @@ This folder is the company's record. Capfolder (the desktop app) is the only thi
   the US) with file and page. Then tell the founder to record the termination in Capfolder.
 - "What do I still need to fix before our next round?" Rows with doc_status "missing", people without an IP
   assignment in docs/employees/ or docs/founders/, grants without a board consent, missing 83(b)s.
+- "Prepare the documents for our seed round." Start from the Series Seed set (public domain): Documents → Templates
+  copies it into drafts/series-seed/. Fill in the blanks from captable.csv and the term sheet; the founder's lawyer
+  reviews it. For founder stock, IP assignments, plans and consents, free forms: https://www.cooleygo.com/documents/
 - "How much will I own after a $2M round at $10M pre-money, with the SAFEs converting?" Show every step, use the
   caps and discounts from captable.csv, and say it's an estimate; the closing documents decide.
 - "Prepare the board consent for these option grants." Draft it in drafts/ from the grant details; the founder's

@@ -2,6 +2,14 @@
 
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
+## [Unreleased]
+### Added
+- Documents: "Get a template" next to each missing document (free forms from Cooley GO, Y Combinator, the IRS), and
+  the public-domain Series Seed documents (term sheet, investment agreement, charter) to copy into drafts/.
+- Switcher: "Open a company folder…".
+### Fixed
+- An update started from the opened .dmg now says to move Capfolder to Applications (macOS can't update it there).
+
 ## [0.1.1] — 2026-10-12
 ### Added
 - Company switcher: click the company name (top left) to switch companies, add one, or open a company folder.
