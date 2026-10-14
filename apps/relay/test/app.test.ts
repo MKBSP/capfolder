@@ -538,6 +538,19 @@ describe("wire instructions after signing", () => {
     ]);
   });
 
+  test("the kill switch and the relay-wide daily limit stop wire emails too", async () => {
+    const t = await completed();
+    const meta = { envelope_id: t.id, receipt: t.receipt, signers, title: "x", company: "Acme" };
+    const paused = setup({ paused: () => true });
+    paused.doc.envelopes.set(t.id, t.doc.envelopes.get(t.id)!);
+    expect((await wire(paused.app, meta)).status).toBe(503);
+    const full = setup({ limits: { totalPerDay: 1 } });
+    full.doc.envelopes.set(t.id, t.doc.envelopes.get(t.id)!);
+    expect((await wire(full.app, meta)).status).toBe(200);
+    expect((await wire(full.app, meta)).status).toBe(429);
+    expect(paused.mail).toEqual([]);
+  });
+
   test("a forged receipt, an added recipient or another founder sends nothing", async () => {
     const { app, id, receipt, mail } = await completed();
     const base = { envelope_id: id, receipt, signers, title: "x", company: "Acme" };

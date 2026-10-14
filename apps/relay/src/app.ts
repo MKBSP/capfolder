@@ -410,8 +410,13 @@ export function createApp(d: RelayDeps) {
       const got = Buffer.from(String(meta.receipt));
       if (got.length !== want.length || !timingSafeEqual(got, want))
         return c.json({ error: "Those people didn't sign that document with you." }, 403);
+      // same gates as /envelopes: the kill switch and both daily limits
+      if (d.paused?.())
+        return c.json({ error: "Sending is paused on the signing service. Try again later." }, 503);
       if (!sendsPerEmail.take(me))
         return c.json({ error: `That's ${perEmail} sends today, the daily limit. Try again tomorrow.` }, 429);
+      if (sendsTotal && !sendsTotal.take("all"))
+        return c.json({ error: "The signing service is at today's limit. Try again tomorrow." }, 429);
       const title = (meta.title ?? "document").trim().slice(0, 120);
       const company = (meta.company ?? "The company").trim().slice(0, 120);
       const attachments = [
