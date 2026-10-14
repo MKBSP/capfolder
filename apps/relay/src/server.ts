@@ -50,8 +50,18 @@ const app = createApp({
     await mkdir(dirname(file), { recursive: true });
     await appendFile(file, `${JSON.stringify(row)}\n`);
   },
-  sendMail: async (to, subject, text) => {
-    await mail.sendMail({ from, to, subject, text });
+  sendMail: async (to, subject, text, extra) => {
+    await mail.sendMail({
+      from,
+      to,
+      subject,
+      text,
+      replyTo: extra?.replyTo,
+      attachments: extra?.attachments?.map((a) => ({
+        filename: a.filename,
+        content: Buffer.from(a.content),
+      })),
+    });
   },
 });
 const port = Number(process.env.PORT ?? 8787);

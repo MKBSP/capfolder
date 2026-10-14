@@ -12,6 +12,7 @@ const APP_IGNORED = new Set([
   "envelope_sent",
   "envelope_signed",
   "envelope_voided",
+  "wire_sent",
   "doc_replaced",
 ]);
 

@@ -4,6 +4,7 @@ export { nextSecurityIdNumber } from "./builders";
 export * from "./captable-csv";
 export * from "./chain";
 export * from "./dates";
+export * from "./export/form";
 export * from "./export/lawyer";
 export * from "./export/pdf";
 export * from "./export/sheets";

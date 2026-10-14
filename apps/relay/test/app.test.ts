@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { createApp } from "../src/app.ts";
+import { createApp, type MailExtra } from "../src/app.ts";
 import { makeToken } from "../src/auth.ts";
 import { fakeDocumenso } from "../src/fake-documenso.ts";
 
@@ -7,14 +7,14 @@ const SECRET = "test-secret";
 let clock = Date.parse("2026-10-10T12:00:00Z");
 function setup(extra: Partial<Parameters<typeof createApp>[0]> = {}) {
   const doc = fakeDocumenso();
-  const mail: { to: string; text: string }[] = [];
+  const mail: { to: string; subject: string; text: string; extra?: MailExtra }[] = [];
   const app = createApp({
     ...extra,
     documenso: doc.api,
     secret: SECRET,
     now: () => clock,
-    sendMail: async (to, _subject, text) => {
-      mail.push({ to, text });
+    sendMail: async (to, subject, text, extra) => {
+      mail.push({ to, subject, text, extra });
     },
   });
   return { app, doc, mail };
@@ -477,5 +477,76 @@ describe("fair use on the hosted relay", () => {
     expect(r.status).toBe(503);
     expect((await r.json()).error).toBe("Sending is paused on the signing service. Try again later.");
     expect((await app.request(`/envelopes/${id}`, { headers: auth("mads@acme.example") })).status).toBe(200);
+  });
+});
+
+describe("wire instructions after signing", () => {
+  const pdf = (b: number[]) => new Blob([new Uint8Array(b)], { type: "application/pdf" });
+  async function completed() {
+    const t = setup();
+    const { id } = (await (await send(t.app)).json()) as { id: string };
+    t.doc.sign(id, "fund@y.example");
+    t.doc.sign(id, "mads@acme.example");
+    const s = (await (
+      await t.app.request(`/envelopes/${id}`, { headers: auth("mads@acme.example") })
+    ).json()) as {
+      receipt?: string;
+    };
+    return { ...t, id, receipt: s.receipt! };
+  }
+  const wire = (
+    app: ReturnType<typeof setup>["app"],
+    meta: Record<string, unknown>,
+    who = "mads@acme.example",
+  ) => {
+    const form = new FormData();
+    form.append("signed", pdf([37, 80, 68, 70, 1]), "signed.pdf");
+    form.append("wire", pdf([37, 80, 68, 70, 2]), "wire.pdf");
+    form.append("meta", JSON.stringify(meta));
+    return app.request("/wire", { method: "POST", body: form, headers: auth(who) });
+  };
+  const signers = [
+    { name: "Fund Y", email: "fund@y.example" },
+    { name: "Mads", email: "mads@acme.example" },
+  ];
+
+  test("a completed envelope's status carries a receipt; a pending one doesn't", async () => {
+    const t = setup();
+    const { id } = (await (await send(t.app)).json()) as { id: string };
+    const s = await (await t.app.request(`/envelopes/${id}`, { headers: auth("mads@acme.example") })).json();
+    expect(s).not.toHaveProperty("receipt");
+    expect((await completed()).receipt).toMatch(/^[\w-]{20,}$/);
+  });
+
+  test("emails every other signer both PDFs, replies go to the founder", async () => {
+    const { app, id, receipt, mail } = await completed();
+    const r = await wire(app, {
+      envelope_id: id,
+      receipt,
+      signers,
+      title: "SAFE · Fund Y",
+      company: "Acme Inc.",
+    });
+    expect(r.status).toBe(200);
+    expect(mail.map((m) => m.to)).toEqual(["fund@y.example"]);
+    expect(mail[0]!.subject).toBe("Acme Inc.: your signed SAFE · Fund Y and wire instructions");
+    expect(mail[0]!.text).toMatch(/confirm the bank details by phone/);
+    expect(mail[0]!.extra?.replyTo).toBe("mads@acme.example");
+    expect(mail[0]!.extra?.attachments?.map((a) => a.filename)).toEqual([
+      "SAFE · Fund Y (signed).pdf",
+      "Wire instructions.pdf",
+    ]);
+  });
+
+  test("a forged receipt, an added recipient or another founder sends nothing", async () => {
+    const { app, id, receipt, mail } = await completed();
+    const base = { envelope_id: id, receipt, signers, title: "x", company: "Acme" };
+    expect((await wire(app, { ...base, receipt: "nope" })).status).toBe(403);
+    expect(
+      (await wire(app, { ...base, signers: [...signers, { name: "Spam", email: "victim@x.example" }] }))
+        .status,
+    ).toBe(403);
+    expect((await wire(app, base, "other@founder.example")).status).toBe(403);
+    expect(mail).toEqual([]);
   });
 });

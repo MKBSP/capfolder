@@ -1,0 +1,251 @@
+{
+ "source": "https://www.ycombinator.com/documents (Pro Rata Side Letter)",
+ "license": "© Y Combinator Management, LLC. CC BY-ND 4.0 (https://creativecommons.org/licenses/by-nd/4.0/legalcode). Unmodified except for filled-in blanks.",
+ "header": "Version 1.0",
+ "footer": "© 2018 Y Combinator Management, LLC.  This form is made available under a Creative Commons Attribution-NoDerivatives 4.0 License (International): https://creativecommons.org/licenses/by-nd/4.0/legalcode.  You may modify this form so you can use it in transactions, but please do not publicly disseminate a modified version of the form without asking us first.",
+ "paragraphs": [
+  {
+   "align": "center",
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "[COMPANY NAME]",
+     "b": true
+    }
+   ]
+  },
+  {
+   "align": "center",
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "PRO RATA AGREEMENT",
+     "b": true
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": []
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "This agreement (this “"
+    },
+    {
+     "t": "Agreement",
+     "b": true
+    },
+    {
+     "t": "”) is entered into on or about [Date of Safe] in connection with the purchase by [Investor Name] (the “"
+    },
+    {
+     "t": "Investor",
+     "b": true
+    },
+    {
+     "t": "”) of that certain simple agreement for future equity with a “Post-Money Valuation Cap” (the “"
+    },
+    {
+     "t": "Investor’s",
+     "b": true
+    },
+    {
+     "t": " "
+    },
+    {
+     "t": "Safe",
+     "b": true
+    },
+    {
+     "t": "”) issued by [Company Name] (the “"
+    },
+    {
+     "t": "Company",
+     "b": true
+    },
+    {
+     "t": "”) on or about the date of this Agreement.  As a material inducement to the Investor’s investment, the Company agrees to the provisions set forth in this Agreement.  Capitalized terms used herein shall have the meanings set forth in the Investor’s Safe."
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "The Investor shall have the right to purchase its pro rata share of Standard Preferred Stock being sold in the Equity Financing (the “"
+    },
+    {
+     "t": "Pro Rata Right",
+     "b": true
+    },
+    {
+     "t": "”).  Pro rata share for purposes of this Pro Rata Right is the ratio of (x) the number of shares of Capital Stock issued from the conversion of all of the Investor’s Safes with a “Post-Money Valuation Cap” to (y) the Company Capitalization.  The Pro Rata Right described above shall automatically terminate upon the earlier of (i) the initial closing of the Equity Financing; (ii) immediately prior to the closing of a Liquidity Event; or (iii) immediately prior to the Dissolution Event.  "
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "Neither this Agreement nor the rights contained herein may be assigned, by operation of law or otherwise, by Investor without the prior written consent of the Company; "
+    },
+    {
+     "t": "provided, however",
+     "i": true
+    },
+    {
+     "t": ", that this Agreement and/or the rights contained herein may be assigned without the Company’s consent by the Investor to any other entity who directly or indirectly, controls, is controlled by or is under common control with the Investor, including, without limitation, any general partner, managing member, officer or director of the Investor, or any venture capital fund now or hereafter existing which is controlled by one or more general partners or managing members of, or shares the same management company with, the Investor.  "
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "Any provision of this Agreement may be amended, waived or modified upon the written consent of the Company and either (i) the holders of a majority of shares of Capital Stock issued from all Safes converted in connection with the Equity Financing held by the Investor and other Safe holders with Pro Rata Rights pursuant to agreements on the same form as this Agreement (available at http://ycombinator.com/documents), provided that such amendment, waiver or modification treats all such holders in the same manner, or (ii) the Investor.  The Company will promptly notify the Investor of any amendment, waiver or modification that the Investor did not consent to.  This Agreement is the form available at http://ycombinator.com/documents and the Company and the Investor agree that neither one has modified the form, except to fill in blanks and bracketed terms.  The choice of law governing any dispute or claim arising out of or in connection with this Agreement shall be consistent with that set forth in the Investor’s Safe. "
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": []
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "IN WITNESS WHEREOF, the undersigned have caused this Agreement to be duly executed and delivered."
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": []
+  },
+  {
+   "indent": 252,
+   "first": 0,
+   "runs": [
+    {
+     "t": "[COMPANY NAME]",
+     "b": true
+    }
+   ]
+  },
+  {
+   "indent": 261,
+   "first": 0,
+   "runs": []
+  },
+  {
+   "indent": 252,
+   "first": 0,
+   "runs": [
+    {
+     "t": "By:"
+    },
+    {
+     "t": "\t\t\t\t\t",
+     "u": true
+    }
+   ]
+  },
+  {
+   "indent": 261,
+   "first": 0,
+   "runs": [
+    {
+     "t": "\t["
+    },
+    {
+     "t": "name",
+     "i": true
+    },
+    {
+     "t": "]"
+    }
+   ]
+  },
+  {
+   "indent": 261,
+   "first": 27,
+   "runs": [
+    {
+     "t": "["
+    },
+    {
+     "t": "title",
+     "i": true
+    },
+    {
+     "t": "]"
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "\t\t\t"
+    },
+    {
+     "t": "[INVESTOR NAME]",
+     "b": true
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "\t\t\tBy:\t"
+    },
+    {
+     "t": "\t",
+     "u": true
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "\t\t\t\tName:"
+    },
+    {
+     "t": "\t",
+     "u": true
+    }
+   ]
+  },
+  {
+   "indent": 0,
+   "first": 0,
+   "runs": [
+    {
+     "t": "\t\t\tTitle:"
+    },
+    {
+     "t": "\t",
+     "u": true
+    }
+   ]
+  }
+ ]
+}

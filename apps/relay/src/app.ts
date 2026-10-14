@@ -1,5 +1,5 @@
 // The relay API (docs/05-signing.md). Thin on purpose: Documenso does the signing; this checks who's asking.
-import { randomBytes } from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { type Context, Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
@@ -10,7 +10,7 @@ export interface RelayDeps {
   documenso: Documenso;
   secret: string;
   now(): number;
-  sendMail(to: string, subject: string, text: string): Promise<void>;
+  sendMail(to: string, subject: string, text: string, extra?: MailExtra): Promise<void>;
   /** Who's calling, for rate limits. Default: the last X-Forwarded-For hop (the one our proxy added). */
   clientIp?(c: Context): string;
   /** docs/11: where anonymous install pings go (one row each). Without it pings are accepted and dropped. */
@@ -19,6 +19,11 @@ export interface RelayDeps {
   limits?: { perEmailPerDay?: number; totalPerDay?: number };
   /** Kill switch: true stops new envelopes; status, downloads and reminders keep working. */
   paused?(): boolean;
+}
+
+export interface MailExtra {
+  replyTo?: string;
+  attachments?: { filename: string; content: Uint8Array }[];
 }
 
 export interface PingRow {
@@ -322,10 +327,107 @@ export function createApp(d: RelayDeps) {
     },
   );
 
+  // Proof that these people signed this founder's envelope, kept by the app after the relay copy is deleted:
+  // it's what lets /wire email them later without the relay storing anything.
+  const receipt = (email: string, id: string, signers: string[]) =>
+    createHmac("sha256", d.secret)
+      .update(
+        `wire:${email}:${id}:${signers
+          .map((x) => x.trim().toLowerCase())
+          .sort()
+          .join(",")}`,
+      )
+      .digest("base64url");
+
   authed.get("/envelopes/:id", async (c) => {
     const e = await mine(c.get("email"), c.req.param("id"));
-    return e ? c.json(status(e, d.now())) : c.json({ error: "Not found" }, 404);
+    if (!e) return c.json({ error: "Not found" }, 404);
+    const s = status(e, d.now());
+    return c.json(
+      s.status === "completed"
+        ? {
+            ...s,
+            receipt: receipt(
+              c.get("email"),
+              e.id,
+              e.recipients.map((r) => r.email),
+            ),
+          }
+        : s,
+    );
   });
+
+  // After everyone signed: the signed copy and the founder's wire instructions to the other signers.
+  authed.post(
+    "/wire",
+    bodyLimit({
+      maxSize: 2 * MAX_PDF + 1024 * 1024,
+      onError: (c) => c.json({ error: "The PDFs are over 15 MB each." }, 413),
+    }),
+    async (c) => {
+      const form = await c.req.formData().catch(() => null);
+      const file = (k: string) => {
+        const f = form?.get(k);
+        return f && typeof f === "object" && typeof (f as Blob).arrayBuffer === "function"
+          ? (f as Blob)
+          : null;
+      };
+      let meta: {
+        envelope_id?: string;
+        receipt?: string;
+        title?: string;
+        company?: string;
+        signers?: { name?: string; email?: string }[];
+      } = {};
+      try {
+        meta = JSON.parse(String(form?.get("meta") ?? "{}"));
+      } catch {}
+      const signed = file("signed");
+      const wire = file("wire");
+      const signers = meta.signers ?? [];
+      if (
+        !signed ||
+        !wire ||
+        !meta.envelope_id ||
+        !meta.receipt ||
+        !signers.length ||
+        signers.some((s) => !s.email || !EMAIL.test(s.email))
+      )
+        return c.json(
+          { error: "Send the signed PDF, the wire instructions and the envelope's receipt." },
+          400,
+        );
+      if (signed.size > MAX_PDF || wire.size > MAX_PDF)
+        return c.json({ error: "The PDFs are over 15 MB each." }, 413);
+      const me = c.get("email");
+      const want = Buffer.from(
+        receipt(
+          me,
+          meta.envelope_id,
+          signers.map((s) => s.email!),
+        ),
+      );
+      const got = Buffer.from(String(meta.receipt));
+      if (got.length !== want.length || !timingSafeEqual(got, want))
+        return c.json({ error: "Those people didn't sign that document with you." }, 403);
+      if (!sendsPerEmail.take(me))
+        return c.json({ error: `That's ${perEmail} sends today, the daily limit. Try again tomorrow.` }, 429);
+      const title = (meta.title ?? "document").trim().slice(0, 120);
+      const company = (meta.company ?? "The company").trim().slice(0, 120);
+      const attachments = [
+        { filename: `${title} (signed).pdf`, content: new Uint8Array(await signed.arrayBuffer()) },
+        { filename: "Wire instructions.pdf", content: new Uint8Array(await wire.arrayBuffer()) },
+      ];
+      for (const s of signers.filter((x) => x.email!.trim().toLowerCase() !== me))
+        await d.sendMail(
+          s.email!.trim().toLowerCase(),
+          `${company}: your signed ${title} and wire instructions`,
+          `Hi ${(s.name ?? "").trim() || "there"},\n\nEveryone has signed. Attached are your fully signed copy of "${title}" and ${company}'s wire instructions.\n\nBefore you send money, confirm the bank details by phone with someone you know at ${company}. Never trust bank details that arrive or change by email alone.\n\nReply to this email to reach ${me}.\n\nSent with Capfolder.`,
+          { replyTo: me, attachments },
+        );
+      return c.json({ ok: true });
+    },
+  );
 
   authed.get("/envelopes/:id/signing-url", async (c) => {
     const email = c.get("email");
