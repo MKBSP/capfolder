@@ -44,7 +44,7 @@ export function Documents() {
         <SendDialog
           defaults={{ title: "", signers: [], docType: "other", person: "company" }}
           onClose={() => setSending(false)}
-          onSent={() => app.go({ name: "signatures" })}
+          onSent={(sent) => app.go({ name: "signatures", sent })}
         />
       ) : null}
       {sharing ? (

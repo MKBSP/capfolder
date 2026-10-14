@@ -18,7 +18,11 @@ export interface SendDefaults {
 const DOC_TYPES = Object.keys(DOC_FOLDER);
 
 /** F-11/F-16: pick the PDF, check the signers (you sign last), send. Asks for the email first if it isn't verified. */
-export function SendDialog(p: { defaults: SendDefaults; onClose(): void; onSent(): void }) {
+export function SendDialog(p: {
+  defaults: SendDefaults;
+  onClose(): void;
+  onSent(sent: { title: string; emails: string[] }): void;
+}) {
   const app = useApp();
   const founder = app.settings.email
     ? ([...(app.latest?.stakeholders.values() ?? [])].find(
@@ -31,7 +35,7 @@ export function SendDialog(p: { defaults: SendDefaults; onClose(): void; onSent(
     p.defaults.signers.length ? p.defaults.signers : [{ name: "", email: "" }],
   );
   const [meLast, setMeLast] = useState(true);
-  const [myName, setMyName] = useState(founder);
+  const [myName, setMyName] = useState(founder || app.settings.signerName);
   const [file, setFile] = useState<{ name: string; bytes: Uint8Array } | null>(null);
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<string[] | null>(null);
@@ -75,7 +79,14 @@ export function SendDialog(p: { defaults: SendDefaults; onClose(): void; onSent(
       );
       if (!r.ok) return setErrors(r.errors);
       app.setVault(r.vault);
-      p.onSent();
+      if (meLast && !founder && myName.trim() !== app.settings.signerName)
+        await app.setSettings((s) => ({ ...s, signerName: myName.trim() }));
+      p.onSent({
+        title: title.trim(),
+        emails: all.map((s) => s.email).filter((e) => e !== app.settings.email),
+      });
+    } catch (e) {
+      setErrors([`Nothing was sent: ${(e as Error).message ?? e}`]);
     } finally {
       setBusy(false);
     }

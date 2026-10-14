@@ -12,7 +12,8 @@ import { appendToVault, openVault, type Vault } from "./vault";
 export type Route =
   | { name: "welcome" | "email" | "create" | "start" | "wizard" | "home" | "people" | "import" }
   | { name: "documents"; imported?: boolean }
-  | { name: "newSafe" | "newGrant" | "newShares" | "pool" | "newPerson" | "signatures" | "settings" }
+  | { name: "newSafe" | "newGrant" | "newShares" | "pool" | "newPerson" | "settings" }
+  | { name: "signatures"; sent?: { title: string; emails: string[] } }
   | { name: "sort"; dropped?: string[] }
   | { name: "person"; id: string }
   | { name: "comingSoon"; title: string; milestone: string; text?: string };

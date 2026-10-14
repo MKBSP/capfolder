@@ -13,6 +13,7 @@ export interface Settings {
   region: string; // the founder's country (regions.ts): number format and how typed dates are read
   relayUrl: string; // signing relay (F-37: self-hosted relays welcome)
   email: string; // verified with the relay (F-04); "" = not yet
+  signerName: string; // the founder's name on signature pages, when no cap table person has their email
   relayToken: string; // device token from the relay; "" = not verified
   relayTokens: Record<string, string>; // tokens for relays used before (F-37: old envelopes finish on their relay)
   ai: { provider: "" | "ollama" | "lmstudio"; model: string; sortWithAi: boolean }; // F-10, local models only
@@ -38,6 +39,7 @@ const defaults = (): Settings => ({
   email: "",
   relayToken: "",
   relayTokens: {},
+  signerName: "",
   ai: { provider: "", model: "", sortWithAi: false },
   updates: "auto",
   ping: { installId: "", firstRunSent: false, last: "" },

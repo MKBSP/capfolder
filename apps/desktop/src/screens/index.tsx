@@ -47,7 +47,7 @@ export function Screen() {
     case "newPerson":
       return <NewPerson />;
     case "signatures":
-      return <Signatures />;
+      return <Signatures sent={route.sent} />;
     case "settings":
       return <Settings />;
     case "import":

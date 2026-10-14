@@ -203,7 +203,7 @@ export function NewSafe() {
             onSigned: drafts,
           }}
           onClose={() => setSending(false)}
-          onSent={() => app.go({ name: "signatures" })}
+          onSent={(sent) => app.go({ name: "signatures", sent })}
         />
       ) : null}
     </>

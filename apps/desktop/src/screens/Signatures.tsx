@@ -12,7 +12,7 @@ const ago = (ts: string) => {
 };
 
 /** Signing.html (F-16, F-17, F-36): what's out for signature, what came back, and the founder's turn. */
-export function Signatures() {
+export function Signatures(p: { sent?: { title: string; emails: string[] } }) {
   const app = useApp();
   const all = useMemo(() => (app.vault ? envelopes(app.vault.events) : []), [app.vault]);
   const open = all.filter((e) => e.state === "open");
@@ -155,6 +155,15 @@ export function Signatures() {
       </MainHeader>
       <main className="medium stack">
         <h1 style={{ margin: 0 }}>Signatures</h1>
+        {p.sent ? (
+          <div className="banner green" role="status">
+            Sent “{p.sent.title}”.{" "}
+            {p.sent.emails.length
+              ? `Emailed ${p.sent.emails.join(", ")} from signing@capfolder.com (check spam if it hasn't arrived in a few minutes).`
+              : "It's your turn to sign below."}{" "}
+            It stays listed here until everyone has signed.
+          </div>
+        ) : null}
         <div className="banner purple">
           In the cloud right now: <b>{open.length}</b> document{open.length === 1 ? "" : "s"} waiting for
           signatures. Everything else is only on this computer.{" "}

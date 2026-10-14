@@ -351,6 +351,55 @@ describe("M5 review", () => {
   });
 });
 
+describe("send feedback (beta test)", () => {
+  test("an unexpected failure while sending is shown, never silence", async () => {
+    const fp = await signedIn();
+    const read = fp.platform.fs.readText;
+    fp.platform.fs.readText = async (p: string) => {
+      if (p.endsWith("events.jsonl")) throw new Error("Operation not permitted");
+      return read(p);
+    };
+    await userEvent.click(screen.getByRole("button", { name: "Documents" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Send for signature" }));
+    const dialog = await screen.findByRole("dialog");
+    await userEvent.type(within(dialog).getByLabelText("Title"), "Consent");
+    await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
+    await userEvent.type(within(dialog).getByLabelText("Signer 1 name"), "Ana");
+    await userEvent.type(within(dialog).getByLabelText("Signer 1 email"), "ana@x.example");
+    await userEvent.click(within(dialog).getByRole("button", { name: "Send" }));
+    expect(await within(dialog).findByText(/Nothing was sent.*Operation not permitted/)).toBeInTheDocument();
+    expect(fp.relay.doc.envelopes.size).toBe(0);
+  });
+
+  test("after sending, Signatures confirms who was emailed", async () => {
+    await signedIn();
+    await sendSafe();
+    expect(await screen.findByText(/Sent “SAFE · Fund Y”\. Emailed fund@y\.example/)).toBeInTheDocument();
+  });
+
+  test("your signing name is remembered when no person on the cap table has your email", async () => {
+    const fp = await signedIn();
+    const s = JSON.parse(fp.fs.readSync("/appdata/settings.json"));
+    fp.fs.writeSync("/appdata/settings.json", JSON.stringify({ ...s, email: "other@me.example" }));
+    cleanup();
+    render(<App platform={fp.platform} />);
+    await screen.findByText("Fully diluted");
+    const open = async () => {
+      await userEvent.click(screen.getByRole("button", { name: "Documents" }));
+      await userEvent.click(await screen.findByRole("button", { name: "Send for signature" }));
+      return screen.findByRole("dialog");
+    };
+    let dialog = await open();
+    await userEvent.type(within(dialog).getByLabelText("Title"), "Consent");
+    await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
+    await userEvent.type(within(dialog).getByLabelText("Your name, as it should appear"), "Mads P");
+    await userEvent.click(within(dialog).getByRole("button", { name: "Send" }));
+    await screen.findByRole("heading", { name: "Signatures" });
+    dialog = await open();
+    expect(within(dialog).getByLabelText("Your name, as it should appear")).toHaveValue("Mads P");
+  });
+});
+
 test("security: an envelope pointing at a relay this computer never used isn't contacted", async () => {
   const fp = await signedIn();
   await sendDocument("Consent A");
