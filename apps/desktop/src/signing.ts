@@ -22,6 +22,7 @@ export interface EnvelopeStatus {
   id: string;
   status: "pending" | "completed" | "cancelled" | "rejected" | "expired";
   signers: SignerStatus[];
+  receipt?: string; // when completed: lets /wire email these signers later
 }
 
 export function relayClient(platform: Platform, s: { relayUrl: string; relayToken: string }) {
@@ -82,6 +83,25 @@ export function relayClient(platform: Platform, s: { relayUrl: string; relayToke
       new Uint8Array(await (await call(`/envelopes/${encodeURIComponent(id)}/signed.pdf`)).arrayBuffer()),
     remind: (id: string) => call(`/envelopes/${encodeURIComponent(id)}/remind`, { method: "POST" }),
     remove: (id: string) => call(`/envelopes/${encodeURIComponent(id)}`, { method: "DELETE" }),
+    /** The signed copy and the wire instructions to everyone else who signed. */
+    wire: (
+      meta: {
+        envelope_id: string;
+        receipt: string;
+        title: string;
+        company: string;
+        signers: { name: string; email: string }[];
+      },
+      signed: Uint8Array,
+      wire: Uint8Array,
+    ) => {
+      const form = new FormData();
+      const blob = (b: Uint8Array) => new Blob([b as Uint8Array<ArrayBuffer>], { type: "application/pdf" });
+      form.append("signed", blob(signed), "signed.pdf");
+      form.append("wire", blob(wire), "wire.pdf");
+      form.append("meta", JSON.stringify(meta));
+      return call("/wire", { method: "POST", body: form });
+    },
   };
 }
 export type RelayClient = ReturnType<typeof relayClient>;
@@ -102,6 +122,8 @@ export interface Envelope {
   state: "open" | "signed" | "voided";
   closedAt?: string;
   docId?: string;
+  receipt?: string;
+  wireSentAt?: string;
 }
 
 export function envelopes(events: VaultEvent[]): Envelope[] {
@@ -126,7 +148,8 @@ export function envelopes(events: VaultEvent[]): Envelope[] {
     const env = out.get(d.envelope_id);
     if (!env) continue;
     if (e.type === "envelope_signed")
-      Object.assign(env, { state: "signed", closedAt: e.ts, docId: d.doc_id });
+      Object.assign(env, { state: "signed", closedAt: e.ts, docId: d.doc_id, receipt: d.receipt });
+    if (e.type === "wire_sent") env.wireSentAt = e.ts;
     if (e.type === "envelope_voided") Object.assign(env, { state: "voided", closedAt: e.ts });
   }
   return [...out.values()];

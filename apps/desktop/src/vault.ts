@@ -62,6 +62,7 @@ const DOC_DIRS = [
 /** Where each document type is filed inside docs/. */
 export const DOC_FOLDER: Record<string, string> = {
   safe: "safes",
+  side_letter: "safes",
   option_grant: "grants",
   spa: "founders",
   "83b": "83b",
@@ -70,6 +71,7 @@ export const DOC_FOLDER: Record<string, string> = {
   plan: "consents",
   company_certificate: "company",
   company_bylaws: "company",
+  wire_instructions: "company",
   other: "company",
 };
 
@@ -744,6 +746,7 @@ export async function fileSigned(
   ctx: AppendCtx,
   env: Envelope,
   signed: Uint8Array,
+  receipt?: string, // the relay's proof of who signed, for sending wire instructions later
 ): Promise<{ ok: true; vault: Vault; warning?: string } | { ok: false; errors: string[] }> {
   if (!isOutbox(env.outbox) || !(await isPlainDocPath(fs, v.root, env.outbox)))
     return {
@@ -789,7 +792,7 @@ export async function fileSigned(
     const closed = (extra: Record<string, unknown> = {}): EventDraft => ({
       kind: "app",
       type: "envelope_signed",
-      data: { envelope_id: env.id, doc_id: docId, ...extra },
+      data: { envelope_id: env.id, doc_id: docId, ...(receipt ? { receipt } : {}), ...extra },
     });
     let r = await appendUnlocked(fs, v, [...fit.drafts, ...doc(fit.target), closed()], ctx);
     let warning: string | undefined;

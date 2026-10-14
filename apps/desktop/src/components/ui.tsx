@@ -101,12 +101,13 @@ export function Modal(p: { open: boolean; onClose(): void; title: string; childr
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (p.open && !d.open) d.showModal?.();
+    // showModal centres it over a backdrop; an `open` attribute would show it inline in the page instead
+    if (p.open && !d.open) d.showModal ? d.showModal() : d.setAttribute("open", "");
     if (!p.open && d.open) d.close?.();
   }, [p.open]);
   if (!p.open) return null;
   return (
-    <dialog ref={ref} className="modal" onClose={p.onClose} open={p.open} aria-label={p.title}>
+    <dialog ref={ref} className="modal" onClose={p.onClose} aria-label={p.title}>
       <div className="row spread" style={{ marginBottom: 12 }}>
         <h2 style={{ margin: 0 }}>{p.title}</h2>
         <button type="button" className="btn link" onClick={p.onClose} aria-label="Close">

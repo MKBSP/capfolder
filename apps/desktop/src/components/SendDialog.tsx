@@ -17,11 +17,23 @@ export interface SendDefaults {
 
 const DOC_TYPES = Object.keys(DOC_FOLDER);
 
+/** A filled-in form (YC's SAFE) made when sending, so it carries the founder's name and title. */
+export interface SendTemplate {
+  label: string;
+  title?: string; // envelope title, when it differs from the dialog's (side letters)
+  build(signer: { name: string; title: string }): Promise<Uint8Array>;
+}
+
+type Pdf = { name: string; bytes: Uint8Array };
+
 /** F-11/F-16: pick the PDF, check the signers (you sign last), send. Asks for the email first if it isn't verified. */
 export function SendDialog(p: {
   defaults: SendDefaults;
+  template?: SendTemplate; // offered first; the founder can still upload their own
+  noTemplate?: string; // why there's no template for these terms
+  sideLetter?: SendTemplate; // a ready side letter, offered next to uploading one
   onClose(): void;
-  onSent(sent: { title: string; emails: string[] }): void;
+  onSent(sent: { titles: string[]; emails: string[]; warning?: string }): void;
 }) {
   const app = useApp();
   const founder = app.settings.email
@@ -36,7 +48,12 @@ export function SendDialog(p: {
   );
   const [meLast, setMeLast] = useState(true);
   const [myName, setMyName] = useState(founder || app.settings.signerName);
-  const [file, setFile] = useState<{ name: string; bytes: Uint8Array } | null>(null);
+  const [file, setFile] = useState<Pdf | null>(null);
+  const [own, setOwn] = useState(!p.template);
+  const [myTitle, setMyTitle] = useState("CEO");
+  const [side, setSide] = useState(false);
+  const [sideOwn, setSideOwn] = useState(!p.sideLetter);
+  const [sideFile, setSideFile] = useState<Pdf | null>(null);
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<string[] | null>(null);
   const verified = !!app.settings.relayToken && !!app.settings.email;
@@ -51,40 +68,62 @@ export function SendDialog(p: {
       }),
     );
     const errs: string[] = [];
-    if (!file) errs.push("Choose the PDF to send.");
+    if (own && !file) errs.push("Choose the PDF to send.");
+    if (side && sideOwn && !sideFile) errs.push("Choose the side letter PDF.");
+    const signer = { name: (myName || founder).trim(), title: myTitle.trim() };
+    if (!own && !signer.name) errs.push("Enter your name: it goes on the company's signature block.");
     if (!title.trim()) errs.push("Give the document a title.");
     if (!all.length) errs.push("Add at least one signer.");
     if (all.some((s) => !s.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.email)))
       errs.push("Every signer needs a name and an email.");
     if (new Set(all.map((s) => s.email)).size !== all.length) errs.push("Each signer needs their own email.");
     if (errs.length) return setErrors(errs);
-    if (!app.vault || !file) return;
+    if (!app.vault) return;
     setBusy(true);
     try {
-      const r = await sendForSignature(
-        app.platform.fs,
-        app.vault,
-        app.ctx,
-        relayClient(app.platform, app.settings),
-        {
-          pdf: file.bytes,
-          title: title.trim(),
+      const client = relayClient(app.platform, app.settings);
+      const one = async (
+        vault: NonNullable<typeof app.vault>,
+        d: { pdf: Uint8Array; title: string; docType: string; main: boolean },
+      ) =>
+        sendForSignature(app.platform.fs, vault, app.ctx, client, {
+          pdf: d.pdf,
+          title: d.title,
           signers: all,
-          docType,
+          docType: d.docType,
           person: p.defaults.person,
           target: p.defaults.target,
-          onSigned: p.defaults.onSigned,
+          onSigned: d.main ? p.defaults.onSigned : undefined, // the side letter adds nothing to the cap table
           relayUrl: app.settings.relayUrl,
-        },
-      );
+        });
+      const pdf = own ? file!.bytes : await p.template!.build(signer);
+      const r = await one(app.vault, { pdf, title: title.trim(), docType, main: true });
       if (!r.ok) return setErrors(r.errors);
       app.setVault(r.vault);
-      if (meLast && !founder && myName.trim() !== app.settings.signerName)
+      if ((meLast || !own) && !founder && myName.trim() !== app.settings.signerName)
         await app.setSettings((s) => ({ ...s, signerName: myName.trim() }));
-      p.onSent({
-        title: title.trim(),
-        emails: all.map((s) => s.email).filter((e) => e !== app.settings.email),
-      });
+      const titles = [title.trim()];
+      let warning: string | undefined;
+      if (side) {
+        const sideTitle = (sideOwn ? undefined : p.sideLetter?.title) ?? `Side letter · ${p.defaults.person}`;
+        try {
+          const sidePdf = sideOwn ? sideFile!.bytes : await p.sideLetter!.build(signer);
+          const s2 = await one(r.vault, {
+            pdf: sidePdf,
+            title: sideTitle,
+            docType: "side_letter",
+            main: false,
+          });
+          if (s2.ok) {
+            app.setVault(s2.vault);
+            titles.push(sideTitle);
+          } else
+            warning = `The side letter wasn't sent: ${s2.errors.join(" ")} Send it on its own from Documents.`;
+        } catch (e) {
+          warning = `The side letter wasn't sent: ${(e as Error).message ?? e}`;
+        }
+      }
+      p.onSent({ titles, emails: all.map((s) => s.email).filter((e) => e !== app.settings.email), warning });
     } catch (e) {
       setErrors([`Nothing was sent: ${(e as Error).message ?? e}`]);
     } finally {
@@ -106,23 +145,25 @@ export function SendDialog(p: {
           <Field label="Title">
             <input className="inp" value={title} onChange={(e) => setTitle(e.target.value)} />
           </Field>
-          <div className="row">
-            <button
-              type="button"
-              className="btn"
-              onClick={async () => {
-                const f = await app.platform.pickFile("Choose the PDF to send", ["pdf"]);
-                if (!f) return;
-                try {
-                  setFile({ name: f.name, bytes: await app.platform.fs.readBytes(f.path) });
-                } catch (e) {
-                  setErrors([`Couldn't read ${f.name}: ${(e as Error).message ?? e}`]);
-                }
-              }}
-            >
-              Choose PDF…
-            </button>
-            <span className="small muted">{file ? file.name : "No file yet"}</span>
+          <div className="stack" role="radiogroup" aria-label="Document">
+            {p.template ? (
+              <label className="row small">
+                <input type="radio" name="send-doc" checked={!own} onChange={() => setOwn(false)} />
+                <span>{p.template.label}, filled in from this form</span>
+              </label>
+            ) : null}
+            <label className="row small">
+              <input type="radio" name="send-doc" checked={own} onChange={() => setOwn(true)} />
+              <span>Your own PDF</span>
+            </label>
+            {p.noTemplate && !p.template ? (
+              <p className="meta" style={{ margin: 0 }}>
+                {p.noTemplate}
+              </p>
+            ) : null}
+            {own ? (
+              <PickPdf label="Choose PDF…" file={file} onPick={setFile} onError={(e) => setErrors([e])} />
+            ) : null}
           </div>
           <Field label="What is it?">
             <select className="inp" value={docType} onChange={(e) => setDocType(e.target.value)}>
@@ -181,10 +222,51 @@ export function SendDialog(p: {
               <input type="checkbox" checked={meLast} onChange={(e) => setMeLast(e.target.checked)} />
               <span>I sign last ({app.settings.email})</span>
             </label>
-            {meLast && !founder ? (
+            {(meLast || !own) && !founder ? (
               <Field label="Your name, as it should appear">
                 <input className="inp" value={myName} onChange={(e) => setMyName(e.target.value)} />
               </Field>
+            ) : null}
+            {!own ? (
+              <Field label="Your title">
+                <input className="inp" value={myTitle} onChange={(e) => setMyTitle(e.target.value)} />
+              </Field>
+            ) : null}
+          </div>
+          <div className="stack">
+            <label className="row small">
+              <input type="checkbox" checked={side} onChange={(e) => setSide(e.target.checked)} />
+              <span>Add a side letter</span>
+            </label>
+            {side ? (
+              <div className="stack" style={{ paddingLeft: 24 }}>
+                <p className="meta" style={{ margin: 0 }}>
+                  Sent as its own document, right after this one: the same people sign it separately.
+                </p>
+                {p.sideLetter ? (
+                  <label className="row small">
+                    <input
+                      type="radio"
+                      name="side-doc"
+                      checked={!sideOwn}
+                      onChange={() => setSideOwn(false)}
+                    />
+                    <span>{p.sideLetter.label}</span>
+                  </label>
+                ) : null}
+                <label className="row small">
+                  <input type="radio" name="side-doc" checked={sideOwn} onChange={() => setSideOwn(true)} />
+                  <span>Upload a side letter</span>
+                </label>
+                {sideOwn ? (
+                  <PickPdf
+                    label="Choose side letter PDF…"
+                    file={sideFile}
+                    onPick={setSideFile}
+                    onError={(e) => setErrors([e])}
+                  />
+                ) : null}
+              </div>
             ) : null}
           </div>
           <p className="meta" style={{ margin: 0 }}>
@@ -204,5 +286,37 @@ export function SendDialog(p: {
         </div>
       )}
     </Modal>
+  );
+}
+
+/** A "Choose PDF…" button and the chosen file's name, cut short if it's long. */
+export function PickPdf(p: {
+  label: string;
+  file: Pdf | null;
+  onPick(f: Pdf): void;
+  onError(e: string): void;
+}) {
+  const app = useApp();
+  return (
+    <div className="row">
+      <button
+        type="button"
+        className="btn"
+        onClick={async () => {
+          const f = await app.platform.pickFile("Choose a PDF", ["pdf"]);
+          if (!f) return;
+          try {
+            p.onPick({ name: f.name, bytes: await app.platform.fs.readBytes(f.path) });
+          } catch (e) {
+            p.onError(`Couldn't read ${f.name}: ${(e as Error).message ?? e}`);
+          }
+        }}
+      >
+        {p.label}
+      </button>
+      <span className="small muted clip grow" title={p.file?.name}>
+        {p.file ? p.file.name : "No file yet"}
+      </span>
+    </div>
   );
 }

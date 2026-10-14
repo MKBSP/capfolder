@@ -8,6 +8,7 @@ import { ErrorList, Field, Modal } from "./ui";
 
 export const DOC_TYPES: { value: string; label: string }[] = [
   { value: "safe", label: "SAFE" },
+  { value: "side_letter", label: "Side letter" },
   { value: "option_grant", label: "Option grant" },
   { value: "spa", label: "Stock purchase agreement" },
   { value: "ciiaa", label: "IP assignment (CIIAA)" },
@@ -16,6 +17,7 @@ export const DOC_TYPES: { value: string; label: string }[] = [
   { value: "plan", label: "Equity incentive plan" },
   { value: "company_certificate", label: "Certificate of incorporation" },
   { value: "company_bylaws", label: "Bylaws" },
+  { value: "wire_instructions", label: "Wire instructions" },
   { value: "other", label: "Other" },
 ];
 

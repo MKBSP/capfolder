@@ -4,6 +4,7 @@
       "**",
       "!**/node_modules",
       "!fixtures",
+      "!templates/yc",
       "!design",
       "!brand",
       "!docs",

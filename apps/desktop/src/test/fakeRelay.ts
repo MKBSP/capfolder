@@ -1,16 +1,16 @@
-import { createApp } from "@capfolder/relay/app";
+import { createApp, type MailExtra } from "@capfolder/relay/app";
 import { fakeDocumenso } from "@capfolder/relay/fake-documenso";
 
 /** The real relay app over an in-memory Documenso, reachable through Platform.fetch in tests. */
 export function fakeRelay() {
   const doc = fakeDocumenso();
-  const mails: { to: string; text: string }[] = [];
+  const mails: { to: string; subject: string; text: string; extra?: MailExtra }[] = [];
   const app = createApp({
     documenso: doc.api,
     secret: "desktop-test-secret",
     now: () => Date.now(),
-    sendMail: async (to, _subject, text) => {
-      mails.push({ to, text });
+    sendMail: async (to, subject, text, extra) => {
+      mails.push({ to, subject, text, extra });
     },
   });
   let down = false;

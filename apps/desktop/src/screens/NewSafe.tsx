@@ -1,4 +1,12 @@
-import { builders as b, type EventDraft, nextSecurityIdNumber, sumDec } from "@capfolder/core";
+import {
+  builders as b,
+  type EventDraft,
+  fillForm,
+  nextSecurityIdNumber,
+  renderForm,
+  sumDec,
+  ycSafeValues,
+} from "@capfolder/core";
 import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
@@ -8,7 +16,9 @@ import { SendDialog } from "../components/SendDialog";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
 import { day, money, moneyShort, num, todayIso, wholeInput, withCurrency } from "../fmt";
+import { REGIONS, US_STATES } from "../regions";
 import { useApp } from "../state";
+import { YC_FORMS, ycSafeFor } from "../templates";
 import { discountFraction } from "../wizard";
 
 const digits = num; // the founder's decimal mark (Settings → Your country)
@@ -56,6 +66,27 @@ export function NewSafe() {
     .filter((x) => x.kind === "convertible" && x.amount && x.amount !== "0")
     .map((x) => x.amount!);
   const row = dry?.rows.find((r) => r.securityId === securityId);
+  const yc = ycSafeFor({ cap: !!digits(cap), discount: !!discountFraction(discount), mfn });
+  const issuer = latest?.issuer;
+  const company = (issuer?.legal_name as string) ?? "the Company";
+  const place =
+    (issuer?.country_of_formation === "US"
+      ? US_STATES.find(([c]) => c === issuer?.country_subdivision_of_formation)?.[1]
+      : (issuer?.country_subdivision_of_formation as string)) ||
+    REGIONS.find((x) => x.code === issuer?.country_of_formation)?.name ||
+    "Delaware";
+  const fill = (signer: { name: string; title: string }) =>
+    ycSafeValues({
+      company,
+      investor,
+      amount: digits(amount),
+      cap: digits(cap) || undefined,
+      discount: discountFraction(discount),
+      date,
+      state: place,
+      signerName: signer.name,
+      signerTitle: signer.title,
+    });
 
   async function record() {
     if (!drafts) return setErrors(["Fill in the investor and the amount."]);
@@ -69,7 +100,9 @@ export function NewSafe() {
       <CrumbHeader title="New SAFE" />
       <main className="page" style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "flex-start" }}>
         <section className="card stack" style={{ flex: "1 1 380px", maxWidth: 520 }}>
-          <div className="meta">Template: YC post-money SAFE (valuation cap)</div>
+          <div className="meta">
+            Template: {typeof yc === "string" ? YC_FORMS[yc].label : "your own PDF (see below)"}
+          </div>
           <PersonPicker label="Investor" value={who} onChange={setWho} defaultType="INSTITUTION" />
           <div className="grid2">
             <Field label={withCurrency("Amount")}>
@@ -170,8 +203,9 @@ export function NewSafe() {
             ) : null}
           </p>
           <p className="meta">
-            Template text from Y Combinator's post-money SAFE, used unmodified when sending (M5). This is a
-            preview.
+            {typeof yc === "string"
+              ? `Sent as ${YC_FORMS[yc].label}, unmodified except for the blanks (CC BY-ND 4.0, © Y Combinator). This is a preview.`
+              : yc.none}
           </p>
         </section>
       </main>
@@ -202,6 +236,25 @@ export function NewSafe() {
             target: securityId,
             onSigned: drafts,
           }}
+          template={
+            typeof yc === "string"
+              ? {
+                  label: YC_FORMS[yc].label,
+                  build: async (signer) => renderForm(fillForm(YC_FORMS[yc].form, fill(signer))),
+                }
+              : undefined
+          }
+          noTemplate={typeof yc === "string" ? undefined : yc.none}
+          sideLetter={
+            yc === "safe-cap"
+              ? {
+                  label: YC_FORMS["pro-rata-side-letter"].label,
+                  title: `Pro rata side letter · ${investor}`,
+                  build: async (signer) =>
+                    renderForm(fillForm(YC_FORMS["pro-rata-side-letter"].form, fill(signer))),
+                }
+              : undefined
+          }
           onClose={() => setSending(false)}
           onSent={(sent) => app.go({ name: "signatures", sent })}
         />

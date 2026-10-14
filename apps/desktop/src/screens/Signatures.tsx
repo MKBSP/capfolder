@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MainHeader } from "../components/Header";
 import { ErrorList, Modal } from "../components/ui";
-import { day } from "../fmt";
+import { day, todayIso } from "../fmt";
 import { type Envelope, type EnvelopeStatus, envelopes, RelayError, relayClient, relayFor } from "../signing";
 import { useApp } from "../state";
-import { DOC_FOLDER, fileSigned, voidEnvelope } from "../vault";
+import { attachDocument, DOC_FOLDER, fileSigned, voidEnvelope } from "../vault";
 
 const ago = (ts: string) => {
   const days = Math.floor((Date.now() - Date.parse(ts)) / 864e5);
@@ -12,7 +12,7 @@ const ago = (ts: string) => {
 };
 
 /** Signing.html (F-16, F-17, F-36): what's out for signature, what came back, and the founder's turn. */
-export function Signatures(p: { sent?: { title: string; emails: string[] } }) {
+export function Signatures(p: { sent?: { titles: string[]; emails: string[]; warning?: string } }) {
   const app = useApp();
   const all = useMemo(() => (app.vault ? envelopes(app.vault.events) : []), [app.vault]);
   const open = all.filter((e) => e.state === "open");
@@ -21,6 +21,7 @@ export function Signatures(p: { sent?: { title: string; emails: string[] } }) {
   const [notes, setNotes] = useState<Record<string, { ok: boolean; text: string }>>({});
   const [offline, setOffline] = useState<string | null>(null);
   const [cancel, setCancel] = useState<Envelope | null>(null);
+  const [wire, setWire] = useState<Envelope | null>(null);
   const filing = useRef(new Set<string>());
   const me = app.settings.email;
 
@@ -77,7 +78,7 @@ export function Signatures(p: { sent?: { title: string; emails: string[] } }) {
       filing.current.add(env.id);
       try {
         const signed = await client.signedPdf(env.id);
-        const r = await fileSigned(app.platform.fs, vault, app.ctx, env, signed);
+        const r = await fileSigned(app.platform.fs, vault, app.ctx, env, signed, s.receipt);
         if (!r.ok) {
           setNotes((x) => ({ ...x, [env.id]: { ok: false, text: r.errors.join(" ") } }));
           continue;
@@ -157,13 +158,14 @@ export function Signatures(p: { sent?: { title: string; emails: string[] } }) {
         <h1 style={{ margin: 0 }}>Signatures</h1>
         {p.sent ? (
           <div className="banner green" role="status">
-            Sent “{p.sent.title}”.{" "}
+            Sent {p.sent.titles.map((t) => `“${t}”`).join(" and ")}.{" "}
             {p.sent.emails.length
               ? `Emailed ${p.sent.emails.join(", ")} from signing@capfolder.com (check spam if it hasn't arrived in a few minutes).`
               : "It's your turn to sign below."}{" "}
             It stays listed here until everyone has signed.
           </div>
         ) : null}
+        {p.sent?.warning ? <div className="banner amber">{p.sent.warning}</div> : null}
         <div className="banner purple">
           In the cloud right now: <b>{open.length}</b> document{open.length === 1 ? "" : "s"} waiting for
           signatures. Everything else is only on this computer.{" "}
@@ -239,8 +241,17 @@ export function Signatures(p: { sent?: { title: string; emails: string[] } }) {
             {done.map((env) => (
               <div key={env.id} className="row spread wrap">
                 <span>{env.title}</span>
-                <span className="meta">
-                  Signed {env.closedAt ? day(env.closedAt.slice(0, 10)) : ""} · relay copy deleted
+                <span className="row wrap">
+                  <span className="meta">
+                    Signed {env.closedAt ? day(env.closedAt.slice(0, 10)) : ""} · relay copy deleted
+                  </span>
+                  {env.docType === "safe" && env.wireSentAt ? (
+                    <span className="chip green">Wire instructions sent</span>
+                  ) : env.docType === "safe" && env.receipt ? (
+                    <button type="button" className="btn primary" onClick={() => setWire(env)}>
+                      Send wire instructions
+                    </button>
+                  ) : null}
                 </span>
               </div>
             ))}
@@ -254,6 +265,7 @@ export function Signatures(p: { sent?: { title: string; emails: string[] } }) {
           </section>
         ) : null}
       </main>
+      {wire ? <WireDialog env={wire} onClose={() => setWire(null)} /> : null}
       {cancel ? (
         <CancelDialog env={cancel} status={status[cancel.id]} onClose={() => setCancel(null)} />
       ) : null}
@@ -307,6 +319,128 @@ function CancelDialog(p: { env: Envelope; status?: EnvelopeStatus; onClose(): vo
           >
             Cancel the document
           </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+/** After everyone signed a SAFE: the investor gets the signed copy and where to send the money. */
+function WireDialog(p: { env: Envelope; onClose(): void }) {
+  const app = useApp();
+  const [errors, setErrors] = useState<string[] | null>(null);
+  const [busy, setBusy] = useState(false);
+  const docs = [...(app.latest?.docs.entries() ?? [])].filter(([, d]) => !d.removed);
+  const wireDoc = docs.filter(([, d]) => d.data.doc_type === "wire_instructions").at(-1);
+  const signed = docs.find(([id]) => id === p.env.docId)?.[1];
+  const to = p.env.signers.filter((x) => x.email !== app.settings.email);
+  const names = to.map((x) => x.name).join(" and ");
+
+  async function upload() {
+    setErrors(null);
+    const f = await app.platform.pickFile("Choose your wire instructions (PDF)", ["pdf"]);
+    if (!f || !app.vault) return;
+    try {
+      const r = await attachDocument(app.platform.fs, app.vault, app.ctx, {
+        originalName: f.name,
+        bytes: await app.platform.fs.readBytes(f.path),
+        docType: "wire_instructions",
+        date: todayIso(),
+        person: "company",
+      });
+      if (r.ok === "duplicate")
+        return setErrors(["That file is already in your folder as another document."]);
+      if (!r.ok) return setErrors(r.errors);
+      app.setVault(r.vault);
+    } catch (e) {
+      setErrors([`Couldn't add ${f.name}: ${(e as Error).message ?? e}`]);
+    }
+  }
+
+  async function send() {
+    if (!app.vault || !wireDoc || !signed || !p.env.receipt) return;
+    setErrors(null);
+    setBusy(true);
+    try {
+      const r = relayFor(app.settings, p.env);
+      if (!r) return setErrors([`Sent through ${p.env.relay}, which isn't set up on this computer.`]);
+      const read = (rel: string) => app.platform.fs.readBytes(`${app.vault!.root}/${rel}`);
+      await relayClient(app.platform, r).wire(
+        {
+          envelope_id: p.env.id,
+          receipt: p.env.receipt,
+          title: p.env.title,
+          company: (app.latest?.issuer?.legal_name as string) ?? "The company",
+          signers: p.env.signers,
+        },
+        await read(signed.data.path),
+        await read(wireDoc[1].data.path),
+      );
+      const errs = await app.run([
+        {
+          kind: "app",
+          type: "wire_sent",
+          data: { envelope_id: p.env.id, doc_id: wireDoc[0], to: to.map((x) => x.email) },
+        },
+      ]);
+      if (errs) return setErrors([`Sent, but couldn't record it: ${errs.join(" ")}`]);
+      p.onClose();
+    } catch (e) {
+      setErrors([`Nothing was sent: ${(e as Error).message ?? e}`]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Modal open onClose={p.onClose} title="Send wire instructions">
+      <div className="stack">
+        {!wireDoc ? (
+          <>
+            <p className="small" style={{ margin: 0 }}>
+              Upload your wire instructions first: the PDF from your bank with the account details. It's kept
+              in docs/company/ for the next investor.
+            </p>
+            <div className="row">
+              <button type="button" className="btn" onClick={upload}>
+                Choose PDF…
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="small" style={{ margin: 0 }}>
+              Emails {names} the fully signed “{p.env.title}” and your wire instructions (
+              {String(wireDoc[1].data.original_name ?? wireDoc[1].data.path)}) from signing@capfolder.com.
+              Replies go to {app.settings.email}.
+            </p>
+            <div className="banner amber small">
+              The email asks them to confirm the bank details with you by phone before wiring. Fake wire
+              instructions are the most common startup fraud.
+            </div>
+            <button
+              type="button"
+              className="btn link small"
+              onClick={upload}
+              style={{ alignSelf: "flex-start" }}
+            >
+              Use different wire instructions…
+            </button>
+          </>
+        )}
+        {!signed ? (
+          <div className="banner red small">The signed copy isn't in your folder any more.</div>
+        ) : null}
+        <ErrorList errors={errors} />
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <button type="button" className="btn" onClick={p.onClose}>
+            Cancel
+          </button>
+          {wireDoc ? (
+            <button type="button" className="btn primary" disabled={busy || !signed} onClick={send}>
+              {busy ? "Sending…" : `Send to ${names}`}
+            </button>
+          ) : null}
         </div>
       </div>
     </Modal>

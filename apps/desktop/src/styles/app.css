@@ -36,6 +36,12 @@ p {
 .muted {
   color: var(--muted);
 }
+.clip {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .small {
   font-size: 13px;
 }
@@ -114,6 +120,9 @@ p {
   font: 500 14px var(--font);
   cursor: pointer;
   transition: transform 160ms var(--ease-out);
+}
+.btn {
+  white-space: nowrap;
 }
 .btn:active {
   transform: scale(0.97);
@@ -430,6 +439,8 @@ dialog.modal {
   border-radius: 10px;
   padding: 24px;
   width: min(560px, 92vw);
+  max-height: 90vh;
+  overflow: auto;
   box-shadow: 0 16px 48px rgb(0 0 0 / 0.12);
 }
 dialog.modal::backdrop {

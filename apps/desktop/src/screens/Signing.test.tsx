@@ -38,7 +38,7 @@ async function signedIn(file = "Purchase Amount $200,000") {
   return { ...fp, relay };
 }
 
-async function sendSafe() {
+async function sendSafe(own = true, before?: (dialog: HTMLElement) => Promise<void>) {
   await userEvent.click(screen.getByRole("button", { name: "+ New" }));
   await userEvent.click(screen.getByRole("menuitem", { name: "SAFE" }));
   await userEvent.type(screen.getByLabelText("Name"), "Fund Y");
@@ -48,7 +48,11 @@ async function sendSafe() {
   await userEvent.click(screen.getByRole("button", { name: "Send for signature" }));
   const dialog = await screen.findByRole("dialog");
   expect(within(dialog).getByLabelText("Title")).toHaveValue("SAFE · Fund Y");
-  await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
+  if (own) {
+    await userEvent.click(within(dialog).getByLabelText("Your own PDF"));
+    await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
+  }
+  await before?.(dialog);
   await userEvent.click(within(dialog).getByRole("button", { name: "Send" }));
   await screen.findByRole("heading", { name: "Signatures" });
 }
@@ -424,4 +428,85 @@ test("security: an envelope pointing at a relay this computer never used isn't c
   expect(relayFor(s, { ...env, relay: "http://evil.test" })).toBeNull();
   expect(relayFor(s, env)).toEqual({ relayUrl: "http://relay.test", relayToken: s.relayToken });
   expect(calls.filter((u) => u.includes("evil"))).toEqual([]);
+});
+
+const sentTitles = (fp: Awaited<ReturnType<typeof signedIn>>) =>
+  fp.fs
+    .readSync(`${fp.root}/events.jsonl`)
+    .split("\n")
+    .filter(Boolean)
+    .map((l) => JSON.parse(l))
+    .filter((e) => e.type === "envelope_sent")
+    .map((e) => e.data.title);
+
+describe("YC templates, side letters and wire instructions", () => {
+  test("a capped SAFE goes out as YC's post-money SAFE, filled in, without picking a file", async () => {
+    const fp = await signedIn();
+    await sendSafe(false);
+    const env = [...fp.relay.doc.envelopes.values()][0]!;
+    const doc = await PDFDocument.load(env.pdf);
+    expect(doc.getPageCount()).toBeGreaterThanOrEqual(6); // the SAFE, then Capfolder's signature page
+    expect(sentTitles(fp)).toEqual(["SAFE · Fund Y"]);
+  });
+
+  test("cap and discount together: YC has no such form, so it asks for your own PDF", async () => {
+    await signedIn();
+    await userEvent.click(screen.getByRole("button", { name: "+ New" }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "SAFE" }));
+    await userEvent.type(screen.getByLabelText("Name"), "Fund Y");
+    await userEvent.type(screen.getByLabelText("Email"), "fund@y.example");
+    await userEvent.type(screen.getByLabelText(/^Amount/), "200000");
+    await userEvent.type(screen.getByLabelText(/^Valuation cap/), "10000000");
+    await userEvent.type(screen.getByLabelText(/^Discount/), "20");
+    await userEvent.click(screen.getByRole("button", { name: "Send for signature" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(
+      within(dialog).getByText(/YC has no SAFE with both a valuation cap and a discount/),
+    ).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Choose PDF…" })).toBeInTheDocument();
+  });
+
+  test("a side letter is its own document with its own signatures", async () => {
+    const fp = await signedIn();
+    await sendSafe(false, async (dialog) => {
+      await userEvent.click(within(dialog).getByLabelText("Add a side letter"));
+      await userEvent.click(within(dialog).getByLabelText("YC pro rata side letter"));
+    });
+    const [, side] = [...fp.relay.doc.envelopes.values()];
+    expect(sentTitles(fp)).toEqual(["SAFE · Fund Y", "Pro rata side letter · Fund Y"]);
+    expect(side!.recipients.map((r) => r.email)).toEqual(["fund@y.example", ME]);
+    expect(
+      await screen.findByText(/Sent “SAFE · Fund Y” and “Pro rata side letter · Fund Y”/),
+    ).toBeInTheDocument();
+  });
+
+  test("once everyone signed: send wire instructions, uploading them first if needed", async () => {
+    const fp = await signedIn();
+    await sendSafe(false);
+    const env = [...fp.relay.doc.envelopes.values()][0]!;
+    fp.relay.doc.sign(env.id, "fund@y.example");
+    const sealed = await PDFDocument.load(env.pdf);
+    sealed.addPage([612, 792]);
+    fp.relay.doc.sign(env.id, ME, await sealed.save());
+    await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
+    await screen.findByText(/Signed and filed in docs\/safes\//);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Send wire instructions" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByText(/Upload your wire instructions first/)).toBeInTheDocument();
+    fp.fs.writeSync("/home/me/Downloads/safe.pdf", await pdf("Bank: Example Bank, account 123"));
+    await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
+    await userEvent.click(await within(dialog).findByRole("button", { name: "Send to Fund Y" }));
+
+    expect(await screen.findByText("Wire instructions sent")).toBeInTheDocument();
+    const mail = fp.relay.mails.find((m) => m.extra?.attachments)!;
+    expect(mail.to).toBe("fund@y.example");
+    expect(mail.extra!.attachments!.map((a) => a.filename)).toEqual([
+      "SAFE · Fund Y (signed).pdf",
+      "Wire instructions.pdf",
+    ]);
+    const log = fp.fs.readSync(`${fp.root}/events.jsonl`);
+    expect(log).toContain('"type":"wire_sent"');
+    expect(log).toContain('"doc_type":"wire_instructions"');
+  });
 });
