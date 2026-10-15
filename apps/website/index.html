@@ -10,8 +10,8 @@
 <meta name="theme-color" content="#1F6F4A">
 <title>Capfolder — Your cap table, in a folder you own</title>
 <meta name="description" content="Free, open-source cap table app. Your equity records live in a folder on your computer, not in someone else's cloud.">
-<!-- docs/11: cookieless visit counts, no banner. Needs a Plausible site for capfolder.com. -->
-<script defer data-domain="capfolder.com" src="https://plausible.io/js/script.js"></script>
+<!-- docs/11: cookieless visits, referrers and button clicks (data-umami-event), no banner. Umami Cloud site for capfolder.com. -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="PASTE-UMAMI-WEBSITE-ID"></script>
 <!-- fonts are served from this site (no Google Fonts request); SIL OFL, fonts/OFL.txt -->
 <style>
 @font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
@@ -165,11 +165,12 @@ a{color:#1F6F4A}a:hover{color:#16543A}
       <a href="#ai" class="navlink" style="color: #3A3E46; text-decoration: none">AI</a>
       <a href="#open" class="navlink" style="color: #3A3E46; text-decoration: none">Open source</a>
       <a href="#pricing" class="navlink" style="color: #3A3E46; text-decoration: none">Pricing</a>
-      <a href="https://github.com/MKBSP/capfolder" class="btn btn-s" style="font-size: 14px; font-weight: 500; padding: 9px 14px">
+      <a href="#roadmap" class="navlink" style="color: #3A3E46; text-decoration: none">Roadmap</a>
+      <a href="https://github.com/MKBSP/capfolder" data-umami-event="github" class="btn btn-s" style="font-size: 14px; font-weight: 500; padding: 9px 14px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 15 8.6l6.7 1-4.9 4.7 1.2 6.7L12 17.8 6 21l1.2-6.7-4.9-4.7 6.7-1z"/></svg>
         Star <span class="num stars" style="color: #5B606B"></span>
       </a>
-      <a href="#download" class="btn btn-p" style="font-size: 14px; padding: 10px 16px">Download</a>
+      <a href="#download" class="btn btn-p" data-umami-event="nav-download" style="font-size: 14px; padding: 10px 16px">Download</a>
     </div>
   </nav>
 
@@ -187,12 +188,12 @@ a{color:#1F6F4A}a:hover{color:#16543A}
       <div id="download" class="fade-in" style="max-width: 560px; margin: 34px auto 0 auto; animation-delay: 800ms">
         <div id="gate">
           <div style="display: flex; justify-content: center">
-            <button type="button" class="btn btn-p" id="getdl" style="font-size: 17px; padding: 14px 22px">
+            <button type="button" class="btn btn-p" id="getdl" data-umami-event="get-download" style="font-size: 17px; padding: 14px 22px">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
               Get the download
             </button>
           </div>
-          <p style="font-size: 14px; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · leave your email to hear about new versions, or <button type="button" id="skipdl" class="linkbtn">No thanks, just download</button></p>
+          <p style="font-size: 14px; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · leave your email to hear about new versions, or <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">No thanks, just download</button></p>
           <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
         </div>
         <div id="dlthanks" hidden aria-live="polite">
@@ -202,17 +203,17 @@ a{color:#1F6F4A}a:hover{color:#16543A}
               Your download is ready
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
-              <a id="dl-mac" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
-              <a id="dl-win" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
-              <a id="dl-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
+              <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
+              <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
+              <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
             </div>
             <div style="font-size: 13px; color: #5B606B; margin-top: 10px">
-              <a id="dl-mac-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
+              <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
             </div>
             <p style="font-size: 13px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECECE8">
               <span style="flex: 1 1 240px; font-size: 15px; line-height: 1.5; color: #3A3E46">Capfolder is free. If it saves you a headache, <b style="font-weight: 600; color: #111311">pay what you want.</b></span>
-              <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">
+              <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>
                 Buy me a coffee
               </a>
@@ -443,7 +444,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
         </div>
       </div>
       <div style="display: flex; justify-content: center; margin-top: 28px">
-        <button type="button" class="btn btn-p" id="killbtn">Shut Capfolder down</button>
+        <button type="button" class="btn btn-p" id="killbtn" data-umami-event="shutdown-demo">Shut Capfolder down</button>
       </div>
     </div>
   </section>
@@ -469,7 +470,7 @@ cd capfolder/apps/relay
       <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
         <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Read the code</h3>
         <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">App, engine, relay and the cap-table test suite. AGPL-3.0.</p>
-        <a href="https://github.com/MKBSP/capfolder" class="btn btn-s" style="margin-top: 20px; font-size: 15px; padding: 12px 18px">View on GitHub<span class="num stars-sep"></span></a>
+        <a href="https://github.com/MKBSP/capfolder" data-umami-event="github" class="btn btn-s" style="margin-top: 20px; font-size: 15px; padding: 12px 18px">View on GitHub<span class="num stars-sep"></span></a>
       </div>
     </div>
   </section>
@@ -490,13 +491,35 @@ cd capfolder/apps/relay
         <h3 style="font-size: 18px; font-weight: 600; margin: 0">Self-hosted</h3>
         <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span class="num" style="font-size: 34px; font-weight: 600">$0</span><span style="color: #5B606B; font-size: 14px">on your own server</span></div>
         <ul style="list-style: none; margin: 20px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Everything in Free forever</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Run the signing relay yourself: unsigned documents never leave your server</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Your own daily limits</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>AGPL-3.0: audit it, change it, fork it</span></li></ul>
-        <div style="margin-top: auto; padding-top: 24px"><a href="https://github.com/MKBSP/capfolder/tree/main/apps/relay" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Relay setup on GitHub</a></div>
+        <div style="margin-top: auto; padding-top: 24px"><a href="https://github.com/MKBSP/capfolder/tree/main/apps/relay" data-umami-event="relay-setup" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Relay setup on GitHub</a></div>
       </div>
       <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px; display: flex; flex-direction: column">
         <h3 style="font-size: 18px; font-weight: 600; margin: 0">Pro</h3>
         <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span class="num" style="font-size: 34px; font-weight: 600">$50</span><span style="color: #5B606B; font-size: 14px">per month · <span style="display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #F3F1F9; color: #5B3FA6">Coming</span></span></div>
         <ul style="list-style: none; margin: 20px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Everything in Free forever</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Sync your folder across computers and apps</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Encrypted online backup</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>More signing requests a day</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>AI included, no setup</span></li></ul>
         <div style="margin-top: auto; padding-top: 24px"><span style="color: #5B606B; font-size: 14px">Not available yet. The free app stays free when it is.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
+    <div class="reveal" style="max-width: 760px">
+      <div class="eyebrow" style="color: #1F6F4A">Roadmap</div>
+      <h2 class="h2" style="margin-top: 14px">What we're building next</h2>
+      <p style="font-size: 17px; line-height: 1.6; color: #3A3E46; margin: 14px 0 0 0">Missing something? <a href="https://github.com/MKBSP/capfolder/issues/new/choose" data-umami-event="roadmap-request">Tell us</a>.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 40px">
+      <div class="lift reveal" style="background: #fff; border: 1px solid #1F6F4A; border-radius: 16px; padding: 26px">
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0">Now</h3>
+        <ul style="list-style: none; margin: 16px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>Installers signed by Apple and Microsoft, so your computer stops warning you</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>A guided tour and a getting-started checklist</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>Templates you can add your own clauses to</span></li></ul>
+      </div>
+      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0">Next</h3>
+        <ul style="list-style: none; margin: 16px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>Pro: sync across computers, encrypted online backup, more signing requests a day, AI included</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>AI that reads your vesting plan, option plan or grant letter and sets up the matching terms for you to confirm</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>The other way round: describe a grant, get the terms set up and a matching template, or a clear “ask a lawyer” when no template fits</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>One-click import from Pulley, Carta and Cake exports</span></li></ul>
+      </div>
+      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0">Later</h3>
+        <ul style="list-style: none; margin: 16px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>Investors and employees see their own holdings</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>Round modelling, waterfalls, and SAFE conversion at a priced round</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">→</span><span>Company templates outside the US (Portugal, Denmark, UK)</span></li></ul>
       </div>
     </div>
   </section>
@@ -547,7 +570,7 @@ cd capfolder/apps/relay
       <p class="lead" style="color: #D6EBDD; margin: 18px auto 0 auto; max-width: 520px">Free, open source, on your computer.</p>
       <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px">
         <a href="#download" class="btn" style="background: #fff; color: #16543A">Download for macOS</a>
-        <a href="https://github.com/MKBSP/capfolder" class="btn" style="border-color: rgba(255,255,255,.45); color: #fff">Star on GitHub</a>
+        <a href="https://github.com/MKBSP/capfolder" data-umami-event="github" class="btn" style="border-color: rgba(255,255,255,.45); color: #fff">Star on GitHub</a>
       </div>
     </div>
   </section>
@@ -555,8 +578,9 @@ cd capfolder/apps/relay
   <section id="privacy" class="wrap" style="padding-bottom: clamp(56px, 12vw, 96px)">
     <h2 class="h2" style="font-size: 32px">Privacy</h2>
     <div style="max-width: 760px; font-size: 15px; line-height: 1.65; color: #3A3E46">
-      <p><b>This page.</b> Fonts and images come from this site. Visits are counted with <a href="https://plausible.io/data-policy">Plausible</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
-      <p><b>The download form.</b> When you click "Get the download", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Ask through a GitHub issue to be removed, or reply to any email.</p>
+      <p><b>This page.</b> Fonts and images come from this site. Visits, where they came from, and clicks on buttons are counted with <a href="https://umami.is/privacy">Umami</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
+      <p><b>The download form.</b> When you click "Get the download", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
+      <p><b>Questions about your data.</b> Write to <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a>.</p>
       <p><b>The app.</b> Your cap table and documents stay in your folder. Documents you send for signature pass through the signing relay until everyone has signed, then the relay deletes them (within 7 days, or 30 if never signed). The app sends an anonymous install ping (a random install id, the app version, your operating system, and yes/no for "imported", "has documents", "sent for signature") once on first run and then weekly, only after you accept the terms. The relay keeps the day, not the time or your IP address. Turn it off in Settings → Privacy. The code that sends and stores it is public in the repo.</p>
     </div>
   </section>
@@ -564,7 +588,7 @@ cd capfolder/apps/relay
   <button type="button" id="pause-motion" aria-pressed="false">Pause animations</button>
   <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; color: #5B606B">
     <span>Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</span>
-    <span style="display: flex; flex-wrap: wrap; gap: 18px"><a href="https://github.com/MKBSP/capfolder">GitHub</a><a href="https://github.com/MKBSP/capfolder/fork">Fork it</a><a href="#thanks">Acknowledgements</a><a href="#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a></span>
+    <span style="display: flex; flex-wrap: wrap; gap: 18px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="https://github.com/MKBSP/capfolder/fork">Fork it</a><a href="#thanks">Acknowledgements</a><a href="#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
   </footer>
 </div>
 

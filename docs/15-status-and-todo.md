@@ -42,9 +42,10 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Decide where the relay + Documenso run (relay.capfolder.com), and which email service sends codes and signing emails (SMTP). Then a production signing certificate (self-signed works; an AATL certificate shows a green check in Acrobat).
 - [ ] Source the YC post-money SAFE template so New SAFE can fill it (today the founder attaches the filled PDF).
 - [ ] Lawyer review of the in-app terms and conditions (`apps/desktop/src/copy.ts`, TERMS).
-- [ ] Publish Tally form `rjxQjR` only when real download links exist (`integrations/tally.md`). Its hidden fields must be named `utm_source` and `ref`.
+- [x] Tally form `rjxQjR` published 2026-10-15 (thank-you page → releases/latest, optional "Email me when there's a new version" consent box).
 - [ ] Website: enable GitHub Pages (Settings → Pages → GitHub Actions), point capfolder.com at it, then add `apps/website/CNAME` with `capfolder.com`.
-- [ ] Plausible: add the site `capfolder.com` (paid; or tell me to switch to Umami Cloud's free tier).
+- [ ] Umami Cloud: add the site `capfolder.com`, paste its website id into `apps/website/index.html` (`PASTE-UMAMI-WEBSITE-ID`; the site test fails until it's a real id).
+- [ ] Cloudflare Email Routing: `privacy@capfolder.com` → your inbox (the site links to it).
 - [ ] Check the site's personal story is right ("28 investors", "YC W22", the name "Mads Petersen") and re-check the comparison table against vendors' pages in launch week.
 - [ ] Relay hosting: set `PING_FILE` to a persistent path; turn off reverse-proxy access logs for `/ping` (IP + time would undo "no IP"). The site says "with our hosted signing relay": host it (Documenso storage encrypted at rest) before launch, or drop that line.
 - [ ] Privacy contact: the site's privacy section points to GitHub issues; add a contact email (and your legal name/address if the lawyer says so, GDPR Art. 13). Lawyer: is the random install id OK without a deletion route?
@@ -79,16 +80,18 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - Tauri icon command (`14`).
 
 ## Next developments (agreed 2026-10-15, after the v0.1.2 test round)
+Not yet: billing, pricing and referrals wait; for now users can only donate (Revolut).
+
 1. **Billing** through a merchant of record (Paddle / Lemon Squeezy) so EU VAT is handled; Revolut doesn't. Pricing and referrals depend on it.
 2. **Pricing:** Pro at 50/month or 500/year (currency open: € or $). Website still says "Pro $50/month, Coming".
 3. **Referrals:** 50 off the next payment, only for confirmed referrals who actually paid a subscription.
-4. **Define Pro** (sync, online backup, more signing requests?) and how the app knows a user is paying.
+4. **Define Pro** (sync, online backup, more signing requests?) and how the app knows a user is paying. The relay's email/signing limits must be **per account**: free accounts keep the daily limit, paying accounts don't.
 5. **Product tour + getting-started checklist,** after competitor onboarding research.
-6. **Public roadmap** section on the website.
+6. ~~Public roadmap~~ on the website: done 2026-10-15 (`#roadmap`, Now/Next/Later; no infrastructure items).
 7. **Templates:** insert parts (clauses/blocks) into templated docs; more items from Mads to come.
-8. **Website analytics** (Umami Cloud: free, cookieless, click events, referrers; `?ref=` on shared links) and a privacy contact email (Cloudflare Email Routing → `privacy@capfolder.com`).
-9. **Update emails** to the download-form list (needs a sending tool).
-10. **Move the relay** off the laptop to a real server.
+8. ~~**Website analytics**~~ done 2026-10-15, waiting on the Umami id (Umami Cloud: free, cookieless, click events, referrers; `?ref=` on shared links) and a privacy contact email (Cloudflare Email Routing → `privacy@capfolder.com`).
+9. **Update emails** to the download-form list: only people who ticked the consent box. Resend Broadcasts (already our sender for the relay); import Tally submissions into a Resend audience.
+10. **Move the relay** off the laptop to a real server. Stays on the laptop for now; internal roadmap only, not on the website.
 11. **AI ↔ structured equity terms.** Vesting, cliffs, ESOP/plan terms and other OCF settings are standardised and easy to edit, so both directions work:
     - **Doc → settings:** a founder adds a vesting plan, ESOP or grant letter; the AI reads it and creates the matching OCF settings (vesting schedule, cliff, acceleration, plan pool, …) for the founder to confirm.
     - **Request → settings + doc:** "add a grant for my employee with these conditions" → the AI creates the settings *and* finds the matching document in the template marketplace. If no template fits, it says so plainly and tells the founder to get a lawyer to draft it. It never invents legal text.

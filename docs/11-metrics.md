@@ -3,7 +3,7 @@
 ## What we measure, and where
 | Metric | Source | How |
 |---|---|---|
-| Website visits, by source | Plausible or Umami (cookieless, no banner) | Script on the site; `?ref=hn`, `?ref=bookface` on launch links |
+| Website visits, by source | Umami Cloud (cookieless, no banner; button clicks via `data-umami-event`) | Script on the site; `?ref=hn`, `?ref=bookface` on launch links |
 | Download requests | Tally form `rjxQjR` submissions | Count + `utm_source`/`ref` hidden fields |
 | Actual downloads | GitHub Releases API `assets[].download_count` | Daily cron writes a snapshot to a sheet/DB |
 | Installs (first launch) | Anonymous install ping (below) | Unique `install_id` |
@@ -25,7 +25,7 @@
 - The app sends nothing until the founder has accepted the terms that disclose it, and never when it's off in Settings → Privacy.
 
 ## Built (M8, 2026-10-11)
-- Site: Plausible script (`data-domain="capfolder.com"`), Tally popup with `utm_source`/`ref` hidden fields, release links read from the GitHub API.
+- Site: Umami Cloud script (`data-website-id`), click events on download/donate/GitHub buttons, Tally popup with `utm_source`/`ref` hidden fields, release links read from the GitHub API.
 - `.github/workflows/metrics.yml`: daily downloads + stars into `github.csv` on the `metrics` branch.
 - `pnpm --filter @capfolder/relay dashboard <pings.jsonl> <github.csv> <donations>` prints the table below. "Real envelopes sent" is counted as installs that sent at least one (the ping is a boolean).
 - The source is in the repo, so anyone can verify it.

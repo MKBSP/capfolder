@@ -1,7 +1,7 @@
 # Tally — website download form
 
 - **Account:** madskbsp@gmail.com, workspace `wAQeRl`
-- **Form:** "Download Capfolder", id **`rjxQjR`**. Status: draft, not published yet.
+- **Form:** "Download Capfolder", id **`rjxQjR`**. Status: **published 2026-10-15**.
 - **Edit:** https://tally.so/forms/rjxQjR/edit
 
 ## Fields
@@ -9,9 +9,10 @@
 |---|---|---|
 | Email | email | yes |
 | Which computer? | macOS / Windows / Linux | yes |
+| Updates: "Email me when there's a new version" | checkbox (consent for update emails) | no |
 | Hidden: `utm_source`, `ref` | URL params | — |
 
-**Thank-you page:** "Your download is ready", with download links per OS (placeholders `[download link]`; replace with GitHub Releases URLs), then "Capfolder is free. If it saves you a headache, pay what you want." linking to https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df
+**Thank-you page:** "Your download is ready", with download links per OS (links to https://github.com/MKBSP/capfolder/releases/latest), then "Capfolder is free. If it saves you a headache, pay what you want." linking to https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df
 
 ## Wiring the website (done in M8: `apps/website/index.html` opens the popup with `Tally.openPopup` and shows the release links `onSubmit`; if Tally's script is blocked it opens tally.so/r/rjxQjR)
 - Replace the mock gate in `design/website/index.html` (`#getdl` click handler) with Tally's popup embed:

@@ -31,10 +31,27 @@ test("download goes through the Tally form, then GitHub Releases; donations thro
   expect(html).toContain("https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df");
 });
 
-test("cookieless analytics, no banner (docs/11)", () => {
+test("cookieless analytics, no banner (docs/11): Umami Cloud with a real website id", () => {
   expect(html).toMatch(
-    /<script defer data-domain="capfolder\.com" src="https:\/\/plausible\.io\/js\/script\.js"><\/script>/,
+    /<script defer src="https:\/\/cloud\.umami\.is\/script\.js" data-website-id="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"><\/script>/,
   );
+  expect(html).not.toContain("plausible");
+  // the buttons we want counted
+  for (const ev of ["get-download", "skip-download", "download-macos", "download-windows", "download-linux", "donate", "github", "nav-download"])
+    expect([ev, html.includes(`data-umami-event="${ev}"`)]).toEqual([ev, true]);
+});
+
+test("public roadmap: linked from the nav, no internal infrastructure items", () => {
+  expect(html).toContain('href="#roadmap"');
+  const roadmap = html.slice(html.indexOf('id="roadmap"'), html.indexOf("</section>", html.indexOf('id="roadmap"')));
+  expect(roadmap).toContain("Now");
+  expect(roadmap).toContain("Next");
+  expect(roadmap).toContain("Later");
+  expect(roadmap).not.toMatch(/laptop|Hetzner|AWS/);
+});
+
+test("privacy contact is an email, not only GitHub issues", () => {
+  expect(html.slice(html.indexOf('id="privacy"'))).toContain("mailto:privacy@capfolder.com");
 });
 
 test("acknowledged npm packages carry the license our license check found", () => {
@@ -57,7 +74,7 @@ test("visitors' browsers only talk to what the privacy section names (M8 review)
   expect(html).not.toMatch(/<script[^>]+tally\.so\/widgets\/embed\.js/); // Tally loads on click only
   expect(html).toContain('id="privacy"');
   const privacy = html.slice(html.indexOf('id="privacy"'));
-  for (const named of ["Plausible", "Tally", "GitHub", "install ping", "Settings", "relay"])
+  for (const named of ["Umami", "Tally", "GitHub", "install ping", "Settings", "relay"])
     expect([named, privacy.includes(named)]).toEqual([named, true]);
 });
 
