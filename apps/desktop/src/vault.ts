@@ -13,6 +13,7 @@ import {
   MAX_DATE,
   nextSecurityIdNumber,
   reduce,
+  type SignField,
   sha256Hex,
   sheets,
   toOcfExport,
@@ -635,6 +636,8 @@ export async function sendForSignature(
     target?: string;
     onSigned?: EventDraft[]; // recorded only once everyone has signed (e.g. the SAFE itself)
     relayUrl: string;
+    /** The form has its own signature page (YC's): sign there instead of on an added one. */
+    placed?: { fields: SignField[]; originalPages: number };
   },
 ): Promise<Result> {
   const blocked = await writeBlocked(fs, v);
@@ -645,7 +648,9 @@ export async function sendForSignature(
   }
   let page: Awaited<ReturnType<typeof withSignaturePage>>;
   try {
-    page = await withSignaturePage(p.pdf, { title: p.title, signers: p.signers });
+    page = p.placed
+      ? { pdf: p.pdf, fields: p.placed.fields, originalPages: p.placed.originalPages }
+      : await withSignaturePage(p.pdf, { title: p.title, signers: p.signers });
   } catch {
     return { ok: false, errors: ["That file isn't a PDF Capfolder can read."] };
   }

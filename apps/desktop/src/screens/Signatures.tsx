@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MainHeader } from "../components/Header";
 import { ErrorList, Modal } from "../components/ui";
-import { day, todayIso } from "../fmt";
+import { uploadWire, wireDoc } from "../components/WireInstructions";
+import { day } from "../fmt";
 import { type Envelope, type EnvelopeStatus, envelopes, RelayError, relayClient, relayFor } from "../signing";
 import { useApp } from "../state";
-import { attachDocument, DOC_FOLDER, fileSigned, voidEnvelope } from "../vault";
+import { DOC_FOLDER, fileSigned, voidEnvelope } from "../vault";
 
 const ago = (ts: string) => {
   const days = Math.floor((Date.now() - Date.parse(ts)) / 864e5);
@@ -331,34 +332,18 @@ function WireDialog(p: { env: Envelope; onClose(): void }) {
   const [errors, setErrors] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const docs = [...(app.latest?.docs.entries() ?? [])].filter(([, d]) => !d.removed);
-  const wireDoc = docs.filter(([, d]) => d.data.doc_type === "wire_instructions").at(-1);
+  const wire = wireDoc(app);
   const signed = docs.find(([id]) => id === p.env.docId)?.[1];
   const to = p.env.signers.filter((x) => x.email !== app.settings.email);
   const names = to.map((x) => x.name).join(" and ");
-
-  async function upload() {
+  const upload = async () => {
     setErrors(null);
-    const f = await app.platform.pickFile("Choose your wire instructions (PDF)", ["pdf"]);
-    if (!f || !app.vault) return;
-    try {
-      const r = await attachDocument(app.platform.fs, app.vault, app.ctx, {
-        originalName: f.name,
-        bytes: await app.platform.fs.readBytes(f.path),
-        docType: "wire_instructions",
-        date: todayIso(),
-        person: "company",
-      });
-      if (r.ok === "duplicate")
-        return setErrors(["That file is already in your folder as another document."]);
-      if (!r.ok) return setErrors(r.errors);
-      app.setVault(r.vault);
-    } catch (e) {
-      setErrors([`Couldn't add ${f.name}: ${(e as Error).message ?? e}`]);
-    }
-  }
+    const e = await uploadWire(app);
+    if (e) setErrors([e]);
+  };
 
   async function send() {
-    if (!app.vault || !wireDoc || !signed || !p.env.receipt) return;
+    if (!app.vault || !wire || !signed || !p.env.receipt) return;
     setErrors(null);
     setBusy(true);
     try {
@@ -374,13 +359,13 @@ function WireDialog(p: { env: Envelope; onClose(): void }) {
           signers: p.env.signers,
         },
         await read(signed.data.path),
-        await read(wireDoc[1].data.path),
+        await read(wire[1].data.path),
       );
       const errs = await app.run([
         {
           kind: "app",
           type: "wire_sent",
-          data: { envelope_id: p.env.id, doc_id: wireDoc[0], to: to.map((x) => x.email) },
+          data: { envelope_id: p.env.id, doc_id: wire[0], to: to.map((x) => x.email) },
         },
       ]);
       if (errs) return setErrors([`Sent, but couldn't record it: ${errs.join(" ")}`]);
@@ -395,7 +380,7 @@ function WireDialog(p: { env: Envelope; onClose(): void }) {
   return (
     <Modal open onClose={p.onClose} title="Send wire instructions">
       <div className="stack">
-        {!wireDoc ? (
+        {!wire ? (
           <>
             <p className="small" style={{ margin: 0 }}>
               Upload your wire instructions first: the PDF from your bank with the account details. It's kept
@@ -411,8 +396,8 @@ function WireDialog(p: { env: Envelope; onClose(): void }) {
           <>
             <p className="small" style={{ margin: 0 }}>
               Emails {names} the fully signed “{p.env.title}” and your wire instructions (
-              {String(wireDoc[1].data.original_name ?? wireDoc[1].data.path)}) from signing@capfolder.com.
-              Replies go to {app.settings.email}.
+              {String(wire[1].data.original_name ?? wire[1].data.path)}) from signing@capfolder.com. Replies
+              go to {app.settings.email}.
             </p>
             <div className="banner amber small">
               The email asks them to confirm the bank details with you by phone before wiring. Fake wire
@@ -436,7 +421,7 @@ function WireDialog(p: { env: Envelope; onClose(): void }) {
           <button type="button" className="btn" onClick={p.onClose}>
             Cancel
           </button>
-          {wireDoc ? (
+          {wire ? (
             <button type="button" className="btn primary" disabled={busy || !signed} onClick={send}>
               {busy ? "Sending…" : `Send to ${names}`}
             </button>

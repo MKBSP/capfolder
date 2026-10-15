@@ -51,3 +51,15 @@ test("Settings → AI finds a local Ollama and uses the chosen model for sorting
   });
   expect(screen.getByRole("checkbox", { name: "Use AI when sorting documents" })).toBeChecked();
 });
+
+test("Settings → Company: upload the wire instructions once, replace them later", async () => {
+  const fp = acmePlatform({ pickFile: { path: "/home/me/Downloads/wire.pdf", name: "wire.pdf" } });
+  fp.fs.writeSync("/home/me/Downloads/wire.pdf", new Uint8Array([37, 80, 68, 70, 1]));
+  render(<App platform={fp.platform} />);
+  await userEvent.click(await screen.findByRole("button", { name: "Settings" }));
+  expect(await screen.findByText(/No wire instructions yet/)).toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "Upload wire instructions…" }));
+  expect(await screen.findByText(/wire\.pdf/)).toBeInTheDocument();
+  expect(fp.fs.readSync(`${fp.root}/events.jsonl`)).toContain('"doc_type":"wire_instructions"');
+  expect(screen.getByRole("button", { name: "Replace…" })).toBeInTheDocument();
+});

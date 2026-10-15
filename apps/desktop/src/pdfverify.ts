@@ -10,6 +10,24 @@ export const loadPdfWorker = () =>
     (globalThis as { pdfjsWorker?: unknown }).pdfjsWorker = w;
   }));
 
+/** pdf.js reads text with `for await (… of stream)`; WebKit (the macOS webview) has no such iterator yet. */
+export function ensureStreamIterator() {
+  const proto = ReadableStream.prototype as unknown as Record<symbol, unknown>;
+  if (proto[Symbol.asyncIterator]) return;
+  proto[Symbol.asyncIterator] = async function* (this: ReadableStream) {
+    const reader = this.getReader();
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) return;
+        yield value;
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  };
+}
+
 interface PageInfo {
   text: string;
   annotations: number; // pdf.js ignores annotation appearances in text, so count them separately
@@ -18,6 +36,7 @@ interface PageInfo {
 /** Each page's text (whitespace-normalized) and how many annotations sit on it. */
 export async function pageInfo(bytes: Uint8Array): Promise<PageInfo[]> {
   await loadPdfWorker();
+  ensureStreamIterator();
   // verbosity 0: text extraction doesn't need the standard font files pdf.js would otherwise warn about
   const task = pdfjs.getDocument({ data: bytes.slice(), useSystemFonts: false, verbosity: 0 });
   const doc = await task.promise;

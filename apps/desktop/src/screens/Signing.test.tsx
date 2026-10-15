@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { describe, expect, test } from "vitest";
 import { App } from "../App";
+import { pageTexts } from "../pdfverify";
 import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
 import { fakeRelay } from "../test/fakeRelay";
@@ -444,8 +445,18 @@ describe("YC templates, side letters and wire instructions", () => {
     const fp = await signedIn();
     await sendSafe(false);
     const env = [...fp.relay.doc.envelopes.values()][0]!;
-    const doc = await PDFDocument.load(env.pdf);
-    expect(doc.getPageCount()).toBeGreaterThanOrEqual(6); // the SAFE, then Capfolder's signature page
+    const texts = await pageTexts(env.pdf);
+    // signed on YC's own signature page (the last one): no Capfolder page added after it
+    expect(texts.at(-1)).toMatch(/^IN WITNESS WHEREOF/);
+    expect(texts.join(" ")).not.toContain("Added by Capfolder");
+    expect(texts.join(" ")).toContain("payment by Fund Y");
+    const sent = fp.fs
+      .readSync(`${fp.root}/events.jsonl`)
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l))
+      .find((e) => e.type === "envelope_sent");
+    expect(sent.data.original_pages).toBe(texts.length - 1);
     expect(sentTitles(fp)).toEqual(["SAFE · Fund Y"]);
   });
 

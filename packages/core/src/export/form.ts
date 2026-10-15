@@ -1,6 +1,7 @@
 // YC forms (templates/yc/*.json, made by scripts/docx-to-form.mjs) filled in and laid out as a PDF. Only the
 // bracketed blanks change; every other character is YC's (CC BY-ND 4.0: unmodified except for the blanks).
 import { PDFDocument, type PDFFont, rgb, StandardFonts } from "pdf-lib";
+import type { SignField } from "./signature-page";
 
 export interface FormRun {
   t: string;
@@ -119,7 +120,17 @@ const SIZE = 11;
 const LEAD = 14;
 const TAB = 36;
 
-export async function renderForm(form: Form): Promise<Uint8Array> {
+/** Where a signature goes, in percent of the page (as SignField, without the signer). */
+export type SignSpot = Omit<SignField, "signer">;
+
+/**
+ * The PDF, plus YC's own signature page: its number (1-based, always the last page) and every "By:" line on it in
+ * order (the company's block comes first, then the investor's), so signing fields go there instead of on an
+ * added page.
+ */
+export async function renderForm(
+  form: Form,
+): Promise<{ pdf: Uint8Array; signaturePage?: number; by: SignSpot[] }> {
   const doc = await PDFDocument.create();
   const fonts = {
     r: await doc.embedFont(StandardFonts.TimesRoman),
@@ -163,8 +174,14 @@ export async function renderForm(form: Form): Promise<Uint8Array> {
     y = H - M;
   };
 
+  let signaturePage: number | undefined;
+  const by: SignSpot[] = [];
   for (const p of form.paragraphs) {
     const text = p.runs.map((r) => r.t).join("");
+    if (text.trim().startsWith("IN WITNESS WHEREOF") && !signaturePage) {
+      if (y < H - M) newPage(); // the signature page stands alone, as in the SAFE: the pages before it stay fixed
+      signaturePage = doc.getPageCount();
+    }
     if (!text.trim()) {
       y -= LEAD / 2;
       continue;
@@ -223,6 +240,18 @@ export async function renderForm(form: Form): Promise<Uint8Array> {
       const end = line.at(-1)!.x + line.at(-1)!.w;
       const shift = p.align === "center" ? (W - 2 * M - (end - line[0]!.x)) / 2 - (line[0]!.x - M) : 0;
       if (p.bullet && n === 0) page.drawText("•", { x: left - 18, y, size: SIZE, font: fonts.r });
+      if (signaturePage && line[0]!.segs[0]!.t === "By:") {
+        y -= 16; // room for the signature above the line, clear of the name above it
+        const x0 = line[0]!.x + shift + line[0]!.w + 6;
+        const w = Math.min(200, W - M - x0);
+        by.push({
+          page: doc.getPageCount(),
+          x: (x0 / W) * 100,
+          y: ((H - (y + 26)) / H) * 100,
+          w: (w / W) * 100,
+          h: (28 / H) * 100,
+        });
+      }
       for (const it of line) {
         let sx = it.x + shift;
         for (const s of it.segs) {
@@ -253,5 +282,5 @@ export async function renderForm(form: Form): Promise<Uint8Array> {
     const n = `- ${i + 1} -`;
     pg.drawText(n, { x: (W - fonts.r.widthOfTextAtSize(n, 8)) / 2, y: 24, size: 8, font: fonts.r });
   });
-  return doc.save();
+  return { pdf: await doc.save(), signaturePage, by };
 }

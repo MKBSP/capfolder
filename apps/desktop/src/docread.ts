@@ -2,7 +2,7 @@
 // local OCR (tesseract.js, bundled in public/ocr/ by scripts/ocr-assets.mjs). Nothing leaves the computer.
 import type { PDFPageProxy } from "pdfjs-dist";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
-import { loadPdfWorker } from "./pdfverify";
+import { ensureStreamIterator, loadPdfWorker } from "./pdfverify";
 
 export interface Ocr {
   image(bytes: Uint8Array): Promise<string>;
@@ -18,6 +18,7 @@ export const isReadable = (name: string) => isImage(name) || /\.pdf$/i.test(name
 
 /** A page's text with its line breaks: pdf.js marks line ends, and a gap between pieces is a space. */
 async function pageText(page: PDFPageProxy): Promise<string> {
+  ensureStreamIterator();
   const items = (await page.getTextContent()).items.filter((x) => "str" in x);
   let out = "";
   items.forEach((x, i) => {

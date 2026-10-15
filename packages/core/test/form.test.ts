@@ -55,10 +55,16 @@ test("an unknown blank is left visible, never guessed", () => {
   expect(text(fillForm(f, values))).toBe("Pay [Something New].");
 });
 
-test("renders a PDF with the YC footer and a signature-page break", async () => {
-  const pdf = await renderForm(fillForm(form("safe-cap"), values));
-  const doc = await PDFDocument.load(pdf);
-  expect(doc.getPageCount()).toBeGreaterThanOrEqual(5);
-  const side = await PDFDocument.load(await renderForm(fillForm(form("pro-rata-side-letter"), values)));
-  expect(side.getPageCount()).toBeGreaterThanOrEqual(1);
-});
+test.each(["safe-cap", "safe-discount", "safe-mfn", "pro-rata-side-letter"])(
+  "%s: YC's signature page is its own last page, with the company's then the investor's By: line",
+  async (name) => {
+    const r = await renderForm(fillForm(form(name), values));
+    const doc = await PDFDocument.load(r.pdf);
+    expect(r.signaturePage).toBe(doc.getPageCount());
+    expect(r.signaturePage).toBeGreaterThan(1);
+    expect(r.by.map((b) => b.page)).toEqual([r.signaturePage, r.signaturePage]);
+    const [company, investor] = r.by;
+    expect(company!.y).toBeLessThan(investor!.y); // company block first, higher up the page
+    for (const b of r.by) expect(b.x + b.w).toBeLessThanOrEqual(100);
+  },
+);

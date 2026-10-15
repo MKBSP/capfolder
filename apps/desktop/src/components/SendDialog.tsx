@@ -1,4 +1,4 @@
-import type { EventDraft } from "@capfolder/core";
+import type { EventDraft, SignField, SignSpot } from "@capfolder/core";
 import { useState } from "react";
 import { relayClient } from "../signing";
 import { useApp } from "../state";
@@ -21,7 +21,10 @@ const DOC_TYPES = Object.keys(DOC_FOLDER);
 export interface SendTemplate {
   label: string;
   title?: string; // envelope title, when it differs from the dialog's (side letters)
-  build(signer: { name: string; title: string }): Promise<Uint8Array>;
+  build(signer: {
+    name: string;
+    title: string;
+  }): Promise<{ pdf: Uint8Array; signaturePage?: number; by: SignSpot[] }>;
 }
 
 type Pdf = { name: string; bytes: Uint8Array };
@@ -82,9 +85,24 @@ export function SendDialog(p: {
     setBusy(true);
     try {
       const client = relayClient(app.platform, app.settings);
+      // One investor and you last: sign on the form's own By: lines (company block first, then the investor's).
+      type Placed = { fields: SignField[]; originalPages: number };
+      const place = (b: { pdf: Uint8Array; signaturePage?: number; by: SignSpot[] }) => ({
+        pdf: b.pdf,
+        placed:
+          b.signaturePage && b.by.length === 2 && all.length === 2 && meLast
+            ? ({
+                fields: [
+                  { signer: 0, ...b.by[1]! },
+                  { signer: 1, ...b.by[0]! },
+                ],
+                originalPages: b.signaturePage - 1,
+              } as Placed)
+            : undefined,
+      });
       const one = async (
         vault: NonNullable<typeof app.vault>,
-        d: { pdf: Uint8Array; title: string; docType: string; main: boolean },
+        d: { pdf: Uint8Array; placed?: Placed; title: string; docType: string; main: boolean },
       ) =>
         sendForSignature(app.platform.fs, vault, app.ctx, client, {
           pdf: d.pdf,
@@ -95,9 +113,10 @@ export function SendDialog(p: {
           target: p.defaults.target,
           onSigned: d.main ? p.defaults.onSigned : undefined, // the side letter adds nothing to the cap table
           relayUrl: app.settings.relayUrl,
+          placed: d.placed,
         });
-      const pdf = own ? file!.bytes : await p.template!.build(signer);
-      const r = await one(app.vault, { pdf, title: title.trim(), docType, main: true });
+      const doc = own ? { pdf: file!.bytes } : place(await p.template!.build(signer));
+      const r = await one(app.vault, { ...doc, title: title.trim(), docType, main: true });
       if (!r.ok) return setErrors(r.errors);
       app.setVault(r.vault);
       if ((meLast || !own) && !founder && myName.trim() !== app.settings.signerName)
@@ -107,9 +126,9 @@ export function SendDialog(p: {
       if (side) {
         const sideTitle = (sideOwn ? undefined : p.sideLetter?.title) ?? `Side letter · ${p.defaults.person}`;
         try {
-          const sidePdf = sideOwn ? sideFile!.bytes : await p.sideLetter!.build(signer);
+          const sideDoc = sideOwn ? { pdf: sideFile!.bytes } : place(await p.sideLetter!.build(signer));
           const s2 = await one(r.vault, {
-            pdf: sidePdf,
+            ...sideDoc,
             title: sideTitle,
             docType: "side_letter",
             main: false,

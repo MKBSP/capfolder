@@ -5,6 +5,7 @@ import { EmailVerify } from "../components/EmailVerify";
 import { MainHeader } from "../components/Header";
 import { CompanyPlace, YourCountry } from "../components/RegionFields";
 import { ComingSoon, ErrorList, Field } from "../components/ui";
+import { WireInstructionsField } from "../components/WireInstructions";
 import type { Settings as S } from "../settings";
 import { relayClient } from "../signing";
 import { useApp } from "../state";
@@ -204,6 +205,7 @@ function CompanySection() {
           Save company details
         </button>
       </div>
+      <WireInstructionsField />
     </section>
   );
 }

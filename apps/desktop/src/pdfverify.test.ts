@@ -37,3 +37,22 @@ test("a sealed copy with extra pages passes; a changed term doesn't", async () =
   });
   expect((await verifySigned(sent.pdf, new Uint8Array([1, 2, 3]), 1)).ok).toBe(false);
 });
+
+test("WebKit (the macOS app) has no async iterator on ReadableStream: text still reads", async () => {
+  const proto = ReadableStream.prototype as unknown as Record<symbol, unknown>;
+  const native = proto[Symbol.asyncIterator];
+  delete proto[Symbol.asyncIterator];
+  try {
+    const { PDFDocument, StandardFonts } = await import("pdf-lib");
+    const d = await PDFDocument.create();
+    d.addPage([612, 792]).drawText("Hello WebKit", {
+      x: 72,
+      y: 700,
+      font: await d.embedFont(StandardFonts.Helvetica),
+    });
+    const { pageInfo } = await import("./pdfverify");
+    expect((await pageInfo(await d.save()))[0]!.text).toBe("Hello WebKit");
+  } finally {
+    proto[Symbol.asyncIterator] = native;
+  }
+});
