@@ -56,3 +56,26 @@ test("WebKit (the macOS app) has no async iterator on ReadableStream: text still
     proto[Symbol.asyncIterator] = native;
   }
 });
+
+test("the signature page itself may gain signatures but must keep its own text (YC's names, title, wording)", async () => {
+  const { PDFDocument, StandardFonts } = await import("pdf-lib");
+  const make = async (sig: string, extra?: string) => {
+    const d = await PDFDocument.create();
+    const f = await d.embedFont(StandardFonts.Helvetica);
+    d.addPage([612, 792]).drawText("The SAFE terms", { x: 72, y: 700, font: f });
+    const p = d.addPage([612, 792]);
+    p.drawText(sig, { x: 72, y: 700, font: f });
+    if (extra) p.drawText(extra, { x: 72, y: 600, font: f });
+    return d.save();
+  };
+  const sent = await make("IN WITNESS WHEREOF ACME INC. By: Mads Petersen CEO");
+  expect(
+    await verifySigned(sent, await make("IN WITNESS WHEREOF ACME INC. By: Mads Petersen CEO", "Mads P"), 1),
+  ).toEqual({ ok: true });
+  expect(
+    await verifySigned(sent, await make("IN WITNESS WHEREOF EVIL INC. By: Mads Petersen CEO"), 1),
+  ).toMatchObject({
+    ok: false,
+    reason: "Page 2 of the signed copy doesn't keep the text you sent.",
+  });
+});

@@ -92,7 +92,18 @@ test("HN-friendly download: email optional, works without JS, unsigned-beta step
 
 test("pricing: free forever, self-hosted, and a paid plan that's clearly not out yet", () => {
   expect(html).toContain('href="#pricing"');
-  const pricing = html.slice(html.indexOf('id="pricing"'), html.indexOf("</section>", html.indexOf('id="pricing"')));
-  for (const s of ["Free forever", "Self-hosted", "$50", "Coming", "5 signing requests a day", "No online backup", "Bring your own AI"])
+  const pricing = html.slice(
+    html.indexOf('id="pricing"'),
+    html.indexOf("</section>", html.indexOf('id="pricing"')),
+  );
+  for (const s of [
+    "Free forever",
+    "Self-hosted",
+    "$50",
+    "Coming",
+    "5 signing requests a day",
+    "No online backup",
+    "Bring your own AI",
+  ])
     expect([s, pricing.includes(s)]).toEqual([s, true]);
 });

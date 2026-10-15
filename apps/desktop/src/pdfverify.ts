@@ -87,5 +87,16 @@ export async function verifySigned(
     if (b[i]!.annotations > a[i]!.annotations)
       return { ok: false, reason: `Something was added on top of page ${i + 1} of the signed copy.` };
   }
+  // Signature pages (YC's own, or the one Capfolder adds) gain signatures, but every word sent stays, in order.
+  for (let i = originalPages; i < a.length; i++) {
+    const got = b[i]!.text.split(" ");
+    let at = 0;
+    for (const w of a[i]!.text.split(" ").filter(Boolean)) {
+      at = got.indexOf(w, at);
+      if (at < 0)
+        return { ok: false, reason: `Page ${i + 1} of the signed copy doesn't keep the text you sent.` };
+      at++;
+    }
+  }
   return { ok: true };
 }
