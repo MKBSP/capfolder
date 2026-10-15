@@ -78,6 +78,21 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - AI CLI flags and vendor terms (`02`, `06`).
 - Tauri icon command (`14`).
 
+## Next developments (agreed 2026-10-15, after the v0.1.2 test round)
+1. **Billing** through a merchant of record (Paddle / Lemon Squeezy) so EU VAT is handled; Revolut doesn't. Pricing and referrals depend on it.
+2. **Pricing:** Pro at 50/month or 500/year (currency open: € or $). Website still says "Pro $50/month, Coming".
+3. **Referrals:** 50 off the next payment, only for confirmed referrals who actually paid a subscription.
+4. **Define Pro** (sync, online backup, more signing requests?) and how the app knows a user is paying.
+5. **Product tour + getting-started checklist,** after competitor onboarding research.
+6. **Public roadmap** section on the website.
+7. **Templates:** insert parts (clauses/blocks) into templated docs; more items from Mads to come.
+8. **Website analytics** (Umami Cloud: free, cookieless, click events, referrers; `?ref=` on shared links) and a privacy contact email (Cloudflare Email Routing → `privacy@capfolder.com`).
+9. **Update emails** to the download-form list (needs a sending tool).
+10. **Move the relay** off the laptop to a real server.
+11. **AI ↔ structured equity terms.** Vesting, cliffs, ESOP/plan terms and other OCF settings are standardised and easy to edit, so both directions work:
+    - **Doc → settings:** a founder adds a vesting plan, ESOP or grant letter; the AI reads it and creates the matching OCF settings (vesting schedule, cliff, acceleration, plan pool, …) for the founder to confirm.
+    - **Request → settings + doc:** "add a grant for my employee with these conditions" → the AI creates the settings *and* finds the matching document in the template marketplace. If no template fits, it says so plainly and tells the founder to get a lawyer to draft it. It never invents legal text.
+
 ## Future ideas (not in v1)
 - Cloud tier ($50/mo): sync, roles, four-eyes approval (`docs/12`).
 - Vault encryption (opt-in).
