@@ -104,6 +104,36 @@ describe("Claude", () => {
   });
 });
 
+test("a document path from the event log that leaves docs/ is never read or sent", async () => {
+  const evil = "../../../.ssh/id_rsa";
+  const { d, calls } = await deps(
+    [
+      {
+        stop_reason: "tool_use",
+        content: [{ type: "tool_use", id: "t1", name: "document_text", input: { path: evil } }],
+      },
+      { stop_reason: "end_turn", content: [{ type: "text", text: "ok" }] },
+    ],
+    { cloudDocs: true },
+  );
+  // a tampered or imported events.jsonl: the doc points outside the company folder
+  const events = d.vault.events.map((e) =>
+    (e.data as { doc_id?: string }).doc_id === "doc_lisa_grant"
+      ? { ...e, data: { ...e.data, path: evil } }
+      : e,
+  );
+  let read = false;
+  const fs = Object.assign(Object.create(d.platform.fs), {
+    readBytes: async () => {
+      read = true;
+      return new Uint8Array();
+    },
+  });
+  await askChat({ ...d, vault: { ...d.vault, events }, platform: { ...d.platform, fs } }, [], "read it");
+  expect(read).toBe(false);
+  expect(JSON.stringify(body(calls[1]!).messages.at(-1))).toMatch(/No filed document/);
+});
+
 describe("drafts", () => {
   const propose = async (
     name: string,

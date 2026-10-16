@@ -22,7 +22,7 @@ import type { Platform } from "./platform";
 import type { Settings } from "./settings";
 import type { Route } from "./state";
 import { TEMPLATE_LINKS, YC_FORMS, ycSafeFor } from "./templates";
-import type { Vault } from "./vault";
+import { isSafeDocPath, type Vault } from "./vault";
 
 export type ChatProvider = Exclude<Settings["chat"]["provider"], "">;
 export const CLOUD = {
@@ -236,7 +236,9 @@ async function runTool(
       if (!mayReadDocs(d.chat))
         return "Not allowed: the founder hasn't let cloud AI read documents (Settings → AI).";
       // only a filed document, never an arbitrary path
-      const doc = [...s.docs.values()].find((x) => !x.removed && x.data.path === input.path);
+      const doc = [...s.docs.values()].find(
+        (x) => !x.removed && x.data.path === input.path && isSafeDocPath(x.data.path),
+      );
       if (!doc) return "No filed document has that path. Use the documents tool.";
       const path = String(doc.data.path);
       out.sources.push({ kind: "doc", id: path, label: baseName(path) });
