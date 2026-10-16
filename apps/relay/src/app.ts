@@ -190,12 +190,17 @@ export function createApp(d: RelayDeps) {
   const perEmail = d.limits?.perEmailPerMonth ?? 10;
   // ponytail: counts live in memory, so a relay restart resets them; persist them when billing arrives
   const sent = new Map<string, { month: string; n: number }>();
+  let sentMonth = "";
   /** Counts one send for a free account; the refusal message, or null when it may go. */
   const overLimit = (raw: string): string | null => {
     const email = raw.trim().toLowerCase();
     if (d.plan?.(email) === "pro") return null;
     const now = new Date(d.now());
     const month = now.toISOString().slice(0, 7);
+    if (month !== sentMonth) {
+      sent.clear(); // last month's counts are dead weight: the map only ever holds this month's senders
+      sentMonth = month;
+    }
     const key = emailKey(email);
     const x = sent.get(key);
     const n = x?.month === month ? x.n : 0;
