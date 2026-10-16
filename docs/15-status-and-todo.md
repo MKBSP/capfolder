@@ -96,7 +96,7 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
     - **Doc → settings:** a founder adds a vesting plan, ESOP or grant letter; the AI reads it and creates the matching OCF settings (vesting schedule, cliff, acceleration, plan pool, …) for the founder to confirm.
     - **Request → settings + doc:** "add a grant for my employee with these conditions" → the AI creates the settings *and* finds the matching document in the template marketplace. If no template fits, it says so plainly and tells the founder to get a lawyer to draft it. It never invents legal text.
 
-12. **AI chat** ("✦ Ask AI" side panel, local + cloud keys, answer + propose): plan in `docs/18-ai-chat.md`. Next to build.
+12. **AI chat** ("✦ Ask AI" side panel, local + cloud keys, answer + propose): first version built 2026-10-16, see `docs/18-ai-chat.md` → Status.
 
 ## Future ideas (not in v1)
 - Cloud tier ($50/mo): sync, roles, four-eyes approval (`docs/12`).

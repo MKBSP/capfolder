@@ -41,7 +41,7 @@ test("Settings → AI finds a local Ollama and uses the chosen model for sorting
   });
   render(<App platform={fp.platform} />);
   await userEvent.click(await screen.findByRole("button", { name: "Settings" }));
-  expect(await screen.findByText(/LM Studio/)).toBeInTheDocument();
+  expect(await screen.findByText("LM Studio")).toBeInTheDocument();
   expect(await screen.findByText(/Not running\. Install it from https:\/\/lmstudio\.ai/)).toBeInTheDocument();
   await userEvent.selectOptions(await screen.findByLabelText("Ollama model"), "llama3.1:8b");
   expect(JSON.parse(fp.fs.readSync("/appdata/settings.json")).ai).toEqual({

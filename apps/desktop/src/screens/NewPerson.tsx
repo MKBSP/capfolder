@@ -7,9 +7,12 @@ import { useApp } from "../state";
 /** A stakeholder without holdings yet (an investor about to sign, a new hire). */
 export function NewPerson() {
   const app = useApp();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [type, setType] = useState<"INDIVIDUAL" | "INSTITUTION">("INDIVIDUAL");
+  const pre = (app.route.name === "newPerson" && app.route.prefill) || {}; // an Ask AI draft (docs/18)
+  const [name, setName] = useState(pre.name ?? "");
+  const [email, setEmail] = useState(pre.email ?? "");
+  const [type, setType] = useState<"INDIVIDUAL" | "INSTITUTION">(
+    pre.type === "INSTITUTION" ? "INSTITUTION" : "INDIVIDUAL",
+  );
   const [errors, setErrors] = useState<string[] | null>(null);
   return (
     <>

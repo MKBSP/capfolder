@@ -11,7 +11,13 @@ import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
-import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
+import {
+  newPerson,
+  type PersonChoice,
+  PersonPicker,
+  personNamed,
+  resolvePerson,
+} from "../components/PersonPicker";
 import { SendDialog } from "../components/SendDialog";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
@@ -26,12 +32,17 @@ const digits = num; // the founder's decimal mark (Settings → Your country)
 /** NewSafe.html (F-11 / F-12). "Record as signed" works now; sending for signature arrives in M5. */
 export function NewSafe() {
   const app = useApp();
-  const [who, setWho] = useState<PersonChoice>(() => newPerson("INSTITUTION"));
-  const [amount, setAmount] = useState("");
-  const [cap, setCap] = useState("");
-  const [discount, setDiscount] = useState("");
-  const [date, setDate] = useState(todayIso());
-  const [mfn, setMfn] = useState(false);
+  const pre = (app.route.name === "newSafe" && app.route.prefill) || {}; // an Ask AI draft (docs/18)
+  const [who, setWho] = useState<PersonChoice>(() =>
+    pre.investor ? personNamed(app.latest, pre.investor, "INSTITUTION") : newPerson("INSTITUTION"),
+  );
+  const [amount, setAmount] = useState(pre.amount ?? "");
+  const [cap, setCap] = useState(pre.cap ?? "");
+  const [discount, setDiscount] = useState(
+    pre.discount ? String(Math.round(Number(pre.discount) * 10000) / 100) : "",
+  );
+  const [date, setDate] = useState(pre.date || todayIso());
+  const [mfn, setMfn] = useState(pre.mfn === "1");
   const [errors, setErrors] = useState<string[] | null>(null);
   const [attachFor, setAttachFor] = useState<string | null>(null);
   const [sending, setSending] = useState(false);

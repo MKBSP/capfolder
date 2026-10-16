@@ -44,6 +44,11 @@ export interface Platform {
     check(): Promise<AppUpdate | null>;
     relaunch(): Promise<void>;
   };
+  /** docs/18: cloud AI API keys, kept in the OS keychain ("" = none). */
+  aiKey: {
+    get(provider: string): Promise<string>;
+    set(provider: string, key: string): Promise<void>;
+  };
   lock: {
     set(password: string): Promise<void>;
     verify(password: string): Promise<boolean>;
@@ -131,6 +136,10 @@ export const tauriPlatform: Platform = {
         : null;
     },
     relaunch: () => relaunch(),
+  },
+  aiKey: {
+    get: (provider) => invoke<string>("ai_key_get", { provider }),
+    set: (provider, key) => invoke("ai_key_set", { provider, key }),
   },
   lock: {
     set: (password) => invoke("lock_set", { password }),

@@ -1,3 +1,4 @@
+mod aikey;
 mod localai;
 mod lock;
 
@@ -30,7 +31,7 @@ pub fn run() {
                 let _ = window.emit("files-dropped", &files);
             }
         })
-        .invoke_handler(tauri::generate_handler![lock::lock_set, lock::lock_verify, lock::lock_is_set, lock::lock_clear, localai::local_ai])
+        .invoke_handler(tauri::generate_handler![lock::lock_set, lock::lock_verify, lock::lock_is_set, lock::lock_clear, localai::local_ai, aikey::ai_key_set, aikey::ai_key_get])
         .run(tauri::generate_context!())
         .expect("error while running Capfolder");
 }

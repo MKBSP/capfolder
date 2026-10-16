@@ -21,3 +21,11 @@
 - Doc → settings: drop a vesting plan / ESOP and the chat proposes the matching OCF settings (dev plan item 11).
 - Chat history per company (kept in app data, not the vault).
 - AI included for Pro (hosted model, no setup).
+
+## Status (2026-10-16): first version built
+- Header "✦ Ask AI" button, ⌘K/Ctrl+K, Esc and × toggle a right side panel (`components/AskAi.tsx`); open/closed is kept in app settings. It stays open across screens and shows "Looking at: …".
+- Settings → AI → Ask AI: Claude / OpenAI / Gemini with your own API key (kept in the OS keychain via `ai_key_set`/`ai_key_get`, never in settings.json), or Ollama / LM Studio on this computer. "Let cloud AI read documents" is off by default.
+- `chat.ts`: two wire formats (Anthropic messages; OpenAI-style chat completions for OpenAI, Gemini's OpenAI endpoint, Ollama and LM Studio). Read tools: cap_table (as of a date), people, whats_missing, documents, document_text (filed documents only; local models, or cloud with the toggle on). Propose tools: grant, SAFE, person, vesting schedule, option pool; each draft is checked by building the real events (nothing written) and opens the usual form prefilled (`route.prefill`).
+- Templates on drafts: YC SAFE by terms (`ycSafeFor`), Cooley GO grant notice / plan; acceleration or no matching YC SAFE → amber "No template… have a lawyer draft it".
+- A local model that refuses tools gets a one-shot cap-table summary and a "connect a bigger model" note.
+- Not yet: chat history is in memory per company (lost on restart); streaming answers; doc → plan settings are proposed but only the pool size/name reach the form.

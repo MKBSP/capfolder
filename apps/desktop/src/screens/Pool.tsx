@@ -18,8 +18,9 @@ export function Pool() {
   const [planIdNew] = useState(() => b.newId("plan")); // stable: a new id each render made the preview loop
   const creating = plans.length === 0;
   const [planId, setPlanId] = useState(plans[0]?.[0] ?? "");
-  const [size, setSize] = useState("");
-  const [name, setName] = useState(`${todayIso().slice(0, 4)} Equity Incentive Plan`);
+  const pre = (app.route.name === "pool" && app.route.prefill) || {}; // an Ask AI draft (docs/18)
+  const [size, setSize] = useState(pre.size ?? "");
+  const [name, setName] = useState(pre.name ?? `${todayIso().slice(0, 4)} Equity Incentive Plan`);
   const [date, setDate] = useState(todayIso());
   const [errors, setErrors] = useState<string[] | null>(null);
   const current = latest?.plans.get(planId)?.reserved;

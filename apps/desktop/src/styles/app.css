@@ -345,9 +345,32 @@ tr.click {
   top: 0;
   z-index: 5;
 }
+.app-header {
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
 .nav {
   display: flex;
   gap: 4px;
+}
+.nav button,
+.app-header .btn {
+  white-space: nowrap;
+}
+.switcher-path {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* screen actions: right-aligned, and onto their own row when they don't fit beside the nav */
+.header-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .nav button {
   padding: 6px 10px;
@@ -545,4 +568,178 @@ dialog.modal::backdrop {
   height: 1px;
   opacity: 0;
   pointer-events: none;
+}
+
+/* Ask AI (docs/18): header button and the collapsible side panel */
+.ask-ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid var(--ai);
+  border-radius: 999px;
+  background: var(--ai-bg);
+  color: var(--ai);
+  font: 600 14px var(--font);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ask-ai[aria-pressed="true"] {
+  background: var(--ai);
+  color: #fff;
+}
+.ask-ai kbd {
+  font: 11px var(--mono);
+  opacity: 0.75;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+.shell {
+  display: flex;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+.shell-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ask-panel {
+  flex: 0 0 380px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  z-index: 6;
+}
+.ask-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.ask-head b {
+  color: var(--ai);
+}
+.ask-x {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ask-ctx {
+  padding: 8px 16px 0;
+}
+.ask-thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ask-thread p {
+  margin: 0;
+}
+.ask-me {
+  align-self: flex-end;
+  max-width: 85%;
+  background: var(--soft);
+  border-radius: 12px 12px 2px 12px;
+  padding: 8px 12px;
+}
+.ask-error {
+  color: var(--red-text);
+}
+.ask-src {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ask-src button {
+  font: 11px var(--mono);
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.ask-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--ai);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.ask-card.warn {
+  border-color: var(--unsure);
+  background: var(--amber-bg);
+}
+.ask-k {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ai);
+}
+.ask-card.warn .ask-k {
+  color: var(--amber-text);
+}
+.ask-card dl {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+.ask-card dl > div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px;
+}
+.ask-card dt {
+  color: var(--muted);
+}
+.ask-card dd {
+  margin: 0;
+}
+.ask-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 10px;
+}
+.ask-suggest button {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: 12px var(--font);
+  cursor: pointer;
+}
+.ask-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+.ask-foot {
+  padding: 0 16px 12px;
+}
+@media (max-width: 900px) {
+  .ask-panel {
+    position: fixed;
+    right: 0;
+    width: min(380px, 100vw);
+    box-shadow: -12px 0 32px -16px rgba(0, 0, 0, 0.3);
+  }
 }

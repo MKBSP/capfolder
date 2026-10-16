@@ -3,6 +3,7 @@ import { type BackupStatus, backupStatus } from "../backup";
 import { progress } from "../docsort";
 import { baseName } from "../fs/types";
 import { openCompany, type Route, useApp } from "../state";
+import { AskAiButton } from "./AskAi";
 import { Chip, Logo, Menu } from "./ui";
 
 const NAV: { label: string; route: Route }[] = [
@@ -32,7 +33,7 @@ export function MainHeader({ children }: { children?: ReactNode }) {
         label={
           <>
             <span style={{ display: "block", fontWeight: 600 }}>{name}</span>
-            <span className="mono meta" style={{ display: "block" }}>
+            <span className="mono meta switcher-path" title={vault?.root}>
               {vault?.root.replace(/^\/Users\/[^/]+/, "~")}
             </span>
           </>
@@ -86,9 +87,8 @@ export function MainHeader({ children }: { children?: ReactNode }) {
           </button>
         ))}
       </nav>
-      <div className="row grow" style={{ justifyContent: "flex-end" }}>
-        {children}
-      </div>
+      <AskAiButton />
+      {children ? <div className="header-actions">{children}</div> : null}
     </header>
   );
 }

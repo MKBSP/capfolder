@@ -25,6 +25,7 @@ export function fakePlatform(
   const opened: string[] = [];
   const updates: string[] = [];
   const dropHandlers = new Set<(paths: string[]) => void>();
+  const keys: Record<string, string> = {};
   const platform: Platform = {
     fs,
     appDataDir: async () => "/appdata",
@@ -75,6 +76,12 @@ export function fakePlatform(
       },
       relaunch: async () => void updates.push("relaunch"),
     },
+    aiKey: {
+      get: async (provider) => keys[provider] ?? "",
+      set: async (provider, key) => {
+        keys[provider] = key.trim();
+      },
+    },
     lock: {
       set: async (p) => {
         password = p;
@@ -89,5 +96,5 @@ export function fakePlatform(
   const drop = (paths: string[]) => {
     for (const h of dropHandlers) h(paths);
   };
-  return { platform, fs, saved, savedBytes, opened, updates, drop };
+  return { platform, fs, saved, savedBytes, opened, updates, drop, keys };
 }

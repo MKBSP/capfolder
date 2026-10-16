@@ -17,6 +17,13 @@ export interface Settings {
   relayToken: string; // device token from the relay; "" = not verified
   relayTokens: Record<string, string>; // tokens for relays used before (F-37: old envelopes finish on their relay)
   ai: { provider: "" | "ollama" | "lmstudio"; model: string; sortWithAi: boolean }; // F-10, local models only
+  // docs/18: Ask AI. Cloud keys live in the OS keychain (platform.aiKey), never here.
+  chat: {
+    provider: "" | "ollama" | "lmstudio" | "anthropic" | "openai" | "gemini";
+    model: string;
+    cloudDocs: boolean; // cloud AI may read document text (off: cap-table data only)
+    open: boolean; // the side panel
+  };
   ping: { installId: string; firstRunSent: boolean; last: string }; // docs/11, only used while telemetry is on
   updates: "auto" | "ask" | "off"; // F-38: auto downloads in the background; installing always waits for a restart
 }
@@ -41,6 +48,7 @@ const defaults = (): Settings => ({
   relayTokens: {},
   signerName: "",
   ai: { provider: "", model: "", sortWithAi: false },
+  chat: { provider: "", model: "", cloudDocs: false, open: false },
   updates: "auto",
   ping: { installId: "", firstRunSent: false, last: "" },
 });

@@ -1,6 +1,7 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
 import { createContext, type ReactNode, useContext, useMemo, useRef, useState } from "react";
+import type { ChatMsg } from "./chat";
 import type { SortItem } from "./docsort";
 import { configureFormat, todayIso } from "./fmt";
 import { baseName } from "./fs/types";
@@ -13,7 +14,11 @@ import { appendToVault, openVault, type Vault } from "./vault";
 export type Route =
   | { name: "welcome" | "email" | "create" | "start" | "wizard" | "home" | "people" | "import" }
   | { name: "documents"; imported?: boolean }
-  | { name: "newSafe" | "newGrant" | "newShares" | "pool" | "newPerson" | "settings" }
+  // prefill: a draft from Ask AI (docs/18) opens the form filled in; the founder still saves it
+  | {
+      name: "newSafe" | "newGrant" | "newShares" | "pool" | "newPerson" | "settings";
+      prefill?: Record<string, string>;
+    }
   | { name: "signatures"; sent?: { titles: string[]; emails: string[]; warning?: string } }
   | { name: "sort"; dropped?: string[] }
   | { name: "person"; id: string }
@@ -58,6 +63,11 @@ export interface App {
   setUpdate(u: { u: AppUpdate; ready: boolean } | null): void;
   sort: SortRun;
   setSort(s: SortRun | ((prev: SortRun) => SortRun)): void;
+  /** Ask AI conversations by company folder. ponytail: in memory only; persist per company when founders ask. */
+  chat: Record<string, ChatMsg[]>;
+  setChat(
+    c: Record<string, ChatMsg[]> | ((prev: Record<string, ChatMsg[]>) => Record<string, ChatMsg[]>),
+  ): void;
   /** The newest App, for work that outlives a render (a sort run keeps going after its screen closes). */
   fresh(): App;
 }
@@ -98,6 +108,7 @@ export function AppProvider(p: {
   const [rules, setRules] = useState<RulesPack>(BUNDLED_RULES);
   const [update, setUpdate] = useState<App["update"]>(null);
   const [sort, setSort] = useState<SortRun>({ items: [], running: false, started: 0 });
+  const [chat, setChat] = useState<Record<string, ChatMsg[]>>({});
   const appRef = useRef<App | null>(null);
   const ctx: AppendCtx = useMemo(
     () => ({ now: () => new Date(), newId: () => builders.newId("evt"), deviceId: settings.deviceId }),
@@ -140,6 +151,8 @@ export function AppProvider(p: {
     setUpdate,
     sort,
     setSort,
+    chat,
+    setChat,
     fresh: () => appRef.current!,
     route,
     go(r) {

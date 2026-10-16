@@ -37,15 +37,15 @@ export function Screen() {
     case "home":
       return <Home />;
     case "newSafe":
-      return <NewSafe />;
+      return <NewSafe key={JSON.stringify(route.prefill ?? {})} />; // a new Ask AI draft starts the form over
     case "newGrant":
-      return <NewGrant />;
+      return <NewGrant key={JSON.stringify(route.prefill ?? {})} />; // a new Ask AI draft starts the form over
     case "newShares":
       return <NewShares />;
     case "pool":
-      return <Pool />;
+      return <Pool key={JSON.stringify(route.prefill ?? {})} />; // a new Ask AI draft starts the form over
     case "newPerson":
-      return <NewPerson />;
+      return <NewPerson key={JSON.stringify(route.prefill ?? {})} />; // a new Ask AI draft starts the form over
     case "signatures":
       return <Signatures sent={route.sent} />;
     case "settings":

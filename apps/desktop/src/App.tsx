@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ChatShell } from "./components/AskAi";
 import { Background } from "./components/Background";
 import { useIdle } from "./idle";
 import { type Platform, tauriPlatform } from "./platform";
@@ -72,7 +73,9 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
       ) : (
         <>
           <Background />
-          <Screen />
+          <ChatShell>
+            <Screen />
+          </ChatShell>
         </>
       )}
     </AppProvider>

@@ -8,7 +8,13 @@ import {
 import { useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
-import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
+import {
+  newPerson,
+  type PersonChoice,
+  PersonPicker,
+  personNamed,
+  resolvePerson,
+} from "../components/PersonPicker";
 import { ErrorList, Field } from "../components/ui";
 import { useDryRun } from "../dryrun";
 import { num, shares, todayIso, withCurrency } from "../fmt";
@@ -22,13 +28,25 @@ export function NewGrant() {
   const app = useApp();
   const latest = app.latest;
   const plans = latest ? [...latest.plans.entries()] : [];
-  const [who, setWho] = useState<PersonChoice>(() => newPerson());
+  const pre = (app.route.name === "newGrant" && app.route.prefill) || {}; // an Ask AI draft (docs/18)
+  const [who, setWho] = useState<PersonChoice>(() =>
+    pre.person ? personNamed(latest, pre.person, "INDIVIDUAL") : newPerson(),
+  );
   const [planId, setPlanId] = useState(plans[0]?.[0] ?? "");
-  const [quantity, setQuantity] = useState("");
-  const [strike, setStrike] = useState("");
-  const [date, setDate] = useState(todayIso());
-  const [vesting, setVesting] = useState(true);
-  const [start, setStart] = useState(todayIso());
+  const [quantity, setQuantity] = useState(pre.options ?? "");
+  const [strike, setStrike] = useState(pre.strike && pre.strike !== "0" ? pre.strike : "");
+  const [date, setDate] = useState(pre.date ?? todayIso());
+  // "standard" 4y/1y, "custom" (months/cliff from a draft), or "none"
+  const custom =
+    pre.months && !(pre.months === "48" && pre.cliff === "12")
+      ? { months: Number(pre.months), cliff: Number(pre.cliff ?? 0) }
+      : null;
+  const [vestingKind, setVestingKind] = useState<"standard" | "custom" | "none">(
+    custom ? "custom" : "standard",
+  );
+  const vesting = vestingKind !== "none";
+  const setVesting = (on: boolean) => setVestingKind(on ? "standard" : "none");
+  const [start, setStart] = useState(pre.start ?? todayIso());
   const [termsId] = useState(() => b.newId("vt"));
   const [errors, setErrors] = useState<string[] | null>(null);
 
@@ -36,7 +54,15 @@ export function NewGrant() {
     const person = resolvePerson(who);
     const plan = latest?.plans.get(planId);
     if (!latest || !person || !plan || !digits(quantity)) return null;
-    const terms = vesting ? standardTerms(latest, termsId) : null;
+    const terms =
+      vestingKind === "custom" && custom
+        ? {
+            id: termsId,
+            drafts: [b.vestingTerms({ months: custom.months, cliffMonths: custom.cliff, id: termsId })],
+          }
+        : vesting
+          ? standardTerms(latest, termsId)
+          : null;
     return [
       ...person.drafts,
       ...(terms?.drafts ?? []),
@@ -53,7 +79,7 @@ export function NewGrant() {
         ...(terms ? { vestingTermsId: terms.id, vestingStart: start } : {}),
       }),
     ];
-  }, [latest, who, planId, quantity, strike, date, vesting, start, termsId]);
+  }, [latest, who, planId, quantity, strike, date, vesting, vestingKind, start, termsId]);
   const dry = useDryRun(drafts);
   const poolNow = app.state ? capPool(app.state, planId) : null;
   const poolAfter =
@@ -116,11 +142,20 @@ export function NewGrant() {
           <div className="row">
             <button
               type="button"
-              className={`chip ${vesting ? "green" : ""}`}
+              className={`chip ${vestingKind === "standard" ? "green" : ""}`}
               onClick={() => setVesting(true)}
             >
               4 years · 1-year cliff · monthly
             </button>
+            {custom ? (
+              <button
+                type="button"
+                className={`chip ${vestingKind === "custom" ? "green" : ""}`}
+                onClick={() => setVestingKind("custom")}
+              >
+                {custom.months} months · {custom.cliff ? `${custom.cliff}-month cliff` : "no cliff"} · monthly
+              </button>
+            ) : null}
             <button
               type="button"
               className={`chip ${!vesting ? "green" : ""}`}
