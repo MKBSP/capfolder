@@ -23,3 +23,10 @@
 - Optional: listen for Tally's form-submitted event and reveal the site's own `#dlthanks` panel (OS buttons + Buy me a coffee) instead of Tally's thank-you page. [Verify the event name in Tally's embed docs.]
 - Pass `?utm_source=hn` / `?ref=bookface` in launch links so the hidden fields capture the source.
 - Publish the form only when real download links exist.
+
+# Tally: Pro waitlist form
+
+- **Form:** "Capfolder Pro: tell me when it's ready", id **`aONDJb`**, published 2026-10-16. Edit: https://tally.so/forms/aONDJb/edit
+- **Fields:** Email (required), Company (optional), "What would make Pro worth it for you?" (optional), hidden `utm_source` / `ref`.
+- **Promise made on the site and in the form:** everyone on this list gets **25% off the first year** of Pro. Honour it when billing ships (docs/15 item 1).
+- **Site:** the Pro card's "I want Pro: tell me when it's ready" button (`#prowait`, Umami event `pro-waitlist`) opens it as a popup.

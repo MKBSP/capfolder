@@ -497,7 +497,7 @@ cd capfolder/apps/relay
         <h3 style="font-size: 18px; font-weight: 600; margin: 0">Pro</h3>
         <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span class="num" style="font-size: 34px; font-weight: 600">$50</span><span style="color: #5B606B; font-size: 14px">per month · <span style="display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #F3F1F9; color: #5B3FA6">Coming</span></span></div>
         <ul style="list-style: none; margin: 20px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Everything in Free forever</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Sync your folder across computers and apps</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Encrypted online backup</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>No limit on signing requests</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>AI included, no setup</span></li></ul>
-        <div style="margin-top: auto; padding-top: 24px"><span style="color: #5B606B; font-size: 14px">Not available yet. The free app stays free when it is.</span></div>
+        <div style="margin-top: auto; padding-top: 24px"><button type="button" id="prowait" data-umami-event="pro-waitlist" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">I want Pro: tell me when it's ready</button><p style="color: #5B606B; font-size: 14px; margin: 10px 0 0 0">Join the list and get <b style="font-weight: 600; color: #111311">25% off the first year</b>. The free app stays free.</p></div>
       </div>
     </div>
   </section>
@@ -580,6 +580,7 @@ cd capfolder/apps/relay
     <div style="max-width: 760px; font-size: 15px; line-height: 1.65; color: #3A3E46">
       <p><b>This page.</b> Fonts and images come from this site. Visits, where they came from, and clicks on buttons are counted with <a href="https://umami.is/privacy">Umami</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
       <p><b>The download form.</b> When you click "Get the download", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
+      <p><b>The Pro list.</b> "I want Pro" opens a second <a href="https://tally.so/help/privacy-policy">Tally</a> form: your email, and optionally your company and what you'd want from Pro. We use it only to tell you when Pro is ready and give you the 25% discount.</p>
       <p><b>Questions about your data.</b> Write to <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a>.</p>
       <p><b>The app.</b> Your cap table and documents stay in your folder. Documents you send for signature pass through the signing relay until everyone has signed, then the relay deletes them (within 7 days, or 30 if never signed). The app sends an anonymous install ping (a random install id, the app version, your operating system, and yes/no for "imported", "has documents", "sent for signature") once on first run and then weekly, only after you accept the terms. The relay keeps the day, not the time or your IP address. Turn it off in Settings → Privacy. The code that sends and stores it is public in the repo.</p>
     </div>
@@ -607,27 +608,27 @@ function showDownloads() {
   document.getElementById("gate").hidden = true;
   document.getElementById("dlthanks").hidden = false;
 }
-document.getElementById("getdl").addEventListener("click", () => openForm());
+document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: showDownloads }));
+document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", {})); // Pro waitlist (integrations/tally.md)
 document.getElementById("skipdl").addEventListener("click", showDownloads); // Show HN: no signup required to try
 // Tally is loaded only when someone asks for the download (no third-party request before that)
-function openForm() {
+// download form: autoClose closes Tally's own thank-you and the page shows the download links
+function openForm(id, opts) {
+  const popup = () =>
+    window.Tally.openPopup(id, {
+      layout: "modal",
+      hideTitle: true,
+      hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
+      ...opts,
+    });
   if (window.Tally) return popup();
   const s = document.createElement("script");
   s.src = "https://tally.so/widgets/embed.js";
   s.onload = popup;
   s.onerror = () => {
-    location.href = `https://tally.so/r/rjxQjR?${params.toString()}`;
+    location.href = `https://tally.so/r/${id}?${params.toString()}`;
   };
   document.head.appendChild(s);
-}
-function popup() {
-  window.Tally.openPopup("rjxQjR", {
-    layout: "modal",
-    hideTitle: true,
-    hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
-    autoClose: 800, // close Tally's own thank-you and show the download links on the page
-    onSubmit: showDownloads,
-  });
 }
 fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
   .then((r) => r.ok ? r.json() : null)

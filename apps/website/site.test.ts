@@ -136,3 +136,10 @@ test("pricing: free forever, self-hosted, and a paid plan that's clearly not out
   ])
     expect([s, pricing.includes(s)]).toEqual([s, true]);
 });
+
+test("Pro: 'tell me when it's ready' opens the Pro waitlist form (aONDJb) with the 25% first-year offer", () => {
+  const pro = html.slice(html.indexOf(">Pro</h3>"), html.indexOf("</section>", html.indexOf(">Pro</h3>")));
+  expect(pro).toMatch(/id="prowait"[^>]*data-umami-event="pro-waitlist"/);
+  expect(pro).toContain("25% off the first year");
+  expect(html).toContain('"aONDJb"');
+});
