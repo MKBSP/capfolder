@@ -74,6 +74,7 @@ async function scan(get: () => App, paths: string[]) {
   });
   const files: Picked[] = [];
   let truncated = false;
+  let error: string | undefined;
   for (const p of paths) {
     const name = p.split(/[\\/]/).at(-1) ?? p;
     if (isReadable(name)) files.push({ path: p, name });
@@ -84,6 +85,7 @@ async function scan(get: () => App, paths: string[]) {
       );
       files.push(...w.files);
       truncated ||= w.truncated;
+      error ??= w.error;
     }
   }
   if (!files.length) {
@@ -91,7 +93,12 @@ async function scan(get: () => App, paths: string[]) {
       ...s,
       running: false,
       scanning: undefined,
-      note: `No PDFs or images found in ${folder}. Capfolder reads PDF, JPG and PNG files.`,
+      note:
+        error === "own-folder"
+          ? `${folder} is this company's own folder. Choose the folder where your documents are.`
+          : error
+            ? `Capfolder couldn't open ${folder}: ${error}`
+            : `No PDFs or images found in ${folder}. Capfolder reads PDF, JPG and PNG files.`,
     }));
     return;
   }

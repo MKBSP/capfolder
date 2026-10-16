@@ -207,6 +207,18 @@ describe("M4 review fixes", () => {
     fp.fs.writeSync("/home/me/messy/notes.txt", "x");
     expect((await walk(fp.fs, "/home/me/messy", null)).files.map((f) => f.name)).toEqual(["safe.pdf"]);
   });
+  test("a folder that can't be opened, or the company's own folder, says so instead of 'nothing found'", async () => {
+    const { walk } = await import("../docsort");
+    const fp = acmePlatform();
+    const denied: typeof fp.fs = Object.assign(Object.create(fp.fs), {
+      list: async () => {
+        throw new Error("forbidden path");
+      },
+    });
+    expect((await walk(denied, "/Users/me/Downloads/safes", null)).error).toBe("forbidden path");
+    fp.fs.writeSync("/home/me/co/docs/safe.pdf", "x");
+    expect((await walk(fp.fs, "/home/me/co", "/home/me/co")).error).toBe("own-folder");
+  });
   test("a skipped file can still be opened and filed", async () => {
     await sorting({ "receipt.pdf": await pdf(fixture("receipt.txt")) });
     await userEvent.click(screen.getByRole("button", { name: "Review" }));

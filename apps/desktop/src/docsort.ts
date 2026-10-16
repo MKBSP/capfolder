@@ -77,9 +77,16 @@ export async function walk(
   dir: string,
   skip: string | null,
   onProgress?: (found: number) => void,
-): Promise<{ files: { path: string; name: string }[]; truncated: boolean }> {
+): Promise<{ files: { path: string; name: string }[]; truncated: boolean; error?: string }> {
   const files: { path: string; name: string }[] = [];
   let truncated = false;
+  // the picked folder itself: say why it can't be read instead of "nothing found"
+  if (dir === skip) return { files, truncated, error: "own-folder" };
+  try {
+    await fs.list(dir);
+  } catch (e) {
+    return { files, truncated, error: e instanceof Error ? e.message : String(e) };
+  }
   const visit = async (d: string, depth: number): Promise<void> => {
     if (depth > 6 || d === skip || truncated) return;
     let names: string[];
