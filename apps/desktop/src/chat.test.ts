@@ -134,6 +134,31 @@ test("a document path from the event log that leaves docs/ is never read or sent
   expect(JSON.stringify(body(calls[1]!).messages.at(-1))).toMatch(/No filed document/);
 });
 
+test("a filed document that is a symlink (it could point anywhere) is never read or sent", async () => {
+  const path = "docs/grants/2025-10-07_lisa-moreau.pdf";
+  const { d, calls } = await deps(
+    [
+      {
+        stop_reason: "tool_use",
+        content: [{ type: "tool_use", id: "t1", name: "document_text", input: { path } }],
+      },
+      { stop_reason: "end_turn", content: [{ type: "text", text: "ok" }] },
+    ],
+    { cloudDocs: true },
+  );
+  let read = false;
+  const fs = Object.assign(Object.create(d.platform.fs), {
+    isSymlink: async (p: string) => p.endsWith(path),
+    readBytes: async () => {
+      read = true;
+      return new Uint8Array();
+    },
+  });
+  await askChat({ ...d, platform: { ...d.platform, fs } }, [], "read it");
+  expect(read).toBe(false);
+  expect(JSON.stringify(body(calls[1]!).messages.at(-1))).toMatch(/No filed document/);
+});
+
 describe("drafts", () => {
   const propose = async (
     name: string,

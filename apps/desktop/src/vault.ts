@@ -572,7 +572,7 @@ export async function importIntoVault(
 }
 
 /** Inside docs/, and no part of the path is a symlink (which could point anywhere the app may read). */
-async function isPlainDocPath(fs: Fs, root: string, rel: string): Promise<boolean> {
+export async function isPlainDocPath(fs: Fs, root: string, rel: string): Promise<boolean> {
   if (!isSafeDocPath(rel)) return false;
   const parts = rel.split("/");
   for (let i = 1; i <= parts.length; i++)
