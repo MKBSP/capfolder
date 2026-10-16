@@ -109,6 +109,7 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
     - Books and guides are **reading sources only**, never copied in (copyright): Feld & Mendelson *Venture Deals*, Kupor *Secrets of Sand Hill Road*, YC's SAFE user guide and Startup School notes, Cooley GO and Series Seed (CC0) docs, the OCF glossary.
     - Ask AI gets one `explain_term` tool: keyword lookup over those files, no vector database (ponytail: upgrade to embeddings only if lookups miss). The answer combines the explainer with the company's own numbers ("$150k outstanding means…, for you that's these 3 SAFEs").
     - Ships with the app and the rules pack, so it can be updated without a release; every explainer says "not legal advice".
+15. **Onboarding:** sample company, 3 yes/no questions, a Get started checklist on Home, a Driver.js spotlight tour, "?" help tips. Plan: `docs/19-onboarding.md` (waiting for Mads' OK). No invite step until sync / web app.
 
 ## Future ideas (not in v1)
 - Cloud tier ($50/mo): sync, roles, four-eyes approval (`docs/12`).
