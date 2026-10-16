@@ -104,6 +104,12 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
     - Desktop: Tauri capabilities and fs scope down to the minimum, CSP, API keys only in the keychain, signed updates.
     - Dependency audit in CI, and an outside penetration test before launch of Pro.
 
+14. **Startup-finance knowledge base for Ask AI** (a small "RAG" the AI looks things up in only when needed):
+    - Our own plain-language explainers, written for Capfolder and kept in the repo (e.g. `knowledge/`): SAFEs (post-money, cap, discount, MFN, pro rata), "outstanding", fully diluted vs issued, option pools and vesting, cliffs, acceleration, 83(b), liquidation preferences, pre/post-money, dilution, conversion at a priced round.
+    - Books and guides are **reading sources only**, never copied in (copyright): Feld & Mendelson *Venture Deals*, Kupor *Secrets of Sand Hill Road*, YC's SAFE user guide and Startup School notes, Cooley GO and Series Seed (CC0) docs, the OCF glossary.
+    - Ask AI gets one `explain_term` tool: keyword lookup over those files, no vector database (ponytail: upgrade to embeddings only if lookups miss). The answer combines the explainer with the company's own numbers ("$150k outstanding means…, for you that's these 3 SAFEs").
+    - Ships with the app and the rules pack, so it can be updated without a release; every explainer says "not legal advice".
+
 ## Future ideas (not in v1)
 - Cloud tier ($50/mo): sync, roles, four-eyes approval (`docs/12`).
 - Vault encryption (opt-in).

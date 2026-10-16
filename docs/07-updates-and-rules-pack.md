@@ -5,7 +5,7 @@ There are two channels, so we can fix things after install without a full releas
 ## Status (M7, 2026-10-11)
 Built. Keys: updater `~/.tauri/capfolder-updater.key` (public key in `tauri.conf.json`), rules `~/.capfolder/rules-signing.key` (public key in `apps/desktop/src/rules.ts`). Neither private key is in the repo. **Back both up offline.** Release steps:
 1. Bump the version in `apps/desktop/package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json` (a test keeps them equal), and add a CHANGELOG entry.
-2. Tag `vX.Y.Z` and push. `release.yml` builds a **draft** release with signed installers and `latest.json`.
+2. Push, then GitHub → Actions → **Release** → Run workflow (tick "allow unsigned" while there are no Apple/Microsoft certificates). It builds a **draft** release `vX.Y.Z` with installers and `latest.json`. Don't push a tag yourself: publishing the draft creates it.
 3. Check the draft: `latest.json` must list `darwin-aarch64`, `darwin-x86_64`, `windows-x86_64` and `linux-x86_64` (the four jobs merge into it; a missing one means those users get no update). Then publish it. Installed apps pick it up within 6 hours, or on next open.
 
 Rules pack: edit `rules/rules.json` (bump `version`), run `pnpm rules:sign`, commit both files. Apps fetch it from `raw.githubusercontent.com/MKBSP/capfolder/main/rules/` daily. Ruling: this replaces the release-tag delivery below, because GitHub release downloads send no CORS headers and raw does.

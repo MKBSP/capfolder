@@ -1,6 +1,6 @@
 [package]
 name = "capfolder"
-version = "0.1.1"
+version = "0.1.2"
 description = "Your cap table, in a folder you own"
 license = "AGPL-3.0-only"
 edition = "2021"

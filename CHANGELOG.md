@@ -3,7 +3,20 @@
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
 ## [Unreleased]
+
+## [0.1.2] — 2026-10-16
 ### Added
+- **Ask AI:** a side panel (✦ Ask AI in the top bar, or ⌘K) that answers questions about your cap table with links to
+  the source, and drafts grants, SAFEs, people, vesting and option pools as cards that open the usual form filled in.
+  Nothing is saved until you save the form. Works with Claude, OpenAI or Gemini (your own key, kept in the keychain)
+  or a model on this computer (Ollama, LM Studio). It says when no template fits and a lawyer should draft it.
+- **One default AI** for sorting, summaries and Ask AI; Settings → AI → Advanced picks one per action.
+- **New SAFE** sends YC's own post-money SAFE filled in (or your own PDF), with an optional pro rata side letter.
+  Both sign on YC's own signature page. After everyone signs, "Send wire instructions" (set them in Settings → Company).
+- **Excel export** of the full cap table, laid out like a Pulley/Carta export: Summary, Ownership, a ledger per share
+  class and per plan, Convertibles, Voting and All holdings. The lawyer zip includes it; the CSV lists every holding.
+- **Sort documents:** progress while it searches and reads, keeps going if you leave the page (top-bar chip leads back),
+  a preview of each document with a one-line summary, plain reasons, and a warning when a document is for another company.
 - Documents: "Get a template" next to each missing document (free forms from Cooley GO, Y Combinator, the IRS), and
   the public-domain Series Seed documents (term sheet, investment agreement, charter) to copy into drafts/.
 - Switcher: "Open a company folder…".
@@ -12,6 +25,11 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
   the relay's plans file, have no limit.
 ### Fixed
 - An update started from the opened .dmg now says to move Capfolder to Applications (macOS can't update it there).
+- Ask AI and exports treat folder contents as untrusted: documents are only read from inside docs/ (no symlinks), and
+  spreadsheet cells never become formulas.
+- Signed copies are refused if the text of the signature page changed (names, title, YC wording).
+- Filing signed copies works in the macOS app again.
+- A folder Capfolder can't open says why, instead of doing nothing.
 
 ## [0.1.1] — 2026-10-12
 ### Added
