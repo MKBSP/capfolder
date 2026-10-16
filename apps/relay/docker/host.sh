@@ -18,6 +18,8 @@ case "${1:-}" in
   up)
     [ -n "$DOCUMENSO_API_TOKEN" ] || { echo "Run ./host.sh account first." >&2; exit 1; }
     [ -n "$TUNNEL_TOKEN" ] || echo "No TUNNEL_TOKEN yet: running on this computer only (see README, step 4)."
+    mkdir -p .host/plans
+    [ -f .host/plans/plans.json ] || echo '{"pro": []}' > .host/plans/plans.json
     dc up -d --build
     echo "relay:  http://localhost:8790/health   documenso: http://localhost:3200"
     [ -z "$TUNNEL_TOKEN" ] || echo "public: https://relay.${SIGN_URL#https://sign.}/health" ;;

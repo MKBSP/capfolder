@@ -85,7 +85,7 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
 1. **Billing** through a merchant of record (Paddle / Lemon Squeezy) so EU VAT is handled; Revolut doesn't. Pricing and referrals depend on it.
 2. **Pricing:** Pro at 50/month or 500/year (currency open: € or $). Website still says "Pro $50/month, Coming".
 3. **Referrals:** 50 off the next payment, only for confirmed referrals who actually paid a subscription.
-4. **Define Pro** (sync, online backup, more signing requests?) and how the app knows a user is paying. The relay's email/signing limits must be **per account**: free accounts keep the daily limit, paying accounts don't.
+4. **Define Pro** (sync, online backup, more signing requests?) and how the app knows a user is paying. The relay's email/signing limits must be **per account**: free accounts keep the daily limit, paying accounts don't. **Done 2026-10-16:** keyed by the sender's verified email (not per company: companies can be cloned), free = 10 a month (UTC calendar month), Pro listed by hand in the relay's plans file (`apps/relay/HOSTING.md`); billing will write the same list.
 5. **Product tour + getting-started checklist,** after competitor onboarding research.
 6. ~~Public roadmap~~ on the website: done 2026-10-15 (`#roadmap`, Now/Next/Later; no infrastructure items).
 7. **Templates:** insert parts (clauses/blocks) into templated docs; more items from Mads to come.

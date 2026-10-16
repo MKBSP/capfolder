@@ -7,6 +7,9 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 - Documents: "Get a template" next to each missing document (free forms from Cooley GO, Y Combinator, the IRS), and
   the public-domain Series Seed documents (term sheet, investment agreement, charter) to copy into drafts/.
 - Switcher: "Open a company folder…".
+### Changed
+- Signing limits are per account: 10 signing requests a month on the free plan (was 5 a day). Pro accounts, listed in
+  the relay's plans file, have no limit.
 ### Fixed
 - An update started from the opened .dmg now says to move Capfolder to Applications (macOS can't update it there).
 

@@ -37,13 +37,25 @@ test("cookieless analytics, no banner (docs/11): Umami Cloud with a real website
   );
   expect(html).not.toContain("plausible");
   // the buttons we want counted
-  for (const ev of ["get-download", "skip-download", "download-macos", "download-windows", "download-linux", "donate", "github", "nav-download"])
+  for (const ev of [
+    "get-download",
+    "skip-download",
+    "download-macos",
+    "download-windows",
+    "download-linux",
+    "donate",
+    "github",
+    "nav-download",
+  ])
     expect([ev, html.includes(`data-umami-event="${ev}"`)]).toEqual([ev, true]);
 });
 
 test("public roadmap: linked from the nav, no internal infrastructure items", () => {
   expect(html).toContain('href="#roadmap"');
-  const roadmap = html.slice(html.indexOf('id="roadmap"'), html.indexOf("</section>", html.indexOf('id="roadmap"')));
+  const roadmap = html.slice(
+    html.indexOf('id="roadmap"'),
+    html.indexOf("</section>", html.indexOf('id="roadmap"')),
+  );
   expect(roadmap).toContain("Now");
   expect(roadmap).toContain("Next");
   expect(roadmap).toContain("Later");
@@ -118,7 +130,7 @@ test("pricing: free forever, self-hosted, and a paid plan that's clearly not out
     "Self-hosted",
     "$50",
     "Coming",
-    "5 signing requests a day",
+    "10 signing requests a month",
     "No online backup",
     "Bring your own AI",
   ])

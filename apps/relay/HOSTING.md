@@ -58,9 +58,18 @@ Then in the app: Settings → Signing → verify your email, and send yourself a
 | `./host.sh pause` / `resume` | kill switch: refuse new envelopes (status, downloads and reminders keep working) |
 | `./host.sh down` | stop everything (data is kept) |
 
-Fair use (in `.host/host.env`, then `./host.sh up`): `RELAY_PER_EMAIL_DAY=5` envelopes per founder per day,
-`RELAY_TOTAL_DAY=15` for everyone together (about 5 emails each keeps Resend under 100 a day). Raise both when you move
+Fair use (in `.host/host.env`, then `./host.sh up`): `RELAY_PER_EMAIL_MONTH=10` signing requests (envelopes and
+wire-instruction emails) per free account per calendar month (UTC), `RELAY_TOTAL_DAY=15` for everyone together (about 5 emails each keeps Resend under 100 a day). Raise both when you move
 to a paid email plan.
+
+**Pro accounts (no monthly limit):** edit `.host/plans/plans.json` (made by `./host.sh up`). The account is the
+email the founder verified in the app. Saved changes apply at once, no restart:
+
+```json
+{"pro": ["founder@example.com", "tester@example.com"]}
+```
+
+A missing or broken file means everyone is free (the relay logs it once). Billing will write this same list later.
 
 Optional, free: Cloudflare → Security → WAF → **Rate limiting rules**: for `relay.<domain>`, 60 requests per minute per IP.
 

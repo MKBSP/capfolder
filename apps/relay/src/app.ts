@@ -1,5 +1,6 @@
 // The relay API (docs/05-signing.md). Thin on purpose: Documenso does the signing; this checks who's asking.
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { readFileSync, statSync } from "node:fs";
 import { type Context, Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
@@ -15,8 +16,11 @@ export interface RelayDeps {
   clientIp?(c: Context): string;
   /** docs/11: where anonymous install pings go (one row each). Without it pings are accepted and dropped. */
   recordPing?(row: PingRow): Promise<void>;
-  /** Fair use on a hosted relay: envelopes per founder per day (5) and across everyone per day (unlimited). */
-  limits?: { perEmailPerDay?: number; totalPerDay?: number };
+  /** Fair use on a hosted relay: signing requests per free account per calendar month (10, UTC) and across
+   * everyone per day (unlimited). */
+  limits?: { perEmailPerMonth?: number; totalPerDay?: number };
+  /** The sender's plan, by lowercased email. Pro has no per-account limit. Default: everyone is free. */
+  plan?(email: string): "free" | "pro";
   /** Kill switch: true stops new envelopes; status, downloads and reminders keep working. */
   paused?(): boolean;
 }
@@ -145,13 +149,64 @@ export async function purge(doc: Documenso, now: () => number): Promise<number> 
   return old.length;
 }
 
+/**
+ * Plans from a JSON file edited by hand: {"pro": ["founder@example.com"]}. Re-read when it changes; a missing or
+ * broken file means everyone is free. Billing will write the same list later.
+ */
+export function filePlans(path: string): (email: string) => "free" | "pro" {
+  let seen = "";
+  let pro = new Set<string>();
+  let warned = false;
+  return (email) => {
+    let stamp = "";
+    try {
+      const st = statSync(path);
+      stamp = `${st.mtimeMs}:${st.size}`;
+    } catch {}
+    if (stamp !== seen) {
+      seen = stamp;
+      pro = new Set();
+      if (stamp)
+        try {
+          const j = JSON.parse(readFileSync(path, "utf8"));
+          pro = new Set(
+            (Array.isArray(j?.pro) ? j.pro : []).map((e: unknown) => String(e).trim().toLowerCase()),
+          );
+          warned = false;
+        } catch (e) {
+          if (!warned) console.error(`plans file ${path} is unreadable, everyone is free:`, e);
+          warned = true;
+        }
+    }
+    return pro.has(email.trim().toLowerCase()) ? "pro" : "free";
+  };
+}
+
 export function createApp(d: RelayDeps) {
   const codes = new Codes(d.now);
-  // Abuse limits: code emails and guesses per IP (across addresses), envelopes per verified email per day.
+  // Abuse limits: code emails and guesses per IP (across addresses), sends per verified email per month.
   const startPerIp = new Limit(20, 3600e3, d.now);
   const verifyPerIp = new Limit(60, 3600e3, d.now);
-  const perEmail = d.limits?.perEmailPerDay ?? 5;
-  const sendsPerEmail = new Limit(perEmail, 864e5, d.now);
+  const perEmail = d.limits?.perEmailPerMonth ?? 10;
+  // ponytail: counts live in memory, so a relay restart resets them; persist them when billing arrives
+  const sent = new Map<string, { month: string; n: number }>();
+  /** Counts one send for a free account; the refusal message, or null when it may go. */
+  const overLimit = (raw: string): string | null => {
+    const email = raw.trim().toLowerCase();
+    if (d.plan?.(email) === "pro") return null;
+    const now = new Date(d.now());
+    const month = now.toISOString().slice(0, 7);
+    const key = emailKey(email);
+    const x = sent.get(key);
+    const n = x?.month === month ? x.n : 0;
+    if (n >= perEmail) {
+      const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
+      const on = next.toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "UTC" });
+      return `That's ${perEmail} signing requests this month, the free limit. It resets on ${on}. Pro has no limit.`;
+    }
+    sent.set(key, { month, n: n + 1 });
+    return null;
+  };
   // the total keeps a hosted relay under its email provider's daily quota (~5 emails per envelope)
   const sendsTotal = d.limits?.totalPerDay ? new Limit(d.limits.totalPerDay, 864e5, d.now) : null;
   const pingsPerIp = new Limit(30, 3600e3, d.now);
@@ -294,11 +349,8 @@ export function createApp(d: RelayDeps) {
       if (pdf.size > MAX_PDF) return c.json({ error: "The PDF is over 15 MB." }, 413);
       if (d.paused?.())
         return c.json({ error: "Sending is paused on the signing service. Try again later." }, 503);
-      if (!sendsPerEmail.take(c.get("email")))
-        return c.json(
-          { error: `That's ${perEmail} documents today, the daily limit. Try again tomorrow.` },
-          429,
-        );
+      const over = overLimit(c.get("email"));
+      if (over) return c.json({ error: over }, 429);
       if (sendsTotal && !sendsTotal.take("all"))
         return c.json(
           {
@@ -410,11 +462,11 @@ export function createApp(d: RelayDeps) {
       const got = Buffer.from(String(meta.receipt));
       if (got.length !== want.length || !timingSafeEqual(got, want))
         return c.json({ error: "Those people didn't sign that document with you." }, 403);
-      // same gates as /envelopes: the kill switch and both daily limits
+      // same gates as /envelopes: the kill switch, the account's monthly limit and the relay-wide daily limit
       if (d.paused?.())
         return c.json({ error: "Sending is paused on the signing service. Try again later." }, 503);
-      if (!sendsPerEmail.take(me))
-        return c.json({ error: `That's ${perEmail} sends today, the daily limit. Try again tomorrow.` }, 429);
+      const over = overLimit(me);
+      if (over) return c.json({ error: over }, 429);
       if (sendsTotal && !sendsTotal.take("all"))
         return c.json({ error: "The signing service is at today's limit. Try again tomorrow." }, 429);
       const title = (meta.title ?? "document").trim().slice(0, 120);

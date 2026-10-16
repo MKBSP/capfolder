@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { createApp, type MailExtra } from "../src/app.ts";
+import { createApp, filePlans, type MailExtra } from "../src/app.ts";
 import { makeToken } from "../src/auth.ts";
 import { fakeDocumenso } from "../src/fake-documenso.ts";
 
@@ -222,6 +222,41 @@ describe("envelopes", () => {
   });
 });
 
+describe("plans: free accounts 10 a month, pro unlimited", () => {
+  test("the limit resets on the 1st of the next month (UTC)", async () => {
+    const saved = clock;
+    try {
+      clock = Date.parse("2026-10-31T23:00:00Z");
+      const { app } = setup();
+      for (let i = 0; i < 10; i++) await send(app, "month@acme.example");
+      expect((await send(app, "month@acme.example")).status).toBe(429);
+      clock = Date.parse("2026-11-01T00:00:01Z");
+      expect((await send(app, "month@acme.example")).status).toBe(201);
+    } finally {
+      clock = saved;
+    }
+  });
+  test("a pro account has no limit; the plan is keyed by the sender's email, any case", async () => {
+    const { app } = setup({ plan: (email) => (email === "pro@acme.example" ? "pro" : "free") });
+    for (let i = 0; i < 15; i++) expect((await send(app, "Pro@Acme.example")).status).toBe(201);
+    for (let i = 0; i < 10; i++) await send(app, "free@acme.example");
+    expect((await send(app, "free@acme.example")).status).toBe(429);
+  });
+  test("plans file: edits are picked up, a missing or broken file means everyone is free", async () => {
+    const { mkdtempSync, writeFileSync, utimesSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const { tmpdir } = await import("node:os");
+    const file = join(mkdtempSync(join(tmpdir(), "plans-")), "plans.json");
+    const plan = filePlans(file);
+    expect(plan("a@x.example")).toBe("free");
+    writeFileSync(file, JSON.stringify({ pro: [" A@X.example"] }));
+    expect(plan("a@x.example")).toBe("pro");
+    writeFileSync(file, "{ not json");
+    utimesSync(file, new Date(), new Date(Date.now() + 5000));
+    expect(plan("a@x.example")).toBe("free");
+  });
+});
+
 describe("abuse limits (security review)", () => {
   const ip = (n: number) => ({ "x-forwarded-for": `203.0.113.${n}` });
   test("one IP can't spray code emails at many addresses", async () => {
@@ -239,12 +274,14 @@ describe("abuse limits (security review)", () => {
       (await app.request("/auth/verify", json({ email: "v1@x.example", code: "123456" }, ip(3)))).status,
     ).toBe(429);
   });
-  test("a founder can send at most 5 envelopes a day, 10 signers each, 15 MB", async () => {
+  test("a free account can send at most 10 envelopes a month, 10 signers each, 15 MB", async () => {
     const { app } = setup();
-    for (let i = 0; i < 5; i++) expect((await send(app, "busy@acme.example")).status).toBe(201);
+    for (let i = 0; i < 10; i++) expect((await send(app, "busy@acme.example")).status).toBe(201);
     const r = await send(app, "busy@acme.example");
     expect(r.status).toBe(429);
-    expect((await r.json()).error).toBe("That's 5 documents today, the daily limit. Try again tomorrow.");
+    expect((await r.json()).error).toBe(
+      "That's 10 signing requests this month, the free limit. It resets on November 1. Pro has no limit.",
+    );
     const many = new FormData();
     many.append("pdf", new Blob([new Uint8Array([1])]), "x.pdf");
     many.append(

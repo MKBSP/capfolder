@@ -6,7 +6,7 @@ import { dirname } from "node:path";
 import { serve } from "@hono/node-server";
 import { getConnInfo } from "@hono/node-server/conninfo";
 import { createTransport } from "nodemailer";
-import { createApp, purge } from "./app.ts";
+import { createApp, filePlans, purge } from "./app.ts";
 import { httpDocumenso } from "./documenso.ts";
 
 const env = (k: string, fallback?: string) => {
@@ -39,9 +39,11 @@ const app = createApp({
   secret,
   now: () => Date.now(),
   limits: {
-    perEmailPerDay: Number(process.env.RELAY_PER_EMAIL_DAY ?? 5),
+    perEmailPerMonth: Number(process.env.RELAY_PER_EMAIL_MONTH ?? 10),
     totalPerDay: process.env.RELAY_TOTAL_DAY ? Number(process.env.RELAY_TOTAL_DAY) : undefined,
   },
+  // who's Pro, edited by hand without a restart: {"pro": ["founder@example.com"]}
+  plan: filePlans(process.env.RELAY_PLANS_FILE ?? "data/plans.json"),
   // kill switch without a restart: create this file to stop new envelopes, delete it to resume
   paused: () => existsSync(process.env.PAUSE_FILE ?? "data/PAUSED"),
   // ponytail: one JSON line per ping in a file (PING_FILE); move to Postgres if the counts ever need queries
