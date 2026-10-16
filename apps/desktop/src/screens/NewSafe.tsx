@@ -29,7 +29,7 @@ import { discountFraction } from "../wizard";
 
 const digits = num; // the founder's decimal mark (Settings → Your country)
 
-/** NewSafe.html (F-11 / F-12). "Record as signed" works now; sending for signature arrives in M5. */
+/** NewSafe.html (F-11 / F-12): record as signed, or send for signature. */
 export function NewSafe() {
   const app = useApp();
   const pre = (app.route.name === "newSafe" && app.route.prefill) || {}; // an Ask AI draft (docs/18)

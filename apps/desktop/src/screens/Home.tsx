@@ -12,7 +12,7 @@ import { AttachModal } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
 import { ExportDialog } from "../components/ExportDialog";
 import { MainHeader } from "../components/Header";
-import { Chip, ComingSoon, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
+import { Chip, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { docChip, isFounder, scheduleText, typeLabel, vestingCell } from "../views";
@@ -197,12 +197,6 @@ export function Home() {
                 />
               ))}
             </div>
-          </div>
-          <div className="card">
-            <h2>Waiting for signature</h2>
-            <ComingSoon milestone="M5">
-              Send documents for signature and see who still has to sign.
-            </ComingSoon>
           </div>
           <div className={`banner ${problems.length ? "red" : "green"} small`}>
             {problems.length
