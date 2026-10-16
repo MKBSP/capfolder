@@ -17,7 +17,6 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - fast-uri 3.1.8: BSD-3-Clause
 - @hono/node-server 2.1.1: MIT
 - @napi-rs/canvas 1.0.11: MIT
-- @napi-rs/canvas-darwin-x64 1.0.11: MIT
 - @noble/ed25519 3.2.0: MIT
 - @pdf-lib/standard-fonts 1.0.0: MIT
 - @pdf-lib/upng 1.0.1: MIT

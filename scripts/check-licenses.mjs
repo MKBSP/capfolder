@@ -30,8 +30,10 @@ const lines = [
   "Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and Documentation License (packages/core/src/ocf/OCF-LICENSE.md).",
   "",
 ];
+// per-OS binary builds (e.g. @napi-rs/canvas-darwin-x64) differ between a Mac and CI's Linux: list only the parent package
+const perOs = (name) => /-(darwin|linux|win32|android|freebsd)(-|$)/.test(name);
 for (const lic of Object.keys(data).sort())
-  for (const p of [...data[lic]].sort((a, b) => a.name.localeCompare(b.name)))
+  for (const p of [...data[lic]].filter((x) => !perOs(x.name)).sort((a, b) => a.name.localeCompare(b.name)))
     lines.push(`- ${p.name} ${p.versions.join(", ")}: ${lic}`);
 const out = `${lines.join("\n")}\n`;
 if (process.argv.includes("--write")) writeFileSync("THIRD_PARTY_LICENSES.md", out);

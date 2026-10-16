@@ -34,7 +34,8 @@ pub fn ai_key_get(provider: String) -> Result<String, String> {
 mod tests {
     #[test]
     fn only_known_providers() {
-        assert!(super::entry("anthropic").is_ok());
+        // CI Linux has no keychain service, so only the name check is tested here
+        assert_ne!(super::entry("anthropic").err().as_deref(), Some("unknown AI provider"));
         assert!(super::entry("../evil").is_err());
     }
 }
