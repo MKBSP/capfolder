@@ -129,3 +129,15 @@ describe("holdings CSV", () => {
     expect(lines.find((l) => l.startsWith("CS-1,"))).toContain(",4000000,");
   });
 });
+
+test("a number cell holding anything but a number is written as plain text, never as XML or a formula", () => {
+  const evil = '1</v><f>HYPERLINK("http://x","y")</f><v>2';
+  const xml = strFromU8(
+    unzipSync(toXlsx([{ name: "S", rows: [[{ num: evil }, { pct: evil }, { num: "-12.5" }]], header: [] }]))[
+      "xl/worksheets/sheet1.xml"
+    ]!,
+  );
+  expect(xml).not.toContain("<f>");
+  expect(xml).toContain("&lt;/v&gt;&lt;f&gt;");
+  expect(xml).toContain("<v>-12.5</v>");
+});

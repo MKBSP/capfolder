@@ -12,6 +12,8 @@ const esc = (s: string) =>
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 
+const NUMBER = /^-?\d+(\.\d+)?(e[+-]?\d+)?$/i;
+
 const col = (i: number): string =>
   (i < 26 ? "" : col(Math.floor(i / 26) - 1)) + String.fromCharCode(65 + (i % 26));
 const len = (c: Cell) => (c !== null && typeof c === "object" && !("num" in c) ? 10 : cellText(c).length);
@@ -23,6 +25,9 @@ function cellXml(c: Cell, ref: string, bold: boolean): string {
   if (c === null || c === "") return "";
   if (typeof c === "bigint") return `<c r="${ref}" s="${bold ? 5 : 2}"><v>${c}</v></c>`;
   if (typeof c === "object") {
+    // values from the vault are strings: anything that isn't a plain number goes in as text, never raw XML
+    const v = "pct" in c ? c.pct : "num" in c ? c.num : null;
+    if (v !== null && !NUMBER.test(v)) return cellXml(v, ref, bold);
     if ("pct" in c) return `<c r="${ref}" s="3"><v>${c.pct}</v></c>`;
     if ("date" in c)
       return Number.isNaN(serial(c.date)) ? "" : `<c r="${ref}" s="4"><v>${serial(c.date)}</v></c>`;
