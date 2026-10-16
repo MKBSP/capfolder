@@ -98,6 +98,12 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
 
 12. **AI chat** ("✦ Ask AI" side panel, local + cloud keys, answer + propose): first version built 2026-10-16, see `docs/18-ai-chat.md` → Status.
 
+13. **Deeper security work** (before paid users and before the relay leaves the laptop):
+    - Full threat model: what a malicious shared company folder, imported file, PDF or AI answer can do (path/symlink tricks, prompt injection, formula injection, oversized files).
+    - Review the relay end to end: auth codes, rate limits that survive restarts, Documenso exposure through the tunnel, secrets on the host.
+    - Desktop: Tauri capabilities and fs scope down to the minimum, CSP, API keys only in the keychain, signed updates.
+    - Dependency audit in CI, and an outside penetration test before launch of Pro.
+
 ## Future ideas (not in v1)
 - Cloud tier ($50/mo): sync, roles, four-eyes approval (`docs/12`).
 - Vault encryption (opt-in).
