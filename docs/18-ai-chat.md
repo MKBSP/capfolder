@@ -1,7 +1,7 @@
 # 18 · AI chat (plan, decided 2026-10-16)
 
 ## Decisions (Mads)
-- **Where:** a prominent "✦ Ask AI" button in the top bar (and ⌘K) opens a **side panel** on the right. It stays open across screens and knows what screen/person/document you're on.
+- **Where:** a prominent "✦ Ask AI" button in the top bar (and ⌘K) opens a **collapsible side panel** on the right, like Gemini in Gmail: the same button (or Esc / ×) closes it and the screen takes the full width again. While open it stays open across screens and knows what screen/person/document you're on.
 - **Which AIs:** local (Ollama, LM Studio: default, private, free) **plus cloud API keys** (Claude, OpenAI, Gemini). Keys live in the OS keychain, never in the vault.
 - **Powers:** **answer + propose.** Answers cite their source (holding, event, document path). Actions come back as a **draft card** (new grant, new SAFE, vesting settings, attach a template) that the founder confirms. Nothing reaches `events.jsonl` without a click (CLAUDE.md rule).
 
