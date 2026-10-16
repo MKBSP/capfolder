@@ -44,7 +44,7 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Lawyer review of the in-app terms and conditions (`apps/desktop/src/copy.ts`, TERMS).
 - [x] Tally form `rjxQjR` published 2026-10-15 (thank-you page → releases/latest, optional "Email me when there's a new version" consent box).
 - [ ] Website: enable GitHub Pages (Settings → Pages → GitHub Actions), point capfolder.com at it, then add `apps/website/CNAME` with `capfolder.com`.
-- [ ] Umami Cloud: add the site `capfolder.com`, paste its website id into `apps/website/index.html` (`PASTE-UMAMI-WEBSITE-ID`; the site test fails until it's a real id).
+- [x] Umami Cloud site `capfolder.com` (id in `apps/website/index.html`).
 - [ ] Cloudflare Email Routing: `privacy@capfolder.com` → your inbox (the site links to it).
 - [ ] Check the site's personal story is right ("28 investors", "YC W22", the name "Mads Petersen") and re-check the comparison table against vendors' pages in launch week.
 - [ ] Relay hosting: set `PING_FILE` to a persistent path; turn off reverse-proxy access logs for `/ping` (IP + time would undo "no IP"). The site says "with our hosted signing relay": host it (Documenso storage encrypted at rest) before launch, or drop that line.
