@@ -163,3 +163,12 @@ Acme/                         # any folder name; usually inside iCloud/Dropbox/D
 - **Rename (F-28):** `doc_renamed {doc_id, path}`; the file is renamed in its folder first (extension kept, characters Windows rejects removed).
 - **Replace (F-28):** one write: `doc_added` (same type, fields and links), `doc_replaced {doc_id, by}`, `doc_removed` for the old one (moved to `docs/_removed/`).
 - **Drafts:** a document filed with the flag `draft` is kept but is never proof (gaps, checklist).
+
+## Export columns (F-29 full cap table, decided 2026-10-16)
+The Excel export (`packages/core/src/export/full.ts`) follows the Pulley/Carta layout so lawyers and investors find what they expect: Summary, Ownership, a ledger per stock class, a ledger per stock plan (with the plan summary), Convertibles, Voting Ownership, and "All holdings" (the same rows as the CSV export). The vault's own `captable.csv` keeps its short golden format.
+
+Columns with no OCF source stay in place, empty: Debt Cancelled, Value of IP Contribution, Amount Paid for Transfer, Transfer Reason, Converted From, Conversion Date, Source, State Exemption, Rule 144 Date, Acceleration, Acceleration Provisions, Termination Date, Interest / Interest Outstanding / Interest Rate (SAFEs carry none).
+
+Where OCF does have it: Stakeholder External ID = `issuer_assigned_id`; Stakeholder Type = `current_relationship` (else `stakeholder_type`); Domicile = first address `country_subdivision`; Federal Exemption = `security_law_exemptions[].description`; Comments = `comments`; termination windows = `termination_exercise_windows` by reason; Votes = outstanding × class `votes_per_share`; Capital Contribution = share price × shares issued.
+
+Cancelled counts are the remainder (issued − outstanding − repurchased − transferred − exercised) once a cancellation exists, so a cancellation without a quantity, or a balance re-issued as a new security, shows as cancelled.

@@ -22,7 +22,7 @@ test("export .xlsx as of a date", async () => {
   expect(within(dialog).getByLabelText("As of")).toHaveValue("7 Oct 2026");
   await userEvent.click(within(dialog).getByRole("button", { name: "Save…" }));
   const bytes = fp.savedBytes["acme-inc-cap-table-2026-10-07.xlsx"]!;
-  expect(strFromU8(unzip(bytes)["xl/workbook.xml"]!)).toContain('name="Vesting"');
+  expect(strFromU8(unzip(bytes)["xl/workbook.xml"]!)).toContain('name="Common (CS) Ledger"');
   expect(
     await screen.findByText("/home/me/Downloads/acme-inc-cap-table-2026-10-07.xlsx"),
   ).toBeInTheDocument();
@@ -37,7 +37,7 @@ test("export OCF and CSV", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Export" }));
   await userEvent.click(within(screen.getByRole("dialog")).getByLabelText(/CSV/));
   await userEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Save…" }));
-  expect(fp.saved["acme-inc-cap-table-2026-10-07.csv"]).toMatch(/^stakeholder,type,class/);
+  expect(fp.saved["acme-inc-cap-table-2026-10-07.csv"]).toMatch(/^Security ID,Stakeholder,/);
 });
 
 test("a date before the company existed is blocked", async () => {

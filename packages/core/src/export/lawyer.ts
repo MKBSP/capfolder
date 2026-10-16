@@ -6,6 +6,7 @@ import { computeGaps } from "../gaps";
 import { toOcfExport } from "../ocf-export";
 import { reduce } from "../reduce";
 import type { State, VaultEvent } from "../types";
+import { fullCapTable } from "./full";
 import { toPdf } from "./pdf";
 import { DISCLAIMER, sheets } from "./sheets";
 import { toXlsx } from "./xlsx";
@@ -54,7 +55,8 @@ export async function lawyerPackage(p: {
   const who = person ? (s.stakeholders.get(person)?.name?.legal_name ?? person) : undefined;
   const tabs = sheets(p.events, p.asOf, { stakeholderId: person, currency: p.currency });
   const out: Record<string, Uint8Array | string> = {
-    "cap-table.xlsx": toXlsx(tabs),
+    // one person's package keeps the short tabs: the full workbook shows everyone's holdings
+    "cap-table.xlsx": toXlsx(person ? tabs : fullCapTable(p.events, p.asOf, { currency: p.currency })),
     "cap-table.pdf": await toPdf(tabs, `${company}${who ? ` · ${who}` : ""} · cap table as of ${p.asOf}`),
   };
 

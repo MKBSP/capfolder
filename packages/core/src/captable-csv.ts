@@ -8,7 +8,8 @@ const HEADER =
 // Vault data is untrusted: anything that isn't a plain number and starts like a formula gets a leading '.
 const PLAIN_NUMBER = /^-?\d+(\.\d+)?$/;
 const safe = (v: string) => (/^[=+\-@\t\r]/.test(v) && !PLAIN_NUMBER.test(v) ? `'${v}` : v);
-const cell = (v: string) => {
+/** One CSV field: quoted when needed, and never read as a formula. */
+export const csvCell = (v: string) => {
   const s = safe(v);
   return /[",\n\r]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
 };
@@ -30,7 +31,7 @@ export function toCaptableCsv(rows: Row[]): string {
       r.asConverted,
       r.docStatus,
     ]
-      .map(cell)
+      .map(csvCell)
       .join(","),
   );
   return `${[HEADER, ...lines].join("\n")}\n`;

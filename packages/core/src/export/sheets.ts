@@ -6,13 +6,21 @@ import { fullyVestedOn, nextVest } from "../schedule";
 import { capTableTotals, percentOf } from "../totals";
 import type { Row, State, VaultEvent } from "../types";
 
-/** A cell: text, a whole number, or an exact decimal written as a number ({num: "1.88"}). */
-export type Cell = string | bigint | { num: string } | null;
+/**
+ * A cell: text, a whole number, an exact decimal written as a number ({num: "1.88"}), a fraction shown as a
+ * percentage ({pct: "0.5"} is 50%), or an ISO date shown as a date.
+ */
+export type Cell = string | bigint | { num: string } | { pct: string } | { date: string } | null;
 export interface Sheet {
   name: string;
   rows: Cell[][];
   header: number[]; // row indexes drawn bold
+  freeze?: number; // rows kept in view while scrolling (title rows + the column header)
 }
+
+/** A cell as plain text (no thousands separators): what a CSV or a reader sees. */
+export const cellText = (c: Cell): string =>
+  c === null ? "" : typeof c === "object" ? ("num" in c ? c.num : "pct" in c ? c.pct : c.date) : String(c);
 
 export const DISCLAIMER =
   "Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.";

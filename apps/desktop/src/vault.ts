@@ -7,6 +7,8 @@ import {
   captableCsv,
   type Data,
   type EventDraft,
+  fullCapTable,
+  holdingsCsv,
   type LawyerScope,
   lawyerDocPaths,
   lawyerPackage,
@@ -15,7 +17,6 @@ import {
   reduce,
   type SignField,
   sha256Hex,
-  sheets,
   toOcfExport,
   toXlsx,
   type VaultEvent,
@@ -497,8 +498,8 @@ export function replaceDocument(
   });
 }
 
-/** F-29. The cap table as of any date, in captable.csv format. */
-export const exportCsv = (v: Vault, asOf: string): string => captableCsv(v.events, asOf);
+/** F-29. Every holding as of any date, one row each with the full ledger columns. */
+export const exportCsv = (v: Vault, asOf: string): string => holdingsCsv(v.events, asOf);
 
 export type ExportFormat = "xlsx" | "csv" | "ocf";
 
@@ -520,7 +521,7 @@ export function exportFile(
   if (format === "xlsx")
     return {
       name: `${co}-cap-table-${asOf}.xlsx`,
-      data: toXlsx(sheets(v.events, asOf, { currency: v.meta.currency as string | undefined })),
+      data: toXlsx(fullCapTable(v.events, asOf, { currency: v.meta.currency as string | undefined })),
     };
   return {
     name: `${co}-ocf-${asOf}.zip`,

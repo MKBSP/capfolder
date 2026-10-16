@@ -63,6 +63,6 @@ test("export csv as of the chosen date", async () => {
   await userEvent.click(screen.getByLabelText(/CSV/));
   await userEvent.click(screen.getByRole("button", { name: "Save…" }));
   expect(saved["acme-inc-cap-table-2026-10-07.csv"]).toContain(
-    "Mads Petersen,common,Common,4000000,50.00,3000000,1000000",
+    "CS-1,Mads Petersen,Individual,Stock,Common,2021-09-14,4000000,4000000,3000000,1000000,",
   );
 });

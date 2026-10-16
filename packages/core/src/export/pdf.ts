@@ -1,8 +1,8 @@
 // The cap table as a printable PDF (for the lawyer zip). One table per sheet, landscape, Helvetica.
 // ponytail: standard PDF fonts only cover Latin-1-ish (WinAnsi); other characters print as "?". Embed IBM Plex for full Unicode.
 import { PDFDocument, type PDFFont, rgb, StandardFonts } from "pdf-lib";
-import { fmtInt } from "../num";
-import type { Cell, Sheet } from "./sheets";
+import { fmtInt, parseDec, ratioFixed } from "../num";
+import { type Cell, cellText, type Sheet } from "./sheets";
 
 const W = 792;
 const H = 612;
@@ -30,7 +30,11 @@ function safeText(font: PDFFont, cache: Map<string, string>) {
 }
 
 const show = (c: Cell) =>
-  c === null ? "" : typeof c === "bigint" ? fmtInt(c) : typeof c === "object" ? c.num : c;
+  typeof c === "bigint"
+    ? fmtInt(c)
+    : c !== null && typeof c === "object" && "pct" in c
+      ? `${ratioFixed(parseDec(c.pct).v * 100n, 10n ** BigInt(parseDec(c.pct).scale), 2)}%`
+      : cellText(c);
 
 export async function toPdf(sheets: Sheet[], title: string): Promise<Uint8Array> {
   const doc = await PDFDocument.create();

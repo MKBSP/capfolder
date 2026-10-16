@@ -5,7 +5,7 @@ import { captableCsv } from "../src/captable-csv";
 import { verifyChain } from "../src/chain";
 import { lawyerDocPaths, lawyerPackage } from "../src/export/lawyer";
 import { toPdf } from "../src/export/pdf";
-import { type Cell, DISCLAIMER, sheets } from "../src/export/sheets";
+import { cellText, DISCLAIMER, sheets } from "../src/export/sheets";
 import { toXlsx } from "../src/export/xlsx";
 import { unzip, zip } from "../src/export/zip";
 import { toOcfExport } from "../src/ocf-export";
@@ -14,7 +14,7 @@ import { acmeEvents, ev, readFix } from "./helpers";
 
 const AS_OF = "2026-10-07";
 const base = acmeEvents();
-const text = (c: Cell) => (typeof c === "object" && c !== null ? c.num : String(c ?? ""));
+const text = cellText;
 const sheet = (name: string, events = base) => sheets(events, AS_OF).find((s) => s.name === name)!;
 
 describe("sheets", () => {
