@@ -97,7 +97,7 @@ describe("sorting a messy folder (F-09)", () => {
     expect(
       screen.getByRole("checkbox", { name: /Remember: “Fund X Ventures I, L.P.” is Fund X/ }),
     ).toBeChecked();
-    await userEvent.click(screen.getByRole("button", { name: "Confirm & file" }));
+    await userEvent.click(screen.getByRole("button", { name: /^File as proof for Fund X/ }));
     await screen.findByText(
       /Safe → docs\/safes\/2023-03-14_fund-x_safe\.pdf|SAFE → docs\/safes\/2023-03-14_fund-x_safe\.pdf/,
     );
@@ -117,9 +117,22 @@ describe("sorting a messy folder (F-09)", () => {
         fixture("yc-safe.txt").replaceAll("Y Combinator", "Seed Fund Z").replace("$500,000", "$75,000"),
       ),
     });
+    expect(
+      screen.getByText("Not on your cap table yet: no SAFE for Seed Fund Z of $75,000. Review to add it."),
+    ).toBeTruthy();
     await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
     expect(screen.getByLabelText("Date")).toHaveValue("2022-01-10");
-    await userEvent.click(screen.getByRole("button", { name: "Add to cap table & file" }));
+    expect(
+      screen.getByText(
+        "A signed SAFE: Seed Fund Z invests $75,000 in Acme Inc. at a $10,000,000 cap, dated 2022-01-10.",
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Creates Seed Fund Z's $75,000 SAFE on the cap table and files this document as its proof.",
+      ),
+    ).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Add this SAFE to the cap table" }));
     await screen.findByText(/→ docs\/safes\/2022-01-10_seed-fund-z_safe\.pdf/);
     const ev = events(fp.fs, fp.root);
     const safe = ev.find(
@@ -147,7 +160,14 @@ describe("sorting a messy folder (F-09)", () => {
           fetch: async (url: string, init?: RequestInit) => {
             if (!/^http:\/\/localhost:(11434|1234)\//.test(url)) return new Response("", { status: 404 }); // rules pack, ping
             asked.push(url);
-            expect(JSON.parse(String(init?.body)).messages[1].content).toMatch(/^<document>/);
+            const body = JSON.parse(String(init?.body));
+            expect(body.messages[1].content).toMatch(/^<document>/);
+            if (/summary/i.test(body.messages[0].content))
+              return new Response(
+                JSON.stringify({
+                  message: { content: "An equity award letter: João Silva receives 40,000 options." },
+                }),
+              );
             return new Response(JSON.stringify({ message: { content: JSON.stringify(answer) } }));
           },
         },
@@ -160,6 +180,9 @@ describe("sorting a messy folder (F-09)", () => {
     await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
     expect(screen.getByText(/Your AI read it \(check every field\)\. Ollama · llama3\.1/)).toBeTruthy();
     expect(screen.getByLabelText("Shares")).toHaveValue("40000");
+    expect(
+      await screen.findByText("An equity award letter: João Silva receives 40,000 options."),
+    ).toBeTruthy();
   }, 20_000);
 });
 
@@ -187,7 +210,7 @@ describe("M4 review fixes", () => {
   test("a skipped file can still be opened and filed", async () => {
     await sorting({ "receipt.pdf": await pdf(fixture("receipt.txt")) });
     await userEvent.click(screen.getByRole("button", { name: "Review" }));
-    expect(screen.getByRole("button", { name: "Confirm & file" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "File as a company document" })).toBeTruthy();
   }, 20_000);
 
   test("an unsigned draft waits for the founder, and filed as a draft it doesn't close the gap", async () => {
@@ -197,7 +220,7 @@ describe("M4 review fixes", () => {
     expect(screen.getByText(/filed ·/).textContent).toMatch(/0 filed · 1 need you/);
     await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
     expect(screen.getAllByText(/looks like an unsigned draft \("DRAFT"\)/).length).toBeGreaterThan(0);
-    await userEvent.click(screen.getByRole("button", { name: "Confirm & file" }));
+    await userEvent.click(screen.getByRole("button", { name: /^File as proof for/ }));
     await userEvent.click(await screen.findByRole("button", { name: "File as draft" }));
     await screen.findByText(/docs\/grants\/2026-03-02_joao-silva_option-grant\.pdf/);
     const added = events(fp.fs, fp.root)
@@ -231,7 +254,7 @@ test("no signature found: filing asks, and only a ticked override counts it as p
   expect(screen.getByText(/filed ·/).textContent).toMatch(/0 filed · 1 need you/);
   await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
   expect(screen.getAllByText(/can't see a signature/).length).toBeGreaterThan(0);
-  await userEvent.click(screen.getByRole("button", { name: "Confirm & file" }));
+  await userEvent.click(screen.getByRole("button", { name: /^File as proof for/ }));
   const dialog = await screen.findByRole("dialog", { name: "No signature found" });
   expect(within(dialog).getByRole("button", { name: "File as signed" })).toBeDisabled();
   await userEvent.click(within(dialog).getByRole("checkbox", { name: /It has been signed/ }));
@@ -243,3 +266,56 @@ test("no signature found: filing asks, and only a ticked override counts it as p
   expect(added.data.flags).toContain("signed:founder");
   expect(added.data.flags).not.toContain("draft");
 }, 20_000);
+
+describe("knowing what's going on (Mads' test, 2026-10-16)", () => {
+  test("a folder with no documents says so", async () => {
+    const fp = acmePlatform({ pickFolder: "/home/me/Downloads/empty" });
+    fp.fs.writeSync("/home/me/Downloads/empty/notes.txt", "x");
+    render(<App platform={fp.platform} />);
+    await screen.findByText("Fully diluted");
+    await userEvent.click(screen.getByRole("button", { name: "Documents" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Add documents" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Choose a folder…" }));
+    expect(await screen.findByText(/No PDFs or images found in empty\./)).toBeTruthy();
+  });
+
+  test("walking a folder reports how many documents it found so far", async () => {
+    const { walk } = await import("../docsort");
+    const fp = acmePlatform();
+    fp.fs.writeSync("/home/me/messy/a.pdf", "x");
+    fp.fs.writeSync("/home/me/messy/sub/b.jpg", "x");
+    const seen: number[] = [];
+    await walk(fp.fs, "/home/me/messy", null, (n) => seen.push(n));
+    expect(seen.at(-1)).toBe(2);
+  });
+
+  test("progress: how far, and roughly how long is left", async () => {
+    const { progress } = await import("../docsort");
+    const item = (status: string) => ({ path: "", name: "", status }) as never;
+    expect(progress([item("filed"), item("reading"), item("waiting")], 0, 60_000)).toEqual({
+      done: 1,
+      total: 3,
+      left: "about 2 min left",
+    });
+    expect(progress([item("filed"), item("waiting")], 0, 1_000).left).toBe("under a minute left");
+  });
+
+  test("leaving the page keeps the results, and the header leads back", async () => {
+    await sortingFiles({ "scan_0042.pdf": await pdf(fixture("scan_0042.txt")) });
+    expect(screen.getByText(/You can leave this page/)).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "← Cap table" }));
+    await screen.findByText("Fully diluted");
+    await userEvent.click(screen.getByRole("button", { name: "1 document needs you" }));
+    expect(await screen.findByText("scan_0042.pdf")).toBeTruthy();
+    expect(screen.getByText(/filed ·/).textContent).toMatch(/1 need you/);
+  }, 20_000);
+
+  test("the document's text is one click away from the preview", async () => {
+    await sortingFiles({ "scan_0042.pdf": await pdf(fixture("scan_0042.txt")) });
+    await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
+    // jsdom has no canvas, so the preview falls back to the text; in the app "Show text" switches to it
+    const toggle = screen.queryByRole("button", { name: "Show text" });
+    if (toggle) await userEvent.click(toggle);
+    expect(await screen.findByText(/Fund X Ventures I, L\.P\./, { selector: "pre" })).toBeTruthy();
+  }, 20_000);
+});

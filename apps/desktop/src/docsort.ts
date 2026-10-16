@@ -76,6 +76,7 @@ export async function walk(
   fs: Fs,
   dir: string,
   skip: string | null,
+  onProgress?: (found: number) => void,
 ): Promise<{ files: { path: string; name: string }[]; truncated: boolean }> {
   const files: { path: string; name: string }[] = [];
   let truncated = false;
@@ -93,12 +94,31 @@ export async function walk(
         return;
       }
       const path = join(d, name);
-      if (isReadable(name)) files.push({ path, name });
-      else if (!SKIP_DIRS.test(name) && !OTHER_FILE.test(name)) await visit(path, depth + 1);
+      if (isReadable(name)) {
+        files.push({ path, name });
+        onProgress?.(files.length);
+      } else if (!SKIP_DIRS.test(name) && !OTHER_FILE.test(name)) await visit(path, depth + 1);
     }
   };
   await visit(dir, 0);
   return { files, truncated };
+}
+
+/** How far a run is, and a rough time left from the average so far. */
+export function progress(
+  items: SortItem[],
+  started: number,
+  now: number,
+): { done: number; total: number; left: string } {
+  const done = items.filter((x) => x.status !== "waiting" && x.status !== "reading").length;
+  const total = items.length;
+  if (!done || done === total) return { done, total, left: "" };
+  const ms = ((now - started) / done) * (total - done);
+  return {
+    done,
+    total,
+    left: ms < 60_000 ? "under a minute left" : `about ${Math.round(ms / 60_000)} min left`,
+  };
 }
 
 // ---------- one file ----------

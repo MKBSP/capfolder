@@ -448,6 +448,18 @@ export function sortText(
     !!fields.name &&
     fields.name !== UNREADABLE &&
     (normName(fields.name) === normName(name(id)) || s.aliases.get(normName(fields.name)) === id);
+  // a document naming another company never files by itself (Inc / Corp / LLC and punctuation don't count)
+  const bare = (x: string) =>
+    normName(x)
+      .replace(/\b(inc|incorporated|corp|corporation|llc|ltd|limited|co|company|lda|aps|gmbh|sa)\b/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  const open = String(s.issuer?.legal_name ?? "");
+  const theirs = fields.company && fields.company !== UNREADABLE ? fields.company : "";
+  const otherCompany =
+    open && bare(open) && bare(theirs) && bare(theirs) !== bare(open)
+      ? [`This document is for ${theirs}, but the open company is ${open.replace(/\.$/, "")}.`]
+      : [];
   const review = (problems: string[], extra: Partial<SortResult> = {}): SortResult => ({
     ...base,
     status: "review",
@@ -458,6 +470,7 @@ export function sortText(
           ]
         : []),
       ...(noSignature ? ["Capfolder can't see a signature in this copy (no e-signature, no scan)."] : []),
+      ...otherCompany,
       ...problems,
     ],
     person: extra.suggestion ? personOf(extra.suggestion) : (fields.name ?? "company"),
@@ -476,7 +489,7 @@ export function sortText(
   // AI never files: everything it proposes goes through the founder (CLAUDE.md)
   const done = (targets: string[], found: string[], checks: Check[] = []): SortResult => {
     const problems = [...gate, ...found];
-    return problems.length || by === "ai" || draft || noSignature
+    return problems.length || by === "ai" || draft || noSignature || otherCompany.length
       ? review(problems.length || by !== "ai" ? problems : ["Sorted by AI: check it before filing."], {
           suggestion: targets.length === 1 ? targets[0] : undefined,
           checks,

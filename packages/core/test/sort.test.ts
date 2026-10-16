@@ -120,3 +120,17 @@ describe("nearest (kNN)", () => {
   test("dissimilar documents don't count", () =>
     expect(nearest(termCounts("bylaws of the corporation"), corpus("other", 5, letter))).toBeNull());
 });
+
+describe("the document's company", () => {
+  test("another company's document never files by itself and says why", () => {
+    const r = sortText(txt("yc-safe.txt").replaceAll("Acme Inc.", "Hippobuild Corporation"), state);
+    expect(r.status).toBe("review");
+    expect(r.problems).toContain(
+      "This document is for Hippobuild Corporation, but the open company is Acme Inc.",
+    );
+  });
+  test("Inc / Corp / LLC and punctuation don't count as a different company", () => {
+    const r = sortText(txt("yc-safe.txt").replaceAll("Acme Inc.", "ACME, Inc"), state);
+    expect(r.problems.join()).not.toMatch(/open company/);
+  });
+});

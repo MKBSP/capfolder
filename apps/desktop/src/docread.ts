@@ -54,6 +54,30 @@ export async function readText(bytes: Uint8Array, name: string, ocr: Ocr = brows
   }
 }
 
+/** Draws one page of a PDF on a canvas, for the review preview. Returns the page count. */
+export async function renderPdfPage(
+  bytes: Uint8Array,
+  n: number,
+  canvas: HTMLCanvasElement,
+): Promise<number> {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("no canvas");
+  await loadPdfWorker();
+  // ponytail: reopens the PDF on each page turn; cache the document if big files feel slow
+  const task = pdfjs.getDocument({ data: bytes.slice(), useSystemFonts: false, verbosity: 0 });
+  const doc = await task.promise;
+  try {
+    const page = await doc.getPage(Math.min(Math.max(1, n), doc.numPages));
+    const viewport = page.getViewport({ scale: 1.5 });
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+    await page.render({ canvas, canvasContext: ctx, viewport, intent: "print" }).promise;
+    return doc.numPages;
+  } finally {
+    await task.destroy();
+  }
+}
+
 // ---------- the app's OCR (webview) ----------
 
 type TessWorker = {

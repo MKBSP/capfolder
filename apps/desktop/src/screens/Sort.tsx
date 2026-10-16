@@ -10,13 +10,24 @@ import {
   type SortType,
 } from "@capfolder/core";
 import { useEffect, useRef, useState } from "react";
+import { aiSummary } from "../ai";
 import { DOC_TYPES, docTargets } from "../components/AttachModal";
 import { CrumbHeader } from "../components/Header";
 import { ErrorList, Field, Modal } from "../components/ui";
-import { endOcr, isReadable } from "../docread";
-import { fileDoc, learn, loadCorpus, type SortDeps, type SortItem, sortOne, walk } from "../docsort";
+import { endOcr, isImage, isReadable, renderPdfPage } from "../docread";
+import {
+  fileDoc,
+  learn,
+  loadCorpus,
+  progress,
+  type SortDeps,
+  type SortItem,
+  sortOne,
+  walk,
+} from "../docsort";
 import { money, shares } from "../fmt";
-import { useApp } from "../state";
+import { baseName } from "../fs/types";
+import { type App, useApp } from "../state";
 
 const TYPE_LABEL: Record<string, string> = {
   ...Object.fromEntries(DOC_TYPES.map((d) => [d.value, d.label])),
@@ -47,84 +58,127 @@ const BY: Record<string, string> = {
   ai: "Your AI read it (check every field).",
 };
 
+type Picked = { path: string; name: string };
+
+/** Walks dropped or chosen folders (files are taken as they are), then sorts what it found. */
+async function scan(get: () => App, paths: string[]) {
+  const a = get();
+  if (!a.vault || a.sort.running) return;
+  const folder = baseName(paths[0] ?? "");
+  a.setSort({
+    root: a.vault.root,
+    items: [],
+    running: true,
+    started: Date.now(),
+    scanning: { folder, found: 0 },
+  });
+  const files: Picked[] = [];
+  let truncated = false;
+  for (const p of paths) {
+    const name = p.split(/[\\/]/).at(-1) ?? p;
+    if (isReadable(name)) files.push({ path: p, name });
+    else {
+      const before = files.length;
+      const w = await walk(a.platform.fs, p, a.vault.root, (n) =>
+        get().setSort((s) => ({ ...s, scanning: { folder, found: before + n } })),
+      );
+      files.push(...w.files);
+      truncated ||= w.truncated;
+    }
+  }
+  if (!files.length) {
+    get().setSort((s) => ({
+      ...s,
+      running: false,
+      scanning: undefined,
+      note: `No PDFs or images found in ${folder}. Capfolder reads PDF, JPG and PNG files.`,
+    }));
+    return;
+  }
+  await runSort(get, files, truncated);
+}
+
+/** Sorts the files one by one. Runs in the app, so leaving the screen doesn't stop it or lose the results. */
+async function runSort(get: () => App, files: Picked[], truncated = false) {
+  const a = get();
+  if (!files.length || !a.vault) return;
+  const root = a.vault.root;
+  const list: SortItem[] = files.map((f) => ({ ...f, status: "waiting" }));
+  a.setSort({ root, items: [...list], running: true, started: Date.now(), truncated });
+  const d: SortDeps = {
+    platform: a.platform,
+    settings: a.settings,
+    ctx: a.ctx,
+    rules: a.rules.doc_types,
+    corpus: await loadCorpus(a.platform.fs, await a.platform.appDataDir()),
+  };
+  let vault = a.vault;
+  const seen = new Set<string>();
+  for (let i = 0; i < list.length; i++) {
+    const now = get().vault;
+    if (now?.root !== root) break; // another company was opened: stop
+    if (now.events.length > vault.events.length) vault = now; // the founder saved something meanwhile
+    list[i] = { ...list[i]!, status: "reading" };
+    get().setSort((s) => ({ ...s, items: [...list] }));
+    const r = await sortOne(d, vault, list[i]!, seen);
+    list[i] = r.item;
+    if (r.vault !== vault) {
+      vault = r.vault;
+      get().setVault(vault);
+    }
+    get().setSort((s) => ({ ...s, items: [...list] }));
+  }
+  await endOcr();
+  get().setSort((s) => ({ ...s, running: false }));
+}
+
+/** A "Needs you" row in plain words: every reason, and "not on your cap table yet" when nothing matched. */
+function explain(x: SortItem): string {
+  const r = x.result;
+  if (!r) return "";
+  return r.problems
+    .map((p) =>
+      /^No holding matches this (amount|share count) and name\.$/.test(p)
+        ? `Not on your cap table yet: no ${TYPE_LABEL[r.type ?? ""] ?? "holding"}${r.fields.name ? ` for ${r.fields.name}` : ""}${
+            r.fields.amount && r.fields.amount !== "unreadable"
+              ? ` of ${money(r.fields.amount)}`
+              : r.fields.shares && r.fields.shares !== "unreadable"
+                ? ` of ${shares(BigInt(r.fields.shares))} shares`
+                : ""
+          }. Review to add it.`
+        : p,
+    )
+    .join(" ");
+}
+
 /** F-09 / F-26: drop a messy folder; certain documents are filed, the rest wait in "Needs you" (ImportReview.html). */
 export function Sort() {
   const app = useApp();
-  const [items, setItems] = useState<SortItem[]>([]);
-  const [running, setRunning] = useState(false);
   const [reviewing, setReviewing] = useState<number | null>(null);
-  const [truncated, setTruncated] = useState(false);
-  const runningRef = useRef(false);
-  const latest = useRef(app);
-  latest.current = app;
-  // leaving mid-run: the loop finishes on its own and frees OCR itself
-  useEffect(() => () => void (runningRef.current || endOcr()), []);
-
-  async function deps(): Promise<SortDeps> {
-    const a = latest.current;
-    return {
-      platform: a.platform,
-      settings: a.settings,
-      ctx: a.ctx,
-      rules: a.rules.doc_types,
-      corpus: await loadCorpus(a.platform.fs, await a.platform.appDataDir()),
-    };
-  }
-
-  async function run(files: { path: string; name: string }[]) {
-    if (!files.length || !latest.current.vault) return;
-    setRunning(true);
-    runningRef.current = true;
-    setReviewing(null);
-    const list: SortItem[] = files.map((f) => ({ ...f, status: "waiting" }));
-    setItems([...list]);
-    const d = await deps();
-    let vault = latest.current.vault!;
-    const seen = new Set<string>();
-    for (let i = 0; i < list.length; i++) {
-      const app = latest.current.vault;
-      if (app && app.events.length > vault.events.length) vault = app; // the founder saved something meanwhile
-      list[i] = { ...list[i]!, status: "reading" };
-      setItems([...list]);
-      const r = await sortOne(d, vault, list[i]!, seen);
-      list[i] = r.item;
-      if (r.vault !== vault) {
-        vault = r.vault;
-        latest.current.setVault(vault);
-      }
-      setItems([...list]);
-    }
-    await endOcr();
-    runningRef.current = false;
-    setRunning(false);
-  }
+  const [, tick] = useState(0);
+  const run = app.sort.root === app.vault?.root ? app.sort : { items: [], running: false, started: 0 };
+  const { items, running } = run;
+  // leaving while idle frees OCR; mid-run the loop frees it itself when it ends
+  useEffect(() => () => void (app.fresh().sort.running || endOcr()), [app]);
+  // the "time left" line moves on its own between files
+  useEffect(() => {
+    if (!running) return;
+    const t = setInterval(() => tick((n) => n + 1), 5000);
+    return () => clearInterval(t);
+  }, [running]);
 
   // dropped on the window: folders are walked like "Choose a folder", files are taken as they are
   const dropped = app.route.name === "sort" ? app.route.dropped : undefined;
   // biome-ignore lint/correctness/useExhaustiveDependencies: once per drop
   useEffect(() => {
-    if (!dropped?.length || runningRef.current) return;
-    (async () => {
-      const a = latest.current;
-      const files: { path: string; name: string }[] = [];
-      let cut = false;
-      for (const p of dropped) {
-        const name = p.split(/[\\/]/).at(-1) ?? p;
-        if (isReadable(name)) files.push({ path: p, name });
-        else {
-          const w = await walk(a.platform.fs, p, a.vault?.root ?? null);
-          files.push(...w.files);
-          cut ||= w.truncated;
-        }
-      }
-      setTruncated(cut);
-      await run(files);
-    })();
+    if (dropped?.length) scan(app.fresh, dropped);
   }, [dropped]);
 
   const count = (s: SortItem["status"]) => items.filter((x) => x.status === s).length;
   const queue = items.map((x, i) => ({ x, i })).filter(({ x }) => x.status === "review");
-  const update = (i: number, x: SortItem) => setItems((all) => all.map((y, j) => (j === i ? x : y)));
+  const update = (i: number, x: SortItem) =>
+    app.setSort((s) => ({ ...s, items: s.items.map((y, j) => (j === i ? x : y)) }));
+  const p = progress(items, run.started, Date.now());
 
   const reviewable = (x?: SortItem) => x?.status === "review" || (x?.status === "skipped" && !!x.result);
   if (reviewing !== null && reviewable(items[reviewing])) {
@@ -164,10 +218,7 @@ export function Sort() {
             disabled={running}
             onClick={async () => {
               const dir = await app.platform.pickFolder("Choose a folder of documents");
-              if (!dir) return;
-              const w = await walk(app.platform.fs, dir, app.vault?.root ?? null);
-              setTruncated(w.truncated);
-              await run(w.files);
+              if (dir) await scan(app.fresh, [dir]);
             }}
           >
             Choose a folder…
@@ -176,7 +227,7 @@ export function Sort() {
             type="button"
             className="btn"
             disabled={running}
-            onClick={async () => run(await app.platform.pickFiles("Choose documents"))}
+            onClick={async () => runSort(app.fresh, await app.platform.pickFiles("Choose documents"))}
           >
             Choose files…
           </button>
@@ -186,10 +237,41 @@ export function Sort() {
               : "No AI connected: rules and your past choices only (Settings → AI)"}
           </span>
         </div>
-        {truncated ? (
+        {run.scanning ? (
+          <div className="banner small" role="status">
+            Looking through {run.scanning.folder}… {run.scanning.found} document
+            {run.scanning.found === 1 ? "" : "s"} found so far
+          </div>
+        ) : null}
+        {"note" in run && run.note && !run.scanning ? (
+          <div className="banner amber small" role="status">
+            {run.note}
+          </div>
+        ) : null}
+        {"truncated" in run && run.truncated ? (
           <div className="banner amber small">
             That folder has more than 500 documents: these are the first 500. Choose its subfolders one at a
             time for the rest.
+          </div>
+        ) : null}
+        {running && items.length ? (
+          <div className="stack small" role="status">
+            <progress value={p.done} max={p.total} style={{ width: "100%" }} />
+            <span>
+              Reading {Math.min(p.done + 1, p.total)} of {p.total}
+              {p.left ? ` · ${p.left}` : ""}
+            </span>
+          </div>
+        ) : null}
+        {items.length ? (
+          <p className="meta" style={{ margin: 0 }}>
+            You can leave this page. Sorting keeps going, and the results wait here.
+          </p>
+        ) : null}
+        {queue.length && !app.latest?.securities.size ? (
+          <div className="banner amber small">
+            Your cap table is empty, so nothing can be matched. Review each document to add it, or import your
+            cap table first.
           </div>
         ) : null}
         {items.length ? (
@@ -221,7 +303,7 @@ export function Sort() {
                     </span>
                   ) : x.status === "review" ? (
                     <span className="meta" style={{ display: "block" }}>
-                      {x.result?.problems[0]}
+                      {explain(x)}
                     </span>
                   ) : x.error ? (
                     <span className="meta" style={{ display: "block" }}>
@@ -273,6 +355,20 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
   const [errors, setErrors] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const targets = docTargets(s);
+  const company = String(s.issuer?.legal_name ?? "");
+  const [summary, setSummary] = useState(() => summarize(r.type ?? "", r.fields, unsure, company));
+  // a connected local AI may say it better; its answer replaces ours only when it's plain and short
+  useEffect(() => {
+    const ai = app.settings.ai;
+    if (!ai.provider || !ai.model || !p.item.text?.trim()) return;
+    let live = true;
+    aiSummary(app.platform, { provider: ai.provider, model: ai.model }, p.item.text).then((t) => {
+      if (live && t) setSummary(t);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
   const holder = s.securities.get(target)?.stakeholderId ?? (s.stakeholders.has(target) ? target : undefined);
   const holderName = holder ? String(s.stakeholders.get(holder)?.name?.legal_name ?? "") : "";
   const canRemember =
@@ -380,20 +476,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
           {p.item.name}
           {p.item.ocr ? " · scanned" : ""}
         </div>
-        <pre
-          className="small"
-          style={{
-            whiteSpace: "pre-wrap",
-            maxHeight: 520,
-            overflow: "auto",
-            margin: 0,
-            padding: 12,
-            background: "var(--surface-2, #f6f6f4)",
-            borderRadius: 8,
-          }}
-        >
-          {(p.item.text ?? "").slice(0, 6000) || "(no text could be read)"}
-        </pre>
+        <DocPreview path={p.item.path} name={p.item.name} text={p.item.text ?? ""} />
       </section>
       <section className="card stack" style={{ flex: "1 1 340px", maxWidth: 460 }}>
         {r.problems.length ? (
@@ -403,6 +486,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
             ))}
           </div>
         ) : null}
+        <p style={{ margin: 0 }}>{summary}</p>
         <Field label="What is it?">
           <select className="inp" value={type} onChange={(e) => setType(e.target.value as SortType)}>
             <option value="">Choose…</option>
@@ -481,7 +565,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
           </button>
           {canAddSafe ? (
             <button type="button" className="btn" disabled={busy} onClick={addSafe}>
-              Add to cap table & file
+              Add this SAFE to the cap table
             </button>
           ) : null}
           <button
@@ -490,8 +574,23 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
             disabled={busy}
             onClick={() => (unsure ? setAsking(true) : file())}
           >
-            Confirm & file
+            {target
+              ? `File as proof for ${targets.find((t) => t.id === target)?.label ?? target}`
+              : "File as a company document"}
           </button>
+        </div>
+        <div className="meta">
+          {canAddSafe ? (
+            <div>
+              Creates {fields.name}'s {money(fields.amount!)} SAFE on the cap table and files this document as
+              its proof.
+            </div>
+          ) : null}
+          <div>
+            {target
+              ? "Keeps a copy in your folder, linked to that holding as its signed proof."
+              : "Keeps a copy in your folder as a company document, not linked to anyone."}
+          </div>
         </div>
         {asking ? (
           <Modal open onClose={() => setAsking(false)} title="No signature found">
@@ -551,5 +650,124 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
         </div>
       </section>
     </main>
+  );
+}
+
+/** What the document is, in one sentence, from its kind and fields (the AI's version replaces it when there is one). */
+function summarize(type: string, f: Fields, unsure: boolean, company: string): string {
+  const ok = (v?: string) => (v && v !== "unreadable" ? v : undefined);
+  const signed = unsure ? "An unsigned" : "A signed";
+  const kind = TYPE_LABEL[type];
+  const dated = ok(f.date) ? `, dated ${f.date}` : "";
+  const to = ok(f.company) ?? company;
+  if (type === "safe") {
+    const amount = ok(f.amount) ? ` invests ${money(f.amount!)}` : " invests";
+    const cap = ok(f.cap) ? ` at a ${money(f.cap!)} cap` : "";
+    const discount = ok(f.discount) ? ` with a ${Math.round(Number(f.discount) * 100)}% discount` : "";
+    return `${signed} SAFE: ${ok(f.name) ?? "an investor"}${amount}${to ? ` in ${to}` : ""}${cap}${discount}${dated}.`;
+  }
+  if (type === "option_grant" || type === "spa") {
+    const what = type === "spa" ? "buys" : "gets options for";
+    const n = ok(f.shares) ? ` ${shares(BigInt(f.shares!))}` : "";
+    const price = ok(f.price) ? ` at ${money(f.price!)} each` : "";
+    return `${signed} ${kind?.toLowerCase()}: ${ok(f.name) ?? "someone"} ${what}${n} shares${price}${dated}.`;
+  }
+  if (!kind || type === "other" || type === "not_equity")
+    return "Capfolder couldn't tell what this document is. Choose its kind below.";
+  return `${unsure ? "An unsigned" : "A"} ${kind}${ok(f.name) ? ` for ${f.name}` : ""}${dated}.`;
+}
+
+/** The document itself: PDF pages drawn on a canvas, images as images, its text one click away. */
+function DocPreview(p: { path: string; name: string; text: string }) {
+  const app = useApp();
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(0);
+  const [img, setImg] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [showText, setShowText] = useState(false);
+  useEffect(() => {
+    let live = true;
+    let url: string | null = null;
+    (async () => {
+      try {
+        const bytes = await app.platform.fs.readBytes(p.path);
+        if (isImage(p.name)) {
+          url = URL.createObjectURL(new Blob([bytes as BlobPart]));
+          if (live) setImg(url);
+        } else if (canvas.current) {
+          const n = await renderPdfPage(bytes, page, canvas.current);
+          if (live) setPages(n);
+        }
+      } catch {
+        if (live) setFailed(true); // no preview (or a test's canvas-less DOM): the text still shows
+      }
+    })();
+    return () => {
+      live = false;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [page]);
+  const text = (
+    <pre
+      className="small"
+      style={{
+        whiteSpace: "pre-wrap",
+        maxHeight: 520,
+        overflow: "auto",
+        margin: 0,
+        padding: 12,
+        background: "var(--surface-2, #f6f6f4)",
+        borderRadius: 8,
+      }}
+    >
+      {p.text.slice(0, 6000) || "(no text could be read)"}
+    </pre>
+  );
+  if (failed) return text;
+  return (
+    <div className="stack">
+      {showText ? (
+        text
+      ) : img ? (
+        <img src={img} alt={p.name} style={{ maxWidth: "100%", border: "1px solid var(--row-divider)" }} />
+      ) : (
+        <canvas
+          ref={canvas}
+          aria-label={`Page ${page} of ${p.name}`}
+          style={{ width: "100%", border: "1px solid var(--row-divider)", borderRadius: 4 }}
+        />
+      )}
+      <div className="row spread">
+        {pages > 1 && !showText ? (
+          <span className="row small">
+            <button
+              type="button"
+              className="btn small"
+              disabled={page <= 1}
+              onClick={() => setPage(page - 1)}
+            >
+              ← Previous
+            </button>
+            <span className="meta">
+              Page {page} of {pages}
+            </span>
+            <button
+              type="button"
+              className="btn small"
+              disabled={page >= pages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next →
+            </button>
+          </span>
+        ) : (
+          <span />
+        )}
+        <button type="button" className="btn link small" onClick={() => setShowText(!showText)}>
+          {showText ? "Show document" : "Show text"}
+        </button>
+      </div>
+    </div>
   );
 }

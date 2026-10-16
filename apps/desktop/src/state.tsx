@@ -1,6 +1,7 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
 import { createContext, type ReactNode, useContext, useMemo, useRef, useState } from "react";
+import type { SortItem } from "./docsort";
 import { configureFormat, todayIso } from "./fmt";
 import { baseName } from "./fs/types";
 import type { AppUpdate, Platform } from "./platform";
@@ -17,6 +18,17 @@ export type Route =
   | { name: "sort"; dropped?: string[] }
   | { name: "person"; id: string }
   | { name: "comingSoon"; title: string; milestone: string; text?: string };
+
+/** A "Sort documents" run. Kept in the app, not the screen, so the founder can leave and come back to it. */
+export interface SortRun {
+  root?: string; // the company it belongs to
+  items: SortItem[];
+  running: boolean;
+  started: number;
+  scanning?: { folder: string; found: number };
+  note?: string; // "No PDFs or images found in …"
+  truncated?: boolean;
+}
 
 export interface App {
   platform: Platform;
@@ -44,6 +56,10 @@ export interface App {
   /** An app update found (and maybe downloaded); kept here so it survives the idle lock and Settings → Check now. */
   update: { u: AppUpdate; ready: boolean } | null;
   setUpdate(u: { u: AppUpdate; ready: boolean } | null): void;
+  sort: SortRun;
+  setSort(s: SortRun | ((prev: SortRun) => SortRun)): void;
+  /** The newest App, for work that outlives a render (a sort run keeps going after its screen closes). */
+  fresh(): App;
 }
 
 const Ctx = createContext<App | null>(null);
@@ -81,6 +97,8 @@ export function AppProvider(p: {
   const [route, go] = useState<Route>(p.initialRoute);
   const [rules, setRules] = useState<RulesPack>(BUNDLED_RULES);
   const [update, setUpdate] = useState<App["update"]>(null);
+  const [sort, setSort] = useState<SortRun>({ items: [], running: false, started: 0 });
+  const appRef = useRef<App | null>(null);
   const ctx: AppendCtx = useMemo(
     () => ({ now: () => new Date(), newId: () => builders.newId("evt"), deviceId: settings.deviceId }),
     [settings.deviceId],
@@ -120,12 +138,16 @@ export function AppProvider(p: {
     setRules,
     update,
     setUpdate,
+    sort,
+    setSort,
+    fresh: () => appRef.current!,
     route,
     go(r) {
       go(r);
       window.scrollTo?.(0, 0);
     },
   };
+  appRef.current = app;
   return <Ctx.Provider value={app}>{p.children}</Ctx.Provider>;
 }
 

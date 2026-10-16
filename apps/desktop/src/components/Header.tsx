@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { type BackupStatus, backupStatus } from "../backup";
+import { progress } from "../docsort";
 import { baseName } from "../fs/types";
 import { openCompany, type Route, useApp } from "../state";
 import { Chip, Logo, Menu } from "./ui";
@@ -67,6 +68,7 @@ export function MainHeader({ children }: { children?: ReactNode }) {
           <Chip tone="amber">Not backed up</Chip>
         )
       ) : null}
+      <SortChip />
       <nav className="nav" aria-label="Main">
         {NAV.map((n) => (
           <button
@@ -116,5 +118,21 @@ export function CrumbHeader({
         {children}
       </div>
     </header>
+  );
+}
+
+/** While documents are being sorted, or wait for the founder: one click back to them. */
+function SortChip() {
+  const { sort, vault, go } = useApp();
+  if (sort.root !== vault?.root) return null;
+  const need = sort.items.filter((x) => x.status === "review").length;
+  const { done } = progress(sort.items, 0, 0);
+  if (!sort.running && !need) return null;
+  return (
+    <button type="button" className="chip amber" onClick={() => go({ name: "sort" })}>
+      {sort.running
+        ? `Sorting ${done}/${sort.items.length}`
+        : `${need} document${need === 1 ? " needs" : "s need"} you`}
+    </button>
   );
 }
