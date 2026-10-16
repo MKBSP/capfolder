@@ -89,7 +89,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 .rail{position:absolute;left:8%;right:8%;top:60px;height:2px;background:repeating-linear-gradient(90deg,#C9CBC6 0 8px,transparent 8px 14px)}
 .mover{position:absolute;left:8%;width:84%;top:46px;height:28px;animation:travel 8s var(--ease-io) infinite}
 .doc{position:absolute;left:0;top:0;margin-left:-38px;width:76px;height:28px;border-radius:7px;background:#fff;border:1px solid #9C8FBF;box-shadow:0 6px 14px -6px rgba(78,63,134,.5);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#4E3F86;overflow:hidden}
-.doc > span{grid-area:1/1}.docw{display:grid}
+.docw > span{grid-area:1/1}.docw{display:grid;place-items:center}
 .d1{animation:d1 8s steps(1) infinite}.d2{opacity:0;color:#16543A;animation:d2 8s steps(1) infinite}
 @keyframes travel{0%,6%{transform:translateX(0)}22%,30%{transform:translateX(50%)}44%,58%{transform:translateX(100%)}84%,100%{transform:translateX(0)}}
 @keyframes d1{0%,50%{opacity:1}51%,100%{opacity:0}}
