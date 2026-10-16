@@ -14,29 +14,17 @@ import {
   reduce,
   type State,
 } from "@capfolder/core";
-import { PROVIDERS } from "./ai";
+import { CLOUD, cloudEndpoint, isCloud, PROVIDERS, providerLabel } from "./ai";
 import { readText } from "./docread";
 import { money, shares } from "./fmt";
 import { baseName, join } from "./fs/types";
 import type { Platform } from "./platform";
-import type { Settings } from "./settings";
+import type { AiProvider } from "./settings";
 import type { Route } from "./state";
 import { TEMPLATE_LINKS, YC_FORMS, ycSafeFor } from "./templates";
 import { isPlainDocPath, isSafeDocPath, type Vault } from "./vault";
 
-export type ChatProvider = Exclude<Settings["chat"]["provider"], "">;
-export const CLOUD = {
-  anthropic: {
-    label: "Claude",
-    model: "claude-sonnet-5-5",
-    keys: "https://console.anthropic.com/settings/keys",
-  },
-  openai: { label: "OpenAI", model: "gpt-5", keys: "https://platform.openai.com/api-keys" },
-  gemini: { label: "Gemini", model: "gemini-2.5-pro", keys: "https://aistudio.google.com/apikey" },
-} as const;
-export const isCloud = (p: string): p is keyof typeof CLOUD => p in CLOUD;
-export const providerLabel = (p: string) =>
-  isCloud(p) ? CLOUD[p].label : p === "ollama" || p === "lmstudio" ? PROVIDERS[p].label : "AI";
+export { CLOUD, isCloud, providerLabel };
 
 export interface Source {
   kind: "holding" | "person" | "doc";
@@ -66,7 +54,8 @@ export interface ChatDeps {
   ctx: AppendCtx;
   currency: string;
   looking: string;
-  chat: Settings["chat"];
+  /** The AI Ask AI uses (aiFor(settings, "chat")), and whether a cloud AI may read documents. */
+  chat: { provider: AiProvider | ""; model: string; cloudDocs: boolean };
 }
 
 // ---------- tools ----------
@@ -115,6 +104,7 @@ const PROPOSE = [
       vesting_months: int,
       cliff_months: int,
       acceleration: { ...str, description: "e.g. single or double trigger; leave out if none" },
+      email: { ...str, description: "the person's email, if the founder gave it" },
     },
     ["person", "options"],
   ),
@@ -128,6 +118,7 @@ const PROPOSE = [
       discount: { ...numb, description: "fraction, e.g. 0.2" },
       mfn: { type: "boolean" },
       date: str,
+      email: { ...str, description: "the investor's email, if the founder gave it" },
     },
     ["investor", "amount"],
   ),
@@ -267,7 +258,7 @@ async function runTool(
   }
 }
 
-const mayReadDocs = (c: Settings["chat"]) => !isCloud(c.provider) || c.cloudDocs;
+const mayReadDocs = (c: ChatDeps["chat"]) => !isCloud(c.provider) || c.cloudDocs;
 const isoOr = (v: unknown, fallback: string) =>
   typeof v === "string" && /^\d{4}-\d\d-\d\d$/.test(v) ? v : fallback;
 const whole = (v: unknown) => (typeof v === "number" && Number.isInteger(v) && v > 0 ? String(v) : null);
@@ -295,6 +286,9 @@ async function draft(
       ? { state: reduce([...d.vault.events, ...r.events], MAX_DATE) }
       : { error: r.errors.join(" ") };
   };
+  const email =
+    typeof i.email === "string" && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.email.trim()) ? i.email.trim() : "";
+  const emailRow = email ? ([["Email", email]] as [string, string][]) : [];
   const person = (n: string, type: "INDIVIDUAL" | "INSTITUTION") => {
     const id = findPerson(s, n);
     if (id) return { id, drafts: [] as EventDraft[], label: n };
@@ -353,6 +347,7 @@ async function draft(
       title: "New option grant",
       rows: [
         ["Person", who.label],
+        ...emailRow,
         ["Options", `${shares(BigInt(options))} from ${plan.data.plan_name ?? "the pool"}`],
         ["Vesting", vesting],
         ["Start", start],
@@ -363,7 +358,7 @@ async function draft(
       ],
       route: {
         name: "newGrant",
-        prefill: { person: i.person.trim(), options, strike, date, start, months, cliff },
+        prefill: { person: i.person.trim(), email, options, strike, date, start, months, cliff },
       },
       template: accel
         ? {
@@ -402,6 +397,7 @@ async function draft(
       title: "New SAFE",
       rows: [
         ["Investor", who.label],
+        ...emailRow,
         ["Amount", money(amount, d.currency)],
         ...(cap ? ([["Valuation cap", money(cap, d.currency)]] as [string, string][]) : []),
         ...(discount ? ([["Discount", `${Math.round(Number(discount) * 100)}%`]] as [string, string][]) : []),
@@ -410,7 +406,7 @@ async function draft(
       ],
       route: {
         name: "newSafe",
-        prefill: { investor: i.investor.trim(), amount, cap, discount, mfn: mfn ? "1" : "", date },
+        prefill: { investor: i.investor.trim(), email, amount, cap, discount, mfn: mfn ? "1" : "", date },
       },
       template: typeof yc === "string" ? { name: YC_FORMS[yc].label } : { none: yc.none },
     };
@@ -418,17 +414,11 @@ async function draft(
   if (name === "propose_person") {
     if (typeof i.name !== "string" || !i.name.trim()) return { error: "a person needs a name." };
     if (findPerson(s, i.name)) return { error: `${i.name} is already on the cap table.` };
-    const email =
-      typeof i.email === "string" && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.email.trim()) ? i.email.trim() : "";
     const type = i.type === "company" ? "INSTITUTION" : "INDIVIDUAL";
     return {
       kind: "person",
       title: "New person",
-      rows: [
-        ["Name", i.name.trim()],
-        ...(email ? ([["Email", email]] as [string, string][]) : []),
-        ["Type", type === "INSTITUTION" ? "Company" : "Person"],
-      ],
+      rows: [["Name", i.name.trim()], ...emailRow, ["Type", type === "INSTITUTION" ? "Company" : "Person"]],
       route: { name: "newPerson", prefill: { name: i.name.trim(), email, type } },
     };
   }
@@ -462,6 +452,7 @@ const MAX_STEPS = 6;
 function system(d: ChatDeps, s: State) {
   return `You help a founder with their company's cap table in Capfolder. Company: ${String(s.issuer?.legal_name ?? "")}.
 Today is ${d.ctx.now().toISOString().slice(0, 10)}; the founder is looking at: ${d.looking} (as of ${d.asOf}).
+Money is in ${d.currency}: write amounts in ${d.currency}, never another currency.
 Look things up with the tools; never guess a number. Answer in a few plain sentences.
 To add or change something, call a propose_ tool: the founder sees a draft card and saves it in the usual form. You can't
 save, send or sign anything yourself. When a draft has no template, say they should have a lawyer draft the document.
@@ -495,25 +486,14 @@ async function transport(d: ChatDeps): Promise<Post | string> {
       return { status: r.status, json: safeJson(r.body) };
     };
   if (!isCloud(p)) return "Choose an AI in Settings → AI first.";
-  const key = await d.platform.aiKey.get(p).catch(() => "");
-  if (!key) return `Add your ${CLOUD[p].label} API key in Settings → AI first.`;
-  const url =
-    p === "anthropic"
-      ? "https://api.anthropic.com/v1/messages"
-      : p === "openai"
-        ? "https://api.openai.com/v1/chat/completions"
-        : "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
-  const headers: Record<string, string> =
-    p === "anthropic"
-      ? {
-          "content-type": "application/json",
-          "x-api-key": key,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true",
-        }
-      : { "content-type": "application/json", authorization: `Bearer ${key}` };
+  const end = await cloudEndpoint(d.platform, p);
+  if (typeof end === "string") return end;
   return async (body) => {
-    const r = await d.platform.fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
+    const r = await d.platform.fetch(end.url, {
+      method: "POST",
+      headers: end.headers,
+      body: JSON.stringify(body),
+    });
     return { status: r.status, json: safeJson(await r.text()) };
   };
 }

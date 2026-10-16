@@ -1,6 +1,8 @@
 // docs/18 · Ask AI: the header button and the collapsible side panel (like Gemini in Gmail).
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { askChat, type ChatMsg, type DraftCard, isCloud, providerLabel, type Source } from "../chat";
+import { aiLabel, isCloud } from "../ai";
+import { askChat, type ChatMsg, type DraftCard, type Source } from "../chat";
+import { aiFor } from "../settings";
 import { type Route, useApp } from "../state";
 
 const LOOKING: Partial<Record<Route["name"], string>> = {
@@ -77,7 +79,8 @@ function Panel({ onClose }: { onClose(): void }) {
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const end = useRef<HTMLDivElement>(null);
-  const c = app.settings.chat;
+  const ai = aiFor(app.settings, "chat"); // the default AI, unless Advanced picks another
+  const cloudDocs = app.settings.chat.cloudDocs;
   const person =
     app.route.name === "person" ? app.latest?.stakeholders.get(app.route.id)?.name?.legal_name : null;
   const looking = person ? String(person) : (LOOKING[app.route.name] ?? "Capfolder");
@@ -99,7 +102,7 @@ function Panel({ onClose }: { onClose(): void }) {
         ctx: a.ctx,
         currency: a.currency,
         looking,
-        chat: a.settings.chat,
+        chat: { provider: "", model: "", ...aiFor(a.settings, "chat"), cloudDocs: a.settings.chat.cloudDocs },
       },
       thread,
       question,
@@ -120,9 +123,9 @@ function Panel({ onClose }: { onClose(): void }) {
       <div className="ask-head">
         <b>✦ Ask AI</b>
         <span className="meta">
-          {c.provider
-            ? `${providerLabel(c.provider)} · ${isCloud(c.provider) && !c.cloudDocs ? "cap-table data only" : "can read documents"}`
-            : "not connected"}
+          {ai
+            ? `${aiLabel(ai)}${isCloud(ai.provider) && !cloudDocs ? " · cap-table data only" : ""}`
+            : "no AI connected"}
         </span>
         <button type="button" className="ask-x" aria-label="Close Ask AI" onClick={onClose}>
           ×
@@ -132,7 +135,7 @@ function Panel({ onClose }: { onClose(): void }) {
         Looking at: {looking}, as of {app.asOf}
       </div>
       <div className="ask-thread" aria-live="polite">
-        {!c.provider ? (
+        {!ai ? (
           <div className="stack small">
             <p style={{ margin: 0 }}>
               Ask about your cap table, or describe a grant or SAFE and get a draft you check before saving.
@@ -173,7 +176,7 @@ function Panel({ onClose }: { onClose(): void }) {
         {busy ? <p className="meta">Thinking…</p> : null}
         <div ref={end} />
       </div>
-      {c.provider ? (
+      {ai ? (
         <div className="ask-suggest">
           {SUGGEST.map((s) => (
             <button type="button" key={s} disabled={busy} onClick={() => send(s)}>
@@ -194,7 +197,7 @@ function Panel({ onClose }: { onClose(): void }) {
           aria-label="Ask a question"
           placeholder="Ask about your cap table, or tell it what to add…"
           value={q}
-          disabled={!c.provider}
+          disabled={!ai}
           onChange={(e) => setQ(e.target.value)}
         />
         <button type="submit" className="btn primary" disabled={busy || !q.trim()}>

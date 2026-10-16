@@ -14,14 +14,19 @@ export const newPerson = (type: "INDIVIDUAL" | "INSTITUTION" = "INDIVIDUAL"): Pe
 });
 
 /** A name from an Ask AI draft (docs/18): the person already on the cap table, or a new one with that name. */
-export function personNamed(s: State | null, name: string, type: "INDIVIDUAL" | "INSTITUTION"): PersonChoice {
+export function personNamed(
+  s: State | null,
+  name: string,
+  type: "INDIVIDUAL" | "INSTITUTION",
+  email = "",
+): PersonChoice {
   const k = normName(name);
   const id =
     s &&
     [...s.stakeholders.keys()].find(
       (x) => normName(String(s.stakeholders.get(x)?.name?.legal_name ?? "")) === k,
     );
-  return id ? { id } : { ...newPerson(type), name };
+  return id ? { id } : { ...newPerson(type), name, email };
 }
 
 /** Pick an existing stakeholder or describe a new one (created in the same batch as the form's events). */

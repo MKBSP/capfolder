@@ -40,7 +40,7 @@ async function deps(
       ctx,
       currency: "USD",
       looking: "Cap table",
-      chat: { provider: "anthropic", model: "claude-sonnet-5-5", cloudDocs: false, open: true, ...chat },
+      chat: { provider: "anthropic", model: "claude-sonnet-5-5", cloudDocs: false, ...chat },
     },
   };
 }
@@ -193,6 +193,26 @@ describe("drafts", () => {
     expect(c.template).toHaveProperty("name");
   });
 
+  test("the email the founder gave goes on the card and into the form (SAFE and grant)", async () => {
+    const safe = (
+      await propose("propose_safe", {
+        investor: "Jorge Sandoval",
+        amount: 20000,
+        cap: 20000000,
+        email: "jorge@sandoval.com",
+      })
+    ).drafts![0]!;
+    expect(safe.rows).toContainEqual(["Email", "jorge@sandoval.com"]);
+    expect(safe.route).toMatchObject({ name: "newSafe", prefill: { email: "jorge@sandoval.com" } });
+    const grant = (
+      await propose("propose_grant", { person: "Ana Ribeiro", options: 40000, email: "ana@x.com" })
+    ).drafts![0]!;
+    expect(grant.route).toMatchObject({ name: "newGrant", prefill: { email: "ana@x.com" } });
+    // not an email: left out, not passed on
+    const bad = (await propose("propose_safe", { investor: "X", amount: 1, email: "nope" })).drafts![0]!;
+    expect((bad.route as { prefill: Record<string, string> }).prefill.email).toBe("");
+  });
+
   test("acceleration has no template: the card says to get a lawyer", async () => {
     const m = await propose("propose_grant", {
       person: "Ana Ribeiro",
@@ -264,4 +284,10 @@ describe("OpenAI-style providers", () => {
     expect(m.text).toBe("You have 8 holders.");
     expect(m.note).toMatch(/bigger model/);
   });
+});
+
+test("answers use the company's currency", async () => {
+  const { d, calls } = await deps([{ stop_reason: "end_turn", content: [{ type: "text", text: "ok" }] }]);
+  await askChat({ ...d, currency: "EUR" }, [], "how much did we raise?");
+  expect(body(calls[0]!).system).toMatch(/EUR/);
 });

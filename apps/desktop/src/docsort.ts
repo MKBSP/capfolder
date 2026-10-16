@@ -12,7 +12,7 @@ import {
   sortText,
   termCounts,
 } from "@capfolder/core";
-import { aiSort, PROVIDERS } from "./ai";
+import { aiLabel, aiSort, docAi } from "./ai";
 import { isReadable, readText } from "./docread";
 import { type Fs, join } from "./fs/types";
 import type { Platform } from "./platform";
@@ -169,12 +169,12 @@ export async function sortOne(
     // a scan or photo carries ink signatures OCR can't read: count it as showing a signature
     const signed = signedPdf || read.ocr;
     let result = sortText(read.text, state, { corpus: d.corpus, rules: d.rules, signedPdf, signed });
-    const ai = d.settings.ai;
-    if (!result.type && ai.sortWithAi && ai.provider && ai.model && read.text.trim()) {
-      const proposal = await aiSort(d.platform, { provider: ai.provider, model: ai.model }, read.text);
+    const ai = docAi(d.settings, "sort");
+    if (!result.type && d.settings.ai.sortWithAi && ai && read.text.trim()) {
+      const proposal = await aiSort(d.platform, ai, read.text);
       if (proposal) {
         result = sortText(read.text, state, { proposal, signedPdf, signed });
-        item.ai = `${PROVIDERS[ai.provider].label} · ${ai.model}`;
+        item.ai = aiLabel(ai);
       }
     }
     item.result = result;

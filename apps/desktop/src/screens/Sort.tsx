@@ -10,7 +10,7 @@ import {
   type SortType,
 } from "@capfolder/core";
 import { useEffect, useRef, useState } from "react";
-import { aiSummary } from "../ai";
+import { aiLabel, aiSummary, docAi, isCloud } from "../ai";
 import { DOC_TYPES, docTargets } from "../components/AttachModal";
 import { CrumbHeader } from "../components/Header";
 import { ErrorList, Field, Modal } from "../components/ui";
@@ -239,9 +239,12 @@ export function Sort() {
             Choose files…
           </button>
           <span className="meta">
-            {app.settings.ai.sortWithAi && app.settings.ai.provider
-              ? `AI: ${app.settings.ai.model} on this computer`
-              : "No AI connected: rules and your past choices only (Settings → AI)"}
+            {(() => {
+              const ai = docAi(app.settings, "sort");
+              return app.settings.ai.sortWithAi && ai
+                ? `AI: ${aiLabel(ai)}${isCloud(ai.provider) ? "" : " on this computer"}`
+                : "No AI for sorting: rules and your past choices only (Settings → AI)";
+            })()}
           </span>
         </div>
         {run.scanning ? (
@@ -366,10 +369,10 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
   const [summary, setSummary] = useState(() => summarize(r.type ?? "", r.fields, unsure, company));
   // a connected local AI may say it better; its answer replaces ours only when it's plain and short
   useEffect(() => {
-    const ai = app.settings.ai;
-    if (!ai.provider || !ai.model || !p.item.text?.trim()) return;
+    const ai = docAi(app.settings, "summary");
+    if (!ai || !p.item.text?.trim()) return;
     let live = true;
-    aiSummary(app.platform, { provider: ai.provider, model: ai.model }, p.item.text).then((t) => {
+    aiSummary(app.platform, ai, p.item.text).then((t) => {
       if (live && t) setSummary(t);
     });
     return () => {
@@ -647,9 +650,7 @@ function Review(p: { item: SortItem; position: string; onBack(): void; onDone(x:
             </li>
             <li>
               Type:{" "}
-              {r.by
-                ? `${BY[r.by]}${p.item.ai ? ` ${p.item.ai}, on this computer.` : ""}`
-                : "no rule or past document matched."}
+              {r.by ? `${BY[r.by]}${p.item.ai ? ` ${p.item.ai}.` : ""}` : "no rule or past document matched."}
             </li>
             <li>Match: {r.problems[0] ?? "a holding on the cap table."}</li>
             <li>File: copied into docs/, the original stays where it is.</li>

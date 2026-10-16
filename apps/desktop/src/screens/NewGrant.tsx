@@ -30,7 +30,7 @@ export function NewGrant() {
   const plans = latest ? [...latest.plans.entries()] : [];
   const pre = (app.route.name === "newGrant" && app.route.prefill) || {}; // an Ask AI draft (docs/18)
   const [who, setWho] = useState<PersonChoice>(() =>
-    pre.person ? personNamed(latest, pre.person, "INDIVIDUAL") : newPerson(),
+    pre.person ? personNamed(latest, pre.person, "INDIVIDUAL", pre.email) : newPerson(),
   );
   const [planId, setPlanId] = useState(plans[0]?.[0] ?? "");
   const [quantity, setQuantity] = useState(pre.options ?? "");

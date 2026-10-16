@@ -1,13 +1,12 @@
 import { builders as b } from "@capfolder/core";
 import { useEffect, useState } from "react";
-import { detect, PROVIDERS, type ProviderId } from "../ai";
-import { CLOUD, isCloud } from "../chat";
+import { aiLabel, CLOUD, detect, isCloud, PROVIDERS, type ProviderId } from "../ai";
 import { EmailVerify } from "../components/EmailVerify";
 import { MainHeader } from "../components/Header";
 import { CompanyPlace, YourCountry } from "../components/RegionFields";
 import { ComingSoon, ErrorList, Field } from "../components/ui";
 import { WireInstructionsField } from "../components/WireInstructions";
-import type { Settings as S } from "../settings";
+import { type AiAction, type AiPick, type AiProvider, aiFor, type Settings as S } from "../settings";
 import { relayClient } from "../signing";
 import { useApp } from "../state";
 import { setCompanyCurrency } from "../vault";
@@ -275,66 +274,121 @@ function SigningSection() {
   );
 }
 
-/** AiConnect.html (F-10): a model on this computer helps sort documents the rules can't. It only proposes. */
+type Found = Awaited<ReturnType<typeof detect>> | null;
+const pickValue = (a: AiPick | null | undefined) =>
+  a ? `${a.provider}|${isCloud(a.provider) ? "" : a.model}` : "";
+const parsePick = (v: string): AiPick | null => {
+  if (!v) return null;
+  const [provider, model = ""] = v.split("|") as [AiProvider, string];
+  return { provider, model: isCloud(provider) ? CLOUD[provider].model : model };
+};
+/** Every AI the founder can pick: each local model found, and each cloud AI (their own key). */
+function AiOptions({ found }: { found: Found }) {
+  return (
+    <>
+      {(found ?? []).flatMap((f) =>
+        (f.models ?? []).map((m) => (
+          <option key={`${f.id}|${m}`} value={`${f.id}|${m}`}>
+            {PROVIDERS[f.id].label} · {m} (this computer)
+          </option>
+        )),
+      )}
+      {(Object.keys(CLOUD) as (keyof typeof CLOUD)[]).map((p) => (
+        <option key={p} value={`${p}|`}>
+          {CLOUD[p].label} (your API key)
+        </option>
+      ))}
+    </>
+  );
+}
+const ACTIONS: { id: AiAction; label: string }[] = [
+  { id: "sort", label: "Sort documents" },
+  { id: "summary", label: "Document summary" },
+  { id: "chat", label: "Ask AI" },
+];
+
+/** AiConnect.html (F-10, docs/18): one AI in use for everything; Advanced picks another per action. It only proposes. */
 function AiSection() {
   const app = useApp();
   const ai = app.settings.ai;
-  const [found, setFound] = useState<Awaited<ReturnType<typeof detect>> | null>(null);
+  const [found, setFound] = useState<Found>(null);
   const look = () => detect(app.platform).then(setFound);
   // biome-ignore lint/correctness/useExhaustiveDependencies: look once when Settings opens
   useEffect(() => {
     look();
   }, []);
-  const save = (next: Partial<S["ai"]>) => app.setSettings({ ...app.settings, ai: { ...ai, ...next } });
+  const set = (f: (s: S) => S) => app.setSettings(f);
+  const current = ai.provider ? { provider: ai.provider, model: ai.model } : null;
+  // a saved choice the detection didn't (yet) find still shows, so the picker never looks empty
+  const known = (a: AiPick | null | undefined) =>
+    !a || isCloud(a.provider) || !!found?.some((f) => f.id === a.provider && f.models?.includes(a.model));
+  const extra = [current, ...Object.values(app.settings.aiFor ?? {})].filter(
+    (a): a is AiPick => !!a && !known(a),
+  );
+  const options = (
+    <>
+      <AiOptions found={found} />
+      {extra.map((a) => (
+        <option key={pickValue(a)} value={pickValue(a)}>
+          {aiLabel(a)}
+        </option>
+      ))}
+    </>
+  );
+  const clouds = [current, ...Object.values(app.settings.aiFor ?? {})]
+    .filter((a): a is AiPick => !!a && isCloud(a.provider))
+    .map((a) => a.provider as keyof typeof CLOUD);
   return (
     <section className="card stack" aria-label="AI">
       <h2>AI</h2>
       <p className="small muted" style={{ margin: 0 }}>
-        Optional. A model on this computer reads documents the rules can't sort. It only fills in a proposal:
-        you confirm every one, and nothing leaves this computer.
+        Optional. AI sorts documents the rules can't, sums up a document, and answers in ✦ Ask AI. It only
+        proposes: you confirm everything. A model on this computer keeps everything here; a cloud AI (your own
+        API key) gives the best answers.
       </p>
-      {(Object.keys(PROVIDERS) as ProviderId[]).map((id) => {
-        const f = found?.find((x) => x.id === id);
-        const models = f?.models ?? [];
-        return (
-          <div
-            key={id}
-            className="row wrap"
-            style={{ borderTop: "1px solid var(--row-divider)", paddingTop: 8 }}
-          >
-            <b style={{ width: 90 }}>{PROVIDERS[id].label}</b>
-            {!found ? (
-              <span className="meta">Looking…</span>
-            ) : f?.models === null ? (
-              <span className="meta">
-                Not running. Install it from {PROVIDERS[id].install}, start it, then look again.
-              </span>
-            ) : !models.length ? (
-              <span className="meta">Running, but no model is downloaded yet.</span>
-            ) : (
-              <>
-                <select
-                  className="inp"
-                  aria-label={`${PROVIDERS[id].label} model`}
-                  style={{ width: "auto" }}
-                  value={ai.provider === id ? ai.model : ""}
-                  onChange={(e) =>
-                    save({ provider: id, model: e.target.value, sortWithAi: !!e.target.value })
-                  }
-                >
-                  <option value="">Choose a model…</option>
-                  {models.map((m) => (
-                    <option key={m} value={m}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
-                {ai.provider === id && ai.model ? <span className="chip green">in use</span> : null}
-              </>
-            )}
-          </div>
-        );
-      })}
+      <Field
+        label="AI in use"
+        hint="If you connect several, Capfolder uses this one for everything. Advanced lets an action use another."
+      >
+        <select
+          className="inp"
+          aria-label="AI in use"
+          style={{ width: "auto" }}
+          value={pickValue(current)}
+          onChange={(e) => {
+            const p = parsePick(e.target.value);
+            set((s) => ({
+              ...s,
+              ai: p
+                ? { ...s.ai, ...p, sortWithAi: s.ai.provider ? s.ai.sortWithAi : true }
+                : { ...s.ai, provider: "", model: "" },
+            }));
+          }}
+        >
+          <option value="">None</option>
+          {options}
+        </select>
+      </Field>
+      <div className="small muted stack" style={{ gap: 2 }}>
+        {(Object.keys(PROVIDERS) as ProviderId[]).map((id) => {
+          const f = found?.find((x) => x.id === id);
+          return (
+            <span key={id}>
+              <b>{PROVIDERS[id].label}</b>:{" "}
+              {!found
+                ? "looking…"
+                : f?.models === null
+                  ? `Not running. Install it from ${PROVIDERS[id].install}, start it, then look again.`
+                  : !f?.models?.length
+                    ? "running, but no model is downloaded yet."
+                    : `${f.models.length} model${f.models.length === 1 ? "" : "s"} on this computer.`}
+            </span>
+          );
+        })}
+      </div>
+      {clouds.map((p) => (
+        <CloudKey key={p} provider={p} />
+      ))}
       <div className="row wrap">
         <button type="button" className="btn small" onClick={look}>
           Look again
@@ -342,14 +396,47 @@ function AiSection() {
         <label className="row small">
           <input
             type="checkbox"
-            disabled={!ai.provider || !ai.model}
-            checked={ai.sortWithAi && !!ai.provider}
-            onChange={(e) => save({ sortWithAi: e.target.checked })}
+            disabled={!aiFor(app.settings, "sort")}
+            checked={app.settings.ai.sortWithAi && !!aiFor(app.settings, "sort")}
+            onChange={(e) => set((s) => ({ ...s, ai: { ...s.ai, sortWithAi: e.target.checked } }))}
           />
           Use AI when sorting documents
         </label>
       </div>
-      <AskAiSettings found={found} />
+      <label className="row small">
+        <input
+          type="checkbox"
+          checked={app.settings.chat.cloudDocs}
+          onChange={(e) => set((s) => ({ ...s, chat: { ...s.chat, cloudDocs: e.target.checked } }))}
+        />
+        Let cloud AI read documents (off: a cloud AI sees cap-table numbers and names only, never document
+        text, and doesn't sort or sum up documents)
+      </label>
+      <details>
+        <summary className="small">Advanced: a different AI per action</summary>
+        <div className="row wrap" style={{ marginTop: 8 }}>
+          {ACTIONS.map((x) => (
+            <Field key={x.id} label={x.label}>
+              <select
+                className="inp"
+                aria-label={x.label}
+                style={{ width: "auto" }}
+                value={pickValue(app.settings.aiFor?.[x.id])}
+                onChange={(e) => {
+                  const p = parsePick(e.target.value);
+                  set((s) => {
+                    const { [x.id]: _, ...rest } = s.aiFor ?? {};
+                    return { ...s, aiFor: p ? { ...rest, [x.id]: p } : rest };
+                  });
+                }}
+              >
+                <option value="">Default{current ? ` (${aiLabel(current)})` : ""}</option>
+                {options}
+              </select>
+            </Field>
+          ))}
+        </div>
+      </details>
       <ComingSoon milestone="a later release">
         Claude Code, Codex and Gemini subscriptions, and the MCP server for Claude Desktop.
       </ComingSoon>
@@ -357,124 +444,48 @@ function AiSection() {
   );
 }
 
-/** docs/18: which AI answers in the Ask AI panel. Cloud keys go to the OS keychain, never to settings.json. */
-function AskAiSettings({ found }: { found: Awaited<ReturnType<typeof detect>> | null }) {
+/** A cloud AI's key: saved to the OS keychain, never to settings.json. */
+function CloudKey({ provider }: { provider: keyof typeof CLOUD }) {
   const app = useApp();
-  const c = app.settings.chat;
   const [key, setKey] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
-  const save = (next: Partial<S["chat"]>) => app.setSettings((s) => ({ ...s, chat: { ...s.chat, ...next } }));
-  const local = found?.find((x) => x.id === c.provider)?.models ?? [];
   return (
-    <div className="stack" style={{ borderTop: "1px solid var(--row-divider)", paddingTop: 12 }}>
-      <b>Ask AI</b>
-      <p className="small muted" style={{ margin: 0 }}>
-        The ✦ Ask AI panel answers questions about your cap table and drafts grants and SAFEs for you to
-        check. A cloud AI (your own API key) gives the best answers; a model on this computer keeps everything
-        here.
-      </p>
-      <div className="row wrap">
-        <Field label="Ask AI uses">
-          <select
+    <div className="stack" style={{ gap: 4 }}>
+      <div className="row wrap" style={{ alignItems: "flex-end" }}>
+        <Field label={`${CLOUD[provider].label} API key`}>
+          <input
             className="inp"
-            style={{ width: "auto" }}
-            value={c.provider}
-            onChange={(e) => {
-              const p = e.target.value as S["chat"]["provider"];
-              setMsg(null);
-              save({
-                provider: p,
-                model: isCloud(p)
-                  ? CLOUD[p].model
-                  : p === app.settings.ai.provider
-                    ? app.settings.ai.model
-                    : "",
-              });
-            }}
-          >
-            <option value="">Not connected</option>
-            {(Object.keys(CLOUD) as (keyof typeof CLOUD)[]).map((p) => (
-              <option key={p} value={p}>
-                {CLOUD[p].label} (API key)
-              </option>
-            ))}
-            {(Object.keys(PROVIDERS) as ProviderId[]).map((p) => (
-              <option key={p} value={p}>
-                {PROVIDERS[p].label} (this computer)
-              </option>
-            ))}
-          </select>
+            type="password"
+            autoComplete="off"
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+          />
         </Field>
-        {c.provider ? (
-          <Field label="Model">
-            {isCloud(c.provider) || !local.length ? (
-              <input className="inp" value={c.model} onChange={(e) => save({ model: e.target.value })} />
-            ) : (
-              <select
-                className="inp"
-                style={{ width: "auto" }}
-                value={c.model}
-                onChange={(e) => save({ model: e.target.value })}
-              >
-                <option value="">Choose a model…</option>
-                {local.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-              </select>
-            )}
-          </Field>
-        ) : null}
+        <button
+          type="button"
+          className="btn"
+          disabled={!key.trim()}
+          onClick={async () => {
+            try {
+              await app.platform.aiKey.set(provider, key);
+              setKey("");
+              setMsg("Key saved in your keychain.");
+            } catch (e) {
+              setMsg(`Couldn't save the key: ${e instanceof Error ? e.message : String(e)}`);
+            }
+          }}
+        >
+          Save key
+        </button>
+        <button
+          type="button"
+          className="btn link small"
+          onClick={() => app.platform.openUrl(CLOUD[provider].keys)}
+        >
+          Get a key
+        </button>
       </div>
-      {isCloud(c.provider) ? (
-        <>
-          <div className="row wrap" style={{ alignItems: "flex-end" }}>
-            <Field label={`${CLOUD[c.provider].label} API key`}>
-              <input
-                className="inp"
-                type="password"
-                autoComplete="off"
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
-              />
-            </Field>
-            <button
-              type="button"
-              className="btn"
-              disabled={!key.trim()}
-              onClick={async () => {
-                if (!isCloud(c.provider)) return;
-                try {
-                  await app.platform.aiKey.set(c.provider, key);
-                  setKey("");
-                  setMsg("Key saved in your keychain.");
-                } catch (e) {
-                  setMsg(`Couldn't save the key: ${e instanceof Error ? e.message : String(e)}`);
-                }
-              }}
-            >
-              Save key
-            </button>
-            <button
-              type="button"
-              className="btn link small"
-              onClick={() => isCloud(c.provider) && app.platform.openUrl(CLOUD[c.provider].keys)}
-            >
-              Get a key
-            </button>
-          </div>
-          {msg ? <span className="small">{msg}</span> : null}
-          <label className="row small">
-            <input
-              type="checkbox"
-              checked={c.cloudDocs}
-              onChange={(e) => save({ cloudDocs: e.target.checked })}
-            />
-            Let cloud AI read documents (off: it sees cap-table numbers and names only, never document text)
-          </label>
-        </>
-      ) : null}
+      {msg ? <span className="small">{msg}</span> : null}
     </div>
   );
 }

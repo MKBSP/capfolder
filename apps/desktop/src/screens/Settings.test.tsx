@@ -43,13 +43,16 @@ test("Settings → AI finds a local Ollama and uses the chosen model for sorting
   await userEvent.click(await screen.findByRole("button", { name: "Settings" }));
   expect(await screen.findByText("LM Studio")).toBeInTheDocument();
   expect(await screen.findByText(/Not running\. Install it from https:\/\/lmstudio\.ai/)).toBeInTheDocument();
-  await userEvent.selectOptions(await screen.findByLabelText("Ollama model"), "llama3.1:8b");
-  expect(JSON.parse(fp.fs.readSync("/appdata/settings.json")).ai).toEqual({
-    provider: "ollama",
-    model: "llama3.1:8b",
-    sortWithAi: true,
-  });
+  await userEvent.selectOptions(await screen.findByLabelText("AI in use"), "ollama|llama3.1:8b");
+  const saved = () => JSON.parse(fp.fs.readSync("/appdata/settings.json"));
+  expect(saved().ai).toEqual({ provider: "ollama", model: "llama3.1:8b", sortWithAi: true });
   expect(screen.getByRole("checkbox", { name: "Use AI when sorting documents" })).toBeChecked();
+  // Advanced: one action can use another AI; "Default" goes back to the AI in use
+  await userEvent.click(screen.getByText("Advanced: a different AI per action"));
+  await userEvent.selectOptions(screen.getByLabelText("Ask AI"), "anthropic|");
+  expect(saved().aiFor).toEqual({ chat: { provider: "anthropic", model: "claude-sonnet-5-5" } });
+  await userEvent.selectOptions(screen.getByLabelText("Ask AI"), "");
+  expect(saved().aiFor).toEqual({});
 });
 
 test("Settings → Company: upload the wire instructions once, replace them later", async () => {

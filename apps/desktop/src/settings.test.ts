@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { backupStatus, suggestedFolders } from "./backup";
 import { MemoryFs } from "./fs/memory";
-import { addRecent, loadSettings, saveSettings } from "./settings";
+import { addRecent, aiFor, loadSettings, saveSettings } from "./settings";
 
 test("defaults, then round trip", async () => {
   const fs = new MemoryFs();
@@ -71,4 +71,30 @@ test("saves land in the order they were made, even when a write is slow", async 
     saveSettings(fs, "/app", { ...s, telemetry: false }), // the founder's toggle, a moment later
   ]);
   expect((await loadSettings(fs, "/app")).telemetry).toBe(false);
+});
+
+test("one default AI: settings from before Ask AI use the sorting AI everywhere; a different chat AI stays as an override", async () => {
+  const old = (ai: object, chat: object) => {
+    const fs = new MemoryFs();
+    fs.writeSync(
+      "/app/settings.json",
+      JSON.stringify({ ai: { sortWithAi: true, ...ai }, chat: { cloudDocs: false, open: true, ...chat } }),
+    );
+    return loadSettings(fs, "/app");
+  };
+  const lm = { provider: "lmstudio", model: "google/gemma-4-e4b" };
+  // only the sorting AI was set: Ask AI uses it too (it used to say "not connected")
+  let s = await old(lm, { provider: "", model: "" });
+  for (const a of ["sort", "summary", "chat"] as const) expect(aiFor(s, a)).toEqual(lm);
+  expect(s.chat).toEqual({ cloudDocs: false, open: true });
+  // only a chat AI: it becomes the default
+  s = await old({ provider: "", model: "" }, { provider: "anthropic", model: "claude-sonnet-5-5" });
+  expect(aiFor(s, "sort")).toEqual({ provider: "anthropic", model: "claude-sonnet-5-5" });
+  // both, different: sorting keeps the default, Ask AI keeps its own (Advanced)
+  s = await old(lm, { provider: "openai", model: "gpt-5" });
+  expect(aiFor(s, "sort")).toEqual(lm);
+  expect(aiFor(s, "chat")).toEqual({ provider: "openai", model: "gpt-5" });
+  // nothing connected
+  s = await old({ provider: "", model: "" }, { provider: "", model: "" });
+  expect(aiFor(s, "chat")).toBeNull();
 });

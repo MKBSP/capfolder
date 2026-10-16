@@ -16,17 +16,25 @@ export interface Settings {
   signerName: string; // the founder's name on signature pages, when no cap table person has their email
   relayToken: string; // device token from the relay; "" = not verified
   relayTokens: Record<string, string>; // tokens for relays used before (F-37: old envelopes finish on their relay)
-  ai: { provider: "" | "ollama" | "lmstudio"; model: string; sortWithAi: boolean }; // F-10, local models only
-  // docs/18: Ask AI. Cloud keys live in the OS keychain (platform.aiKey), never here.
+  // The default AI, for every AI action (F-10 sorting, document summaries, docs/18 Ask AI). Cloud keys live in the OS
+  // keychain (platform.aiKey), never here.
+  ai: { provider: "" | AiProvider; model: string; sortWithAi: boolean };
+  aiFor: Partial<Record<AiAction, AiPick>>; // Settings → AI → Advanced: an action that doesn't use the default
   chat: {
-    provider: "" | "ollama" | "lmstudio" | "anthropic" | "openai" | "gemini";
-    model: string;
     cloudDocs: boolean; // cloud AI may read document text (off: cap-table data only)
-    open: boolean; // the side panel
+    open: boolean; // the Ask AI side panel
   };
   ping: { installId: string; firstRunSent: boolean; last: string }; // docs/11, only used while telemetry is on
   updates: "auto" | "ask" | "off"; // F-38: auto downloads in the background; installing always waits for a restart
 }
+
+export type AiProvider = "ollama" | "lmstudio" | "anthropic" | "openai" | "gemini";
+export type AiPick = { provider: AiProvider; model: string };
+export type AiAction = "sort" | "summary" | "chat";
+
+/** The AI an action uses: its Advanced choice, else the default. Null when no AI is connected. */
+export const aiFor = (s: Settings, action: AiAction): AiPick | null =>
+  s.aiFor?.[action] ?? (s.ai.provider ? { provider: s.ai.provider, model: s.ai.model } : null);
 
 /** The device token for a relay: the current one, or one kept from before a switch. */
 export const tokenFor = (s: Settings, relay: string) =>
@@ -48,7 +56,8 @@ const defaults = (): Settings => ({
   relayTokens: {},
   signerName: "",
   ai: { provider: "", model: "", sortWithAi: false },
-  chat: { provider: "", model: "", cloudDocs: false, open: false },
+  aiFor: {},
+  chat: { cloudDocs: false, open: false },
   updates: "auto",
   ping: { installId: "", firstRunSent: false, last: "" },
 });
@@ -56,13 +65,26 @@ const defaults = (): Settings => ({
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {
   const path = join(dir, "settings.json");
   try {
-    if (await fs.exists(path)) return { ...defaults(), ...JSON.parse(await fs.readText(path)) };
+    if (await fs.exists(path)) return migrate({ ...defaults(), ...JSON.parse(await fs.readText(path)) });
   } catch {
     // unreadable settings: start from defaults rather than locking the founder out
   }
   const s = defaults();
   await saveSettings(fs, dir, s);
   return s;
+}
+
+/** Before one default AI, Ask AI had its own provider in `chat`: it becomes the default, or an override if both differ. */
+function migrate(s: Settings & { chat: Settings["chat"] & { provider?: string; model?: string } }): Settings {
+  const { provider, model, ...chat } = s.chat;
+  const next: Settings = { ...s, chat, aiFor: s.aiFor ?? {} };
+  if (provider) {
+    const pick = { provider: provider as AiProvider, model: model ?? "" };
+    if (!s.ai.provider) next.ai = { ...s.ai, ...pick };
+    else if (s.ai.provider !== provider || s.ai.model !== pick.model)
+      next.aiFor = { chat: pick, ...next.aiFor };
+  }
+  return next;
 }
 
 let writing: Promise<unknown> = Promise.resolve();

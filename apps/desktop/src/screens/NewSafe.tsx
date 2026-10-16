@@ -34,7 +34,7 @@ export function NewSafe() {
   const app = useApp();
   const pre = (app.route.name === "newSafe" && app.route.prefill) || {}; // an Ask AI draft (docs/18)
   const [who, setWho] = useState<PersonChoice>(() =>
-    pre.investor ? personNamed(app.latest, pre.investor, "INSTITUTION") : newPerson("INSTITUTION"),
+    pre.investor ? personNamed(app.latest, pre.investor, "INSTITUTION", pre.email) : newPerson("INSTITUTION"),
   );
   const [amount, setAmount] = useState(pre.amount ?? "");
   const [cap, setCap] = useState(pre.cap ?? "");
