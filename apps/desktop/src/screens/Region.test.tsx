@@ -112,6 +112,7 @@ test("Portugal end to end: the wizard's defaults parse with comma decimals, labe
   await userEvent.click(await screen.findByRole("button", { name: "Skip" }));
   expect(await screen.findByLabelText(/^Authorized/)).toHaveValue("10.000.000");
   expect(screen.getByLabelText("Par value (EUR)")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "What is par value?" })).toHaveAccessibleDescription(/nominal/);
   const par = screen.getByLabelText("Par value (EUR)");
   await userEvent.clear(par);
   await userEvent.type(par, "0,0001");

@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
-import { ErrorList, Field } from "../components/ui";
+import { ErrorList, Field, Tip } from "../components/ui";
 import { useDryRun } from "../dryrun";
 import { day, num, todayIso, withCurrency } from "../fmt";
 import { useApp } from "../state";
@@ -101,11 +101,15 @@ export function NewShares() {
             >
               4 years · 1-year cliff · monthly
             </button>
+            <Tip about="cliff" />
             {vesting ? (
-              <label className="row small">
-                Vesting starts
-                <DateInput style={{ width: 170 }} value={start} onChange={(v) => setStart(v)} />
-              </label>
+              <>
+                <label className="row small">
+                  Vesting starts
+                  <DateInput style={{ width: 170 }} value={start} onChange={(v) => setStart(v)} />
+                </label>
+                <Tip about="vestingStart" />
+              </>
             ) : null}
           </div>
           {vesting && plus30(date) >= todayIso() ? (

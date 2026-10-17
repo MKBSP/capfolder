@@ -3,6 +3,30 @@ export const DISCLAIMER =
   "Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.";
 
 /** Bump when TERMS changes; Settings stores the version the founder accepted. */
+/** docs/19: the "?" next to jargon. One plain sentence each; later from the knowledge base (dev plan item 14). */
+export const TIPS = {
+  cap: [
+    "a valuation cap",
+    "The highest company value the SAFE converts at, so the investor never pays a higher share price than that.",
+  ],
+  discount: [
+    "a discount",
+    "How much less than the next round's share price the investor pays when the SAFE converts, for example 20%.",
+  ],
+  cliff: [
+    "a cliff",
+    "Nothing vests before the cliff; on that day the shares for the whole cliff period vest at once, then monthly.",
+  ],
+  par: [
+    "par value",
+    "A tiny nominal price per share from your certificate of incorporation; it isn't what a share is worth.",
+  ],
+  vestingStart: [
+    "the vesting start",
+    "The date vesting counts from, usually the person's first day of work, which can be before the grant.",
+  ],
+} as const;
+
 export const TERMS_VERSION = "2026-10-10";
 
 // Draft: to be reviewed by a lawyer before launch (docs/15).

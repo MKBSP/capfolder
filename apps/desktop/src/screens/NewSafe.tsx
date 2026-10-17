@@ -124,7 +124,7 @@ export function NewSafe() {
                 placeholder="200,000"
               />
             </Field>
-            <Field label={withCurrency("Valuation cap")}>
+            <Field label={withCurrency("Valuation cap")} tip="cap">
               <input
                 className="inp num"
                 value={cap}
@@ -132,7 +132,7 @@ export function NewSafe() {
                 placeholder={wholeInput("10000000")}
               />
             </Field>
-            <Field label="Discount (optional)">
+            <Field label="Discount (optional)" tip="discount">
               <input
                 className="inp num"
                 value={discount}

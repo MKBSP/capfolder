@@ -86,3 +86,22 @@ test("an impossible date is kept on screen and blocks the save (no silent fallba
   expect(date).toHaveValue("31/09/2026");
   expect(fs.readSync(`${root}/events.jsonl`)).toBe(before);
 });
+
+test("? tips explain the jargon in one sentence, without changing the field's label", async () => {
+  await openNew("SAFE");
+  expect(screen.getByLabelText("Valuation cap (USD)")).toBeInTheDocument(); // label unchanged
+  const cap = screen.getByRole("button", { name: "What is a valuation cap?" });
+  expect(cap).toHaveAccessibleDescription(/highest company value/);
+  expect(cap).toHaveAttribute("aria-expanded", "false");
+  expect(screen.queryByText(/highest company value/)).not.toBeVisible();
+  await userEvent.click(cap);
+  expect(cap).toHaveAttribute("aria-expanded", "true");
+  expect(screen.getByText(/highest company value/)).toBeVisible();
+  expect(screen.getByRole("button", { name: "What is a discount?" })).toBeInTheDocument();
+
+  await userEvent.click(screen.getByRole("button", { name: /Cap table/ }));
+  await userEvent.click(screen.getByRole("button", { name: "+ New" }));
+  await userEvent.click(screen.getByRole("menuitem", { name: "Grant" }));
+  for (const name of ["What is a cliff?", "What is the vesting start?"])
+    expect(await screen.findByRole("button", { name })).toHaveAccessibleDescription(/\.$/);
+});

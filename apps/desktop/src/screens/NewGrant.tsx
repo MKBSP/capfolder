@@ -15,7 +15,7 @@ import {
   personNamed,
   resolvePerson,
 } from "../components/PersonPicker";
-import { ErrorList, Field } from "../components/ui";
+import { ErrorList, Field, Tip } from "../components/ui";
 import { useDryRun } from "../dryrun";
 import { num, shares, todayIso, withCurrency } from "../fmt";
 import { useApp } from "../state";
@@ -135,7 +135,7 @@ export function NewGrant() {
             <Field label="Grant date">
               <DateInput value={date} onChange={setDate} />
             </Field>
-            <Field label="Vesting starts">
+            <Field label="Vesting starts" tip="vestingStart">
               <DateInput value={start} disabled={!vesting} onChange={(v) => setStart(v)} />
             </Field>
           </div>
@@ -147,6 +147,7 @@ export function NewGrant() {
             >
               4 years · 1-year cliff · monthly
             </button>
+            <Tip about="cliff" />
             {custom ? (
               <button
                 type="button"

@@ -1,7 +1,7 @@
 import { appendEvents, capTableRows, MAX_DATE, percentOf, type Row, reduce } from "@capfolder/core";
 import { useEffect, useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
-import { ErrorList, Field, Stepper } from "../components/ui";
+import { ErrorList, Field, Stepper, Tip } from "../components/ui";
 import { day, decimalInput, shares as fmtShares, money, todayIso, wholeInput, withCurrency } from "../fmt";
 import { useApp } from "../state";
 import { type FounderInput, type SafeInput, type WizardInput, wizardDrafts } from "../wizard";
@@ -78,7 +78,7 @@ export function Wizard() {
             onChange={(e) => setW({ ...w, authorized: e.target.value })}
           />
         </Field>
-        <Field label={withCurrency("Par value")}>
+        <Field label={withCurrency("Par value")} tip="par">
           <input className="inp num" value={w.par} onChange={(e) => setW({ ...w, par: e.target.value })} />
         </Field>
       </div>
@@ -124,6 +124,7 @@ export function Wizard() {
             >
               4 years · 1-year cliff · monthly
             </button>
+            <Tip about="cliff" />
             <button
               type="button"
               className={`chip ${!f.vesting ? "green" : ""}`}
@@ -132,14 +133,17 @@ export function Wizard() {
               No vesting
             </button>
             {f.vesting ? (
-              <label className="row small">
-                Vesting starts
-                <DateInput
-                  style={{ width: 170 }}
-                  value={f.vestingStart}
-                  onChange={(v) => setFounder(i, { vestingStart: v })}
-                />
-              </label>
+              <>
+                <label className="row small">
+                  Vesting starts
+                  <DateInput
+                    style={{ width: 170 }}
+                    value={f.vestingStart}
+                    onChange={(v) => setFounder(i, { vestingStart: v })}
+                  />
+                </label>
+                <Tip about="vestingStart" />
+              </>
             ) : (
               <span className="meta">Investors usually ask for founder vesting.</span>
             )}
@@ -253,14 +257,14 @@ export function Wizard() {
                 onChange={(e) => setSafe(i, { amount: e.target.value })}
               />
             </Field>
-            <Field label={withCurrency("Valuation cap")}>
+            <Field label={withCurrency("Valuation cap")} tip="cap">
               <input
                 className="inp num"
                 value={s.cap}
                 onChange={(e) => setSafe(i, { cap: e.target.value })}
               />
             </Field>
-            <Field label="Discount (optional)">
+            <Field label="Discount (optional)" tip="discount">
               <input
                 className="inp num"
                 placeholder="e.g. 20%"

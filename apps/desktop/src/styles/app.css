@@ -749,3 +749,30 @@ dialog.modal::backdrop {
   font-family: var(--font);
   color: var(--ink);
 }
+
+/* docs/19: "?" help tips */
+.tip {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--muted);
+  font: 600 12px var(--font);
+  cursor: pointer;
+}
+.tip-field {
+  position: relative;
+}
+.tip-field > .tip {
+  position: absolute;
+  top: -2px;
+  right: 0;
+}
+.tip-field > .tip-text {
+  display: block;
+  margin-top: 4px;
+}
+.tip-field > .tip-text[hidden] {
+  display: none;
+}

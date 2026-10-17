@@ -1,5 +1,6 @@
 // Small shared pieces ported from the mockups (design/app/*.html).
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { TIPS } from "../copy";
 
 /** brand/mark.svg: the filled folder with three ascending bars. */
 export const Logo = ({ size = 22 }: { size?: number }) => (
@@ -82,18 +83,58 @@ export const ErrorList = ({ errors }: { errors: string[] | null }) =>
     </div>
   ) : null;
 
-export const Field = (p: { label: string; children: ReactNode; hint?: ReactNode }) => (
-  // biome-ignore lint/a11y/noLabelWithoutControl: the control is passed as a child
-  <label className="field" style={{ display: "block" }}>
-    <span className="lbl">{p.label}</span>
-    {p.children}
-    {p.hint ? (
-      <span className="meta" style={{ display: "block", marginTop: 4 }}>
-        {p.hint}
+export const Field = (p: {
+  label: string;
+  children: ReactNode;
+  hint?: ReactNode;
+  tip?: keyof typeof TIPS;
+}) => {
+  const field = (
+    // biome-ignore lint/a11y/noLabelWithoutControl: the control is passed as a child
+    <label className="field" style={{ display: "block" }}>
+      <span className="lbl">{p.label}</span>
+      {p.children}
+      {p.hint ? (
+        <span className="meta" style={{ display: "block", marginTop: 4 }}>
+          {p.hint}
+        </span>
+      ) : null}
+    </label>
+  );
+  // the tip sits beside the label, not in it, so the field's name stays just its label
+  return p.tip ? (
+    <div className="tip-field">
+      {field}
+      <Tip about={p.tip} />
+    </div>
+  ) : (
+    field
+  );
+};
+
+/** "?" next to a jargon word: the button reads the sentence as its description; a click shows it. */
+export function Tip({ about }: { about: keyof typeof TIPS }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const [term, text] = TIPS[about];
+  return (
+    <>
+      <button
+        type="button"
+        className="tip"
+        aria-label={`What is ${term}?`}
+        aria-describedby={id}
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        ?
+      </button>
+      <span id={id} className="meta tip-text" hidden={!open}>
+        {text}
       </span>
-    ) : null}
-  </label>
-);
+    </>
+  );
+}
 
 /** Native <dialog>: Esc closes, focus is trapped by the browser. */
 export function Modal(p: { open: boolean; onClose(): void; title: string; children: ReactNode }) {
