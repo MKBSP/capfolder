@@ -9,6 +9,7 @@
       "!brand",
       "!docs",
       "!**/src/ocf/schemas-*.json",
+      "!**/src/ocf/validators.gen.js",
       "!**/public/ocr",
       "!rules",
       "!**/src-tauri/target",

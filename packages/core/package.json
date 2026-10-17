@@ -7,7 +7,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "gen:ocf": "node scripts/gen-ocf-validators.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
