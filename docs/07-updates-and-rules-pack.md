@@ -55,3 +55,22 @@ Never rewrite `events.jsonl`. Bump `format_version` in `capfolder.json` and appe
 - The draft is published as a **normal release** (not a prerelease): `/releases/latest`, the website and the updater only see those.
 - Versions stay plain x.y.z (Windows MSI rejects `-beta`). Betas: 0.1.0, 0.1.1, … The first signed build takes a higher number than any beta, so testers update to it.
 - Before publishing: `latest.json` lists darwin-aarch64, darwin-x86_64, windows-x86_64, linux-x86_64; on a Mac, `codesign -dv` on the downloaded app shows `Signature=adhoc`.
+
+## Getting the Apple and Microsoft certificates (2026-10-17)
+**Apple (macOS, ~$99/year):**
+1. Enroll in the Apple Developer Program at developer.apple.com/programs. Enroll as an organization if there's a company (needs a D-U-N-S number, free, takes days); as an individual it's quicker, but the app shows your personal name.
+2. Certificates → "+" → **Developer ID Application**. Create the request (CSR) with Keychain Access → Certificate Assistant → Request a Certificate from a Certificate Authority.
+3. Install the downloaded cert, then in Keychain Access right-click it → Export → `.p12` with a password.
+4. GitHub secrets:
+   - `APPLE_CERTIFICATE` = `base64 -i cert.p12 | pbcopy`
+   - `APPLE_CERTIFICATE_PASSWORD` = the export password
+   - `APPLE_SIGNING_IDENTITY` = `Developer ID Application: Name (TEAMID)`, as shown by `security find-identity -v -p codesigning`
+   - `APPLE_ID` = your Apple ID email
+   - `APPLE_PASSWORD` = an app-specific password from appleid.apple.com
+   - `APPLE_TEAM_ID` = from the Membership page
+
+**Microsoft (Windows):**
+- **Azure Trusted Signing / Artifact Signing** (~$10/month): cheapest. It needs an organization with a few years of history, or an individual in some countries [verify current eligibility]. Tauri signs with it through a `signCommand` in `tauri.conf.json`, so the workflow changes and the `.pfx` secrets are no longer used.
+- **OV certificate** from a CA (Sectigo, DigiCert, SSL.com, ~$200–400/year): since 2023 the key must live on a hardware token or cloud HSM, so you can't export a `.pfx` for CI. Use the CA's cloud signing (e.g. SSL.com eSigner) through a `signCommand`.
+- Either way, `WINDOWS_CERTIFICATE` / `WINDOWS_CERTIFICATE_PASSWORD` in `release.yml` only fit an old-style `.pfx`. Update the workflow when the cert is chosen.
+- SmartScreen warnings fade as downloads build "reputation"; EV certs no longer skip this.
