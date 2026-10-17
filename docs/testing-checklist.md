@@ -42,6 +42,14 @@ Before you start: `git pull` if needed, restart `pnpm dev:desktop` (the native s
 ## Look and feel
 - [ ] 27. Header on every screen (especially Documents): no wrapped "Cap table", path on one line, buttons on their own row when narrow.
 
+## Onboarding (new, docs/19)
+- [ ] 31. Welcome → "Try the sample company": Acme opens with the banner "Sample company · nothing here is real". Documents shows 3 filed PDFs (placeholder pages). Try + New → SAFE → save: a plain "This is the sample company…" error, nothing saved. "Start my own" leaves it.
+- [ ] 32. Add a company → StartChoice has 4 cards. Pick "Start from zero" → "Three quick questions" → answer No to SAFEs → Continue → the wizard. Back on Home, the Get started list has no SAFEs step.
+- [ ] 33. Get started on a new, empty company: "1 of 8 done", Import is the green button on the cap-table steps; each other button opens the right form. Add founders → the step ticks without reloading. "Change my answers" and "Hide this list" work; Hide survives a restart.
+- [ ] 34. Tour: after the first save (or in the sample) Home offers "Take the tour" once. Six stops, in this order: company switcher, cap table, a holding, Documents, Signatures, ✦ Ask AI. Esc or × closes it and focus returns. Settings → Tour → "Take the tour" runs it again. With macOS "Reduce motion" on, no sliding.
+- [ ] 35. No CSP errors in the dev-tools console while the tour runs (built app, not only dev).
+- [ ] 36. "?" next to Valuation cap, Discount, Par value (wizard), the "1-year cliff" chip and Vesting starts: click shows one sentence; VoiceOver reads it on the "?" button.
+
 ## Website
 - [ ] 28. capfolder.com → Get the download → Tally form → download links work.
 - [ ] 29. Umami shows the visit and the button clicks; the Roadmap section and privacy@capfolder.com are on the site.

@@ -1,4 +1,4 @@
-# 19 · Onboarding (plan, 2026-10-16, waiting for Mads' OK)
+# 19 · Onboarding (plan 2026-10-16, approved; built 2026-10-17)
 
 ## What others do (research 2026-10-16)
 - **Carta:** setup guide plus uploads, a human kickoff call and a review before you can use it. Takes days.
@@ -65,3 +65,12 @@ The flow builds on what exists today: Welcome → CreateCompany → StartChoice 
 - Short videos per step (if people get stuck).
 - The invite step (after sync / web app).
 - Track funnel drop-off only through the opt-in analytics (`docs/11`).
+
+## Status (2026-10-17)
+All five build steps are done, one commit each, tests first. Hand tests: `docs/testing-checklist.md` 31–36.
+- **Checklist:** `onboarding.ts` (pure) + `components/GetStarted.tsx`. Settings key `onboarding[<folder>]` holds the answers and `dismissed`. Answer "no" hides a step; unanswered shows it.
+- **Questions:** `screens/Questions.tsx`, route `questions` after any StartChoice card. "Change my answers" on the list.
+- **Sample company:** `sample.ts`. It's the golden fixture "Acme Inc." (not "Acme Robotics"), bundled as text and copied to `<app data>/sample` on first open, with placeholder PDFs for its 3 documents. `capfolder.json` has `"sample": true`, and `vault.ts` refuses every save (and the currency change). It isn't added to the recent companies list.
+- **Tour:** `components/Tour.tsx`, Driver.js 1.8.0 (MIT; 1.9.0 was exactly two weeks old, so we used the version before it). The Settings key is `tourSeen`. The offer shows once when the company has a holding, or in the sample. Settings → Tour runs it again.
+- **Tips:** `copy.ts` `TIPS` + `Tip` in `components/ui.tsx`.
+- **Not done:** the "How?" docs link per step (no docs pages to link to yet), and the items under Later.
