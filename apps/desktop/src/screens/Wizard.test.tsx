@@ -16,6 +16,7 @@ export async function toWizard() {
   await userEvent.type(screen.getByLabelText("Incorporated"), "2026-01-02");
   await userEvent.click(screen.getByRole("button", { name: "Create folder" }));
   await userEvent.click(await screen.findByRole("button", { name: /Start from zero/ }));
+  await userEvent.click(await screen.findByRole("button", { name: "Skip" }));
   return fp;
 }
 

@@ -22,6 +22,7 @@ export type Route =
   | { name: "signatures"; sent?: { titles: string[]; emails: string[]; warning?: string } }
   | { name: "sort"; dropped?: string[] }
   | { name: "person"; id: string }
+  | { name: "questions"; next: Route } // docs/19: the three start questions, then where the founder was going
   | { name: "comingSoon"; title: string; milestone: string; text?: string };
 
 /** A "Sort documents" run. Kept in the app, not the screen, so the founder can leave and come back to it. */

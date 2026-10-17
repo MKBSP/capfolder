@@ -48,6 +48,7 @@ test("first run: no lock → skip email → create company → start choice → 
   expect(fs.existsSync("/home/me/Documents/capfolder/Test Co/events.jsonl")).toBe(true);
   expect(JSON.parse(fs.readSync("/appdata/settings.json")).recentVaults[0].name).toBe("Test Co");
   await userEvent.click(screen.getByRole("button", { name: /Start from zero/ }));
+  await userEvent.click(await screen.findByRole("button", { name: "Skip" }));
   expect(await screen.findByText(/wizard|Authorized shares/)).toBeInTheDocument();
 });
 test("passwords must match", async () => {

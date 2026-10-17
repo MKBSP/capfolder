@@ -13,6 +13,7 @@ import { NewShares } from "./NewShares";
 import { People } from "./People";
 import { Person } from "./Person";
 import { Pool } from "./Pool";
+import { Questions } from "./Questions";
 import { Settings } from "./Settings";
 import { Signatures } from "./Signatures";
 import { Sort } from "./Sort";
@@ -32,6 +33,8 @@ export function Screen() {
       return <CreateCompany />;
     case "start":
       return <StartChoice />;
+    case "questions":
+      return <Questions next={route.next} />;
     case "wizard":
       return <Wizard />;
     case "home":

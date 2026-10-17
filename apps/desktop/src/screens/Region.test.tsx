@@ -109,6 +109,7 @@ test("Portugal end to end: the wizard's defaults parse with comma decimals, labe
   await userEvent.type(screen.getByLabelText("Incorporated"), "2026-01-02");
   await userEvent.click(screen.getByRole("button", { name: "Create folder" }));
   await userEvent.click(await screen.findByRole("button", { name: /Start from zero/ }));
+  await userEvent.click(await screen.findByRole("button", { name: "Skip" }));
   expect(await screen.findByLabelText(/^Authorized/)).toHaveValue("10.000.000");
   expect(screen.getByLabelText("Par value (EUR)")).toBeInTheDocument();
   const par = screen.getByLabelText("Par value (EUR)");

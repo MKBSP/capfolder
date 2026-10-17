@@ -52,7 +52,7 @@ export function StartChoice() {
             key={c.title}
             className="opt"
             style={{ display: "block", textAlign: "left" }}
-            onClick={() => go(c.to)}
+            onClick={() => go({ name: "questions", next: c.to })}
           >
             <b style={{ fontSize: 16 }}>{c.title}</b>
             <div className="muted small" style={{ margin: "4px 0 10px" }}>

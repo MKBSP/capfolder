@@ -56,6 +56,13 @@ export function GetStarted() {
         <button
           type="button"
           className="btn link small"
+          onClick={() => app.go({ name: "questions", next: { name: "home" } })}
+        >
+          Change my answers
+        </button>
+        <button
+          type="button"
+          className="btn link small"
           onClick={() =>
             app.setSettings((s) => ({
               ...s,
