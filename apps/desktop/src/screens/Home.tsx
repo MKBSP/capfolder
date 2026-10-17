@@ -16,7 +16,6 @@ import { MainHeader } from "../components/Header";
 import { startTour, TourOffer } from "../components/Tour";
 import { Chip, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
-import { startMyOwn } from "../sample";
 import { useApp } from "../state";
 import { docChip, isFounder, scheduleText, typeLabel, vestingCell } from "../views";
 
@@ -340,14 +339,6 @@ export function VaultBanners() {
   if (!vault) return null;
   return (
     <div style={{ margin: "0 24px" }}>
-      {vault.meta.sample ? (
-        <div className="banner row spread" style={{ marginTop: 12 }}>
-          <span>Sample company · nothing here is real</span>
-          <button type="button" className="btn primary small" onClick={() => startMyOwn(app)}>
-            Start my own
-          </button>
-        </div>
-      ) : null}
       {vault.broken ? (
         <div className="banner red" style={{ marginTop: 12 }} role="alert">
           The record is broken at line {vault.broken.line}: {vault.broken.reason}. Restore the folder from

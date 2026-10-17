@@ -3,10 +3,11 @@ import { ChatShell } from "./components/AskAi";
 import { Background } from "./components/Background";
 import { useIdle } from "./idle";
 import { type Platform, tauriPlatform } from "./platform";
+import { startMyOwn } from "./sample";
 import { Screen } from "./screens";
 import { Unlock } from "./screens/Unlock";
 import { loadSettings, type Settings, saveSettings } from "./settings";
-import { AppProvider, type Route } from "./state";
+import { AppProvider, type Route, useApp } from "./state";
 import { openVault, type Vault } from "./vault";
 
 type Boot = { vault: Vault | null; route: Route; dataDir: string };
@@ -74,10 +75,25 @@ export function App({ platform = tauriPlatform }: { platform?: Platform }) {
         <>
           <Background />
           <ChatShell>
+            <SampleBanner />
             <Screen />
           </ChatShell>
         </>
       )}
     </AppProvider>
+  );
+}
+
+/** docs/19: on every screen of the sample company, so nobody mistakes it for their own. */
+function SampleBanner() {
+  const app = useApp();
+  if (!app.vault?.meta.sample) return null;
+  return (
+    <div className="banner row spread" style={{ margin: "12px 24px 0" }}>
+      <span>Sample company · nothing here is real</span>
+      <button type="button" className="btn primary small" onClick={() => startMyOwn(app)}>
+        Start my own
+      </button>
+    </div>
   );
 }

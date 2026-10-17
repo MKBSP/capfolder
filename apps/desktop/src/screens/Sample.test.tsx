@@ -52,3 +52,14 @@ test("StartChoice has the sample as a fourth card; Start my own goes back to you
   expect(await screen.findByRole("button", { name: /^Test Co/ })).toBeInTheDocument();
   expect(screen.queryByText(/Sample company · nothing here is real/)).toBeNull();
 });
+
+test("the sample banner stays on every screen, not only the cap table", async () => {
+  const fp = fakePlatform();
+  render(<App platform={fp.platform} />);
+  await userEvent.click(await screen.findByRole("button", { name: "Try the sample company" }));
+  await screen.findByText("Fully diluted");
+  for (const tab of ["People", "Documents", "Settings"]) {
+    await userEvent.click(screen.getByRole("button", { name: tab }));
+    expect(screen.getAllByText(/Sample company · nothing here is real/)).toHaveLength(1);
+  }
+});

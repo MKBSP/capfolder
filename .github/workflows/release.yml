@@ -10,6 +10,10 @@ on:
         description: "Beta: build without Apple/Microsoft certificates (macOS ad-hoc signed). Publish it as a normal release so testers and the updater find it."
         type: boolean
         default: false
+      windows_unsigned:
+        description: "Sign macOS but not Windows (no Microsoft certificate yet). Windows users click More info → Run anyway."
+        type: boolean
+        default: true
 permissions:
   contents: write
 env:
@@ -18,6 +22,9 @@ env:
     - macOS: open the .dmg and drag Capfolder to Applications. Open it once; when macOS says it can't check it, go to System Settings → Privacy & Security, scroll down and click "Open Anyway". (Or run: xattr -dr com.apple.quarantine /Applications/Capfolder.app)
     - Windows: run the -setup.exe. On "Windows protected your PC", click More info → Run anyway.
     - Linux: the .AppImage (chmod +x, then run it) or the .deb.
+    Found a bug? https://github.com/MKBSP/capfolder/issues
+  WINDOWS_UNSIGNED_NOTES: |
+    The macOS app is signed and notarized. The Windows installer isn't signed yet: on "Windows protected your PC", click More info → Run anyway. Installed apps update themselves from here.
     Found a bug? https://github.com/MKBSP/capfolder/issues
 jobs:
   build:
@@ -43,6 +50,7 @@ jobs:
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
           ALLOW_UNSIGNED: ${{ inputs.allow_unsigned }}
+          WINDOWS_UNSIGNED: ${{ inputs.windows_unsigned }}
         run: |
           [ -n "$UPDATER_KEY" ] || { echo "TAURI_SIGNING_PRIVATE_KEY is missing"; exit 1; }
           [ "$ALLOW_UNSIGNED" = "true" ] && exit 0
@@ -50,7 +58,7 @@ jobs:
             # all of them: without the password/team/identity Tauri skips notarization with only a warning
             macOS) for v in APPLE_CERTIFICATE APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID APPLE_SIGNING_IDENTITY; do
                      [ -n "${!v}" ] || { echo "$v is missing"; exit 1; }; done ;;
-            Windows) [ -n "$WINDOWS_CERTIFICATE" ] || { echo "WINDOWS_CERTIFICATE is missing"; exit 1; } ;;
+            Windows) [ "$WINDOWS_UNSIGNED" = "true" ] || [ -n "$WINDOWS_CERTIFICATE" ] || { echo "WINDOWS_CERTIFICATE is missing"; exit 1; } ;;
           esac
       - if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
@@ -63,7 +71,7 @@ jobs:
         with: { workspaces: apps/desktop/src-tauri }
       - run: pnpm i --frozen-lockfile
       - name: Windows certificate → thumbprint
-        if: runner.os == 'Windows' && inputs.allow_unsigned != true
+        if: runner.os == 'Windows' && inputs.allow_unsigned != true && inputs.windows_unsigned != true
         shell: pwsh
         env:
           WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
@@ -109,7 +117,7 @@ jobs:
           tagName: v__VERSION__
           releaseName: ${{ inputs.allow_unsigned && 'Capfolder v__VERSION__ (beta, unsigned)' || 'Capfolder v__VERSION__' }}
           prerelease: false
-          releaseBody: ${{ inputs.allow_unsigned && env.BETA_NOTES || 'See CHANGELOG.md. Downloads are signed; installed apps update themselves once this release is published.' }}
+          releaseBody: ${{ inputs.allow_unsigned && env.BETA_NOTES || inputs.windows_unsigned && env.WINDOWS_UNSIGNED_NOTES || 'See CHANGELOG.md. Downloads are signed; installed apps update themselves once this release is published.' }}
           releaseDraft: true
           includeUpdaterJson: true
           args: ${{ matrix.args }}
