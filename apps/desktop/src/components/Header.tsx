@@ -75,6 +75,7 @@ export function MainHeader({ children }: { children?: ReactNode }) {
           <button
             type="button"
             key={n.label}
+            data-tour={n.route.name}
             className={
               route.name === n.route.name || (n.route.name === "people" && route.name === "person")
                 ? "on"

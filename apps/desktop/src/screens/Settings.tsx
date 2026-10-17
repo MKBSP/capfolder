@@ -128,6 +128,19 @@ export function Settings() {
             </button>
           </div>
         </section>
+        {app.vault ? (
+          <section className="card stack" aria-label="Tour">
+            <h2>Tour</h2>
+            <p className="small muted" style={{ margin: 0 }}>
+              A one-minute look at where everything is.
+            </p>
+            <div>
+              <button type="button" className="btn" onClick={() => app.go({ name: "home", tour: true })}>
+                Take the tour
+              </button>
+            </div>
+          </section>
+        ) : null}
         <section className="card stack">
           <h2>Privacy</h2>
           <label className="row small">

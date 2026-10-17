@@ -743,3 +743,9 @@ dialog.modal::backdrop {
     box-shadow: -12px 0 32px -16px rgba(0, 0, 0, 0.3);
   }
 }
+
+/* docs/19: the Driver.js tour popover in the app's type */
+.driver-popover {
+  font-family: var(--font);
+  color: var(--ink);
+}

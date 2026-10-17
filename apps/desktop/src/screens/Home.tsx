@@ -7,12 +7,13 @@ import {
   nextVest,
   type Row,
 } from "@capfolder/core";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
 import { ExportDialog } from "../components/ExportDialog";
 import { GetStarted } from "../components/GetStarted";
 import { MainHeader } from "../components/Header";
+import { startTour, TourOffer } from "../components/Tour";
 import { Chip, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
 import { startMyOwn } from "../sample";
@@ -30,6 +31,10 @@ export function Home() {
   const rows = useMemo(() => (state ? capTableRows(state) : []), [state]);
   const gaps = useMemo(() => (state ? computeGaps(state) : []), [state]);
   const problems = useMemo(() => (state ? checkInvariants(state) : []), [state]);
+  const tour = app.route.name === "home" && app.route.tour;
+  useEffect(() => {
+    if (tour) startTour();
+  }, [tour]);
   if (!state || !vault) return null;
 
   const fdRows = rows.filter((r) => r.group <= 2);
@@ -78,6 +83,7 @@ export function Home() {
       </MainHeader>
       <VaultBanners />
       <GetStarted />
+      <TourOffer />
       {exporting ? (
         <ExportDialog
           open
@@ -106,7 +112,7 @@ export function Home() {
               }
             />
           </div>
-          <div className="card" style={{ padding: 0, overflowX: "auto" }}>
+          <div className="card" style={{ padding: 0, overflowX: "auto" }} data-tour="captable">
             {rows.length === 0 ? (
               <p className="muted" style={{ padding: 20 }}>
                 Nothing issued as of {day(asOf)}. Use + New to add shares, a pool, grants or SAFEs.

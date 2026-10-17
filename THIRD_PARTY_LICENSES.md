@@ -24,6 +24,7 @@ Vendored data: OCF 1.2.0 JSON schemas, Open Cap Table Coalition, OCF Schema and 
 - ajv 8.20.0: MIT
 - ajv-formats 3.0.1: MIT
 - bmp-js 0.1.0: MIT
+- driver.js 1.8.0: MIT
 - fast-deep-equal 3.1.3: MIT
 - fflate 0.8.3: MIT
 - hono 4.13.9: MIT

@@ -29,6 +29,7 @@ export interface Settings {
   updates: "auto" | "ask" | "off"; // F-38: auto downloads in the background; installing always waits for a restart
   // docs/19, by company folder: the three start questions and a hidden Get started list (ticks are never stored)
   onboarding: Record<string, Answers & { dismissed?: boolean }>;
+  tourSeen: boolean; // the spotlight tour was offered (taken or declined); Settings → Take the tour still runs it
 }
 
 export type AiProvider = "ollama" | "lmstudio" | "anthropic" | "openai" | "gemini";
@@ -64,6 +65,7 @@ const defaults = (): Settings => ({
   updates: "auto",
   ping: { installId: "", firstRunSent: false, last: "" },
   onboarding: {},
+  tourSeen: false,
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {
