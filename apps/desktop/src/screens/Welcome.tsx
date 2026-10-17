@@ -2,6 +2,7 @@ import { useState } from "react";
 import { YourCountry } from "../components/RegionFields";
 import { ErrorList, Logo, Modal, Stepper } from "../components/ui";
 import { TERMS, TERMS_VERSION } from "../copy";
+import { openSample } from "../sample";
 import type { Settings } from "../settings";
 import { openCompany, useApp } from "../state";
 
@@ -46,7 +47,12 @@ export function Welcome() {
       <div className="stack">
         <Logo size={40} />
         <h1>Welcome to Capfolder</h1>
-        <p className="muted">Your cap table will live in a folder on this computer. No account needed.</p>
+        <p className="muted">
+          Your cap table will live in a folder on this computer. No account needed. Want to look around first?{" "}
+          <button type="button" className="btn link" onClick={() => openSample(app)}>
+            Try the sample company
+          </button>
+        </p>
         {settings.recentVaults.length ? (
           <div className="row wrap">
             {settings.recentVaults.map((r) => (

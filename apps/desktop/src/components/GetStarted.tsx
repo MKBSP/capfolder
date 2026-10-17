@@ -7,7 +7,7 @@ import { Chip } from "./ui";
 export function GetStarted() {
   const app = useApp();
   const { latest, vault, settings } = app;
-  if (!latest || !vault) return null;
+  if (!latest || !vault || vault.meta.sample) return null;
   const mine = settings.onboarding[vault.root] ?? {};
   if (mine.dismissed) return null;
   const steps = getStarted(latest, mine, !!aiFor(settings, "chat"));

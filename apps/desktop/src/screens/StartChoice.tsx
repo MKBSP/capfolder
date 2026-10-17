@@ -1,7 +1,8 @@
 import { Stepper } from "../components/ui";
+import { openSample } from "../sample";
 import { type Route, useApp } from "../state";
 
-const CARDS: { title: string; sub: string; steps: string[]; to: Route }[] = [
+const CARDS: { title: string; sub: string; steps: string[]; to: Route | "sample" }[] = [
   {
     title: "Import from Pulley or Carta",
     sub: "You have a cap table somewhere. About 2 minutes.",
@@ -29,11 +30,21 @@ const CARDS: { title: string; sub: string; steps: string[]; to: Route }[] = [
     steps: ["Drop the folder", "Each document becomes a row", "You confirm each one"],
     to: { name: "sort" },
   },
+  {
+    title: "Try the sample company",
+    sub: "Look around a made-up company first. Nothing is saved.",
+    steps: [
+      "Founders, an option pool, 3 SAFEs",
+      "Click any row to see the math",
+      "Start my own when you're ready",
+    ],
+    to: "sample",
+  },
 ];
 
 /** StartChoice.html (F-06). */
 export function StartChoice() {
-  const { go } = useApp();
+  const app = useApp();
   return (
     <main className="wide">
       <Stepper current={4} />
@@ -52,7 +63,7 @@ export function StartChoice() {
             key={c.title}
             className="opt"
             style={{ display: "block", textAlign: "left" }}
-            onClick={() => go({ name: "questions", next: c.to })}
+            onClick={() => (c.to === "sample" ? openSample(app) : app.go({ name: "questions", next: c.to }))}
           >
             <b style={{ fontSize: 16 }}>{c.title}</b>
             <div className="muted small" style={{ margin: "4px 0 10px" }}>
@@ -63,11 +74,6 @@ export function StartChoice() {
                 <li key={s}>{s}</li>
               ))}
             </ol>
-            {c.to.name === "comingSoon" ? (
-              <span className="chip" style={{ marginTop: 10 }}>
-                Coming soon ({c.to.milestone})
-              </span>
-            ) : null}
           </button>
         ))}
       </div>

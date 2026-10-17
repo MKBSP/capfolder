@@ -257,8 +257,12 @@ function exclusive<T>(root: string, work: () => Promise<T>): Promise<T> {
   return next;
 }
 
+export const SAMPLE_BLOCKED =
+  "This is the sample company, so nothing here is saved. Use Start my own to set up your company.";
+
 /** Why this vault can't be written to right now, or null. */
 async function writeBlocked(fs: Fs, v: Vault): Promise<string[] | null> {
+  if (v.meta.sample) return [SAMPLE_BLOCKED];
   if (v.broken)
     return [`The record is broken at line ${v.broken.line}. Restore the folder from your backup.`];
   if ((await fs.readText(join(v.root, "events.jsonl"))) !== v.log)
@@ -582,6 +586,7 @@ export async function isPlainDocPath(fs: Fs, root: string, rel: string): Promise
 
 /** Company currency for new records (capfolder.json). Records already made keep their own currency. */
 export async function setCompanyCurrency(fs: Fs, v: Vault, currency: string): Promise<Vault> {
+  if (v.meta.sample) return v;
   const meta = { ...v.meta, currency };
   await fs.writeText(join(v.root, "capfolder.json"), `${JSON.stringify(meta, null, 2)}\n`);
   return { ...v, meta };

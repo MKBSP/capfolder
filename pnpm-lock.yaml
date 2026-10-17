@@ -59,6 +59,9 @@ importers:
       '@tesseract.js-data/eng':
         specifier: 1.0.0
         version: 1.0.0
+      pdf-lib:
+        specifier: 1.17.1
+        version: 1.17.1
       pdfjs-dist:
         specifier: 6.3.289
         version: 6.3.289
@@ -105,9 +108,6 @@ importers:
       jsdom:
         specifier: 26.1.0
         version: 26.1.0
-      pdf-lib:
-        specifier: 1.17.1
-        version: 1.17.1
       vite:
         specifier: 8.3.1
         version: 8.3.1(@types/node@22.20.5)
