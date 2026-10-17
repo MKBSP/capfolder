@@ -1,6 +1,7 @@
 // App settings live in the OS app-data folder, never in the vault (docs/01).
 import { builders } from "@capfolder/core";
 import { type Fs, join } from "./fs/types";
+import type { Answers } from "./onboarding";
 import { guessRegion } from "./regions";
 
 export interface Settings {
@@ -26,6 +27,8 @@ export interface Settings {
   };
   ping: { installId: string; firstRunSent: boolean; last: string }; // docs/11, only used while telemetry is on
   updates: "auto" | "ask" | "off"; // F-38: auto downloads in the background; installing always waits for a restart
+  // docs/19, by company folder: the three start questions and a hidden Get started list (ticks are never stored)
+  onboarding: Record<string, Answers & { dismissed?: boolean }>;
 }
 
 export type AiProvider = "ollama" | "lmstudio" | "anthropic" | "openai" | "gemini";
@@ -60,6 +63,7 @@ const defaults = (): Settings => ({
   chat: { cloudDocs: false, open: false },
   updates: "auto",
   ping: { installId: "", firstRunSent: false, last: "" },
+  onboarding: {},
 });
 
 export async function loadSettings(fs: Fs, dir: string): Promise<Settings> {

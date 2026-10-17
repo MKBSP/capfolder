@@ -1,8 +1,11 @@
+import { builders } from "@capfolder/core";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
 import { acmePlatform } from "../test/acme";
+import { fakePlatform } from "../test/fakePlatform";
+import { createVault } from "../vault";
 
 async function home() {
   const fp = acmePlatform();
@@ -65,4 +68,40 @@ test("export csv as of the chosen date", async () => {
   expect(saved["acme-inc-cap-table-2026-10-07.csv"]).toContain(
     "CS-1,Mads Petersen,Individual,Stock,Common,2021-09-14,4000000,4000000,3000000,1000000,",
   );
+});
+
+test("Get started card: ticks from the cap table, Hide is remembered in app settings", async () => {
+  const fp = await home();
+  const card = screen.getByRole("group", { name: /Get started/ });
+  expect(within(card).getByText("6 of 8 done")).toBeInTheDocument();
+  expect(within(card).getByText(/Preferred shares sold at a set price/)).toBeInTheDocument();
+  await userEvent.click(within(card).getByRole("button", { name: "Set up AI" }));
+  expect(await screen.findByText("App lock")).toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "Cap table" }));
+  await userEvent.click(await screen.findByRole("button", { name: "Hide this list" }));
+  expect(screen.queryByRole("group", { name: /Get started/ })).toBeNull();
+  expect(JSON.parse(fp.fs.readSync("/appdata/settings.json")).onboarding[fp.root]).toEqual({
+    dismissed: true,
+  });
+});
+
+test("Get started: Import is the main button while the company is empty", async () => {
+  const fp = fakePlatform();
+  const ctx = { now: () => new Date(), newId: () => builders.newId("evt"), deviceId: "dev_t" };
+  const v = await createVault(fp.fs, ctx, {
+    parent: "/home/me/Documents/capfolder",
+    company: { name: "New Co", formationDate: "2026-01-02" },
+  });
+  fp.fs.writeSync(
+    "/appdata/settings.json",
+    JSON.stringify({ deviceId: "dev_t", lock: "none", recentVaults: [{ name: "New Co", root: v.root }] }),
+  );
+  render(<App platform={fp.platform} />);
+  const card = await screen.findByRole("group", { name: /Get started/ });
+  expect(within(card).getByText("1 of 8 done")).toBeInTheDocument();
+  const imports = within(card).getAllByRole("button", { name: "Import" });
+  expect(imports).toHaveLength(5); // share classes, founders, pool, SAFEs, priced round
+  for (const b of imports) expect(b).toHaveClass("primary");
+  await userEvent.click(within(card).getByRole("button", { name: "Add a SAFE" }));
+  expect(await screen.findByText(/New SAFE/)).toBeInTheDocument();
 });

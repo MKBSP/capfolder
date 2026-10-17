@@ -11,6 +11,7 @@ import { useMemo, useState } from "react";
 import { AttachModal } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
 import { ExportDialog } from "../components/ExportDialog";
+import { GetStarted } from "../components/GetStarted";
 import { MainHeader } from "../components/Header";
 import { Chip, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
@@ -75,6 +76,7 @@ export function Home() {
         {New}
       </MainHeader>
       <VaultBanners />
+      <GetStarted />
       {exporting ? (
         <ExportDialog
           open
