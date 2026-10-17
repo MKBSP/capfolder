@@ -4,6 +4,17 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [0.1.3] — 2026-10-17
+### Fixed
+- **Create folder failed** with "Refused to evaluate a string as JavaScript… 'unsafe-eval'". Data checks are now
+  built ahead of time, so the app's strict security policy stays on.
+### Added
+- **Get started** checklist on the cap table: ticks itself as you add your company, founders, pool, SAFEs and documents.
+- **Three quick questions** (SAFEs? option pool? priced round?) hide the steps that don't apply.
+- **Sample company** to click around in safely: nothing in it can be saved.
+- **A short tour** of the app (Settings → Tour runs it again), and **"?" tips** next to cap, discount, cliff, par value
+  and vesting start.
+
 ## [0.1.2] — 2026-10-16
 ### Added
 - **Ask AI:** a side panel (✦ Ask AI in the top bar, or ⌘K) that answers questions about your cap table with links to
