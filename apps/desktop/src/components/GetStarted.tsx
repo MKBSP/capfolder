@@ -28,7 +28,17 @@ export function GetStarted() {
             <span className="grow small">
               <b>{x.label}</b>
               <span className="muted" style={{ display: "block" }}>
-                {x.help}
+                {x.help}{" "}
+                {x.how ? (
+                  <button
+                    type="button"
+                    className="btn link"
+                    aria-label={x.how.label}
+                    onClick={() => app.platform.openUrl(x.how!.url)}
+                  >
+                    How?
+                  </button>
+                ) : null}
               </span>
             </span>
             {x.done ? (

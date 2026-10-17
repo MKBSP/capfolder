@@ -13,6 +13,7 @@ export interface Step {
   action: string;
   to: Route;
   capTable?: boolean; // Import is the main button on these while the company is empty
+  how?: { label: string; url: string }; // a help page on the website, with screenshots
 }
 
 export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
@@ -40,6 +41,7 @@ export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
       action: "Add founder shares",
       to: { name: "newShares" },
       capTable: true,
+      how: { label: "How do I add founders?", url: "https://capfolder.com/help/founders/" },
     },
     a.pool !== false && {
       label: "Option pool and grants",

@@ -14,6 +14,10 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
 }
+/* buttons don't inherit the page font by default (the start cards showed Arial) */
+button {
+  font: inherit;
+}
 a {
   color: var(--green-600);
   text-decoration: none;

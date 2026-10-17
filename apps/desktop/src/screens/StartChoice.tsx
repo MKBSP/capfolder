@@ -62,7 +62,12 @@ export function StartChoice() {
             type="button"
             key={c.title}
             className="opt"
-            style={{ display: "block", textAlign: "left" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              textAlign: "left",
+            }}
             onClick={() => (c.to === "sample" ? openSample(app) : app.go({ name: "questions", next: c.to }))}
           >
             <b style={{ fontSize: 16 }}>{c.title}</b>

@@ -102,6 +102,8 @@ test("Get started: Import is the main button while the company is empty", async 
   const imports = within(card).getAllByRole("button", { name: "Import" });
   expect(imports).toHaveLength(5); // share classes, founders, pool, SAFEs, priced round
   for (const b of imports) expect(b).toHaveClass("primary");
+  await userEvent.click(within(card).getByRole("button", { name: "How do I add founders?" }));
+  expect(fp.opened).toEqual(["https://capfolder.com/help/founders/"]);
   await userEvent.click(within(card).getByRole("button", { name: "Add a SAFE" }));
   expect(await screen.findByText(/New SAFE/)).toBeInTheDocument();
 });
