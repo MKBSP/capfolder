@@ -36,6 +36,7 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Register capfolder.com; trademark search (USPTO, EUIPO).
 - [ ] Apple Developer ID + Windows code-signing certificate (M7).
 - [ ] **Back up offline** `~/.tauri/capfolder-updater.key` (lose it and installed apps can never update) and `~/.capfolder/rules-signing.key`.
+- **Decision 2026-10-18:** stay unsigned ("allow unsigned" builds) until there's real interest; then pay Apple ($99/yr) first, Microsoft later. How-to: `docs/07` → Getting the certificates.
 - [ ] GitHub secrets for `release.yml`: `TAURI_SIGNING_PRIVATE_KEY` (the updater key file's contents; it has no password, so set `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` empty or regenerate it with one), `APPLE_CERTIFICATE` (.p12, base64), `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD` (app-specific), `APPLE_TEAM_ID`, `WINDOWS_CERTIFICATE` (.pfx, base64), `WINDOWS_CERTIFICATE_PASSWORD`.
 - [ ] First release: tag v0.1.0, publish the draft; then v0.1.1 to see the update arrive on each OS (M7 acceptance).
 - [ ] Send real Pulley / Carta / Cake export files (anonymize names/emails, keep numbers): each gets a detector + golden test.
