@@ -196,6 +196,14 @@ p {
   color: var(--muted);
   white-space: nowrap;
 }
+/* clickable chips (pick one): no browser button border; the picked one gets a green outline */
+button.chip {
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+}
+button.chip.green {
+  border-color: var(--green-600);
+}
 .chip.green {
   background: var(--green-tint);
   color: var(--green-700);

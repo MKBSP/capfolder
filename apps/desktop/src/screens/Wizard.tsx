@@ -66,7 +66,7 @@ export function Wizard() {
     app.go({ name: "home" });
   }
 
-  const steps = [
+  const all = [
     <div key="shares" className="stack">
       <h1>How many shares can the company issue?</h1>
       <p className="muted">From your certificate of incorporation: authorized shares and par value.</p>
@@ -133,8 +133,8 @@ export function Wizard() {
               No vesting
             </button>
             {f.vesting ? (
-              <>
-                <label className="row small">
+              <span className="row" style={{ flexWrap: "nowrap" }}>
+                <label className="row small" style={{ whiteSpace: "nowrap" }}>
                   Vesting starts
                   <DateInput
                     style={{ width: 170 }}
@@ -143,7 +143,7 @@ export function Wizard() {
                   />
                 </label>
                 <Tip about="vestingStart" />
-              </>
+              </span>
             ) : (
               <span className="meta">Investors usually ask for founder vesting.</span>
             )}
@@ -299,6 +299,12 @@ export function Wizard() {
       </button>
     </div>,
   ];
+  // A "no" to the three quick questions (docs/19) drops that step.
+  const answers = app.vault ? app.settings.onboarding[app.vault.root] : undefined;
+  const steps = all.filter(
+    (el) =>
+      !((el.key === "pool" && answers?.pool === false) || (el.key === "safes" && answers?.safes === false)),
+  );
 
   return (
     <main className="page" style={{ display: "flex", gap: 32, alignItems: "flex-start", paddingTop: 40 }}>

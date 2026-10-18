@@ -45,6 +45,13 @@ test("after StartChoice: three yes/no questions, saved per company, then the cho
   expect(await screen.findByText(/Authorized shares/)).toBeInTheDocument();
   const s = fp.settings();
   expect(s.onboarding[s.recentVaults[0].root]).toEqual({ safes: false, pool: true });
+  // "no SAFEs" also drops the wizard's SAFE step: shares, founders, pool, then save
+  expect(screen.getByText("Start from zero · 1 of 3")).toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  expect(screen.getByText("Is there an option pool?")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Save cap table" })).toBeInTheDocument();
+  expect(screen.queryByText("Any SAFEs already signed?")).toBeNull();
 });
 
 test("the questions can be skipped, and changed later from Get started", async () => {
