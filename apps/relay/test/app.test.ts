@@ -152,9 +152,7 @@ describe("envelopes", () => {
     const { app } = setup();
     const { id } = (await (await send(app)).json()) as { id: string };
     expect(
-      await (
-        await app.request(`/envelopes/${id}/signing-url`, { headers: auth("tim@acme.example") })
-      ).json(),
+      await (await app.request(`/envelopes/${id}/signing-url`, { headers: auth("tim@acme.example") })).json(),
     ).toEqual({
       url: "http://documenso.test/sign/tok1_2",
     });
@@ -169,8 +167,7 @@ describe("envelopes", () => {
       await app.request("/envelopes", { method: "POST", body: form, headers: auth("tim@acme.example") })
     ).json()) as { id: string };
     expect(
-      (await app.request(`/envelopes/${other.id}/signing-url`, { headers: auth("tim@acme.example") }))
-        .status,
+      (await app.request(`/envelopes/${other.id}/signing-url`, { headers: auth("tim@acme.example") })).status,
     ).toBe(404);
   });
   test("remind only the unsigned; cancel a pending one; delete a finished one", async () => {

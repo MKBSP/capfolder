@@ -35,9 +35,7 @@ describe("unsigned drafts never file themselves as proof", () => {
   });
 
   test("checkboxes and filled-in brackets in a signed document aren't blanks", () => {
-    expect(
-      unsignedSignal(`${safe}\n[X] accredited  [ ] not accredited\n[Name: Tim Apple]`),
-    ).toBeUndefined();
+    expect(unsignedSignal(`${safe}\n[X] accredited  [ ] not accredited\n[Name: Tim Apple]`)).toBeUndefined();
   });
 
   test("ordinary words don't count: 'drafted by', 'redraft', lowercase draft in prose", () => {

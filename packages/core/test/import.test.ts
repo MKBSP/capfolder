@@ -40,13 +40,7 @@ describe("reading files", () => {
   test("csv with quotes and a title row", () => {
     expect(h).toBe(2);
     expect(header[0]).toBe("Stakeholder");
-    expect(body[0]!.slice(0, 5)).toEqual([
-      "Tim Apple",
-      "tim@acme.example",
-      "Common",
-      "Common",
-      "4,000,000",
-    ]);
+    expect(body[0]!.slice(0, 5)).toEqual(["Tim Apple", "tim@acme.example", "Common", "Common", "4,000,000"]);
   });
   test("xlsx round trip through our own writer", () => {
     const book = readXlsx(toXlsx(sheets(acmeEvents(), "2026-10-07")));
