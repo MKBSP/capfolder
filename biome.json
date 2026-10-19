@@ -10,6 +10,7 @@
       "!docs",
       "!**/src/ocf/schemas-*.json",
       "!**/src/ocf/validators.gen.js",
+      "!**/compare/img",
       "!**/public/ocr",
       "!rules",
       "!**/src-tauri/target",

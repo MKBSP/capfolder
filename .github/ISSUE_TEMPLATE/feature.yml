@@ -1,0 +1,16 @@
+name: Feature request
+description: Something Capfolder should do. Check the roadmap first (capfolder.com/roadmap); 👍 an existing request instead of opening a new one.
+labels: [feature]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What do you want to do?, description: "The job, not the button: e.g. \"warn me before our 409A expires\"" }
+    validations: { required: true }
+  - type: textarea
+    id: today
+    attributes: { label: How do you do it today?, description: "Another tool, a spreadsheet, a lawyer…" }
+  - type: dropdown
+    id: from
+    attributes:
+      label: Coming from
+      options: [Pulley, Carta, Cake Equity, A spreadsheet, Something else, Not switching]

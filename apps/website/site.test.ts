@@ -1,8 +1,13 @@
 // The launch page must not ship placeholders or claim things the app doesn't do (docs/09 M8).
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 
 const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
+const read = (p: string) => readFileSync(new URL(`./${p}`, import.meta.url), "utf8");
+const comparePages = () =>
+  readdirSync(new URL("./compare", import.meta.url), { withFileTypes: true })
+    .filter((d) => d.isDirectory() && d.name !== "img")
+    .map((d) => `compare/${d.name}/index.html`);
 const licenses = readFileSync(new URL("../../THIRD_PARTY_LICENSES.md", import.meta.url), "utf8");
 
 test("no placeholders, old names or dead links", () => {
@@ -50,16 +55,49 @@ test("cookieless analytics, no banner (docs/11): Umami Cloud with a real website
     expect([ev, html.includes(`data-umami-event="${ev}"`)]).toEqual([ev, true]);
 });
 
-test("public roadmap: linked from the nav, no internal infrastructure items", () => {
-  expect(html).toContain('href="#roadmap"');
-  const roadmap = html.slice(
-    html.indexOf('id="roadmap"'),
-    html.indexOf("</section>", html.indexOf('id="roadmap"')),
-  );
-  expect(roadmap).toContain("Now");
-  expect(roadmap).toContain("Next");
-  expect(roadmap).toContain("Later");
-  expect(roadmap).not.toMatch(/laptop|Hetzner|AWS/);
+test("public roadmap: one module (roadmap.js) on home, /roadmap and every compare page; no internal infrastructure", () => {
+  const rm = readFileSync(new URL("./roadmap.js", import.meta.url), "utf8");
+  for (const col of ['"Now"', '"Next"', '"Later"', '"Done recently"', "feature.yml", "bug.yml"])
+    expect(rm).toContain(col);
+  expect(rm).not.toMatch(/laptop|Hetzner|AWS|relay/i);
+  expect(html).toContain('href="/roadmap/"');
+  for (const page of [html, read("roadmap/index.html"), ...comparePages().map(read)]) {
+    expect(page).toContain("data-roadmap");
+    expect(page).toContain('<script src="/roadmap.js" defer></script>');
+  }
+});
+
+test("compare pages: Pulley/Carta alternative in titles, logo, dated sources, roadmap, issues, download; listed on /compare/ and linked from home", () => {
+  const pages = comparePages();
+  expect(pages.length).toBeGreaterThanOrEqual(3);
+  const index = read("compare/index.html");
+  for (const p of pages) {
+    const page = read(p);
+    const slug = p.split("/")[1];
+    expect([slug, /<title>[^<]*alternative/i.test(page)]).toEqual([slug, true]);
+    expect([
+      slug,
+      /Checked (January|February|March|April|May|June|July|August|September|October|November|December) 20\d\d/.test(
+        page,
+      ),
+    ]).toEqual([slug, true]);
+    expect([slug, (page.match(/class="src"/g) ?? []).length >= 1]).toEqual([slug, true]);
+    expect([slug, page.includes('class="logos"')]).toEqual([slug, true]);
+    for (const logo of page.matchAll(/src="\/compare\/img\/([^"]+)"/g))
+      expect([logo[1], existsSync(new URL(`./compare/img/${logo[1]}`, import.meta.url))]).toEqual([
+        logo[1],
+        true,
+      ]);
+    for (const must of [
+      'href="/#download"',
+      "https://github.com/MKBSP/capfolder/issues",
+      `data-vs="${slug}"`,
+    ])
+      expect([slug, must, page.includes(must)]).toEqual([slug, must, true]);
+    expect([slug, index.includes(`href="/compare/${slug}/"`)]).toEqual([slug, true]);
+  }
+  expect(html).toContain('href="/compare/pulley/">Pulley alternative');
+  expect(html).toContain('href="/compare/carta/">Carta alternative');
 });
 
 test("privacy contact is an email, not only GitHub issues", () => {

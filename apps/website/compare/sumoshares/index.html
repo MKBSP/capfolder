@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>SumoShares alternative: Capfolder vs SumoShares · Capfolder</title>
+<meta name="description" content="Capfolder vs SumoShares: two open-source Carta alternatives. Features, price, setup, pros and cons, compared side by side.">
+<link rel="canonical" href="https://capfolder.com/compare/sumoshares/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+</head>
+<body>
+<nav class="top"><a class="brand" href="/">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a class="dl" href="/#download">Download</a></nav>
+<main>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/compare/">Compare</a> · SumoShares</div>
+  <div class="logos"><img src="/favicon.svg" width="28" height="28" alt="Capfolder"><span class="m">vs</span><b>SumoShares</b></div>
+  <h1>Capfolder vs SumoShares</h1>
+  <p class="lead narrow">Both are free, open-source Carta alternatives. SumoShares is a web app you deploy to your own Cloudflare account. Capfolder is a desktop app: no setup, and your cap table is a folder on your computer.</p>
+  <div class="verdict narrow"><b>In short:</b> leaving Carta with lots of option holders and a developer to run it? SumoShares has the holder portal and online exercise. An early-stage founder with SAFEs, signatures to collect and no developer? Capfolder.</div>
+  <p class="crumb">This comparison is written by the Capfolder team. Checked October 2026.</p>
+
+  <h2>Side by side</h2>
+  <div class="tbl"><table>
+    <thead><tr><td></td><th scope="col">Capfolder</th><th scope="col">SumoShares</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Setup needed</th><td class="us"><span class="y">None</span><br><span class="m">download and open</span></td><td>About 15 minutes in a terminal<br><span class="m">Cloudflare account, database, storage, email DNS records</span></td></tr>
+      <tr><th scope="row">Where your data lives</th><td class="us">A folder on your computer</td><td>Your Cloudflare account</td></tr>
+      <tr><th scope="row">Works offline</th><td class="us"><span class="y">Yes</span><br><span class="m">except sending signatures</span></td><td><span class="n">No</span></td></tr>
+      <tr><th scope="row">Price</th><td class="us">Free<br><span class="m">Pro (sync, backup) coming</span></td><td>Free software<br><span class="m">$0 to about $5/month for Cloudflare, plus email</span></td></tr>
+      <tr><th scope="row">License</th><td class="us">AGPL-3.0</td><td>MIT</td></tr>
+      <tr><th scope="row">SAFEs and convertible notes</th><td class="us"><span class="y">Yes</span></td><td><span class="n">No</span><br><span class="m">listed as not included</span></td></tr>
+      <tr><th scope="row">E-signatures</th><td class="us"><span class="y">Yes</span><br><span class="m">investors sign from a link</span></td><td><span class="n">No</span><br><span class="m">the exercise form takes a typed name</span></td></tr>
+      <tr><th scope="row">Documents</th><td class="us"><span class="y">Sorted for you, missing ones flagged</span></td><td>Upload and attach</td></tr>
+      <tr><th scope="row">Options, vesting, terminations</th><td class="us"><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+      <tr><th scope="row">409A tracking and reminders</th><td class="us"><span class="n">Not yet</span><br><span class="m">on the roadmap</span></td><td><span class="y">Yes</span></td></tr>
+      <tr><th scope="row">Employees log in, exercise online</th><td class="us"><span class="n">Not yet</span><br><span class="m">on the roadmap</span></td><td><span class="y">Yes</span><br><span class="m">email link; wire or Stripe</span></td></tr>
+      <tr><th scope="row">Email reminders (deadlines)</th><td class="us"><span class="n">No</span></td><td><span class="y">Yes</span></td></tr>
+      <tr><th scope="row">Import from</th><td class="us">Pulley, Carta, Cake Equity, OCF, a spreadsheet</td><td>Carta (four reports, from the command line)</td></tr>
+      <tr><th scope="row">Open Cap Table Format (OCF)</th><td class="us"><span class="y">Import and export</span><br><span class="m">checked against the official schemas</span></td><td>Export</td></tr>
+      <tr><th scope="row">History can't be rewritten</th><td class="us"><span class="y">Yes</span><br><span class="m">append-only, hash-chained log</span></td><td>Partly<br><span class="m">audit log is append-only; records are edited in place</span></td></tr>
+      <tr><th scope="row">Automated tests of the math</th><td class="us"><span class="y">Yes</span></td><td><span class="n">None in the repo</span></td></tr>
+      <tr><th scope="row">AI help</th><td class="us"><span class="y">Yes</span><br><span class="m">proposes, you confirm</span></td><td><span class="n">No</span></td></tr>
+      <tr><th scope="row">Outside the US</th><td class="us">US (Delaware C-corps) first, more countries planned</td><td>Built for US companies</td></tr>
+    </tbody>
+  </table></div>
+  <p class="src">Sources: <a href="https://github.com/noahdevkagan/sumoshares">SumoShares README</a>, <a href="https://sumoshares.com">sumoshares.com</a> (the site says "about $5 a month"; the README says free on Cloudflare's free plan), <a href="https://developers.cloudflare.com/workers/platform/pricing/">Cloudflare pricing</a>, <a href="https://sendfox.com/pricing">SendFox pricing</a>. Checked October 2026.</p>
+
+  <h2>Pros and cons</h2>
+  <div class="cols">
+    <div class="card"><h3>SumoShares does well</h3><ul>
+      <li>Employees log in and see their equity, and exercise options online.</li>
+      <li>409A and option-deadline reminders by email, every day.</li>
+      <li>A careful Carta import that checks every holder against Carta's numbers.</li>
+      <li>Free, MIT licensed, cheap to run.</li>
+    </ul></div>
+    <div class="card"><h3>Where SumoShares falls short</h3><ul>
+      <li>You need a developer to set it up, update it and keep it running.</li>
+      <li>No SAFEs or convertible notes, so it doesn't fit a pre-seed or seed company.</li>
+      <li>No signatures: documents are signed elsewhere and uploaded.</li>
+      <li>New (October 2026), US-only, and no automated tests yet.</li>
+    </ul></div>
+    <div class="card"><h3>Capfolder does well</h3><ul>
+      <li>No setup: download, open, done. Works offline.</li>
+      <li>SAFEs, option grants and signatures in one place.</li>
+      <li>Drop in your old documents and they're sorted; missing ones are flagged.</li>
+      <li>Every number shows its math, and the math is tested.</li>
+    </ul></div>
+    <div class="card"><h3>Where Capfolder falls short</h3><ul>
+      <li>No employee logins or online exercise yet.</li>
+      <li>No 409A tracking or reminders yet.</li>
+      <li>One computer at a time until sync ships in Pro.</li>
+    </ul></div>
+  </div>
+
+  <h2>Switching from SumoShares</h2>
+  <ol class="steps narrow">
+    <li>In SumoShares, open <b>Reports</b> and download <b>ocf.json</b> and the CSVs.</li>
+    <li>In Capfolder, create your company folder and choose <b>Import</b>, then pick the OCF file.</li>
+    <li>If the OCF file doesn't import, use the holders and securities CSVs with the spreadsheet import, and <a href="https://github.com/MKBSP/capfolder/issues/new?template=import.yml">tell us</a>.</li>
+    <li>Drop in your documents. Capfolder sorts them and lists what's missing.</li>
+  </ol>
+
+  <h2>What's coming</h2>
+  <p class="narrow">Items marked in orange close a gap with SumoShares.</p>
+  <div data-roadmap data-vs="sumoshares"><noscript><a href="/roadmap/">See the roadmap</a></noscript></div>
+
+  <div class="cta"><b style="font-size:22px">Try Capfolder. No setup needed.</b><br>Free, open source, on your computer.<br><a class="btn" href="/#download">Download</a></div>
+  <p class="foot">Spotted something wrong or out of date? <a href="https://github.com/MKBSP/capfolder/issues/new">Open an issue on GitHub</a> and we'll fix it. SumoShares is a trademark of its owner; Capfolder isn't affiliated with it. Capfolder isn't legal advice.</p>
+</main>
+<script src="/roadmap.js" defer></script>
+</body>
+</html>
