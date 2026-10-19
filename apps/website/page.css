@@ -25,10 +25,17 @@ a {
 a:hover {
   color: #16543a;
 }
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #e4e4e0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 .top {
   max-width: 1040px;
   margin: 0 auto;
-  padding: 18px 16px;
+  padding: 12px 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px 22px;
@@ -36,20 +43,34 @@ a:hover {
   font-size: 15px;
 }
 .top .brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 600;
+  font-size: 17px;
   color: #111311;
-  text-decoration: none;
   margin-right: auto;
 }
 .top a {
   text-decoration: none;
   color: #3a3e46;
 }
+.top a:hover,
+.top a[aria-current] {
+  color: #16543a;
+}
+.top a[aria-current] {
+  font-weight: 600;
+}
 .top .dl {
   background: #1f6f4a;
   color: #fff;
   padding: 8px 14px;
   border-radius: 10px;
+}
+.top .dl:hover {
+  background: #16543a;
+  color: #fff;
 }
 main {
   max-width: 1040px;
@@ -191,4 +212,12 @@ ol.steps li {
   margin-top: 56px;
   font-size: 14px;
   color: #5b606b;
+}
+@media (max-width: 520px) {
+  .top {
+    gap: 6px 14px;
+  }
+  .top a[href^="https://github.com"] {
+    display: none;
+  }
 }

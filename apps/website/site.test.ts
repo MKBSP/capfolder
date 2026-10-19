@@ -205,3 +205,25 @@ test("no setup needed: said in the hero, the comparison and the FAQ", () => {
   expect(html).toContain(">Setup needed</th>");
   expect(html).toContain("Do I need a server");
 });
+
+test("every sub-page has the same navbar, with its section marked", () => {
+  for (const [p, section] of [
+    ["help/index.html", "/help/"],
+    ["help/founders/index.html", "/help/"],
+    ["roadmap/index.html", "/roadmap/"],
+    ["compare/index.html", "/compare/"],
+    ...comparePages().map((c) => [c, "/compare/"]),
+  ]) {
+    const nav = read(p).match(/<nav class="top"[\s\S]*?<\/nav>/)?.[0] ?? "";
+    for (const must of [
+      'src="/favicon.svg"',
+      'href="/compare/"',
+      'href="/roadmap/"',
+      'href="/help/"',
+      'href="/#download"',
+      `href="${section}" aria-current="true"`,
+    ])
+      expect([p, must, nav.includes(must)]).toEqual([p, must, true]);
+    expect([p, read(p).includes('href="/page.css"')]).toEqual([p, true]);
+  }
+});
