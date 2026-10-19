@@ -161,3 +161,9 @@ test("help pages: each one is in help/pages.json with the app files it shows, an
     expect(index).toContain(`href="/help/${page}/"`);
   }
 });
+
+test("no setup needed: said in the hero, the comparison and the FAQ", () => {
+  expect(html).toContain("No setup needed.");
+  expect(html).toContain(">Setup needed</th>");
+  expect(html).toContain("Do I need a server");
+});

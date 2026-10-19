@@ -9,7 +9,7 @@ Updated 2026-10-11 (after M4). Milestones and acceptance tests: `docs/09-build-p
 | Architecture | `docs/01-architecture.md`, data model `docs/03-data-model.md` |
 | Plans | `docs/09-build-plan.md` (milestones), `docs/superpowers/specs/` (design specs), `docs/superpowers/plans/` (implementation plans) |
 | Topic specs | import `04`, signing `05`, AI `06`, updates `07`, design system `08` |
-| Research, metrics, licensing, brand | `10`, `11`, `13`, `14` |
+| Research, metrics, licensing, brand | `10`, `11`, `13`, `14`; competitor gap analysis `20` (SumoShares) |
 | Future (do not build yet) | `docs/12-cloud-later.md`, plus "Future ideas" below |
 
 ## Status
@@ -113,6 +113,12 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
 15. **Onboarding:** sample company, 3 yes/no questions, a Get started checklist on Home, a Driver.js spotlight tour, "?" help tips. Plan: `docs/19-onboarding.md` (waiting for Mads' OK). No invite step until sync / web app.
 
 ## Future ideas (not in v1)
+- **From the SumoShares gap analysis** (`docs/20-sumoshares.md`, with code links and what to copy or not):
+  1. 409A record, expiry banner and a below-FMV grant warning (offline).
+  2. Option deadlines: countdown on Person, "Expire them" on open (the founder confirms).
+  3. Import tie-out against Pulley/Carta totals, a per-grant balance check, and a "before you cancel Pulley" checklist.
+  4. Exercises (Form 3921 inputs) and events CSV exports.
+  5. With the web app / Pro: holder portal, online exercise through the signing relay, reminder emails.
 - Cloud tier ($50/mo): sync, roles, four-eyes approval (`docs/12`).
 - Vault encryption (opt-in).
 - Investor/employee logins to see their own holdings.
