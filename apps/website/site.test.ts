@@ -263,3 +263,36 @@ test("compare tables: the same 12 rows on every page, each cell rated 0–3 with
     expect([p, read(p).includes('class="key"')]).toEqual([p, true]);
   }
 });
+
+const SITES: Record<string, string> = {
+  pulley: "https://pulley.com",
+  carta: "https://carta.com",
+  sumoshares: "https://sumoshares.com",
+};
+test("compare hero: split layout with the same vs card and screenshot, 3 value points; no illustrations or At a glance", () => {
+  for (const p of comparePages()) {
+    const page = read(p);
+    const slug = p.split("/")[1];
+    for (const must of [
+      'class="vscard"',
+      'src="/compare/img/captable.jpg',
+      'class="props"',
+      'cols choose"',
+      `href="${SITES[slug]}"`,
+    ])
+      expect([slug, must, page.includes(must)]).toEqual([slug, must, true]);
+    expect([slug, (page.match(/class="tile/g) ?? []).length]).toEqual([slug, 2]);
+    expect([slug, /\/img\/ill\/|class="glance"/.test(page)]).toEqual([slug, false]);
+  }
+});
+
+test("cache: the build adds a content hash to every CSS/JS link, so a new deploy is fetched at once", async () => {
+  const { bust } = await import("./bust.mjs");
+  const out = bust('<link href="/page.css"><script src="/roadmap.js"></script><a href="/page.css.html">', {
+    "page.css": "abc",
+    "roadmap.js": "def",
+  });
+  expect(out).toBe(
+    '<link href="/page.css?v=abc"><script src="/roadmap.js?v=def"></script><a href="/page.css.html">',
+  );
+});
