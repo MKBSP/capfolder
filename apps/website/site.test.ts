@@ -156,7 +156,8 @@ test("help pages: each one is in help/pages.json with the app files it shows, an
   for (const [page, p] of Object.entries<{ checked: string; covers: string[] }>(pages)) {
     expect(p.checked).toMatch(/^v\d+\.\d+\.\d+$/);
     expect(p.covers.length).toBeGreaterThan(0);
-    for (const f of p.covers) expect([f, existsSync(new URL(`../../${f}`, import.meta.url))]).toEqual([f, true]);
+    for (const f of p.covers)
+      expect([f, existsSync(new URL(`../../${f}`, import.meta.url))]).toEqual([f, true]);
     expect(index).toContain(`href="/help/${page}/"`);
   }
 });

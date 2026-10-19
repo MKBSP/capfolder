@@ -21,7 +21,13 @@ h2{font-size:20px;margin:40px 0 8px}
 .lead{color:#3A3E46;margin:0}
 ol.steps{padding-left:22px}ol.steps li{margin:6px 0}
 figure{margin:16px 0 0}
-figure img{display:block;width:100%;height:auto;border:1px solid #E4E4E0;border-radius:12px;background:#fff}
+.shot img{display:block;width:100%;height:auto;border:1px solid #E4E4E0;border-radius:12px;background:#fff}
+.shot{position:relative;display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.shot:focus-visible{outline:3px solid #1F6F4A;outline-offset:3px;border-radius:12px}
+.hl{position:absolute;border:3px solid #E07B00;border-radius:10px;box-shadow:0 0 0 4px rgba(224,123,0,.25);pointer-events:none}
+#zoom{border:0;padding:0;background:none;max-width:96vw;max-height:96vh;overflow:auto}
+#zoom::backdrop{background:rgba(17,19,17,.75)}
+#zoom .shot{width:min(1480px,94vw);cursor:zoom-out}
 figcaption{font-size:14px;color:#5B606B;margin-top:6px}
 .tip{background:#E8F3EC;border-radius:10px;padding:14px 16px;font-size:15px;margin-top:16px}
 dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A3E46}
@@ -33,6 +39,7 @@ dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A
   <div class="crumb"><a href="/">Capfolder</a> · <a href="/help/">Help</a> · Getting started</div>
   <h1>Add your founders</h1>
   <p class="lead">Tell Capfolder who owns the company today: each founder, how many shares they got, and how those shares vest. It takes about two minutes.</p>
+  <p class="crumb" style="margin-top:8px">Orange boxes mark what to look at or click. Click a screenshot to enlarge it.</p>
 
   <h2>Before you start</h2>
   <p>Have these at hand. They're in your certificate of incorporation and the founders' stock purchase agreements:</p>
@@ -44,7 +51,7 @@ dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A
 
   <h2>1. Choose "Start from zero"</h2>
   <p>After you create your company folder, Capfolder asks how you want to start. If you used Pulley or Carta, <b>Import</b> is quicker. Otherwise pick <b>Start from zero</b>.</p>
-  <figure><img src="/help/img/start-choice.jpg" width="888" height="450" alt="The 'How do you want to start?' screen with four cards: Import from Pulley or Carta, Start from zero, I only have documents, and Try the sample company." loading="lazy"><figcaption>Not ready yet? Try the sample company first. Nothing in it is saved.</figcaption></figure>
+  <figure><button type="button" class="shot" aria-label="Enlarge screenshot"><img src="/help/img/start-choice.jpg?v=2" width="888" height="450" alt="The 'How do you want to start?' screen with four cards: Import from Pulley or Carta, Start from zero, I only have documents, and Try the sample company." loading="lazy"><span class="hl" style="left:34.6%;top:13.3%;width:30.9%;height:38.4%"></span></button><figcaption>Not ready yet? Try the sample company first. Nothing in it is saved.</figcaption></figure>
 
   <h2>2. Fill in each founder</h2>
   <ol class="steps">
@@ -53,12 +60,12 @@ dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A
     <li>Pick the vesting: <b>4 years · 1-year cliff · monthly</b> is the usual one; choose <b>No vesting</b> if their shares were fully theirs from day one.</li>
     <li>Click <b>Add another founder</b> for each co-founder. The cap table on the right fills in as you type.</li>
   </ol>
-  <figure><img src="/help/img/founders-wizard.jpg" width="934" height="702" alt="The 'Who are the founders?' step with two founders, Ana Silva and Ben Okafor, each with 4,000,000 shares and a 4-year vesting schedule. On the right, a live cap table shows 50% each." loading="lazy"><figcaption>Each founder's shares show as a percentage of authorized shares, and the cap table on the right updates live.</figcaption></figure>
+  <figure><button type="button" class="shot" aria-label="Enlarge screenshot"><img src="/help/img/founders-wizard.jpg?v=2" width="934" height="758" alt="The 'Who are the founders?' step with two founders, Ana Silva and Ben Okafor, each with 4,000,000 shares and a 4-year vesting schedule. On the right, a live cap table shows 50% each." loading="lazy"><span class="hl" style="left:1.5%;top:17.6%;width:58.9%;height:36.8%"></span><span class="hl" style="left:1.5%;top:94.4%;width:15.3%;height:4.4%"></span></button><figcaption>Each founder's shares show as a percentage of authorized shares, and the cap table on the right updates live.</figcaption></figure>
   <div class="tip">Not sure what a field means? Click the <b>?</b> next to it for a one-line explanation.</div>
 
   <h2>3. Save, then check your cap table</h2>
   <p>Click <b>Next</b> through the option pool and SAFE steps (you can add those later), then <b>Save cap table</b>. Your founders appear on the cap table, and the <b>Get started</b> list ticks off what's done.</p>
-  <figure><img src="/help/img/home-get-started.jpg" width="1480" height="812" alt="The cap table screen: a Get started list with Company details, Share classes and Founders marked done, and below it two founders with 50% each." loading="lazy"><figcaption>"What's missing" on the right lists the signed documents to attach next.</figcaption></figure>
+  <figure><button type="button" class="shot" aria-label="Enlarge screenshot"><img src="/help/img/home-get-started.jpg?v=2" width="1480" height="812" alt="The cap table screen: a Get started list with Company details, Share classes and Founders marked done, and below it two founders with 50% each." loading="lazy"><span class="hl" style="left:1.4%;top:8.6%;width:97.2%;height:41.6%"></span></button><figcaption>"What's missing" on the right lists the signed documents to attach next.</figcaption></figure>
 
   <h2>Words used here</h2>
   <dl>
@@ -69,5 +76,20 @@ dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A
 
   <p class="foot">Something unclear? Tell us on <a href="https://github.com/MKBSP/capfolder/issues">GitHub</a>. Capfolder isn't legal advice: check your documents with a lawyer.</p>
 </main>
+<dialog id="zoom" aria-label="Enlarged screenshot"></dialog>
+<script>
+// Click a screenshot to see it large (highlights included); click, Esc or the backdrop closes it.
+const zoom = document.getElementById("zoom");
+for (const shot of document.querySelectorAll("main .shot"))
+  shot.addEventListener("click", () => {
+    const big = shot.cloneNode(true);
+    big.setAttribute("aria-label", "Close");
+    zoom.replaceChildren(big);
+    zoom.showModal();
+    big.focus();
+  });
+zoom.addEventListener("click", () => zoom.close());
+zoom.addEventListener("close", () => zoom.replaceChildren());
+</script>
 </body>
 </html>
