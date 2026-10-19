@@ -110,6 +110,10 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
     - Books and guides are **reading sources only**, never copied in (copyright): Feld & Mendelson *Venture Deals*, Kupor *Secrets of Sand Hill Road*, YC's SAFE user guide and Startup School notes, Cooley GO and Series Seed (CC0) docs, the OCF glossary.
     - Ask AI gets one `explain_term` tool: keyword lookup over those files, no vector database (ponytail: upgrade to embeddings only if lookups miss). The answer combines the explainer with the company's own numbers ("$150k outstanding means…, for you that's these 3 SAFEs").
     - Ships with the app and the rules pack, so it can be updated without a release; every explainer says "not legal advice".
+    - **Website articles from the same explainers (2026-10-19, Mads):** one page per topic on capfolder.com (learn + help), so the knowledge base also brings search traffic.
+      - Start from Carta's learn library as the topic map: https://carta.com/learn/startups/equity-management/cap-table/ (and its sibling sections). Read it and the sources it cites, then write our own text. Never copy or lightly reword theirs.
+      - Every page cites its sources, and **always Investopedia** for the term, plus the primary source (YC SAFE guide, SEC/IRS pages, OCF docs) where there is one.
+      - Each article links to the matching help page and app screen, and the help pages link back.
 15. **Onboarding:** sample company, 3 yes/no questions, a Get started checklist on Home, a Driver.js spotlight tour, "?" help tips. Plan: `docs/19-onboarding.md` (waiting for Mads' OK). No invite step until sync / web app.
 
 ## Future ideas (not in v1)
