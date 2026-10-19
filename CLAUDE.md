@@ -23,6 +23,7 @@ The company's cap table lives in a **folder of plain files** on the founder's co
 - **AI proposes, the founder confirms.** No AI output is written to the event log without an explicit user click.
 - **Never claim legal advice.** The disclaimer text is in `docs/00-overview.md`. YC SAFE templates are used unmodified. Every other document is "attach your own".
 - **Everything works offline** except sending and receiving signatures.
+- **Help pages follow the app.** `apps/website/help/pages.json` records which app files each help page shows. A new help page gets an entry; a release runs `pnpm help:check` and updates the pages it lists (docs/07).
 - Keep the UI as simple as the mockups: the cap table is the home screen, plain language, any action one click away.
 
 ## Commands (to create in M0)

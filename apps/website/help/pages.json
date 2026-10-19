@@ -1,0 +1,15 @@
+{
+  "founders": {
+    "checked": "v0.1.3",
+    "covers": [
+      "apps/desktop/src/screens/StartChoice.tsx",
+      "apps/desktop/src/screens/Questions.tsx",
+      "apps/desktop/src/screens/Wizard.tsx",
+      "apps/desktop/src/wizard.ts",
+      "apps/desktop/src/components/GetStarted.tsx",
+      "apps/desktop/src/onboarding.ts",
+      "apps/desktop/src/copy.ts",
+      "apps/desktop/src/styles/app.css"
+    ]
+  }
+}

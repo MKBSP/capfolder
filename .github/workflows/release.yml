@@ -27,6 +27,13 @@ env:
     The macOS app is signed and notarized. The Windows installer isn't signed yet: on "Windows protected your PC", click More info → Run anyway. Installed apps update themselves from here.
     Found a bug? https://github.com/MKBSP/capfolder/issues
 jobs:
+  # Not blocking: lists the help pages (capfolder.com/help) whose app screens changed since they were last checked.
+  help-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: node scripts/help-check.mjs | tee -a "$GITHUB_STEP_SUMMARY"
   build:
     strategy:
       fail-fast: false

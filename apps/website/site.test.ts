@@ -143,3 +143,20 @@ test("Pro: 'tell me when it's ready' opens the Pro waitlist form (aONDJb) with t
   expect(pro).toContain("25% off the first year");
   expect(html).toContain('"aONDJb"');
 });
+
+test("help pages: each one is in help/pages.json with the app files it shows, and listed on /help/", async () => {
+  const { existsSync, readdirSync } = await import("node:fs");
+  const help = new URL("./help/", import.meta.url);
+  const pages = JSON.parse(readFileSync(new URL("pages.json", help), "utf8"));
+  const dirs = readdirSync(help, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && d.name !== "img")
+    .map((d) => d.name);
+  expect(Object.keys(pages).sort()).toEqual(dirs.sort());
+  const index = readFileSync(new URL("index.html", help), "utf8");
+  for (const [page, p] of Object.entries<{ checked: string; covers: string[] }>(pages)) {
+    expect(p.checked).toMatch(/^v\d+\.\d+\.\d+$/);
+    expect(p.covers.length).toBeGreaterThan(0);
+    for (const f of p.covers) expect([f, existsSync(new URL(`../../${f}`, import.meta.url))]).toEqual([f, true]);
+    expect(index).toContain(`href="/help/${page}/"`);
+  }
+});
