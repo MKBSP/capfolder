@@ -1,5 +1,5 @@
 stakeholder,type,class,shares,fd_percent,vested,unvested,safe_amount,safe_cap,safe_discount,as_converted_percent,doc_status
-Mads Petersen,common,Common,4000000,50.00,3000000,1000000,,,,,missing
+Tim Apple,common,Common,4000000,50.00,3000000,1000000,,,,,missing
 Ana Ribeiro,common,Common,3000000,37.50,2250000,750000,,,,,missing
 Lisa Moreau,option,Common,40000,0.50,10000,30000,,,,,signed
 João Silva,option,Common,40000,0.50,0,40000,,,,,missing

@@ -26,7 +26,7 @@ describe("sheets", () => {
     expect(rows).toContainEqual(["Option pool available", "920000"]);
     expect(rows).toContainEqual(["SAFEs outstanding (USD)", "900000"]);
     expect(rows).toContainEqual([
-      "Mads Petersen",
+      "Tim Apple",
       "common",
       "Common",
       "4000000",
@@ -109,7 +109,7 @@ describe("sheets", () => {
       .join("|")
       .replace(DISCLAIMER, "");
     expect(all).toContain("Lisa Moreau");
-    for (const other of ["Mads Petersen", "Ana Ribeiro", "João Silva", "Y Combinator", "Fund X", "Angel A"])
+    for (const other of ["Tim Apple", "Ana Ribeiro", "João Silva", "Y Combinator", "Fund X", "Angel A"])
       expect(all).not.toContain(other);
   });
 });
@@ -131,7 +131,7 @@ describe("xlsx", () => {
     const evil = [
       ...base,
       ev("STAKEHOLDER", {
-        id: "sh_mads",
+        id: "sh_tim",
         name: { legal_name: '=HYPERLINK("x")&<b>' },
         stakeholder_type: "INDIVIDUAL",
       }),
@@ -147,7 +147,7 @@ test("pdf renders, including names outside the PDF font", async () => {
   expect(strFromU8(pdf.slice(0, 5))).toBe("%PDF-");
   const odd = [
     ...base,
-    ev("STAKEHOLDER", { id: "sh_mads", name: { legal_name: "Zoë 李 ≈ →" }, stakeholder_type: "INDIVIDUAL" }),
+    ev("STAKEHOLDER", { id: "sh_tim", name: { legal_name: "Zoë 李 ≈ →" }, stakeholder_type: "INDIVIDUAL" }),
   ];
   expect((await toPdf(sheets(odd, AS_OF), "x")).length).toBeGreaterThan(1000);
 });
@@ -207,7 +207,7 @@ describe("lawyer package", () => {
       .join("");
     const txt = `${files["README.txt"]}${files["whats-missing.txt"]}${xlsx}`;
     expect(txt).toContain("Lisa Moreau");
-    for (const other of ["Mads Petersen", "Ana Ribeiro", "João Silva", "Fund X"])
+    for (const other of ["Tim Apple", "Ana Ribeiro", "João Silva", "Fund X"])
       expect(txt).not.toContain(other);
   });
   test("removed documents are left out", () => {

@@ -14,7 +14,7 @@ test("Welcome → Try the sample company: a read-only Acme in app data, with a b
   await userEvent.click(await screen.findByRole("button", { name: "Try the sample company" }));
   expect(await screen.findByText("Fully diluted")).toBeInTheDocument();
   expect(screen.getByText(/Sample company · nothing here is real/)).toBeInTheDocument();
-  expect(screen.getAllByText("Mads Petersen").length).toBeGreaterThan(0);
+  expect(screen.getAllByText("Tim Apple").length).toBeGreaterThan(0);
   expect(screen.queryByText(/missing from the folder/)).toBeNull(); // its documents are filed too
   expect(screen.queryByRole("group", { name: /Get started/ })).toBeNull();
   expect(fp.fs.existsSync("/appdata/sample/docs/safes/2022-01-10_y-combinator.pdf")).toBe(true);

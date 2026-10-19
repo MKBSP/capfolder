@@ -38,7 +38,7 @@ describe("acme-docs golden (F-09)", () => {
 describe("classify", () => {
   test("a grant notice that names the plan is a grant", () =>
     expect(classify(txt("grant-lisa.txt"))?.type).toBe("option_grant"));
-  test("an SPA that mentions 83(b) is an SPA", () => expect(classify(txt("spa-mads.txt"))?.type).toBe("spa"));
+  test("an SPA that mentions 83(b) is an SPA", () => expect(classify(txt("spa-tim.txt"))?.type).toBe("spa"));
   test("a board consent adopting the plan is a consent", () =>
     expect(classify(txt("board-consent-2025.txt"))?.type).toBe("board_consent"));
   test("an invoice that mentions shares is not skipped", () =>

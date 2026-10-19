@@ -1045,7 +1045,7 @@ test("no violations or unknown types in acme", () => {
 });
 test("row order and core numbers", () => {
   expect(rows.map((r) => [r.stakeholder, r.type, r.shares, r.fdPercent, r.vested, r.unvested])).toEqual([
-    ["Mads Petersen", "common", 4000000n, "50.00", 3000000n, 1000000n],
+    ["Tim Apple", "common", 4000000n, "50.00", 3000000n, 1000000n],
     ["Ana Ribeiro", "common", 3000000n, "37.50", 2250000n, 750000n],
     ["Lisa Moreau", "option", 40000n, "0.50", 10000n, 30000n],
     ["João Silva", "option", 40000n, "0.50", 0n, 40000n],
@@ -1483,7 +1483,7 @@ describe("exercise then repurchase (F-23, F-24)", () => {
 describe("founder repurchase of unvested (F-24)", () => {
   test("Mads leaves at month 36: unvested 1,000,000 repurchased", () => {
     const r = rows([ev("TX_STOCK_REPURCHASE", { id: "p1", date: "2026-10-07", security_id: "CS-1", quantity: "1000000", price: { amount: "0.00001", currency: "USD" } })], "2027-10-07");
-    expect(find(r, "Mads Petersen")).toMatchObject({ shares: 3000000n, vested: 3000000n, unvested: 0n });
+    expect(find(r, "Tim Apple")).toMatchObject({ shares: 3000000n, vested: 3000000n, unvested: 0n });
   });
 });
 
@@ -1519,7 +1519,7 @@ describe("correction and reversal (F-18)", () => {
 describe("as-of replay", () => {
   test("before anything was issued: no rows", () => expect(rows([], "2021-09-13")).toEqual([]));
   test("2023-01-01: founders and YC only, no pool before plan approval", () => {
-    expect(rows([], "2023-01-01").map((x) => x.stakeholder)).toEqual(["Mads Petersen", "Ana Ribeiro", "Y Combinator"]);
+    expect(rows([], "2023-01-01").map((x) => x.stakeholder)).toEqual(["Tim Apple", "Ana Ribeiro", "Y Combinator"]);
   });
   test("every as-of between events has FD summing to 100.00", () => {
     for (const d of ["2021-09-14", "2022-01-10", "2023-02-20", "2023-03-14", "2025-09-30", "2025-10-07", "2026-03-02", "2026-10-07"]) {

@@ -143,7 +143,7 @@ describe("sorting a messy folder (F-09)", () => {
   }, 20_000);
 
   test("a photo goes through OCR", async () => {
-    await sorting({ "photo.jpg": new Uint8Array([1, 2, 3]) }, { ocrText: fixture("ciiaa-mads.txt") });
+    await sorting({ "photo.jpg": new Uint8Array([1, 2, 3]) }, { ocrText: fixture("ciiaa-tim.txt") });
     expect(screen.getByText(/IP assignment \(CIIAA\) → docs\/employees\//)).toBeTruthy();
   }, 20_000);
 
@@ -279,7 +279,7 @@ test("no signature found: filing asks, and only a ticked override counts it as p
   expect(added.data.flags).not.toContain("draft");
 }, 20_000);
 
-describe("knowing what's going on (Mads' test, 2026-10-16)", () => {
+describe("knowing what's going on (Tim' test, 2026-10-16)", () => {
   test("a folder with no documents says so", async () => {
     const fp = acmePlatform({ pickFolder: "/home/me/Downloads/empty" });
     fp.fs.writeSync("/home/me/Downloads/empty/notes.txt", "x");

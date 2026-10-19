@@ -12,7 +12,7 @@ test("no violations or unknown types in acme", () => {
 });
 test("row order and core numbers", () => {
   expect(rows.map((r) => [r.stakeholder, r.type, r.shares, r.fdPercent, r.vested, r.unvested])).toEqual([
-    ["Mads Petersen", "common", 4000000n, "50.00", 3000000n, 1000000n],
+    ["Tim Apple", "common", 4000000n, "50.00", 3000000n, 1000000n],
     ["Ana Ribeiro", "common", 3000000n, "37.50", 2250000n, 750000n],
     ["Lisa Moreau", "option", 40000n, "0.50", 10000n, 30000n],
     ["João Silva", "option", 40000n, "0.50", 0n, 40000n],

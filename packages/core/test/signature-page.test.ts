@@ -11,7 +11,7 @@ test("adds one signature page with a box per signer, in order, and keeps the ori
     title: "SAFE · Fund Y",
     signers: [
       { name: "Fund Y", email: "fund@y.example" },
-      { name: "Mads Petersen", email: "mads@acme.example" },
+      { name: "Tim Apple", email: "tim@acme.example" },
     ],
   });
   const out = await PDFDocument.load(r.pdf);

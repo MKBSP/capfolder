@@ -1,6 +1,6 @@
 ACME INC.
 RESTRICTED STOCK PURCHASE AGREEMENT
-This Restricted Stock Purchase Agreement is entered into as of September 14, 2021 between Acme Inc., a Delaware corporation (the "Company"), and Mads Petersen (the "Purchaser").
+This Restricted Stock Purchase Agreement is entered into as of September 14, 2021 between Acme Inc., a Delaware corporation (the "Company"), and Tim Apple (the "Purchaser").
 1. Purchase and Sale. The Purchaser agrees to purchase from the Company, and the Company agrees to sell to the Purchaser, 4,000,000 shares of the Company's Common Stock (the "Shares") at a price of $0.00001 per share.
 2. 83(b) Election. The Purchaser understands that an election under Section 83(b) of the Internal Revenue Code must be filed within 30 days.
-PURCHASER: Mads Petersen
+PURCHASER: Tim Apple

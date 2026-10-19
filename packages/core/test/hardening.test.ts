@@ -73,7 +73,7 @@ describe("critical: duplicate security ids", () => {
     );
     expect(r).toEqual({ ok: false, errors: ["TX_STOCK_ISSUANCE n1: security CS-1 already exists"] });
     const s = reduceAt([ev("TX_STOCK_ISSUANCE", stockTx({ security_id: "CS-1" }))]);
-    expect(capTableRows(s).find((x) => x.stakeholder === "Mads Petersen")!.shares).toBe(4000000n);
+    expect(capTableRows(s).find((x) => x.stakeholder === "Tim Apple")!.shares).toBe(4000000n);
   });
 });
 
@@ -112,7 +112,7 @@ describe("critical: schema-valid numbers never crash the reducer", () => {
       base.map((e) => (e.id === bad.id ? bad : e)),
       "2026-10-07",
     );
-    expect(capTableRows(s).find((x) => x.stakeholder === "Mads Petersen")!.vested).toBeNull();
+    expect(capTableRows(s).find((x) => x.stakeholder === "Tim Apple")!.vested).toBeNull();
   });
   test("a malformed transaction is a violation, not an exception", () => {
     const s = reduceAt([

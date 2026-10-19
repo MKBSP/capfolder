@@ -1,7 +1,7 @@
 Acme Inc. cap table export,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,
 Stakeholder,Email,Security type,Share class,Shares,Price per share,Exercise price,Issue date,Vesting start date,Vesting period (months),Cliff (months),Investment amount,Valuation cap,Discount,MFN
-Mads Petersen,mads@acme.example,Common,Common,"4,000,000",$0.00001,,9/14/2021,10/7/2023,48,12,,,,
+Tim Apple,tim@acme.example,Common,Common,"4,000,000",$0.00001,,9/14/2021,10/7/2023,48,12,,,,
 Ana Ribeiro,,Common,Common,"3,000,000",$0.00001,,9/14/2021,10/7/2023,48,12,,,,
 Lisa Moreau,,Option,Common,"40,000",,$0.12,10/7/2025,10/7/2025,48,12,,,,
 João Silva,,ISO,Common,"40,000",,$0.12,3/2/2026,3/2/2026,48,12,,,,

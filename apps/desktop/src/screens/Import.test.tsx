@@ -89,7 +89,7 @@ test("import a spreadsheet: map columns, totals must match or be accepted with a
   const log = fp.fs.readSync(`${fp.root}/events.jsonl`);
   expect(log).toContain('"source":"import:pulley.csv"');
   expect(log).toContain("Old tool counted a cancelled grant");
-  expect(fp.fs.readSync(`${fp.root}/captable.csv`)).toContain("Mads Petersen,common,Common,4000000,50.00");
+  expect(fp.fs.readSync(`${fp.root}/captable.csv`)).toContain("Tim Apple,common,Common,4000000,50.00");
 });
 
 test("a spreadsheet with problems lists them per row and can't be saved", async () => {

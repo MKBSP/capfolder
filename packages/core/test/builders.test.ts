@@ -131,7 +131,7 @@ describe("builders produce the right numbers", () => {
     const s = state("2026-11-02", asEvents(x));
     expect(s.violations).toEqual([]);
   });
-  test("repurchase of Mads's unvested shares", () => {
+  test("repurchase of Tim's unvested shares", () => {
     const r = b.repurchaseUnvested({ state: state(), securityId: "CS-1", date: "2026-10-07" });
     expect(r.map((d) => [d.type, d.data.quantity])).toEqual([["TX_STOCK_REPURCHASE", "1000000"]]);
   });

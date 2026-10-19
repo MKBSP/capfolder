@@ -47,7 +47,7 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Website: enable GitHub Pages (Settings → Pages → GitHub Actions), point capfolder.com at it, then add `apps/website/CNAME` with `capfolder.com`.
 - [x] Umami Cloud site `capfolder.com` (id in `apps/website/index.html`).
 - [ ] Cloudflare Email Routing: `privacy@capfolder.com` → your inbox (the site links to it).
-- [ ] Check the site's personal story is right ("28 investors", "YC W22", the name "Mads Petersen") and re-check the comparison table against vendors' pages in launch week.
+- [ ] Check the site's personal story is right ("28 investors", "YC W22", the name "Tim Apple") and re-check the comparison table against vendors' pages in launch week.
 - [ ] Relay hosting: set `PING_FILE` to a persistent path; turn off reverse-proxy access logs for `/ping` (IP + time would undo "no IP"). The site says "with our hosted signing relay": host it (Documenso storage encrypted at rest) before launch, or drop that line.
 - [ ] Privacy contact: the site's privacy section points to GitHub issues; add a contact email (and your legal name/address if the lawyer says so, GDPR Art. 13). Lawyer: is the random install id OK without a deletion route?
 - [ ] Post `docs/launch/show-hn.md` and `docs/launch/bookface.md` (edit first).

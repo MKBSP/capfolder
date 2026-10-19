@@ -10,6 +10,6 @@ See Section 2 for certain additional defined terms.
 (a) Equity Financing. If there is an Equity Financing before the termination of this Safe, on the initial closing of such Equity Financing, this Safe will automatically convert into the number of shares of Safe Preferred Stock equal to the Purchase Amount divided by the Conversion Price.
 IN WITNESS WHEREOF, the undersigned have caused this Safe to be duly executed and delivered.
 ACME INC.
-By: /s/ Mads Petersen
+By: /s/ Tim Apple
 INVESTOR: Y Combinator
 By: /s/ Authorized Signatory

@@ -29,14 +29,14 @@ describe("unsigned drafts never file themselves as proof", () => {
 
   test("signed evidence wins: e-signature stamps, /s/, a digital signature in the PDF", () => {
     expect(unsignedSignal(`DRAFT\n${safe}\nDocuSign Envelope ID: 1234-ABCD`)).toBeUndefined();
-    expect(unsignedSignal(`DRAFT\n${safe}\nBy: /s/ Mads Petersen`)).toBeUndefined();
+    expect(unsignedSignal(`DRAFT\n${safe}\nBy: /s/ Tim Apple`)).toBeUndefined();
     expect(unsignedSignal(`DRAFT\n${safe}`, { signedPdf: true })).toBeUndefined();
     expect(sortText(safe, state).status).toBe("auto");
   });
 
   test("checkboxes and filled-in brackets in a signed document aren't blanks", () => {
     expect(
-      unsignedSignal(`${safe}\n[X] accredited  [ ] not accredited\n[Name: Mads Petersen]`),
+      unsignedSignal(`${safe}\n[X] accredited  [ ] not accredited\n[Name: Tim Apple]`),
     ).toBeUndefined();
   });
 

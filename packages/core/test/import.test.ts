@@ -41,8 +41,8 @@ describe("reading files", () => {
     expect(h).toBe(2);
     expect(header[0]).toBe("Stakeholder");
     expect(body[0]!.slice(0, 5)).toEqual([
-      "Mads Petersen",
-      "mads@acme.example",
+      "Tim Apple",
+      "tim@acme.example",
       "Common",
       "Common",
       "4,000,000",

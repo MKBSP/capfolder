@@ -5,7 +5,7 @@ import { acmeEvents } from "./helpers";
 const terms = acmeEvents().find((e) => e.type === "VESTING_TERMS")!.data;
 
 describe("4y / 1y cliff / monthly", () => {
-  test("Mads: 36 of 48 months", () => {
+  test("Tim: 36 of 48 months", () => {
     expect(vestedAt(4000000n, terms, "2023-10-07", "2026-10-07")).toEqual({
       vested: 3000000n,
       math: "3,000,000 = floor(4,000,000 × 36/48), as of 2026-10-07",

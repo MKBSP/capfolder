@@ -26,7 +26,7 @@ function build(ops: Op[]): VaultEvent[] {
     const s = reduce(events, date);
     const p = BigInt(pct);
     const id = `p${k++}`;
-    const holder = ["sh_mads", "sh_ana", "sh_lisa", "sh_joao"][pct % 4]!;
+    const holder = ["sh_tim", "sh_ana", "sh_lisa", "sh_joao"][pct % 4]!;
     const opts = [...s.securities.values()].filter((x) => x.kind === "equity" && x.quantity > 0n);
     const pick = opts[pct % Math.max(opts.length, 1)];
     if (op === "stock") {

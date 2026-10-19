@@ -12,7 +12,7 @@ const targets = (kind: string) =>
 
 test("acme gaps", () => {
   expect(targets("no_signed_doc")).toEqual(["CS-1", "CS-2", "OPT-2", "SAFE-3"]);
-  expect(targets("no_ip_assignment")).toEqual(["sh_ana", "sh_joao", "sh_lisa", "sh_mads"]);
+  expect(targets("no_ip_assignment")).toEqual(["sh_ana", "sh_joao", "sh_lisa", "sh_tim"]);
   expect(targets("no_board_consent")).toEqual(["OPT-1", "OPT-2"]);
   expect(targets("no_plan_documents")).toEqual(["plan_2025"]);
   expect(targets("missing_83b")).toEqual([]);

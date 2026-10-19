@@ -137,7 +137,7 @@ describe("exercise then repurchase (F-23, F-24)", () => {
 });
 
 describe("founder repurchase of unvested (F-24)", () => {
-  test("Mads leaves at month 36: unvested 1,000,000 repurchased", () => {
+  test("Tim leaves at month 36: unvested 1,000,000 repurchased", () => {
     const r = rows(
       [
         ev("TX_STOCK_REPURCHASE", {
@@ -150,7 +150,7 @@ describe("founder repurchase of unvested (F-24)", () => {
       ],
       "2027-10-07",
     );
-    expect(find(r, "Mads Petersen")).toMatchObject({ shares: 3000000n, vested: 3000000n, unvested: 0n });
+    expect(find(r, "Tim Apple")).toMatchObject({ shares: 3000000n, vested: 3000000n, unvested: 0n });
   });
 });
 
@@ -234,7 +234,7 @@ describe("as-of replay", () => {
   test("before anything was issued: no rows", () => expect(rows([], "2021-09-13")).toEqual([]));
   test("2023-01-01: founders and YC only, no pool before plan approval", () => {
     expect(rows([], "2023-01-01").map((x) => x.stakeholder)).toEqual([
-      "Mads Petersen",
+      "Tim Apple",
       "Ana Ribeiro",
       "Y Combinator",
     ]);

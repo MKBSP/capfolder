@@ -65,7 +65,7 @@ describe("one-person scope", () => {
       generatedAt: "2026-10-10T00:00:00Z",
       docs: Object.fromEntries(paths.map((p) => [p, new Uint8Array([1])])),
     });
-    expect(Object.keys(files).join("|")).not.toContain("mads");
+    expect(Object.keys(files).join("|")).not.toContain("tim");
     expect(files["README.txt"]).toContain("1 document is shared with other people and was left out");
   });
   test("no company totals that would reveal other holdings", () => {

@@ -88,7 +88,7 @@ test("transfer refuses more than the holder has, and says why", async () => {
   await person("Ana Ribeiro");
   await userEvent.click(screen.getByRole("button", { name: "Transfer…" }));
   const dialog = within(screen.getByRole("dialog"));
-  await userEvent.selectOptions(dialog.getByLabelText("To"), "Mads Petersen");
+  await userEvent.selectOptions(dialog.getByLabelText("To"), "Tim Apple");
   await userEvent.type(dialog.getByLabelText(/^Shares/), "9000000");
   await userEvent.click(dialog.getByRole("button", { name: "Record transfer" }));
   expect(await dialog.findByText("Only 3,000,000 shares are outstanding on CS-2.")).toBeInTheDocument();

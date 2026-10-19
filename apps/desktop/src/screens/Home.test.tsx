@@ -22,7 +22,7 @@ test("acme cap table as of 2026-10-07", async () => {
     .getAllByRole("row")
     .slice(1)
     .map((r) => r.textContent);
-  expect(rows[0]).toContain("Mads Petersen");
+  expect(rows[0]).toContain("Tim Apple");
   expect(rows[0]).toContain("Founder · Common4,000,00050.00%75%");
   expect(rows[2]).toContain("Employee · Option40,0000.50%25%");
   expect(rows[3]).toContain("Cliff Mar 2027");
@@ -51,7 +51,7 @@ test("changing the as-of date recomputes everything", async () => {
   fireEvent.change(screen.getByLabelText("As of"), { target: { value: "2023-01-01" } });
   const rows = within(screen.getByRole("table")).getAllByRole("row").slice(1);
   expect(rows.map((r) => r.textContent?.split(/Founder|Post-money/)[0])).toEqual([
-    "Mads Petersen",
+    "Tim Apple",
     "Ana Ribeiro",
     "SAFEs · as-converted, not in fully diluted",
     "Y Combinator",
@@ -66,7 +66,7 @@ test("export csv as of the chosen date", async () => {
   await userEvent.click(screen.getByLabelText(/CSV/));
   await userEvent.click(screen.getByRole("button", { name: "Save…" }));
   expect(saved["acme-inc-cap-table-2026-10-07.csv"]).toContain(
-    "CS-1,Mads Petersen,Individual,Stock,Common,2021-09-14,4000000,4000000,3000000,1000000,",
+    "CS-1,Tim Apple,Individual,Stock,Common,2021-09-14,4000000,4000000,3000000,1000000,",
   );
 });
 

@@ -58,12 +58,12 @@ describe("full cap table workbook", () => {
     expect(tab("Convertibles").rows[3]!.map(text)).toContain("Valuation Cap");
     expect(tab("2025 Equity Incentive Plan Ledger").rows[3]!.map(text)).toContain("Expiration Date");
     const cs = tab("Common (CS) Ledger");
-    const mads = rowOf(cs, "CS-1")!;
-    expect(mads[col(cs, "Stakeholder Name")]).toBe("Mads Petersen");
-    expect(mads[col(cs, "Shares Outstanding")]).toBe("4000000");
-    expect(mads[col(cs, "Shares Vested")]).toBe("3000000");
-    expect(mads[col(cs, "Vesting Schedule")]).toBe("48 months, 12-month cliff, monthly thereafter");
-    expect(mads[col(cs, "Debt Cancelled")]).toBe(""); // OCF has no field for it
+    const tim = rowOf(cs, "CS-1")!;
+    expect(tim[col(cs, "Stakeholder Name")]).toBe("Tim Apple");
+    expect(tim[col(cs, "Shares Outstanding")]).toBe("4000000");
+    expect(tim[col(cs, "Shares Vested")]).toBe("3000000");
+    expect(tim[col(cs, "Vesting Schedule")]).toBe("48 months, 12-month cliff, monthly thereafter");
+    expect(tim[col(cs, "Debt Cancelled")]).toBe(""); // OCF has no field for it
   });
 
   test("totals equal the engine's numbers", () => {
@@ -85,8 +85,8 @@ describe("full cap table workbook", () => {
 
   test("percentages are fractions (formatted as %), dates are dates", () => {
     const own = tab("Ownership");
-    const mads = own.rows.find((r) => text(r[0] ?? null) === "Mads Petersen")!;
-    expect(mads[col(own, "Fully Diluted % Ownership")]).toEqual({ pct: "0.5" });
+    const tim = own.rows.find((r) => text(r[0] ?? null) === "Tim Apple")!;
+    expect(tim[col(own, "Fully Diluted % Ownership")]).toEqual({ pct: "0.5" });
     const cs = tab("Common (CS) Ledger");
     expect(
       rowOf(cs, "CS-1") && cs.rows.find((r) => text(r[0] ?? null) === "CS-1")![col(cs, "Issue Date")],

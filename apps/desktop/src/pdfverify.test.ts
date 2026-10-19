@@ -68,12 +68,12 @@ test("the signature page itself may gain signatures but must keep its own text (
     if (extra) p.drawText(extra, { x: 72, y: 600, font: f });
     return d.save();
   };
-  const sent = await make("IN WITNESS WHEREOF ACME INC. By: Mads Petersen CEO");
+  const sent = await make("IN WITNESS WHEREOF ACME INC. By: Tim Apple CEO");
   expect(
-    await verifySigned(sent, await make("IN WITNESS WHEREOF ACME INC. By: Mads Petersen CEO", "Mads P"), 1),
+    await verifySigned(sent, await make("IN WITNESS WHEREOF ACME INC. By: Tim Apple CEO", "Tim P"), 1),
   ).toEqual({ ok: true });
   expect(
-    await verifySigned(sent, await make("IN WITNESS WHEREOF EVIL INC. By: Mads Petersen CEO"), 1),
+    await verifySigned(sent, await make("IN WITNESS WHEREOF EVIL INC. By: Tim Apple CEO"), 1),
   ).toMatchObject({
     ok: false,
     reason: "Page 2 of the signed copy doesn't keep the text you sent.",

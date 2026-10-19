@@ -9,7 +9,7 @@ import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
 import { fakeRelay } from "../test/fakeRelay";
 
-const ME = "mads@acme.example";
+const ME = "tim@acme.example";
 
 async function pdf(text: string) {
   const d = await PDFDocument.create();
@@ -334,7 +334,7 @@ describe("M5 review", () => {
     await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
     await userEvent.click(within(dialog).getByRole("button", { name: "Send" }));
     expect(await screen.findByRole("heading", { name: "Signatures" })).toBeInTheDocument();
-    expect([...fp.relay.doc.envelopes.values()][0]!.recipients.map((r) => r.name)).toEqual(["Mads Petersen"]);
+    expect([...fp.relay.doc.envelopes.values()][0]!.recipients.map((r) => r.name)).toEqual(["Tim Apple"]);
   });
 
   test("I8: if recording the send fails, the envelope is withdrawn from the relay", async () => {
@@ -397,11 +397,11 @@ describe("send feedback (beta test)", () => {
     let dialog = await open();
     await userEvent.type(within(dialog).getByLabelText("Title"), "Consent");
     await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
-    await userEvent.type(within(dialog).getByLabelText("Your name, as it should appear"), "Mads P");
+    await userEvent.type(within(dialog).getByLabelText("Your name, as it should appear"), "Tim P");
     await userEvent.click(within(dialog).getByRole("button", { name: "Send" }));
     await screen.findByRole("heading", { name: "Signatures" });
     dialog = await open();
-    expect(within(dialog).getByLabelText("Your name, as it should appear")).toHaveValue("Mads P");
+    expect(within(dialog).getByLabelText("Your name, as it should appear")).toHaveValue("Tim P");
   });
 });
 

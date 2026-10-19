@@ -11,7 +11,7 @@ describe("M4 review: never file against the wrong row", () => {
   test("C1 a consent links only the grant whose name and count share a resolution", () => {
     const joao = sort(`ACME INC.
 ACTION BY UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS
-Directors: Mads Petersen, Lisa Moreau
+Directors: Tim Apple, Lisa Moreau
 RESOLVED, that the Company grants an option to purchase 40,000 shares to João Silva under the 2025 Equity Incentive Plan.`);
     expect(joao.targets).toEqual(["OPT-2"]);
     const lisa140 = sort(`ACME INC.

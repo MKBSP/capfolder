@@ -14,7 +14,7 @@ const values = ycSafeValues({
   discount: "0.20",
   date: "2026-10-14",
   state: "Delaware",
-  signerName: "Mads Petersen",
+  signerName: "Tim Apple",
   signerTitle: "CEO",
 });
 
@@ -38,7 +38,7 @@ test("fills every blank in the cap SAFE and changes nothing else", () => {
     .replace(/^Acme Inc\.$/m, "[Company Name]")
     .replace(", Acme Inc., a", ", [Company Name], a")
     .replace(/^ACME INC\.$/m, "[COMPANY]")
-    .replace("Mads Petersen", "[name]")
+    .replace("Tim Apple", "[name]")
     .replace(/^CEO$/m, "[title]");
   expect(back).toBe(text(f));
 });

@@ -41,7 +41,7 @@ const rowsOf = (events: VaultEvent[], who: string, asOf = "2026-10-07") =>
   capTableRows(reduce(events, asOf)).filter((r) => r.stakeholder === who);
 
 describe("transfer (F-20)", () => {
-  test("part of Mads' vesting shares to a trust: both keep the schedule, totals unchanged", async () => {
+  test("part of Tim' vesting shares to a trust: both keep the schedule, totals unchanged", async () => {
     const t = b.transfer({
       state: acme(),
       securityId: "CS-1",
@@ -50,12 +50,12 @@ describe("transfer (F-20)", () => {
       date: "2026-01-01",
     });
     if ("error" in t) throw new Error(t.error);
-    const { events } = await write([holder("Petersen Family Trust"), ...t.drafts]);
-    const trust = rowsOf(events, "Petersen Family Trust")[0]!;
-    const mads = rowsOf(events, "Mads Petersen")[0]!;
-    expect([trust.shares, mads.shares]).toEqual([1000000n, 3000000n]);
+    const { events } = await write([holder("Apple Family Trust"), ...t.drafts]);
+    const trust = rowsOf(events, "Apple Family Trust")[0]!;
+    const tim = rowsOf(events, "Tim Apple")[0]!;
+    expect([trust.shares, tim.shares]).toEqual([1000000n, 3000000n]);
     // same start date, same 4y/1y schedule: 36/48 vested on both
-    expect([trust.vested, mads.vested]).toEqual([750000n, 2250000n]);
+    expect([trust.vested, tim.vested]).toEqual([750000n, 2250000n]);
     expect(reduce(events, "2026-10-07").violations).toEqual([]);
   });
 
@@ -124,7 +124,7 @@ describe("transfer (F-20)", () => {
     expect(err({ securityId: "OPT-1", quantity: "10" })).toBe(
       "Options can't be transferred. Record an exercise first, then transfer the shares.",
     );
-    expect(err({ toStakeholderId: "sh_mads", quantity: "10" })).toBe("Pick someone other than the holder.");
+    expect(err({ toStakeholderId: "sh_tim", quantity: "10" })).toBe("Pick someone other than the holder.");
   });
 
   test("a transferred holding needs its own paperwork", async () => {
@@ -164,7 +164,7 @@ describe("transfer (F-20)", () => {
     const s = reduce(events, "2030-01-01");
     for (const x of [...s.securities.values()].filter((x) => x.kind === "stock" && x.quantity > 0n))
       expect(securityVested(x, s, "2030-01-01").unvested).toBe(0n);
-    expect(rowsOf(events, "Mads Petersen", "2030-01-01")[0]!.shares).toBe(2000000n);
+    expect(rowsOf(events, "Tim Apple", "2030-01-01")[0]!.shares).toBe(2000000n);
   });
 });
 
