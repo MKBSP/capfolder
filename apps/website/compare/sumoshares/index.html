@@ -16,11 +16,14 @@
 <header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/" aria-current="true">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
 <main>
   <div class="crumb"><a href="/">Capfolder</a> · <a href="/compare/">Compare</a> · SumoShares</div>
-  <div class="logos"><img src="/favicon.svg" width="28" height="28" alt="Capfolder"><span class="m">vs</span><b>SumoShares</b></div>
-  <h1>Capfolder vs SumoShares</h1>
-  <p class="lead narrow">Both are free, open-source Carta alternatives. SumoShares is a web app you deploy to your own Cloudflare account. Capfolder is a desktop app: no setup, and your cap table is a folder on your computer.</p>
-  <div class="verdict narrow"><b>In short:</b> leaving Carta with lots of option holders and a developer to run it? SumoShares has the holder portal and online exercise. An early-stage founder with SAFEs, signatures to collect and no developer? Capfolder.</div>
-  <p class="crumb">This comparison is written by the Capfolder team. Checked October 2026.</p>
+  <div class="hero">
+    <div class="logos"><img src="/favicon.svg" width="64" height="64" alt="Capfolder"><span class="vs">vs</span><span class="wordmark">SumoShares</span></div>
+    <h1>Capfolder vs SumoShares</h1>
+    <p class="lead">Two free, open-source Carta alternatives. SumoShares is a web app you deploy to Cloudflare. Capfolder is a desktop app: no setup, your cap table in a folder.</p>
+    <img class="ill" src="/img/ill/network.svg" width="360" height="270" alt="">
+    <div class="verdict"><b>In short:</b> many option holders and a developer to run it? SumoShares. SAFEs, signatures and no developer? Capfolder.</div>
+    <p class="crumb">Written by the Capfolder team. Checked October 2026.</p>
+  </div>
 
   <h2>Side by side</h2>
   <div class="tbl"><table>
@@ -30,7 +33,6 @@
       <tr><th scope="row">Where your data lives</th><td class="us">A folder on your computer</td><td>Your Cloudflare account</td></tr>
       <tr><th scope="row">Works offline</th><td class="us"><span class="y">Yes</span><br><span class="m">except sending signatures</span></td><td><span class="n">No</span></td></tr>
       <tr><th scope="row">Price</th><td class="us">Free<br><span class="m">Pro (sync, backup) coming</span></td><td>Free software<br><span class="m">$0 to about $5/month for Cloudflare, plus email</span></td></tr>
-      <tr><th scope="row">License</th><td class="us">AGPL-3.0</td><td>MIT</td></tr>
       <tr><th scope="row">SAFEs and convertible notes</th><td class="us"><span class="y">Yes</span></td><td><span class="n">No</span><br><span class="m">listed as not included</span></td></tr>
       <tr><th scope="row">E-signatures</th><td class="us"><span class="y">Yes</span><br><span class="m">investors sign from a link</span></td><td><span class="n">No</span><br><span class="m">the exercise form takes a typed name</span></td></tr>
       <tr><th scope="row">Documents</th><td class="us"><span class="y">Sorted for you, missing ones flagged</span></td><td>Upload and attach</td></tr>
@@ -48,40 +50,29 @@
   </table></div>
   <p class="src">Sources: <a href="https://github.com/noahdevkagan/sumoshares">SumoShares README</a>, <a href="https://sumoshares.com">sumoshares.com</a> (the site says "about $5 a month"; the README says free on Cloudflare's free plan), <a href="https://developers.cloudflare.com/workers/platform/pricing/">Cloudflare pricing</a>, <a href="https://sendfox.com/pricing">SendFox pricing</a>. Checked October 2026.</p>
 
-  <h2>Pros and cons</h2>
-  <div class="cols">
-    <div class="card"><h3>SumoShares does well</h3><ul>
-      <li>Employees log in and see their equity, and exercise options online.</li>
-      <li>409A and option-deadline reminders by email, every day.</li>
-      <li>A careful Carta import that checks every holder against Carta's numbers.</li>
-      <li>Free, MIT licensed, cheap to run.</li>
-    </ul></div>
-    <div class="card"><h3>Where SumoShares falls short</h3><ul>
-      <li>You need a developer to set it up, update it and keep it running.</li>
-      <li>No SAFEs or convertible notes, so it doesn't fit a pre-seed or seed company.</li>
-      <li>No signatures: documents are signed elsewhere and uploaded.</li>
-      <li>New (October 2026), US-only, and no automated tests yet.</li>
-    </ul></div>
-    <div class="card"><h3>Capfolder does well</h3><ul>
-      <li>No setup: download, open, done. Works offline.</li>
-      <li>SAFEs, option grants and signatures in one place.</li>
-      <li>Drop in your old documents and they're sorted; missing ones are flagged.</li>
-      <li>Every number shows its math, and the math is tested.</li>
-    </ul></div>
-    <div class="card"><h3>Where Capfolder falls short</h3><ul>
-      <li>No employee logins or online exercise yet.</li>
-      <li>No 409A tracking or reminders yet.</li>
-      <li>One computer at a time until sync ships in Pro.</li>
-    </ul></div>
+  <h2>At a glance</h2>
+  <div class="glance">
+    <div class="head"><span class="t"></span><span>Capfolder</span><span>SumoShares</span></div>
+    <div><span class="t"><img src="/img/icons/valuation.svg" width="24" height="24" alt="">Price</span><span><span class="chip good">Free</span></span><span><span class="chip">Free + hosting</span></span></div>
+    <div><span class="t"><img src="/img/icons/secure-access.svg" width="24" height="24" alt="">Your data</span><span><span class="chip good">Your computer</span></span><span><span class="chip">Your Cloudflare</span></span></div>
+    <div><span class="t"><img src="/img/icons/cap-table.svg" width="24" height="24" alt="">Features</span><span><span class="chip good">SAFEs, signing</span></span><span><span class="chip good">Portal, 409A</span></span></div>
+    <div><span class="t"><img src="/img/icons/investors.svg" width="24" height="24" alt="">Support</span><span><span class="chip">GitHub issues</span></span><span><span class="chip">GitHub issues</span></span></div>
+    <div><span class="t"><img src="/img/icons/round.svg" width="24" height="24" alt="">Future</span><span><span class="chip good">Open source</span></span><span><span class="chip good">Open source</span></span></div>
   </div>
 
-  <h2>Switching from SumoShares</h2>
-  <ol class="steps narrow">
-    <li>In SumoShares, open <b>Reports</b> and download <b>ocf.json</b> and the CSVs.</li>
-    <li>In Capfolder, create your company folder and choose <b>Import</b>, then pick the OCF file.</li>
-    <li>If the OCF file doesn't import, use the holders and securities CSVs with the spreadsheet import, and <a href="https://github.com/MKBSP/capfolder/issues/new?template=import.yml">tell us</a>.</li>
-    <li>Drop in your documents. Capfolder sorts them and lists what's missing.</li>
+  <h2>Which one fits you</h2>
+  <div class="cols choose">
+    <div class="card"><span class="wordmark">SumoShares</span><h3>Choose SumoShares if…</h3><ul><li>Employees should log in and exercise online.</li><li>You want 409A and deadline reminders by email.</li><li>You have a developer to deploy and run it.</li></ul></div>
+    <div class="card us"><img src="/favicon.svg" width="40" height="40" alt="Capfolder"><h3>Choose Capfolder if…</h3><ul><li>You want no setup and no server.</li><li>You issue SAFEs and collect signatures.</li><li>You want your old documents sorted for you.</li></ul></div>
+  </div>
+
+  <h2>Switching from SumoShares in 3 steps</h2>
+  <ol class="isteps">
+    <li><img src="/img/icons/data-room.svg" width="36" height="36" alt=""><h3>Export</h3>In SumoShares, <b>Reports</b> → download <b>ocf.json</b> and the CSVs.</li>
+    <li><img src="/img/icons/cap-table.svg" width="36" height="36" alt=""><h3>Import</h3>In Capfolder, choose <b>Import</b> and pick the OCF file (or the CSVs).</li>
+    <li><img src="/img/icons/safe.svg" width="36" height="36" alt=""><h3>Drop your documents</h3>Drop the folder in. Capfolder sorts it and lists what's missing.</li>
   </ol>
+<p class="crumb">An import that doesn't match? <a href="https://github.com/MKBSP/capfolder/issues/new?template=import.yml">Tell us</a> (describe the columns, don't attach your real file).</p>
 
   <h2>What's coming</h2>
   <p class="narrow">Items marked in orange close a gap with SumoShares.</p>

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --port 4321",
     "test": "vitest run",
-    "build": "rm -rf dist && mkdir dist && cp -r index.html help roadmap compare roadmap.js page.css _headers *.png *.ico *.svg site.webmanifest fonts dist/"
+    "build": "rm -rf dist && mkdir dist && cp -r index.html help roadmap compare img roadmap.js page.css _headers *.png *.ico *.svg site.webmanifest fonts dist/"
   },
   "devDependencies": {
     "vite": "8.3.1"
