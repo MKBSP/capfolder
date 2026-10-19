@@ -8,6 +8,7 @@
 | Field | Type | Required |
 |---|---|---|
 | Email | email | yes |
+| What stage is your company at? (added 2026-10-19) | Idea stage, company not founded yet / Founded, no funding yet / Pre-seed or seed (SAFEs, notes) / Priced round, Series A / Series B or later | no |
 | Which computer? | macOS / Windows / Linux | yes |
 | Updates: "Email me when there's a new version" | checkbox (consent for update emails) | no |
 | Hidden: `utm_source`, `ref` | URL params | — |
@@ -27,6 +28,6 @@
 # Tally: Pro waitlist form
 
 - **Form:** "Capfolder Pro: tell me when it's ready", id **`aONDJb`**, published 2026-10-16. Edit: https://tally.so/forms/aONDJb/edit
-- **Fields:** Email (required), Company (optional), "What would make Pro worth it for you?" (optional), hidden `utm_source` / `ref`.
+- **Fields:** Email (required), Company (optional), "What stage is your company at?" (same 5 options as the download form, optional; added 2026-10-19), "What would make Pro worth it for you?" (optional), hidden `utm_source` / `ref`.
 - **Promise made on the site and in the form:** everyone on this list gets **25% off the first year** of Pro. Honour it when billing ships (docs/15 item 1).
 - **Site:** the Pro card's "I want Pro: tell me when it's ready" button (`#prowait`, Umami event `pro-waitlist`) opens it as a popup.
