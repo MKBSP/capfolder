@@ -227,3 +227,39 @@ test("every sub-page has the same navbar, with its section marked", () => {
     expect([p, read(p).includes('href="/page.css"')]).toEqual([p, true]);
   }
 });
+
+test("story: the paperwork animation replaces the old list, and the Pause button pauses it too", () => {
+  const story = html.slice(
+    html.indexOf('id="story"'),
+    html.indexOf("</section>", html.indexOf('id="story"')),
+  );
+  expect(story).toContain("<capfolder-paperwork");
+  expect(story).not.toContain('class="lost');
+  expect(html).toContain('<script src="/capfolder-paperwork.js" defer></script>');
+  const anim = read("capfolder-paperwork.js");
+  expect(anim).toContain("motion-paused");
+  expect(anim).not.toMatch(/fetch\(|https?:\/\//);
+});
+
+const ROWS = [
+  "Price",
+  "Setup needed",
+  "Where your data lives",
+  "Works offline",
+  "Works outside the US",
+  "SAFEs",
+  "Option grants and vesting",
+  "E-signatures",
+  "Documents",
+  "409A valuations",
+  "Employee and investor logins",
+  "Round modelling",
+];
+test("compare tables: the same 12 rows on every page, each cell rated 0–3 with a key", () => {
+  for (const p of comparePages()) {
+    const table = read(p).match(/<div class="tbl">[\s\S]*?<\/table>/)?.[0] ?? "";
+    expect([p, [...table.matchAll(/<th scope="row">([^<]*)/g)].map((m) => m[1])]).toEqual([p, ROWS]);
+    expect([p, (table.match(/class="bar b[0-3]"/g) ?? []).length]).toEqual([p, ROWS.length * 2]);
+    expect([p, read(p).includes('class="key"')]).toEqual([p, true]);
+  }
+});

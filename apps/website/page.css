@@ -423,3 +423,32 @@ ol.steps li {
     display: none;
   }
 }
+.bar {
+  display: inline-flex;
+  gap: 3px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.bar i {
+  width: 16px;
+  height: 8px;
+  border-radius: 3px;
+  background: #e4e4e0;
+}
+.b1 i:first-child {
+  background: #a8d5b9;
+}
+.b2 i:nth-child(-n + 2) {
+  background: #4fa374;
+}
+.b3 i {
+  background: #1f6f4a;
+}
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  font-size: 13px;
+  color: #5b606b;
+  margin: 10px 0 0;
+}

@@ -11,6 +11,7 @@
       "!**/src/ocf/schemas-*.json",
       "!**/src/ocf/validators.gen.js",
       "!**/compare/img",
+      "!**/capfolder-paperwork.js",
       "!**/website/img",
       "!**/public/ocr",
       "!rules",
