@@ -199,11 +199,11 @@ describe("drafts", () => {
         investor: "Jorge Sandoval",
         amount: 20000,
         cap: 20000000,
-        email: "jorge@sandoval.com",
+        email: "jorge@sandoval.example",
       })
     ).drafts![0]!;
-    expect(safe.rows).toContainEqual(["Email", "jorge@sandoval.com"]);
-    expect(safe.route).toMatchObject({ name: "newSafe", prefill: { email: "jorge@sandoval.com" } });
+    expect(safe.rows).toContainEqual(["Email", "jorge@sandoval.example"]);
+    expect(safe.route).toMatchObject({ name: "newSafe", prefill: { email: "jorge@sandoval.example" } });
     const grant = (
       await propose("propose_grant", { person: "Ana Ribeiro", options: 40000, email: "ana@x.com" })
     ).drafts![0]!;

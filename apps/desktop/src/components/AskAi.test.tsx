@@ -133,7 +133,7 @@ test("a SAFE draft's email lands in the form", async () => {
                           type: "tool_use",
                           id: "t1",
                           name: "propose_safe",
-                          input: { investor: "Jorge Sandoval", amount: 20000, email: "jorge@sandoval.com" },
+                          input: { investor: "Jorge Sandoval", amount: 20000, email: "jorge@sandoval.example" },
                         },
                       ],
                     }
@@ -156,5 +156,5 @@ test("a SAFE draft's email lands in the form", async () => {
   const panel = await screen.findByRole("complementary", { name: "Ask AI" });
   await userEvent.type(within(panel).getByLabelText("Ask a question"), "SAFE for Jorge{Enter}");
   await userEvent.click(await within(panel).findByRole("button", { name: "Open in the SAFE form" }));
-  expect(await screen.findByDisplayValue("jorge@sandoval.com")).toBeInTheDocument();
+  expect(await screen.findByDisplayValue("jorge@sandoval.example")).toBeInTheDocument();
 });

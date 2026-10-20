@@ -1,6 +1,6 @@
 # Tally — website download form
 
-- **Account:** madskbsp@gmail.com, workspace `wAQeRl`
+- **Account:** the maintainer's Tally account, workspace `wAQeRl`
 - **Form:** "Download Capfolder", id **`rjxQjR`**. Status: **published 2026-10-15**.
 - **Edit:** https://tally.so/forms/rjxQjR/edit
 
