@@ -34,7 +34,7 @@ export function VestingGraph({ x, name }: { x: Security; name: string }) {
       d += steps ? `H${px(i)}V${py(pts[i]!.cumulative)}` : `L${px(i)},${py(pts[i]!.cumulative)}`;
     return d;
   };
-  const today = pts.findLastIndex((p) => p.date <= s.asOf);
+  const today = pts.filter((p) => p.date <= s.asOf).length - 1; // dates are sorted
   const cliff = pts.findIndex((p) => p.cumulative > 0n);
   const vestedNow = today >= 0 ? pts[today]!.cumulative : 0n;
   const base = py(0n);

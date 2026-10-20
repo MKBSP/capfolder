@@ -20,6 +20,7 @@ import { VestingGraph } from "../components/VestingGraph";
 import { day, money, num, plusDays, shares, todayIso, withCurrency } from "../fmt";
 import { join } from "../fs/types";
 import { useApp } from "../state";
+import { isSafeDocPath } from "../vault";
 
 /** Everyone's options from the pool: how much has vested, what's next, and what it's worth at the 409A price. */
 export function Vesting() {
@@ -266,7 +267,10 @@ function GrantRow({ x, open, toggle }: { x: Security; open: boolean; toggle(): v
 
 const docsFor = (x: Security, s: NonNullable<ReturnType<typeof useApp>["state"]>) =>
   [...s.docs.values()].filter(
-    (d) => !d.removed && (d.links.has(x.id) || d.links.has(x.txId) || d.links.has(x.stakeholderId)),
+    (d) =>
+      !d.removed &&
+      isSafeDocPath(d.data.path) && // a path from the shared log stays inside the vault's docs/
+      (d.links.has(x.id) || d.links.has(x.txId) || d.links.has(x.stakeholderId)),
   );
 
 function GrantDetails({ x, name }: { x: Security; name: string }) {
