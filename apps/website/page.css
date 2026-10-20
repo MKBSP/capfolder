@@ -592,3 +592,77 @@ ol.steps li {
   padding: 8px 14px;
   text-decoration: none;
 }
+
+/* /learn hero band with the brand illustration, and the index cards */
+.lhero {
+  background: #f3f8f4;
+  border-bottom: 1px solid #dfeae2;
+}
+.lhero-in {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 32px;
+  align-items: center;
+}
+.lhero h1 {
+  margin: 10px 0 12px;
+}
+.lhero .meta {
+  font-size: 14px;
+  color: #5b606b;
+  margin: 0;
+}
+.lhero img {
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+}
+@media (max-width: 760px) {
+  .lhero-in {
+    grid-template-columns: 1fr;
+  }
+  .lhero img {
+    max-width: 260px;
+    margin: 0 auto;
+    order: -1;
+  }
+}
+.lcards {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.lcard {
+  display: block;
+  height: 100%;
+  background: #fff;
+  border: 1px solid #e4e4e0;
+  border-radius: 16px;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+}
+.lcard:hover {
+  border-color: #1f6f4a;
+}
+.lcard img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  background: #f3f8f4;
+  mix-blend-mode: multiply;
+}
+.lcard h3 {
+  margin: 16px 20px 6px;
+}
+.lcard p {
+  margin: 0 20px 20px;
+  color: #3a3e46;
+}

@@ -347,6 +347,13 @@ test("learn pages: SEO basics, 1,200–1,800 words, FAQ markup, sources, disclai
       .filter(Boolean).length;
     expect([slug, words >= 1200 && words <= 1900]).toEqual([slug, true]);
     expect([slug, index.includes(`href="/learn/${slug}/"`)]).toEqual([slug, true]);
+    // brand illustration in the hero band at the top, and on the index card
+    const ill = page.match(/<section class="lhero">[\s\S]*?<img src="(\/img\/ill\/[a-z]+\.svg)"/)?.[1];
+    expect([slug, !!ill && existsSync(new URL(`.${ill}`, import.meta.url))]).toEqual([slug, true]);
+    expect([slug, index.includes(`<a class="lcard" href="/learn/${slug}/"><img src="${ill}"`)]).toEqual([
+      slug,
+      true,
+    ]);
   }
   expect(read("package.json")).toMatch(/cp -r [^"]*\blearn\b/);
   expect(html).toContain('href="/learn/"');
