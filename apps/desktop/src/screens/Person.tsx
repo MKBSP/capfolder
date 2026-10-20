@@ -14,15 +14,11 @@ import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { newPerson, type PersonChoice, PersonPicker, resolvePerson } from "../components/PersonPicker";
 import { Chip, ErrorList, Field, Modal } from "../components/ui";
-import { day, money, moneyShort, month, num, shares, todayIso } from "../fmt";
+import { VestingGraph } from "../components/VestingGraph";
+import { day, money, moneyShort, month, num, plusDays, shares, todayIso } from "../fmt";
 import { CORRECTABLE, getPath, type HistoryItem, historyFor } from "../history";
 import { useApp } from "../state";
 import { scheduleText } from "../views";
-
-const plusDays = (d: string, n: number) => {
-  const [y, m, dd] = d.split("-").map(Number) as [number, number, number];
-  return new Date(Date.UTC(y, m - 1, dd + n)).toISOString().slice(0, 10);
-};
 
 type Dialog =
   | "edit"
@@ -104,7 +100,9 @@ export function Person({ id }: { id: string }) {
               <h2 style={{ margin: 0 }}>Vesting schedule</h2>
               <span className="meta">{scheduleText(s, main)}</span>
             </div>
-            <VestingChart x={main} />
+            <div style={{ marginTop: 12 }}>
+              <VestingGraph x={main} name={p.name?.legal_name ?? id} />
+            </div>
           </div>
         ) : null}
         <div
@@ -215,39 +213,6 @@ function Summary({ x }: { x: Security }) {
         </div>
       </div>
     </div>
-  );
-}
-
-function VestingChart({ x }: { x: Security }) {
-  const s = useApp().state!;
-  const pts = vestingSchedule(x, s) ?? [];
-  const max = pts.reduce((m, p, i) => {
-    const step = p.cumulative - (pts[i - 1]?.cumulative ?? 0n);
-    return step > m ? step : m;
-  }, 1n);
-  return (
-    <>
-      <div className="vchart" role="img" aria-label="Vesting schedule" style={{ marginTop: 16 }}>
-        {pts.map((p, i) => {
-          const step = p.cumulative - (pts[i - 1]?.cumulative ?? 0n);
-          const h = 6 + Number((step * 34n) / max);
-          const past = p.date <= s.asOf;
-          return (
-            <span
-              key={p.date}
-              className={past ? "past" : ""}
-              style={{ height: h }}
-              title={`${day(p.date)} · ${shares(p.cumulative)} vested`}
-            />
-          );
-        })}
-      </div>
-      <div className="row spread meta" style={{ marginTop: 6 }}>
-        <span>{pts[0] ? month(x.vestingStart?.date ?? pts[0].date) : ""} · start</span>
-        <span>Today</span>
-        <span>{pts.at(-1) ? month(pts.at(-1)!.date) : ""}</span>
-      </div>
-    </>
   );
 }
 

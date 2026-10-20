@@ -32,7 +32,7 @@ test("acme cap table as of 2026-10-07", async () => {
   expect(screen.getByText("8,000,000")).toBeInTheDocument();
   expect(screen.getByText("87.50%")).toBeInTheDocument();
   expect(screen.getByText("$900,000")).toBeInTheDocument();
-  expect(screen.getByText(/Vault verified · 29 events · totals add to 100.00%/)).toBeInTheDocument();
+  expect(screen.getByText(/Vault verified · 30 events · totals add to 100.00%/)).toBeInTheDocument();
 });
 
 test("row expands with next vest and the math", async () => {

@@ -58,6 +58,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     classes: new Map(),
     plans: new Map(),
     vestingTerms: new Map(),
+    valuations: [],
     securities: new Map(),
     docs: new Map(),
     aliases: new Map(),
@@ -142,6 +143,8 @@ export function reduce(events: VaultEvent[], asOf: string): State {
         s.vestingTerms.set(d.id, d);
         break;
       case "VALUATION":
+        if (d.effective_date <= asOf) s.valuations.push(d);
+        break;
       case "STOCK_LEGEND_TEMPLATE":
       case "DOCUMENT":
         break;
@@ -216,6 +219,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           note: e.meta?.note,
           price: (stock ? d.share_price : d.exercise_price)?.amount,
           priceCurrency: (stock ? d.share_price : d.exercise_price)?.currency,
+          expires: d.expiration_date,
           vestingStart: pendingStart.get(d.security_id),
         });
         break;

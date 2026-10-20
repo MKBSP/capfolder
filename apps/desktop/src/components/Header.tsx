@@ -8,6 +8,7 @@ import { Chip, Logo, Menu } from "./ui";
 
 const NAV: { label: string; route: Route }[] = [
   { label: "Cap table", route: { name: "home" } },
+  { label: "Vesting", route: { name: "vesting" } },
   { label: "People", route: { name: "people" } },
   { label: "Documents", route: { name: "documents" } },
   { label: "Signatures", route: { name: "signatures" } },

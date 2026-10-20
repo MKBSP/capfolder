@@ -39,6 +39,12 @@ export function subDec(a: string, b: string): string {
 
 export const fmtInt = (n: bigint): string => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+/** Whole shares × a decimal price, in cents (rounded half up). Non-negative inputs. */
+export function mulDec(qty: bigint, price: string): string {
+  const { v, scale } = parseDec(price);
+  return ratioFixed(qty * v, 10n ** BigInt(scale), 2);
+}
+
 /** num ÷ den to `decimals` places, rounded half up. Non-negative inputs. */
 export function ratioFixed(num: bigint, den: bigint, decimals: number): string {
   const scale = 10n ** BigInt(decimals);

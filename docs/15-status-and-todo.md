@@ -116,9 +116,11 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
       - Each article links to the matching help page and app screen, and the help pages link back.
 15. **Onboarding:** sample company, 3 yes/no questions, a Get started checklist on Home, a Driver.js spotlight tour, "?" help tips. Plan: `docs/19-onboarding.md` (waiting for Mads' OK). No invite step until sync / web app.
 
+16. **Vesting screen** built 2026-10-20 (Mads' Claude Design "Vesting Overview"): a Vesting tab with the pool cards (total, allocated, vested, available incl. returned), one pool bar, a row per grant (vested %, strike, next vest, documents) that opens to the graph (flat to the cliff, the jump, monthly steps or a straight line, Today marker, stops at a leaving date, hover/arrow-key card), key dates, price (strike, FMV, exercise cost, vested value, exercise by) and that person's signed documents; "Show former employees". The Person page uses the same graph. Not yet: role/title under the name (no stakeholder roles yet), a help page for it (`apps/website/help/pages.json`).
+
 ## Future ideas (not in v1)
 - **From the SumoShares gap analysis** (`docs/20-sumoshares.md`, with code links and what to copy or not):
-  1. 409A record, expiry banner and a below-FMV grant warning (offline).
+  1. ~~409A record~~ and the below-FMV grant warning built 2026-10-20 (OCF `VALUATION`, "Add 409A" on the Vesting screen, FMV = latest 409A on or before the as-of date; the sample company has one at $0.42). Not yet: the 12-month expiry banner, and attaching the report in the same form (attach it in Documents).
   2. Option deadlines: countdown on Person, "Expire them" on open (the founder confirms).
   3. ~~Import tie-out~~ built 2026-10-20: "Compare with Pulley/Carta" table (fully diluted required; each class, options outstanding, pool available, SAFE total, stakeholders optional), vested-so-far checked against the schedule (1 share of rounding allowed; more than granted blocks), "Before you cancel {tool}" card on Home and on the Pulley/Carta compare pages. Not yet: the full per-grant balance (needs exercised/cancelled columns from a real Pulley export). `[verify]` the "where to copy it from" hints against real Pulley and Carta screens.
   4. Exercises (Form 3921 inputs) and events CSV exports.

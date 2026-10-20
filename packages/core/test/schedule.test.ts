@@ -59,7 +59,7 @@ test("appendEvents: all valid → one text block that verifies", async () => {
   const log = readFix("events.jsonl");
   const r = await appendEvents(log, [person("sh_a"), person("sh_b")], ctx);
   if (!r.ok) throw new Error(r.errors.join("; "));
-  expect(r.events.map((e) => e.seq)).toEqual([30, 31]);
+  expect(r.events.map((e) => e.seq)).toEqual([31, 32]);
   expect(r.text.endsWith("\n")).toBe(true);
   expect((await verifyChain(log + r.text)).ok).toBe(true);
 });

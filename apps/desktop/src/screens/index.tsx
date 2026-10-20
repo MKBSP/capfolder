@@ -18,6 +18,7 @@ import { Settings } from "./Settings";
 import { Signatures } from "./Signatures";
 import { Sort } from "./Sort";
 import { StartChoice } from "./StartChoice";
+import { Vesting } from "./Vesting";
 import { Welcome } from "./Welcome";
 import { Wizard } from "./Wizard";
 
@@ -61,6 +62,8 @@ export function Screen() {
       return <Sort />;
     case "people":
       return <People />;
+    case "vesting":
+      return <Vesting />;
     case "person":
       return <Person id={route.id} />;
     case "comingSoon":

@@ -53,6 +53,7 @@ export interface Security {
   note?: string; // e.g. "imported snapshot"
   price?: string; // stock: share price paid; options: exercise price
   priceCurrency?: string;
+  expires?: string; // options: OCF expiration_date
   currency?: string; // convertibles: the investment amount's currency
 }
 
@@ -75,6 +76,7 @@ export interface State {
   classes: Map<string, { data: Data; authorized: bigint }>;
   plans: Map<string, Plan>;
   vestingTerms: Map<string, Data>;
+  valuations: Data[]; // OCF VALUATION objects in effect by asOf (409A share prices)
   securities: Map<string, Security>;
   docs: Map<string, Doc>;
   aliases: Map<string, string>; // normalized other name → stakeholder id (stakeholder_alias, F-09 "Remember")

@@ -12,7 +12,7 @@ import { addRecent, type Settings } from "./settings";
 import { appendToVault, openVault, type Vault } from "./vault";
 
 export type Route =
-  | { name: "welcome" | "email" | "create" | "start" | "wizard" | "people" | "import" }
+  | { name: "welcome" | "email" | "create" | "start" | "wizard" | "people" | "vesting" | "import" }
   | { name: "home"; tour?: boolean } // tour: Settings → Take the tour
   | { name: "documents"; imported?: boolean }
   // prefill: a draft from Ask AI (docs/18) opens the form filled in; the founder still saves it

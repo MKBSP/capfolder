@@ -501,24 +501,6 @@ dialog.modal::backdrop {
   margin-left: 16px;
 }
 
-.vchart {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 48px;
-}
-.vchart span {
-  flex: 1;
-  border-radius: 2px;
-  background: var(--bar-future);
-}
-.vchart span.past {
-  background: var(--green-600);
-}
-.vchart span.part {
-  background: var(--bar-part);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .btn:hover {
     border-color: var(--ink-2);
@@ -787,4 +769,119 @@ dialog.modal::backdrop {
 }
 .tip-field > .tip-text[hidden] {
   display: none;
+}
+
+/* Vesting screen: the pool bar, the graph, the opened row */
+.poolbar {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--bar-track);
+  overflow: hidden;
+}
+.poolbar .v,
+.key.v {
+  background: var(--green-600);
+}
+.poolbar .g,
+.key.g {
+  background: var(--bar-part);
+}
+.key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 4px;
+  vertical-align: -1px;
+}
+.key.a {
+  background: var(--bar-track);
+  border: 1px solid var(--border);
+}
+.key.solid {
+  background: var(--green-600);
+  opacity: 0.85;
+}
+.key.dash {
+  width: 16px;
+  height: 0;
+  border-radius: 0;
+  border-top: 2px dashed var(--muted);
+  background: none;
+  margin-left: 10px;
+  vertical-align: 3px;
+}
+.chev {
+  font-size: 16px;
+  color: var(--muted);
+}
+.vgraph svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  outline: none;
+  touch-action: none;
+}
+.vgraph svg:focus-visible {
+  box-shadow: 0 0 0 2px var(--green-600);
+  border-radius: 6px;
+}
+.vgraph .grid {
+  stroke: var(--row-divider);
+}
+.vgraph .lbl {
+  font: 11px var(--mono);
+  fill: var(--muted);
+}
+.vgraph .area {
+  fill: var(--green-600);
+  opacity: 0.85;
+}
+.vgraph .done {
+  fill: none;
+  stroke: var(--green-700);
+  stroke-width: 2;
+}
+.vgraph .todo {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+.vgraph .today {
+  stroke: var(--red-text);
+  stroke-dasharray: 3 3;
+}
+.vgraph .today-lbl {
+  fill: var(--red-text);
+}
+.vgraph .cross {
+  stroke: var(--ink-2);
+}
+.vgraph .dot-pt {
+  fill: var(--surface);
+  stroke: var(--green-700);
+  stroke-width: 2;
+}
+.vtip {
+  position: absolute;
+  top: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+  padding: 8px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.vdetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px 28px;
+}
+.vdetails h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
 }

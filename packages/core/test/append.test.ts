@@ -33,7 +33,7 @@ test("appends a valid event and the chain still verifies", async () => {
   const r = await appendEvent(log, stakeholder, ctx);
   if (!r.ok) throw new Error(r.errors.join("; "));
   expect(r.event).toMatchObject({
-    seq: 30,
+    seq: 31,
     id: "evt_TEST",
     ts: "2026-10-09T12:00:00Z",
     meta: { source: "app", device_id: "dev_test" },

@@ -112,4 +112,9 @@ export const month = (iso: string) => {
 export const percent = (fraction: string | undefined) =>
   fraction ? `${Number((Number(fraction) * 100).toFixed(4))}%` : "";
 
+export const plusDays = (d: string, n: number) => {
+  const [y, m, dd] = d.split("-").map(Number) as [number, number, number];
+  return new Date(Date.UTC(y, m - 1, dd + n)).toISOString().slice(0, 10);
+};
+
 export const todayIso = () => new Date().toISOString().slice(0, 10);

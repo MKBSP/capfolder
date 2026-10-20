@@ -240,7 +240,7 @@ describe("verifyChain on non-object lines", () => {
   test.each(["null", "42", "[]", '"x"'])("line %s is reported, not thrown", async (line) => {
     expect(await verifyChain(`${log}${line}\n`)).toEqual({
       ok: false,
-      line: 30,
+      line: 31,
       reason: "not an event object",
     });
   });

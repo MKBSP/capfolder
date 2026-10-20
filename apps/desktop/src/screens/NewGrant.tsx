@@ -2,6 +2,7 @@ import {
   builders as b,
   capTableRows,
   type EventDraft,
+  fmv,
   nextSecurityIdNumber,
   type State,
 } from "@capfolder/core";
@@ -17,7 +18,7 @@ import {
 } from "../components/PersonPicker";
 import { ErrorList, Field, Tip } from "../components/ui";
 import { useDryRun } from "../dryrun";
-import { num, shares, todayIso, withCurrency } from "../fmt";
+import { day, money, num, shares, todayIso, withCurrency } from "../fmt";
 import { useApp } from "../state";
 import { standardTerms } from "../terms";
 
@@ -27,6 +28,7 @@ const digits = num; // the founder's decimal mark (Settings → Your country)
 export function NewGrant() {
   const app = useApp();
   const latest = app.latest;
+  const price = latest ? fmv(latest) : null; // the latest 409A
   const plans = latest ? [...latest.plans.entries()] : [];
   const pre = (app.route.name === "newGrant" && app.route.prefill) || {}; // an Ask AI draft (docs/18)
   const [who, setWho] = useState<PersonChoice>(() =>
@@ -178,6 +180,12 @@ export function NewGrant() {
           ) : null}
           {!digits(strike) || Number(digits(strike)) === 0 ? (
             <div className="banner amber">Strike may be challenged. Get a 409A.</div>
+          ) : price && Number(digits(strike)) < Number(price.amount) ? (
+            <div className="banner amber">
+              The strike is below the 409A price of {money(price.amount, price.currency)} (from{" "}
+              {day(price.date)}). Options priced under fair market value can bring tax penalties for the
+              employee (Section 409A).
+            </div>
           ) : null}
           <ErrorList errors={errors ?? dry?.errors ?? null} />
           <div className="row" style={{ justifyContent: "flex-end" }}>

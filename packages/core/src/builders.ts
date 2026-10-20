@@ -226,6 +226,24 @@ export function stockPlan(p: {
   });
 }
 
+/** A 409A: the board-approved fair market value of one common share, from `date`. */
+export function valuation409a(p: {
+  price: string;
+  date: string;
+  classId: string;
+  provider?: string;
+  currency?: string;
+}): EventDraft {
+  return ocf("VALUATION", {
+    id: newId("val"),
+    valuation_type: "409A",
+    effective_date: p.date,
+    price_per_share: money(p.price, p.currency),
+    stock_class_id: p.classId,
+    ...(p.provider ? { provider: p.provider } : {}),
+  });
+}
+
 export function poolAdjustment(p: { planId: string; newTotal: string; date: string }): EventDraft {
   return ocf("TX_STOCK_PLAN_POOL_ADJUSTMENT", {
     id: newId("tx"),

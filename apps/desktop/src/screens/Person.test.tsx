@@ -23,7 +23,9 @@ test("Woz: summary, chart and history", async () => {
   expect(screen.getByText("10,000")).toBeInTheDocument();
   expect(screen.getByText("833 7 Nov")).toBeInTheDocument();
   expect(screen.getAllByText("Oct 2029").length).toBeGreaterThan(0);
-  expect(screen.getByRole("img", { name: "Vesting schedule" }).children).toHaveLength(48);
+  expect(
+    screen.getByRole("img", { name: /^Vesting schedule for Steve Wozniak: 10,000 of 40,000 vested/ }),
+  ).toBeInTheDocument();
   expect(screen.getByText("Granted 40,000 options at $0.12 (OPT-1)")).toBeInTheDocument();
 });
 
