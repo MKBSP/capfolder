@@ -45,7 +45,8 @@ test("a row opens to the graph, key dates, prices and the person's documents", a
   expect(details).toContain("FMV$0.42");
   expect(details).toContain("Exercise cost$1,200");
   expect(details).toContain("Vested value$4,200");
-  expect(details).toContain("2025-10-07_steve-wozniak.pdf");
+  expect(details).toContain("Option grantSigned 7 Oct 2025Open");
+  expect(screen.getByRole("button", { name: "Open 2025-10-07_steve-wozniak.pdf" })).toBeInTheDocument();
 });
 
 test("former employees are hidden until the switch is on", async () => {

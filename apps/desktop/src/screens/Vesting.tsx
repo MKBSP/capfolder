@@ -13,6 +13,7 @@ import {
   vestingSchedule,
 } from "@capfolder/core";
 import { useMemo, useState } from "react";
+import { DOC_TYPES } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
 import { MainHeader } from "../components/Header";
 import { Chip, ErrorList, Field, Modal, VestingBar } from "../components/ui";
@@ -21,6 +22,7 @@ import { day, money, num, plusDays, shares, todayIso, withCurrency } from "../fm
 import { join } from "../fs/types";
 import { useApp } from "../state";
 import { isSafeDocPath } from "../vault";
+import { scheduleText } from "../views";
 
 /** Everyone's options from the pool: how much has vested, what's next, and what it's worth at the 409A price. */
 export function Vesting() {
@@ -284,48 +286,61 @@ function GrantDetails({ x, name }: { x: Security; name: string }) {
   const full = fullyVestedOn(x, s);
   const docs = docsFor(x, s);
   return (
-    <section aria-label={name} className="stack" style={{ gap: 16 }}>
-      <VestingGraph x={x} name={name} />
-      <div className="vdetails">
-        <div>
-          <h3>Key dates</h3>
-          <KV k="Grant date" v={day(x.date)} />
-          {x.vestingStart ? <KV k="Vesting start" v={day(x.vestingStart.date)} /> : null}
-          {cliff > 0 ? <KV k="Cliff" v={day(pts[cliff]!.date)} /> : null}
-          <KV k="Fully vested" v={full ? day(full) : "—"} />
-          {x.stoppedAt ? <KV k="Vesting stopped" v={day(x.stoppedAt)} /> : null}
-          {x.expires ? <KV k="Option expiry" v={day(x.expires)} /> : null}
+    <section aria-label={name} className="vdetails">
+      <div className="card">
+        <div className="vhead">
+          <h3>Vesting schedule</h3>
+          <span className="meta">
+            {shares(x.originalQuantity)} shares · {scheduleText(s, x).replace(/ \(.*?\)/, "")}
+          </span>
         </div>
-        <div>
-          <h3>Price</h3>
-          <KV k="Strike" v={money(x.price, x.priceCurrency)} />
-          <KV k="FMV" v={price ? money(price.amount, price.currency) : "—"} />
-          <KV k="Vested" v={shares(vested)} />
-          <KV k="Exercise cost" v={x.price ? money(mulDec(toExercise, x.price), x.priceCurrency) : "—"} />
-          <KV k="Vested value" v={price ? money(mulDec(vested, price.amount), price.currency) : "—"} />
-          {x.stoppedAt ? <KV k="Exercise by" v={day(plusDays(x.stoppedAt, 90))} /> : null}
-        </div>
-        <div>
-          <h3>Signed documents</h3>
-          {docs.length ? (
-            docs.map((d) => (
-              <div key={String(d.data.doc_id)} className="row spread small" style={{ padding: "4px 0" }}>
-                <span className="mono" style={{ overflowWrap: "anywhere" }}>
-                  {String(d.data.path).split("/").pop()}
-                </span>
+        <VestingGraph x={x} name={name} />
+      </div>
+      <div className="card">
+        <h3>Key dates</h3>
+        <KV k="Grant date" v={day(x.date)} />
+        {x.vestingStart ? <KV k="Vesting start" v={day(x.vestingStart.date)} /> : null}
+        {cliff > 0 ? <KV k="Cliff" v={day(pts[cliff]!.date)} /> : null}
+        <KV k="Fully vested" v={full ? day(full) : "—"} />
+        {x.stoppedAt ? <KV k="Vesting stopped" v={day(x.stoppedAt)} /> : null}
+        {x.expires ? <KV k="Option expiry" v={day(x.expires)} /> : null}
+        <hr />
+        <h3>Price</h3>
+        <KV k="Strike" v={money(x.price, x.priceCurrency)} />
+        <KV k="FMV" v={price ? money(price.amount, price.currency) : "—"} />
+        <KV k="Vested" v={shares(vested)} />
+        <KV k="Exercise cost" v={x.price ? money(mulDec(toExercise, x.price), x.priceCurrency) : "—"} />
+        <KV k="Vested value" v={price ? money(mulDec(vested, price.amount), price.currency) : "—"} />
+        {x.stoppedAt ? <KV k="Exercise by" v={day(plusDays(x.stoppedAt, 90))} /> : null}
+      </div>
+      <div className="card">
+        <h3>Signed documents</h3>
+        {docs.length ? (
+          docs.map((d) => {
+            const file = String(d.data.path).split("/").pop()!;
+            const date = /^\d{4}-\d{2}-\d{2}/.exec(file)?.[0];
+            const type = String(d.data.doc_type ?? "");
+            const label = DOC_TYPES.find((t) => type === t.value || type.startsWith(`${t.value}_`))?.label;
+            return (
+              <div key={String(d.data.doc_id)} className="vdoc">
+                <div className="grow">
+                  <div>{label ?? file}</div>
+                  <div className="meta">{date ? `Signed ${day(date)}` : file}</div>
+                </div>
                 <button
                   type="button"
                   className="btn link small"
+                  aria-label={`Open ${file}`}
                   onClick={() => app.vault && app.platform.reveal(join(app.vault.root, String(d.data.path)))}
                 >
                   Open
                 </button>
               </div>
-            ))
-          ) : (
-            <p className="meta">None yet. Attach the signed grant in Documents.</p>
-          )}
-        </div>
+            );
+          })
+        ) : (
+          <p className="meta">None yet. Attach the signed grant in Documents.</p>
+        )}
       </div>
     </section>
   );

@@ -20,7 +20,7 @@ const backHome = async () => {
 
 test("Woz: summary, chart and history", async () => {
   await person("Steve Wozniak");
-  expect(screen.getByText("10,000")).toBeInTheDocument();
+  expect(screen.getByText("10,000", { selector: "div, span" })).toBeInTheDocument();
   expect(screen.getByText("833 7 Nov")).toBeInTheDocument();
   expect(screen.getAllByText("Oct 2029").length).toBeGreaterThan(0);
   expect(

@@ -3,12 +3,12 @@ import { useState } from "react";
 import { day, month, shares } from "../fmt";
 import { useApp } from "../state";
 
-const W = 1040;
-const H = 240;
-const L = 64;
-const R = 16;
-const T = 14;
-const B = 30;
+const W = 640;
+const H = 280;
+const L = 60;
+const R = 12;
+const T = 22;
+const B = 48;
 
 /** Vesting over time: flat until the cliff, the jump, then monthly steps; solid up to today, dashed after. */
 export function VestingGraph({ x, name }: { x: Security; name: string }) {
@@ -46,7 +46,7 @@ export function VestingGraph({ x, name }: { x: Security; name: string }) {
     <div className="vgraph">
       <div className="row spread" style={{ marginBottom: 6 }}>
         <span className="meta">
-          <span className="key solid" /> Vested <span className="key dash" /> Still to vest
+          <span className="key solid" /> Vested <span className="key rest" /> Unvested
         </span>
         <select
           className="inp small"
@@ -79,7 +79,7 @@ export function VestingGraph({ x, name }: { x: Security; name: string }) {
             if (e.key === "ArrowLeft") move((hover ?? today) - 1);
           }}
         >
-          {[0n, total / 2n, total].map((v) => (
+          {[0n, total / 4n, total / 2n, (total * 3n) / 4n, total].map((v) => (
             <g key={String(v)}>
               <line x1={L} x2={W - R} y1={py(v)} y2={py(v)} className="grid" />
               <text x={L - 8} y={py(v) + 4} textAnchor="end" className="lbl">
@@ -87,18 +87,33 @@ export function VestingGraph({ x, name }: { x: Security; name: string }) {
               </text>
             </g>
           ))}
+          <path
+            d={`${path(Math.max(0, today), n - 1)}V${base}H${px(Math.max(0, today))}Z`}
+            className="rest"
+          />
           {today > 0 ? <path d={`${path(0, today)}V${base}H${px(0)}Z`} className="area" /> : null}
+          {cliff > 1 ? (
+            <line x1={px(0)} y1={base} x2={px(cliff)} y2={py(pts[cliff]!.cumulative)} className="pre" />
+          ) : null}
           {today > 0 ? <path d={path(0, today)} className="done" /> : null}
           {today < n - 1 ? <path d={path(Math.max(0, today), n - 1)} className="todo" /> : null}
           {cliff > 1 ? (
-            <text x={px(cliff)} y={H - 4} textAnchor="middle" className="lbl">
-              Cliff
+            <g className="bracket">
+              <path d={`M${px(0)},${base + 26}v4H${px(cliff)}v-4`} />
+              <text x={(px(0) + px(cliff)) / 2} y={base + 44} textAnchor="middle" className="lbl">
+                Cliff
+              </text>
+            </g>
+          ) : null}
+          {n > 2 ? (
+            <text x={px(Math.floor((n - 1) / 2))} y={base + 18} textAnchor="middle" className="lbl">
+              {month(pts[Math.floor((n - 1) / 2)]!.date)}
             </text>
           ) : null}
-          <text x={px(0)} y={H - 4} className="lbl">
+          <text x={px(0)} y={base + 18} className="lbl">
             {month(pts[0]!.date)}
           </text>
-          <text x={px(n - 1)} y={H - 4} textAnchor="end" className="lbl">
+          <text x={px(n - 1)} y={base + 18} textAnchor="end" className="lbl">
             {stop ? "Vesting stopped" : month(pts[n - 1]!.date)}
           </text>
           {today >= 0 && today < n - 1 ? (

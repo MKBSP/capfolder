@@ -803,6 +803,11 @@ dialog.modal::backdrop {
   background: var(--green-600);
   opacity: 0.85;
 }
+.key.rest {
+  background: var(--green-tint);
+  border: 1px solid var(--border);
+  margin-left: 10px;
+}
 .key.dash {
   width: 16px;
   height: 0;
@@ -831,12 +836,22 @@ dialog.modal::backdrop {
   stroke: var(--row-divider);
 }
 .vgraph .lbl {
-  font: 11px var(--mono);
+  font: 14px var(--mono);
   fill: var(--muted);
 }
 .vgraph .area {
   fill: var(--green-600);
-  opacity: 0.85;
+}
+.vgraph .rest {
+  fill: var(--green-tint);
+}
+.vgraph .pre {
+  stroke: var(--muted);
+  stroke-dasharray: 3 3;
+}
+.vgraph .bracket path {
+  fill: none;
+  stroke: var(--muted);
 }
 .vgraph .done {
   fill: none;
@@ -845,9 +860,9 @@ dialog.modal::backdrop {
 }
 .vgraph .todo {
   fill: none;
-  stroke: var(--muted);
-  stroke-width: 1.5;
-  stroke-dasharray: 4 4;
+  stroke: var(--green-600);
+  stroke-width: 1;
+  opacity: 0.5;
 }
 .vgraph .today {
   stroke: var(--red-text);
@@ -878,8 +893,43 @@ dialog.modal::backdrop {
 }
 .vdetails {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px 28px;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: 4px 0 8px;
+}
+@media (max-width: 1100px) {
+  .vdetails {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .vdetails > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+.vdetails hr {
+  border: 0;
+  border-top: 1px solid var(--row-divider);
+  margin: 12px 0;
+}
+.vhead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.vhead h3 {
+  margin: 0;
+}
+.vdoc {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  font-size: 14px;
 }
 .vdetails h3 {
   margin: 0 0 6px;
