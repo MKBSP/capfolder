@@ -8,7 +8,7 @@ describe("validateOcf", () => {
       validateOcf({
         object_type: "STAKEHOLDER",
         id: "sh_1",
-        name: { legal_name: "Ana" },
+        name: { legal_name: "Steve" },
         stakeholder_type: "INDIVIDUAL",
       }),
     ).toEqual([]);

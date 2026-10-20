@@ -56,7 +56,7 @@ docAdded(p: { docId; path; sha256; docType; originalName; fields?; flags? }): Dr
 docLinked(p: { docId; target }): Draft
 docRemoved(p: { docId; movedTo }): Draft
 ```
-- [ ] **Step 1: Failing tests:** (a) every OCF draft from every builder validates (`validateOcf(d.data) == []`); (b) replaying acme + `optionGrant` for a new hire of 10,000 gives the pool 910,000; (c) `termination` on OPT-1 dated 2026-11-07 gives a cancellation of 29,167 + return 29,167; (d) `exercise` of 5,000 on OPT-1 at 2026-11-01 gives CS-3 stock for sh_lisa; (e) `nextSecurityId(acmeState,"CS") === "CS-3"`; (f) `repurchaseUnvested` on CS-1 at 2026-10-07 = 1,000,000.
+- [ ] **Step 1: Failing tests:** (a) every OCF draft from every builder validates (`validateOcf(d.data) == []`); (b) replaying acme + `optionGrant` for a new hire of 10,000 gives the pool 910,000; (c) `termination` on OPT-1 dated 2026-11-07 gives a cancellation of 29,167 + return 29,167; (d) `exercise` of 5,000 on OPT-1 at 2026-11-01 gives CS-3 stock for sh_woz; (e) `nextSecurityId(acmeState,"CS") === "CS-3"`; (f) `repurchaseUnvested` on CS-1 at 2026-10-07 = 1,000,000.
 - [ ] **Step 2:** Run → FAIL. **Step 3:** Implement. Ids for transactions: `newId("tx")`. `custom_id` = `security_id`. `security_law_exemptions: []`, `stock_legend_ids: []`, money `{amount, currency:"USD"}`. The SAFE trigger has the same shape as the acme fixture (`AUTOMATIC_ON_CONDITION`, `SAFE_CONVERSION`, `POST_MONEY`, `conversion_mfn`). **Step 4:** PASS + lint + typecheck. **Step 5:** Commit `core: OCF draft builders for M3 actions`.
 
 ### Task 2: Core `appendEvents` + vesting schedule helpers
@@ -72,7 +72,7 @@ fullyVestedOn(sec: Security, s: State): string | null
 - [ ] Tests:
   - `appendEvents` with a valid grant plus a second invalid draft returns `ok:false` and the log is unchanged.
   - Two valid drafts produce a chain that verifies.
-  - Lisa: `nextVest(OPT-1, 2026-10-07)` = `{2026-11-07, 833}`; `fullyVestedOn` = `2029-10-07`; the schedule has 48 points with point 12 = 10,000.
+  - Woz: `nextVest(OPT-1, 2026-10-07)` = `{2026-11-07, 833}`; `fullyVestedOn` = `2029-10-07`; the schedule has 48 points with point 12 = 10,000.
   - Terminated grant: next vest null.
 - [ ] Implement `appendEvents` by looping `appendEvent` over an in-memory log text (each ok line appended to the working text). `schedule.ts` evaluates `securityVested` at each month offset from the vesting start (`addMonths`); next vest = first point after `at` whose cumulative grows. Commit `core: appendEvents batch and vesting schedule helpers`.
 
@@ -227,7 +227,7 @@ exportCsv(vault, asOf): string
     - Record exercise → quantity (≤ vested) → `exercise`
     - Repurchase unvested… → preview → `repurchaseUnvested`
   - Buttons hide when they don't apply.
-- [ ] UI test: terminate Lisa at 2026-11-07 → pool +29,167 and Lisa shows 10,833 / 0 unvested. Commit `desktop: People and Person`.
+- [ ] UI test: terminate Woz at 2026-11-07 → pool +29,167 and Woz shows 10,833 / 0 unvested. Commit `desktop: People and Person`.
 
 ### Task 13: Documents
 **Files:** `src/screens/Documents.tsx`, `src/components/AttachModal.tsx`, `src/checklist.ts` (pure: state + gaps → groups), tests.

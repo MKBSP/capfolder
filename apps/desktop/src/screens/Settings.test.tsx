@@ -19,7 +19,7 @@ test("turn the password lock on from Settings", async () => {
 test("every screen in the nav renders", async () => {
   render(<App platform={acmePlatform().platform} />);
   for (const [nav, text] of [
-    ["People", "Lisa Moreau"],
+    ["People", "Steve Wozniak"],
     ["Documents", "Due-diligence ready"],
     ["Signatures", /documents waiting for signatures/],
     ["Settings", "App lock"],

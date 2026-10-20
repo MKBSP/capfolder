@@ -1,5 +1,5 @@
 ACME INC.
 CONFIDENTIAL INFORMATION AND INVENTION ASSIGNMENT AGREEMENT
-This agreement is entered into between Acme Inc., a Delaware corporation (the "Company"), and Lisa Moreau (the "Employee"), effective October 7, 2025.
+This agreement is entered into between Acme Inc., a Delaware corporation (the "Company"), and Steve Wozniak (the "Employee"), effective October 7, 2025.
 1. Inventions. The Employee assigns to the Company all right, title and interest in any inventions made during employment.
-EMPLOYEE: Lisa Moreau
+EMPLOYEE: Steve Wozniak

@@ -86,7 +86,7 @@ Copy rules (docs/08): plain language, always show where a file lives, mono for n
 - New ids: securities `CS-n` / `OPT-n` / `SAFE-n` (next free number), objects `sh_<ulid>` etc.
 
 ## Testing
-- Core: builder schema tests, `appendEvents` atomicity, schedule tests (Lisa: next vest 833 on 2026-11-07; fully vested 2029-10-07).
+- Core: builder schema tests, `appendEvents` atomicity, schedule tests (Woz: next vest 833 on 2026-11-07; fully vested 2029-10-07).
 - Desktop: `vault.test.ts` against the memory Fs (create → wizard events → reopen → verify; edited CSV detected; missing doc flagged; broken chain → read-only). UI smoke tests with vitest + Testing Library + jsdom for: first run → wizard → Home shows the founders; New SAFE updates the SAFE section; Terminate returns unvested to the pool.
 - Manual: `pnpm dev:desktop` on macOS, walk the whole flow. Acceptance (docs/09): from first open to a populated cap table in under 5 minutes.
 

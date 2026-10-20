@@ -497,7 +497,7 @@ import { validateOcf } from "../src/ocf/validate";
 
 describe("validateOcf", () => {
   test("valid stakeholder passes", () => {
-    expect(validateOcf({ object_type: "STAKEHOLDER", id: "sh_1", name: { legal_name: "Ana" }, stakeholder_type: "INDIVIDUAL" })).toEqual([]);
+    expect(validateOcf({ object_type: "STAKEHOLDER", id: "sh_1", name: { legal_name: "Steve" }, stakeholder_type: "INDIVIDUAL" })).toEqual([]);
   });
   test("missing required field is reported", () => {
     const errs = validateOcf({ object_type: "STAKEHOLDER", id: "sh_1", stakeholder_type: "INDIVIDUAL" });
@@ -818,9 +818,9 @@ describe("4y / 1y cliff / monthly", () => {
       vested: 3000000n, math: "3,000,000 = floor(4,000,000 × 36/48), as of 2026-10-07",
     });
   });
-  test("Lisa: cliff day is inclusive", () => expect(vestedAt(40000n, terms, "2025-10-07", "2026-10-07").vested).toBe(10000n));
+  test("Woz: cliff day is inclusive", () => expect(vestedAt(40000n, terms, "2025-10-07", "2026-10-07").vested).toBe(10000n));
   test("day before cliff is 0", () => expect(vestedAt(40000n, terms, "2025-10-07", "2026-10-06").vested).toBe(0n));
-  test("João before cliff", () => expect(vestedAt(40000n, terms, "2026-03-02", "2026-10-07").vested).toBe(0n));
+  test("Bill before cliff", () => expect(vestedAt(40000n, terms, "2026-03-02", "2026-10-07").vested).toBe(0n));
   test("cumulative floor: month 13 then 14", () => {
     expect(vestedAt(40000n, terms, "2025-10-07", "2026-11-07").vested).toBe(10833n);
     expect(vestedAt(40000n, terms, "2025-10-07", "2026-12-07").vested).toBe(11666n);
@@ -1046,9 +1046,9 @@ test("no violations or unknown types in acme", () => {
 test("row order and core numbers", () => {
   expect(rows.map((r) => [r.stakeholder, r.type, r.shares, r.fdPercent, r.vested, r.unvested])).toEqual([
     ["Tim Apple", "common", 4000000n, "50.00", 3000000n, 1000000n],
-    ["Ana Ribeiro", "common", 3000000n, "37.50", 2250000n, 750000n],
-    ["Lisa Moreau", "option", 40000n, "0.50", 10000n, 30000n],
-    ["João Silva", "option", 40000n, "0.50", 0n, 40000n],
+    ["Steve Jobs", "common", 3000000n, "37.50", 2250000n, 750000n],
+    ["Steve Wozniak", "option", 40000n, "0.50", 10000n, 30000n],
+    ["Bill Gates", "option", 40000n, "0.50", 0n, 40000n],
     ["Option pool (available)", "pool", 920000n, "11.50", null, null],
     ["Y Combinator", "safe", null, "", null, null],
     ["Angel A", "safe", null, "", null, null],
@@ -1443,7 +1443,7 @@ describe("termination (F-22)", () => {
       ev("TX_EQUITY_COMPENSATION_CANCELLATION", { id: "c1", date: "2026-06-01", security_id: "OPT-1", quantity: "40000", reason_text: "left" }),
       ev("TX_STOCK_PLAN_RETURN_TO_POOL", { id: "r1", date: "2026-06-01", stock_plan_id: "plan_2025", quantity: "40000" }),
     ], "2026-10-07");
-    expect(find(r, "Lisa Moreau")).toBeUndefined();
+    expect(find(r, "Steve Wozniak")).toBeUndefined();
     expect(pool(r)).toBe(960000n);
     expect(r.filter((x) => x.group <= 2).map((x) => x.fdPercent)).toContain("12.00");
   });
@@ -1452,7 +1452,7 @@ describe("termination (F-22)", () => {
       ev("TX_EQUITY_COMPENSATION_CANCELLATION", { id: "c1", date: "2026-11-07", security_id: "OPT-1", quantity: "29167", reason_text: "left" }),
       ev("TX_STOCK_PLAN_RETURN_TO_POOL", { id: "r1", date: "2026-11-07", stock_plan_id: "plan_2025", quantity: "29167" }),
     ], "2027-10-07");
-    expect(find(r, "Lisa Moreau")).toMatchObject({ shares: 10833n, vested: 10833n, unvested: 0n });
+    expect(find(r, "Steve Wozniak")).toMatchObject({ shares: 10833n, vested: 10833n, unvested: 0n });
   });
   test("cancelling more than outstanding is a violation", () => {
     const s = reduce([...base, ev("TX_EQUITY_COMPENSATION_CANCELLATION", { id: "c1", date: "2026-06-01", security_id: "OPT-1", quantity: "50000" })], "2026-10-07");
@@ -1463,16 +1463,16 @@ describe("termination (F-22)", () => {
 describe("exercise then repurchase (F-23, F-24)", () => {
   const exercise = [
     ev("TX_EQUITY_COMPENSATION_EXERCISE", { id: "x1", date: "2026-11-01", security_id: "OPT-1", quantity: "10000", resulting_security_ids: ["CS-3"] }),
-    ev("TX_STOCK_ISSUANCE", { id: "i3", date: "2026-11-01", security_id: "CS-3", stakeholder_id: "sh_lisa", stock_class_id: "sc_common", quantity: "10000", share_price: { amount: "0.12", currency: "USD" }, stock_legend_ids: [], security_law_exemptions: [] }),
+    ev("TX_STOCK_ISSUANCE", { id: "i3", date: "2026-11-01", security_id: "CS-3", stakeholder_id: "sh_woz", stock_class_id: "sc_common", quantity: "10000", share_price: { amount: "0.12", currency: "USD" }, stock_legend_ids: [], security_law_exemptions: [] }),
   ];
   test("exercise converts options to common", () => {
     const r = rows(exercise, "2026-11-02");
-    expect(r.filter((x) => x.stakeholder === "Lisa Moreau").map((x) => [x.type, x.shares, x.vested])).toEqual([
+    expect(r.filter((x) => x.stakeholder === "Steve Wozniak").map((x) => [x.type, x.shares, x.vested])).toEqual([
       ["common", 10000n, 10000n], ["option", 30000n, 0n]]);
   });
   test("then a full repurchase removes the shares", () => {
     const r = rows([...exercise, ev("TX_STOCK_REPURCHASE", { id: "p1", date: "2026-12-01", security_id: "CS-3", quantity: "10000", price: { amount: "0.12", currency: "USD" } })], "2026-12-02");
-    expect(r.filter((x) => x.stakeholder === "Lisa Moreau").map((x) => x.type)).toEqual(["option"]);
+    expect(r.filter((x) => x.stakeholder === "Steve Wozniak").map((x) => x.type)).toEqual(["option"]);
   });
   test("exercising more than vested is a violation", () => {
     const s = reduce([...base, ev("TX_EQUITY_COMPENSATION_EXERCISE", { id: "x1", date: "2026-11-01", security_id: "OPT-1", quantity: "20000" })], "2026-11-02");
@@ -1519,7 +1519,7 @@ describe("correction and reversal (F-18)", () => {
 describe("as-of replay", () => {
   test("before anything was issued: no rows", () => expect(rows([], "2021-09-13")).toEqual([]));
   test("2023-01-01: founders and YC only, no pool before plan approval", () => {
-    expect(rows([], "2023-01-01").map((x) => x.stakeholder)).toEqual(["Tim Apple", "Ana Ribeiro", "Y Combinator"]);
+    expect(rows([], "2023-01-01").map((x) => x.stakeholder)).toEqual(["Tim Apple", "Steve Jobs", "Y Combinator"]);
   });
   test("every as-of between events has FD summing to 100.00", () => {
     for (const d of ["2021-09-14", "2022-01-10", "2023-02-20", "2023-03-14", "2025-09-30", "2025-10-07", "2026-03-02", "2026-10-07"]) {
@@ -1533,8 +1533,8 @@ describe("as-of replay", () => {
 describe("bad numbers", () => {
   test("negative and fractional quantities are violations, not math", () => {
     const s = reduce([...base,
-      ev("TX_STOCK_ISSUANCE", { id: "n1", date: "2026-01-01", security_id: "CS-8", stakeholder_id: "sh_ana", stock_class_id: "sc_common", quantity: "-5", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] }),
-      ev("TX_STOCK_ISSUANCE", { id: "n2", date: "2026-01-01", security_id: "CS-9", stakeholder_id: "sh_ana", stock_class_id: "sc_common", quantity: "1.5", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] }),
+      ev("TX_STOCK_ISSUANCE", { id: "n1", date: "2026-01-01", security_id: "CS-8", stakeholder_id: "sh_steve", stock_class_id: "sc_common", quantity: "-5", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] }),
+      ev("TX_STOCK_ISSUANCE", { id: "n2", date: "2026-01-01", security_id: "CS-9", stakeholder_id: "sh_steve", stock_class_id: "sc_common", quantity: "1.5", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] }),
     ], "2026-10-07");
     expect(s.violations).toEqual([
       "TX_STOCK_ISSUANCE n1: quantity must be greater than 0",
@@ -1545,7 +1545,7 @@ describe("bad numbers", () => {
 ```
 (The FD-sum check uses `Number` only inside the test, to add up display strings.)
 - [ ] **Step 2: Run.** Fix the engine until everything passes. Expected traps:
-  - The Lisa exercise case: vested 10,000 at 2026-11-01, so exercising 10,000 leaves vested 0 on the options.
+  - The Woz exercise case: vested 10,000 at 2026-11-01, so exercising 10,000 leaves vested 0 on the options.
   - `liveEvents` must clone the data so `base` stays unmutated.
 - [ ] **Step 3: Commit** `git add -A && git commit -m "core: edge-case vaults (termination, exercise, repurchase, pool, transfer, correction, as-of)"`
 
@@ -1582,7 +1582,7 @@ const check = (...extra: ReturnType<typeof ev>[]) => checkInvariants(reduce([...
 
 test("acme holds every invariant", () => expect(check()).toEqual([]));
 test("1: issued over authorized", () => {
-  expect(check(ev("TX_STOCK_ISSUANCE", { id: "n1", date: "2026-01-01", security_id: "CS-9", stakeholder_id: "sh_ana", stock_class_id: "sc_common", quantity: "4000000", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] })))
+  expect(check(ev("TX_STOCK_ISSUANCE", { id: "n1", date: "2026-01-01", security_id: "CS-9", stakeholder_id: "sh_steve", stock_class_id: "sc_common", quantity: "4000000", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] })))
     .toEqual(["Issued would exceed authorized for Common (11,000,000 > 10,000,000)"]);
 });
 test("2: pool negative", () => {
@@ -1608,18 +1608,18 @@ const targets = (kind: string) => gaps.filter((g) => g.kind === kind).map((g) =>
 
 test("acme gaps", () => {
   expect(targets("no_signed_doc")).toEqual(["CS-1", "CS-2", "OPT-2", "SAFE-3"]);
-  expect(targets("no_ip_assignment")).toEqual(["sh_ana", "sh_joao", "sh_lisa", "sh_mads"]);
+  expect(targets("no_ip_assignment")).toEqual(["sh_steve", "sh_bill", "sh_woz", "sh_mads"]);
   expect(targets("no_board_consent")).toEqual(["OPT-1", "OPT-2"]);
   expect(targets("no_plan_documents")).toEqual(["plan_2025"]);
   expect(gaps.find((g) => g.target === "SAFE-3")).toMatchObject({ severity: "red", text: "No signed document for Fund X's SAFE" });
 });
 test("83(b) within 30 days of a vesting stock issuance", () => {
   const extra = [
-    ev("TX_STOCK_ISSUANCE", { id: "i9", date: "2026-10-01", security_id: "CS-9", stakeholder_id: "sh_ana", stock_class_id: "sc_common", quantity: "1000", share_price: { amount: "0.01", currency: "USD" }, stock_legend_ids: [], vesting_terms_id: "vt_4y1c_monthly" }),
+    ev("TX_STOCK_ISSUANCE", { id: "i9", date: "2026-10-01", security_id: "CS-9", stakeholder_id: "sh_steve", stock_class_id: "sc_common", quantity: "1000", share_price: { amount: "0.01", currency: "USD" }, stock_legend_ids: [], vesting_terms_id: "vt_4y1c_monthly" }),
     ev("TX_VESTING_START", { id: "v9", date: "2026-10-01", security_id: "CS-9", vesting_condition_id: "vesting-start" }),
   ];
   const g = computeGaps(reduce([...acmeEvents(), ...extra], "2026-10-07"));
-  expect(g.find((x) => x.kind === "missing_83b")).toMatchObject({ target: "CS-9", text: "File Ana Ribeiro's 83(b) by 2026-10-31" });
+  expect(g.find((x) => x.kind === "missing_83b")).toMatchObject({ target: "CS-9", text: "File Steve Jobs's 83(b) by 2026-10-31" });
 });
 ```
 `test/append.test.ts`:
@@ -1648,7 +1648,7 @@ test("rejects a broken chain", async () => {
   expect(r).toEqual({ ok: false, errors: ["The record is broken at line 1: hash does not match the line's content"] });
 });
 test("rejects a new invariant violation", async () => {
-  const r = await appendEvent(log, { kind: "ocf", type: "TX_STOCK_ISSUANCE", data: ev("TX_STOCK_ISSUANCE", { id: "n1", date: "2026-01-01", security_id: "CS-9", stakeholder_id: "sh_ana", stock_class_id: "sc_common", quantity: "4000000", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] }).data }, ctx);
+  const r = await appendEvent(log, { kind: "ocf", type: "TX_STOCK_ISSUANCE", data: ev("TX_STOCK_ISSUANCE", { id: "n1", date: "2026-01-01", security_id: "CS-9", stakeholder_id: "sh_steve", stock_class_id: "sc_common", quantity: "4000000", share_price: { amount: "1", currency: "USD" }, stock_legend_ids: [] }).data }, ctx);
   expect(r).toEqual({ ok: false, errors: ["Issued would exceed authorized for Common (11,000,000 > 10,000,000)"] });
 });
 test("an existing violation does not block unrelated appends", async () => {
@@ -1821,7 +1821,7 @@ function build(ops: { op: (typeof OPS)[number]; pct: number; gap: number }[]): V
     const s = reduce(events, date);
     const p = BigInt(pct);
     const id = `p${k++}`;
-    const holder = ["sh_mads", "sh_ana", "sh_lisa", "sh_joao"][pct % 4]!;
+    const holder = ["sh_mads", "sh_steve", "sh_woz", "sh_bill"][pct % 4]!;
     const opts = [...s.securities.values()].filter((x) => x.kind === "equity" && x.quantity > 0n);
     const pick = opts[pct % Math.max(opts.length, 1)];
     if (op === "stock") {
@@ -1989,5 +1989,5 @@ Expected:
    ```bash
    cd packages/core && npx vitest run golden
    ```
-   Then check one number by hand: Lisa at 2026-11-07 → 10,833 (`floor(40,000 × 13/48)`).
+   Then check one number by hand: Woz at 2026-11-07 → 10,833 (`floor(40,000 × 13/48)`).
 4. After Mads pushes: the GitHub Actions `ci` run is green on `main`.

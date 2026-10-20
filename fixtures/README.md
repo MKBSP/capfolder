@@ -11,8 +11,8 @@ The company shown in every mockup. 29 events, hash-chained.
 **Numbers to check by hand:**
 - **Fully diluted:** 4,000,000 + 3,000,000 + 40,000 + 40,000 + 920,000 pool available = **8,000,000**. SAFEs are excluded.
 - **Tim:** vesting starts 2023-10-07, 36 of 48 months → floor(4,000,000 × 36 ÷ 48) = 3,000,000.
-- **Lisa:** starts 2025-10-07. On 2026-10-07 the cliff passes (12 months, inclusive) → 10,000.
-- **João:** starts 2026-03-02, 7 months, before cliff → 0.
+- **Woz:** starts 2025-10-07. On 2026-10-07 the cliff passes (12 months, inclusive) → 10,000.
+- **Bill:** starts 2026-03-02, 7 months, before cliff → 0.
 - **SAFEs as-converted (post-money):** 500k ÷ 10M = 5.00%; 150k ÷ 8M = 1.875% → displayed 1.88; 250k ÷ 10M = 2.50%.
 - **doc_status:** `signed` if a `doc_linked` event targets the security; otherwise `missing`. Fund X is the missing SAFE from the mockups.
 

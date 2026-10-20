@@ -11,11 +11,11 @@ describe("4y / 1y cliff / monthly", () => {
       math: "3,000,000 = floor(4,000,000 × 36/48), as of 2026-10-07",
     });
   });
-  test("Lisa: cliff day is inclusive", () =>
+  test("Woz: cliff day is inclusive", () =>
     expect(vestedAt(40000n, terms, "2025-10-07", "2026-10-07").vested).toBe(10000n));
   test("day before cliff is 0", () =>
     expect(vestedAt(40000n, terms, "2025-10-07", "2026-10-06").vested).toBe(0n));
-  test("João before cliff", () =>
+  test("Bill before cliff", () =>
     expect(vestedAt(40000n, terms, "2026-03-02", "2026-10-07").vested).toBe(0n));
   test("cumulative floor: month 13 then 14", () => {
     expect(vestedAt(40000n, terms, "2025-10-07", "2026-11-07").vested).toBe(10833n);

@@ -19,7 +19,7 @@ Before you start: `git pull` if needed, restart `pnpm dev:desktop` (the native s
 - [ ] 11. Settings → AI → Ask AI: pick Claude, paste your API key, Save key. Also try a local model (Ollama / LM Studio).
 - [ ] 12. ✦ Ask AI button and ⌘K open the panel; Esc and × close it; it stays open when you switch screens.
 - [ ] 13. Questions: "who has unvested options?", "what's missing?", "ownership as of last year". Source chips under answers open the right holding or document.
-- [ ] 14. Drafts: "add a grant for Ana: 40,000 options, 4 years, 1-year cliff" → card → "Open in the grant form" is prefilled. Nothing is saved until you save the form.
+- [ ] 14. Drafts: "add a grant for Steve: 40,000 options, 4 years, 1-year cliff" → card → "Open in the grant form" is prefilled. Nothing is saved until you save the form.
 - [ ] 15. "Add double-trigger acceleration" → amber "No template… ask a lawyer" card.
 - [ ] 16. Documents: with "Let cloud AI read documents" OFF, Claude must say it can't read the document; ON, it reads it.
 

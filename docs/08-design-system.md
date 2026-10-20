@@ -53,6 +53,6 @@ Use `brand/mark.svg` (filled folder + 3 ascending bars, #1F6F4A) in the app head
 - **Website** (marketing; longer motion allowed): hero word rise, sorting demo loop, signing round-trip loop, scroll reveals via `animation-timeline: view()`.
 
 ## Copy rules
-- Plain language: "Lisa has 10,000 of 40,000 vested, next 833 on Nov 7". No legalese in the UI.
+- Plain language: "Woz has 10,000 of 40,000 vested, next 833 on Nov 7". No legalese in the UI.
 - Always say where a file lives: `docs/safes/2023-03-14_fund-x.pdf`.
 - Never say "encrypted" without saying what it means (docs/05).

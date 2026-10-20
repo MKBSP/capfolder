@@ -23,7 +23,7 @@ export async function toWizard() {
 test("wizard: two founders, a pool and a SAFE → saved cap table", async () => {
   const { fs } = await toWizard();
   await userEvent.click(await screen.findByRole("button", { name: "Next" }));
-  await userEvent.type(screen.getByLabelText("Name"), "Ana");
+  await userEvent.type(screen.getByLabelText("Name"), "Steve");
   await userEvent.type(screen.getByLabelText(/^Shares/), "4000000");
   await userEvent.click(screen.getByRole("button", { name: "Add another founder" }));
   await userEvent.type(screen.getAllByLabelText("Name")[1]!, "Bo");
@@ -42,10 +42,10 @@ test("wizard: two founders, a pool and a SAFE → saved cap table", async () => 
   expect(within(live).getByText("12.50%")).toBeInTheDocument();
   await userEvent.click(screen.getByRole("button", { name: "Save cap table" }));
   await waitFor(() =>
-    expect(fs.readSync("/home/me/Documents/capfolder/Test Co/captable.csv")).toContain("Ana"),
+    expect(fs.readSync("/home/me/Documents/capfolder/Test Co/captable.csv")).toContain("Steve"),
   );
   const csv = fs.readSync("/home/me/Documents/capfolder/Test Co/captable.csv");
-  expect(csv).toContain("Ana,common,Common,4000000,50.00");
+  expect(csv).toContain("Steve,common,Common,4000000,50.00");
   expect(csv).toContain("Bo,common,Common,3000000,37.50,3000000,0");
   expect(csv).toContain("Y Combinator,safe,,,,,,500000,10000000,,5.00,missing");
 });
@@ -53,7 +53,7 @@ test("wizard: two founders, a pool and a SAFE → saved cap table", async () => 
 test("wizard: over-issuing shows the core's error and can't be saved", async () => {
   await toWizard();
   await userEvent.click(await screen.findByRole("button", { name: "Next" }));
-  await userEvent.type(screen.getByLabelText("Name"), "Ana");
+  await userEvent.type(screen.getByLabelText("Name"), "Steve");
   await userEvent.type(screen.getByLabelText(/^Shares/), "12000000");
   expect(
     await screen.findByText("Issued would exceed authorized for Common (12,000,000 > 10,000,000)"),

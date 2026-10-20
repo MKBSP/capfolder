@@ -697,7 +697,7 @@ flowchart TD
 
 | Situation | What happens |
 |---|---|
-| One party already signed | Warning: "Ana already signed. Cancel anyway?" The partial PDF is kept in `docs/_voided/` |
+| One party already signed | Warning: "Steve already signed. Cancel anyway?" The partial PDF is kept in `docs/_voided/` |
 | Already fully signed | Can't cancel. Use F-18 (fix) or F-24 (repurchase) |
 
 ```mermaid

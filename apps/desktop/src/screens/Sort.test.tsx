@@ -55,10 +55,10 @@ async function sorting(
 
 describe("sorting a messy folder (F-09)", () => {
   test("files what's certain, skips duplicates and receipts, queues the rest", async () => {
-    const joao = await pdf(fixture("grant-joao.txt"));
+    const bill = await pdf(fixture("grant-bill.txt"));
     const fp = await sorting({
-      "joao.pdf": joao,
-      "joao copy.pdf": joao,
+      "bill.pdf": bill,
+      "bill copy.pdf": bill,
       "scan_0042.pdf": await pdf(fixture("scan_0042.txt")),
       "receipt.pdf": await pdf(fixture("receipt.txt")),
     });
@@ -66,14 +66,14 @@ describe("sorting a messy folder (F-09)", () => {
       /1 filed · 1 need you · 1 duplicate · 1 not equity/,
     );
     expect(
-      screen.getByText(/Option grant → docs\/grants\/2026-03-02_joao-silva_option-grant\.pdf/),
+      screen.getByText(/Option grant → docs\/grants\/2026-03-02_bill-gates_option-grant\.pdf/),
     ).toBeTruthy();
     const ev = events(fp.fs, fp.root);
     const added = ev.filter((e) => e.type === "doc_added").at(-1);
     expect(added.data).toMatchObject({
       doc_type: "option_grant",
-      original_name: "joao.pdf",
-      fields: { name: "João Silva", shares: "40000", price: "0.12", date: "2026-03-02" },
+      original_name: "bill.pdf",
+      fields: { name: "Bill Gates", shares: "40000", price: "0.12", date: "2026-03-02" },
       flags: ["sorted:rule"],
     });
     expect(ev.at(-1)).toMatchObject({
@@ -150,11 +150,11 @@ describe("sorting a messy folder (F-09)", () => {
   test("AI proposes, never files: its answer waits for the founder", async () => {
     const answer = {
       type: "option_grant",
-      fields: { name: "João Silva", shares: 40000, date: "2026-03-02" },
+      fields: { name: "Bill Gates", shares: 40000, date: "2026-03-02" },
     };
     const asked: string[] = [];
     const fp = await sorting(
-      { "odd.pdf": await pdf("Equity award letter\nDear João Silva, you receive 40,000 options.") },
+      { "odd.pdf": await pdf("Equity award letter\nDear Bill Gates, you receive 40,000 options.") },
       {
         relay: {
           fetch: async (url: string, init?: RequestInit) => {
@@ -165,7 +165,7 @@ describe("sorting a messy folder (F-09)", () => {
             if (/summary/i.test(body.messages[0].content))
               return new Response(
                 JSON.stringify({
-                  message: { content: "An equity award letter: João Silva receives 40,000 options." },
+                  message: { content: "An equity award letter: Bill Gates receives 40,000 options." },
                 }),
               );
             return new Response(JSON.stringify({ message: { content: JSON.stringify(answer) } }));
@@ -181,7 +181,7 @@ describe("sorting a messy folder (F-09)", () => {
     expect(screen.getByText(/Your AI read it \(check every field\)\. Ollama · llama3\.1/)).toBeTruthy();
     expect(screen.getByLabelText("Shares")).toHaveValue("40000");
     expect(
-      await screen.findByText("An equity award letter: João Silva receives 40,000 options."),
+      await screen.findByText("An equity award letter: Bill Gates receives 40,000 options."),
     ).toBeTruthy();
   }, 20_000);
 });
@@ -227,14 +227,14 @@ describe("M4 review fixes", () => {
 
   test("an unsigned draft waits for the founder, and filed as a draft it doesn't close the gap", async () => {
     const fp = await sorting({
-      "joao-draft.pdf": await pdf(`DRAFT\n${fixture("grant-joao.txt")}`, false),
+      "bill-draft.pdf": await pdf(`DRAFT\n${fixture("grant-bill.txt")}`, false),
     });
     expect(screen.getByText(/filed ·/).textContent).toMatch(/0 filed · 1 need you/);
     await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
     expect(screen.getAllByText(/looks like an unsigned draft \("DRAFT"\)/).length).toBeGreaterThan(0);
     await userEvent.click(screen.getByRole("button", { name: /^File as proof for/ }));
     await userEvent.click(await screen.findByRole("button", { name: "File as draft" }));
-    await screen.findByText(/docs\/grants\/2026-03-02_joao-silva_option-grant\.pdf/);
+    await screen.findByText(/docs\/grants\/2026-03-02_bill-gates_option-grant\.pdf/);
     const added = events(fp.fs, fp.root)
       .filter((e) => e.type === "doc_added")
       .at(-1);
@@ -244,7 +244,7 @@ describe("M4 review fixes", () => {
 
 test("files or a folder dropped on the window are sorted", async () => {
   const fp = acmePlatform();
-  fp.fs.writeSync("/home/me/Downloads/drop/joao.pdf", await pdf(fixture("grant-joao.txt")));
+  fp.fs.writeSync("/home/me/Downloads/drop/bill.pdf", await pdf(fixture("grant-bill.txt")));
   fp.fs.writeSync("/home/me/Downloads/drop/sub/receipt.pdf", await pdf(fixture("receipt.txt")));
   render(<App platform={fp.platform} />);
   await screen.findByText("Fully diluted");
@@ -262,7 +262,7 @@ test("files or a folder dropped on the window are sorted", async () => {
 }, 20_000);
 
 test("no signature found: filing asks, and only a ticked override counts it as proof", async () => {
-  const fp = await sortingFiles({ "joao.pdf": await pdf(fixture("grant-joao.txt"), false) });
+  const fp = await sortingFiles({ "bill.pdf": await pdf(fixture("grant-bill.txt"), false) });
   expect(screen.getByText(/filed ·/).textContent).toMatch(/0 filed · 1 need you/);
   await userEvent.click(screen.getByRole("button", { name: "Review 1 document" }));
   expect(screen.getAllByText(/can't see a signature/).length).toBeGreaterThan(0);
@@ -271,7 +271,7 @@ test("no signature found: filing asks, and only a ticked override counts it as p
   expect(within(dialog).getByRole("button", { name: "File as signed" })).toBeDisabled();
   await userEvent.click(within(dialog).getByRole("checkbox", { name: /It has been signed/ }));
   await userEvent.click(within(dialog).getByRole("button", { name: "File as signed" }));
-  await screen.findByText(/docs\/grants\/2026-03-02_joao-silva_option-grant\.pdf/);
+  await screen.findByText(/docs\/grants\/2026-03-02_bill-gates_option-grant\.pdf/);
   const added = events(fp.fs, fp.root)
     .filter((e) => e.type === "doc_added")
     .at(-1);

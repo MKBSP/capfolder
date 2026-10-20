@@ -40,7 +40,7 @@ describe("termination (F-22)", () => {
       ],
       "2026-10-07",
     );
-    expect(find(r, "Lisa Moreau")).toBeUndefined();
+    expect(find(r, "Steve Wozniak")).toBeUndefined();
     expect(pool(r)).toBe(960000n);
     expect(find(r, "Option pool (available)")!.fdPercent).toBe("12.00");
   });
@@ -63,7 +63,7 @@ describe("termination (F-22)", () => {
       ],
       "2027-10-07",
     );
-    expect(find(r, "Lisa Moreau")).toMatchObject({ shares: 10833n, vested: 10833n, unvested: 0n });
+    expect(find(r, "Steve Wozniak")).toMatchObject({ shares: 10833n, vested: 10833n, unvested: 0n });
   });
   test("cancelling more than outstanding is a violation", () => {
     const s = reduce(
@@ -91,16 +91,16 @@ describe("exercise then repurchase (F-23, F-24)", () => {
       quantity: "10000",
       resulting_security_ids: ["CS-3"],
     }),
-    stock("i3", "CS-3", "sh_lisa", "10000", "2026-11-01"),
+    stock("i3", "CS-3", "sh_woz", "10000", "2026-11-01"),
   ];
   test("exercise converts options to common", () => {
     const r = rows(exercise, "2026-11-02");
-    expect(r.filter((x) => x.stakeholder === "Lisa Moreau").map((x) => [x.type, x.shares, x.vested])).toEqual(
-      [
-        ["common", 10000n, 10000n],
-        ["option", 30000n, 0n],
-      ],
-    );
+    expect(
+      r.filter((x) => x.stakeholder === "Steve Wozniak").map((x) => [x.type, x.shares, x.vested]),
+    ).toEqual([
+      ["common", 10000n, 10000n],
+      ["option", 30000n, 0n],
+    ]);
   });
   test("then a full repurchase removes the shares", () => {
     const r = rows(
@@ -116,7 +116,7 @@ describe("exercise then repurchase (F-23, F-24)", () => {
       ],
       "2026-12-02",
     );
-    expect(r.filter((x) => x.stakeholder === "Lisa Moreau").map((x) => x.type)).toEqual(["option"]);
+    expect(r.filter((x) => x.stakeholder === "Steve Wozniak").map((x) => x.type)).toEqual(["option"]);
   });
   test("exercising more than vested is a violation", () => {
     const s = reduce(
@@ -235,7 +235,7 @@ describe("as-of replay", () => {
   test("2023-01-01: founders and YC only, no pool before plan approval", () => {
     expect(rows([], "2023-01-01").map((x) => x.stakeholder)).toEqual([
       "Tim Apple",
-      "Ana Ribeiro",
+      "Steve Jobs",
       "Y Combinator",
     ]);
   });
@@ -260,7 +260,7 @@ describe("as-of replay", () => {
 describe("bad numbers", () => {
   test("negative and fractional quantities are violations, not math", () => {
     const s = reduce(
-      [...base, stock("n1", "CS-8", "sh_ana", "-5"), stock("n2", "CS-9", "sh_ana", "1.5")],
+      [...base, stock("n1", "CS-8", "sh_steve", "-5"), stock("n2", "CS-9", "sh_steve", "1.5")],
       "2026-10-07",
     );
     expect(s.violations).toEqual([

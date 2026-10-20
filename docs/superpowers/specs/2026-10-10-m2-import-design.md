@@ -13,7 +13,7 @@ Mads, 2026-10-10: OCF and generic spreadsheets now. Pulley, Carta and Cake get t
    - Each column gets a field from a dropdown, pre-filled from header synonyms. The first five rows are shown as a preview.
    - The AI mapping for unknown formats is M4.
 4. **Check and save.**
-   - **Row issues block saving.** Example: "Row 14 (Lisa Moreau): strike price missing".
+   - **Row issues block saving.** Example: "Row 14 (Steve Wozniak): strike price missing".
    - **Inputs:** authorized shares per class (pre-filled with the issued total), the option pool's total reserved (pre-filled as granted + any "available" pool row), and the export date (default today).
    - **Reconcile:** the founder types the fully diluted total their old tool shows. Saving is blocked until it matches to the share, or until they choose "Accept with note". The note is saved as a `note` event. The computed summary is shown next to it: fully diluted, outstanding per class, stakeholders, SAFE total.
    - **OCF:** lossless, so there are no mapping or reconcile steps. Schema errors are shown per file and object.

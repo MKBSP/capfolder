@@ -93,11 +93,11 @@ test("import a spreadsheet: map columns, totals must match or be accepted with a
 });
 
 test("a spreadsheet with problems lists them per row and can't be saved", async () => {
-  await freshVault({ name: "bad.csv", bytes: "Name,Type,Shares,Strike\nLisa,Option,100,\n" });
+  await freshVault({ name: "bad.csv", bytes: "Name,Type,Shares,Strike\nWoz,Option,100,\n" });
   await userEvent.click(screen.getByLabelText(/Any spreadsheet/));
   await userEvent.click(screen.getByRole("button", { name: "Choose file…" }));
   await userEvent.click(await screen.findByRole("button", { name: "Continue" }));
-  expect(await screen.findByText("Row 2 (Lisa): strike price missing")).toBeInTheDocument();
+  expect(await screen.findByText("Row 2 (Woz): strike price missing")).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Save to the cap table" })).toBeDisabled();
 });
 

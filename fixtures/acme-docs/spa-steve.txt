@@ -1,4 +1,4 @@
 ACME INC.
 RESTRICTED STOCK PURCHASE AGREEMENT
-This Restricted Stock Purchase Agreement is entered into as of September 14, 2021 between Acme Inc., a Delaware corporation (the "Company"), and Ana Ribeiro (the "Purchaser").
+This Restricted Stock Purchase Agreement is entered into as of September 14, 2021 between Acme Inc., a Delaware corporation (the "Company"), and Steve Jobs (the "Purchaser").
 1. Purchase and Sale. The Purchaser agrees to purchase 3,000,000 shares of the Company's Common Stock at a price of $0.00001 per share.

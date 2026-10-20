@@ -96,7 +96,7 @@
     },
     {
       t: "Option grant",
-      sub: "Lisa Moreau · 40,000",
+      sub: "Steve Wozniak · 40,000",
       src: "DOWNLOADS",
       x: 215,
       y: 40,
@@ -107,7 +107,7 @@
     },
     {
       t: "83(b)",
-      sub: "Sam Carter · 2021",
+      sub: "Steve Jobs · 2021",
       src: "IMG_2231.JPG",
       x: 10,
       y: 160,

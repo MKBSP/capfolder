@@ -40,7 +40,7 @@ describe("reading files", () => {
   test("csv with quotes and a title row", () => {
     expect(h).toBe(2);
     expect(header[0]).toBe("Stakeholder");
-    expect(body[0]!.slice(0, 5)).toEqual(["Tim Apple", "tim@acme.example", "Common", "Common", "4,000,000"]);
+    expect(body[0]!.slice(0, 5)).toEqual(["Tim Apple", "tim@apple.com", "Common", "Common", "4,000,000"]);
   });
   test("xlsx round trip through our own writer", () => {
     const book = readXlsx(toXlsx(sheets(acmeEvents(), "2026-10-07")));
@@ -165,9 +165,9 @@ describe("buildImport", () => {
   });
   test("people are deduped by email, then by name", () => {
     const rows = [
-      ["Ana Ribeiro", "ana@x.com", "100"],
-      ["ANA  RIBEIRO", "", "50"],
-      ["A. Ribeiro", "ana@x.com", "25"],
+      ["Steve Jobs", "steve@apple.com", "100"],
+      ["STEVE  JOBS", "", "50"],
+      ["A. Jobs", "steve@apple.com", "25"],
     ];
     const x = buildImport({
       ...base,
@@ -179,7 +179,7 @@ describe("buildImport", () => {
     expect(x.summary.fullyDiluted).toBe(150n);
     // same email, different spelling: flagged, never silently merged (M2 review)
     expect(x.issues).toEqual([
-      "Row 6 (A. Ribeiro): same email as Ana Ribeiro (ana@x.com). Use one name, or give each its own email.",
+      "Row 6 (A. Jobs): same email as Steve Jobs (steve@apple.com). Use one name, or give each its own email.",
     ]);
   });
   test("missing issue date: export date, marked as an imported snapshot", () => {
@@ -247,7 +247,7 @@ describe("buildImport", () => {
       header: ["Name", "Type", "Shares", "Strike", "Investment"],
       mapping: ["name", "kind", "shares", "strike", "safeAmount"],
       rows: [
-        ["Lisa", "Option", "100", "", ""],
+        ["Woz", "Option", "100", "", ""],
         ["", "Common", "5", "", ""],
         ["Bob", "Common", "1.5", "", ""],
         ["Cy", "SAFE", "", "", ""],
@@ -256,7 +256,7 @@ describe("buildImport", () => {
       firstRow: 2,
     });
     expect(x.issues).toEqual([
-      "Row 2 (Lisa): strike price missing",
+      "Row 2 (Woz): strike price missing",
       "Row 3: name missing",
       'Row 4 (Bob): shares must be a whole number above 0, got "1.5"',
       "Row 5 (Cy): SAFE amount missing",

@@ -69,9 +69,9 @@ test("share with lawyer: everything, then one person", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Share with lawyer (.zip)" }));
   dialog = screen.getByRole("dialog");
   await userEvent.click(within(dialog).getByLabelText(/One person/));
-  await userEvent.selectOptions(within(dialog).getByLabelText("Person"), "Lisa Moreau");
+  await userEvent.selectOptions(within(dialog).getByLabelText("Person"), "Steve Wozniak");
   await userEvent.click(within(dialog).getByRole("button", { name: "Build zip…" }));
-  const lisa = unzip(fp.savedBytes["acme-inc-lisa-moreau-for-lawyer-2026-10-07.zip"]!);
-  expect(Object.keys(lisa)).not.toContain("events.jsonl");
-  expect(strFromU8(lisa["whats-missing.txt"]!)).toContain("Lisa Moreau");
+  const woz = unzip(fp.savedBytes["acme-inc-steve-wozniak-for-lawyer-2026-10-07.zip"]!);
+  expect(Object.keys(woz)).not.toContain("events.jsonl");
+  expect(strFromU8(woz["whats-missing.txt"]!)).toContain("Steve Wozniak");
 });

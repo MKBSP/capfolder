@@ -18,8 +18,8 @@ const backHome = async () => {
   await userEvent.click(screen.getByRole("button", { name: "Cap table" }));
 };
 
-test("Lisa: summary, chart and history", async () => {
-  await person("Lisa Moreau");
+test("Woz: summary, chart and history", async () => {
+  await person("Steve Wozniak");
   expect(screen.getByText("10,000")).toBeInTheDocument();
   expect(screen.getByText("833 7 Nov")).toBeInTheDocument();
   expect(screen.getAllByText("Oct 2029").length).toBeGreaterThan(0);
@@ -27,8 +27,8 @@ test("Lisa: summary, chart and history", async () => {
   expect(screen.getByText("Granted 40,000 options at $0.12 (OPT-1)")).toBeInTheDocument();
 });
 
-test("terminate Lisa after the cliff: unvested returns to the pool", async () => {
-  await person("Lisa Moreau");
+test("terminate Woz after the cliff: unvested returns to the pool", async () => {
+  await person("Steve Wozniak");
   await userEvent.click(screen.getByRole("button", { name: "Terminate…" }));
   fireEvent.change(screen.getByLabelText("Last day"), { target: { value: "2026-11-07" } });
   expect(within(screen.getByRole("dialog")).getByText(/^Vested/).textContent).toBe(
@@ -39,7 +39,7 @@ test("terminate Lisa after the cliff: unvested returns to the pool", async () =>
   await backHome();
   fireEvent.change(screen.getByLabelText("As of"), { target: { value: "2027-10-07" } });
   const t = screen.getByRole("table").textContent!;
-  expect(t).toContain("Lisa MoreauEmployee · Option10,833");
+  expect(t).toContain("Steve WozniakEmployee · Option10,833");
   expect(t).toContain("Option pool (available)Pool949,167");
 });
 
@@ -59,33 +59,33 @@ test("correct Angel's cap: as-converted updates, history shows both", async () =
 });
 
 test("edit a name as the same person", async () => {
-  await person("Ana Ribeiro");
+  await person("Steve Jobs");
   await userEvent.click(screen.getByRole("button", { name: "Edit" }));
   await userEvent.click(screen.getByRole("button", { name: "Same, just a new name or email" }));
   const name = screen.getByLabelText("Name");
   await userEvent.clear(name);
-  await userEvent.type(name, "Ana R. Ribeiro");
+  await userEvent.type(name, "Steve R. Jobs");
   await userEvent.click(screen.getByRole("button", { name: "Save" }));
-  expect(await screen.findByRole("heading", { name: "Ana R. Ribeiro", level: 1 })).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: "Steve R. Jobs", level: 1 })).toBeInTheDocument();
 });
 
-test("transfer part of Ana's shares to a new holding company: both rows on the cap table", async () => {
-  await person("Ana Ribeiro");
+test("transfer part of Steve's shares to a new holding company: both rows on the cap table", async () => {
+  await person("Steve Jobs");
   await userEvent.click(screen.getByRole("button", { name: "Transfer…" }));
   const dialog = within(screen.getByRole("dialog"));
-  await userEvent.type(dialog.getByLabelText("Name"), "Ribeiro Holdings");
+  await userEvent.type(dialog.getByLabelText("Name"), "Jobs Holdings");
   await userEvent.type(dialog.getByLabelText(/^Shares/), "1000000");
   fireEvent.change(dialog.getByLabelText("Date"), { target: { value: "2026-01-01" } });
   await userEvent.click(dialog.getByRole("button", { name: "Record transfer" }));
   expect(await screen.findByText(/Transferred 1,000,000 shares of CS-2/)).toBeInTheDocument();
   await backHome();
   const t = screen.getByRole("table").textContent!;
-  expect(t).toContain("Ribeiro Holdings");
-  expect(t).toMatch(/Ana Ribeiro.*2,000,000/);
+  expect(t).toContain("Jobs Holdings");
+  expect(t).toMatch(/Steve Jobs.*2,000,000/);
 });
 
 test("transfer refuses more than the holder has, and says why", async () => {
-  await person("Ana Ribeiro");
+  await person("Steve Jobs");
   await userEvent.click(screen.getByRole("button", { name: "Transfer…" }));
   const dialog = within(screen.getByRole("dialog"));
   await userEvent.selectOptions(dialog.getByLabelText("To"), "Tim Apple");

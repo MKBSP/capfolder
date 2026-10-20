@@ -65,8 +65,8 @@ describe("sheets", () => {
       "Unvested",
       "SAFE amount (USD)",
     ]);
-    expect(rows.find((r) => r[0] === "Lisa Moreau")).toEqual([
-      "Lisa Moreau",
+    expect(rows.find((r) => r[0] === "Steve Wozniak")).toEqual([
+      "Steve Wozniak",
       expect.any(String),
       "40000",
       "0.50",
@@ -77,11 +77,11 @@ describe("sheets", () => {
     expect(rows.find((r) => r[0] === "Fund X")?.[6]).toBe("250000");
   });
   test("Vesting", () => {
-    const lisa = sheet("Vesting")
+    const woz = sheet("Vesting")
       .rows.map((r) => r.map(text))
-      .find((r) => r[0] === "Lisa Moreau")!;
-    expect(lisa.slice(0, 11)).toEqual([
-      "Lisa Moreau",
+      .find((r) => r[0] === "Steve Wozniak")!;
+    expect(woz.slice(0, 11)).toEqual([
+      "Steve Wozniak",
       "OPT-1",
       "option",
       "40000",
@@ -103,13 +103,13 @@ describe("sheets", () => {
     ]);
   });
   test("person scope only shows that person", () => {
-    const s = sheets(base, AS_OF, { stakeholderId: "sh_lisa" });
+    const s = sheets(base, AS_OF, { stakeholderId: "sh_woz" });
     const all = s
       .flatMap((x) => x.rows.flat().map(text))
       .join("|")
       .replace(DISCLAIMER, "");
-    expect(all).toContain("Lisa Moreau");
-    for (const other of ["Tim Apple", "Ana Ribeiro", "João Silva", "Y Combinator", "Fund X", "Angel A"])
+    expect(all).toContain("Steve Wozniak");
+    for (const other of ["Tim Apple", "Steve Jobs", "Bill Gates", "Y Combinator", "Fund X", "Angel A"])
       expect(all).not.toContain(other);
   });
 });
@@ -159,10 +159,10 @@ describe("lawyer package", () => {
     expect(paths).toEqual([
       "docs/safes/2022-01-10_y-combinator.pdf",
       "docs/safes/2023-02-20_angel-a.pdf",
-      "docs/grants/2025-10-07_lisa-moreau.pdf",
+      "docs/grants/2025-10-07_steve-wozniak.pdf",
     ]);
-    expect(lawyerDocPaths(base, { kind: "person", stakeholderId: "sh_lisa" })).toEqual([
-      "docs/grants/2025-10-07_lisa-moreau.pdf",
+    expect(lawyerDocPaths(base, { kind: "person", stakeholderId: "sh_woz" })).toEqual([
+      "docs/grants/2025-10-07_steve-wozniak.pdf",
     ]);
     const docs = Object.fromEntries(paths.map((p, i) => [p, i === 0 ? new Uint8Array([1, 2, 3]) : null]));
     const files = await lawyerPackage({
@@ -194,7 +194,7 @@ describe("lawyer package", () => {
     expect(files["whats-missing.txt"]).toContain("No signed document for Fund X's SAFE");
   });
   test("one person leaks nobody else", async () => {
-    const scope = { kind: "person", stakeholderId: "sh_lisa" } as const;
+    const scope = { kind: "person", stakeholderId: "sh_woz" } as const;
     const files = await lawyerPackage({ events: base, asOf: AS_OF, docs: {}, scope, generatedAt });
     expect(Object.keys(files).sort()).toEqual([
       "README.txt",
@@ -206,9 +206,8 @@ describe("lawyer package", () => {
       .map((b) => strFromU8(b))
       .join("");
     const txt = `${files["README.txt"]}${files["whats-missing.txt"]}${xlsx}`;
-    expect(txt).toContain("Lisa Moreau");
-    for (const other of ["Tim Apple", "Ana Ribeiro", "João Silva", "Fund X"])
-      expect(txt).not.toContain(other);
+    expect(txt).toContain("Steve Wozniak");
+    for (const other of ["Tim Apple", "Steve Jobs", "Bill Gates", "Fund X"]) expect(txt).not.toContain(other);
   });
   test("removed documents are left out", () => {
     const removed = [...base, ev("doc_removed", { doc_id: "doc_yc_safe" })];

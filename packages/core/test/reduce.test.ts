@@ -13,9 +13,9 @@ test("no violations or unknown types in acme", () => {
 test("row order and core numbers", () => {
   expect(rows.map((r) => [r.stakeholder, r.type, r.shares, r.fdPercent, r.vested, r.unvested])).toEqual([
     ["Tim Apple", "common", 4000000n, "50.00", 3000000n, 1000000n],
-    ["Ana Ribeiro", "common", 3000000n, "37.50", 2250000n, 750000n],
-    ["Lisa Moreau", "option", 40000n, "0.50", 10000n, 30000n],
-    ["João Silva", "option", 40000n, "0.50", 0n, 40000n],
+    ["Steve Jobs", "common", 3000000n, "37.50", 2250000n, 750000n],
+    ["Steve Wozniak", "option", 40000n, "0.50", 10000n, 30000n],
+    ["Bill Gates", "option", 40000n, "0.50", 0n, 40000n],
     ["Option pool (available)", "pool", 920000n, "11.50", null, null],
     ["Y Combinator", "safe", null, "", null, null],
     ["Angel A", "safe", null, "", null, null],
@@ -38,10 +38,10 @@ test("every number shows its math", () => {
   expect(rows[6]!.math.as_converted).toBe("150,000 ÷ 8,000,000 post-money cap");
 });
 test("deprecated TX_PLAN_SECURITY_* names are read as equity compensation", () => {
-  const lisa = acmeEvents().find((e) => e.id === "evt_0020")!;
+  const woz = acmeEvents().find((e) => e.id === "evt_0020")!;
   const old = {
-    ...lisa,
-    data: { ...lisa.data, object_type: "TX_PLAN_SECURITY_ISSUANCE" },
+    ...woz,
+    data: { ...woz.data, object_type: "TX_PLAN_SECURITY_ISSUANCE" },
     type: "TX_PLAN_SECURITY_ISSUANCE",
   };
   const s = reduce([...acmeEvents().filter((e) => e.id !== "evt_0020"), old], "2026-10-07");

@@ -15,7 +15,7 @@ describe("critical: number formats", () => {
       ["Name", "Type", "Shares", "Price", "Strike", "Investment"],
       ["name", "kind", "shares", "price", "strike", "safeAmount"],
       [
-        ["Ana", "Common", "1.000.000", "0,0001", "", ""],
+        ["Steve", "Common", "1.000.000", "0,0001", "", ""],
         ["Rui", "Option", "10.000", "", "0,50", ""],
         ["Fund", "SAFE", "", "", "", "250.000,00"],
       ],
@@ -170,7 +170,7 @@ describe("important", () => {
       ["Name", "Entity", "Shares"],
       ["name", "holderType", "shares"],
       [
-        ["Ana Holdings", "Individual", "1"],
+        ["Steve Holdings", "Individual", "1"],
         ["Bo", "Entity", "1"],
       ],
     );

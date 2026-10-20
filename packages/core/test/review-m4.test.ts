@@ -9,15 +9,15 @@ const sort = (t: string, s = state) => sortText(t, s);
 
 describe("M4 review: never file against the wrong row", () => {
   test("C1 a consent links only the grant whose name and count share a resolution", () => {
-    const joao = sort(`ACME INC.
+    const bill = sort(`ACME INC.
 ACTION BY UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS
-Directors: Tim Apple, Lisa Moreau
-RESOLVED, that the Company grants an option to purchase 40,000 shares to João Silva under the 2025 Equity Incentive Plan.`);
-    expect(joao.targets).toEqual(["OPT-2"]);
-    const lisa140 = sort(`ACME INC.
+Directors: Tim Apple, Steve Wozniak
+RESOLVED, that the Company grants an option to purchase 40,000 shares to Bill Gates under the 2025 Equity Incentive Plan.`);
+    expect(bill.targets).toEqual(["OPT-2"]);
+    const woz140 = sort(`ACME INC.
 ACTION BY UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS
-RESOLVED, that the Company grants an option to purchase 140,000 shares to Lisa Moreau.`);
-    expect(lisa140.targets).toEqual([]);
+RESOLVED, that the Company grants an option to purchase 140,000 shares to Steve Wozniak.`);
+    expect(woz140.targets).toEqual([]);
   });
   test("C2 a grant notice, exercise, award or amendment headed with the plan name is not the plan", () => {
     for (const title of [
@@ -27,7 +27,7 @@ RESOLVED, that the Company grants an option to purchase 140,000 shares to Lisa M
       "FIRST AMENDMENT TO THE 2025 EQUITY INCENTIVE PLAN",
     ]) {
       const r = sort(
-        `ACME INC.\n2025 EQUITY INCENTIVE PLAN\n${title}\nOptionholder: Lisa Moreau\nNumber of Shares: 40,000`,
+        `ACME INC.\n2025 EQUITY INCENTIVE PLAN\n${title}\nOptionholder: Steve Wozniak\nNumber of Shares: 40,000`,
       );
       expect([title, r.status]).toEqual([title, "review"]);
     }
@@ -36,14 +36,14 @@ RESOLVED, that the Company grants an option to purchase 140,000 shares to Lisa M
     const docs = [
       `SIDE LETTER\nThis letter relates to the Safe under which, in exchange for the payment by Y Combinator (the "Investor") of $500,000 (the "Purchase Amount") on or about January 10, 2022, the Company issued a Simple Agreement for Future Equity.`,
       `AMENDMENT TO SAFE\nThe Simple Agreement for Future Equity issued for the payment by Y Combinator (the "Investor") of $500,000 (the "Purchase Amount") on or about January 10, 2022 is amended.`,
-      `STOCK OPTION EXERCISE NOTICE\nOptionholder: Lisa Moreau\nI exercise 40,000 shares pursuant to the Stock Option Agreement dated October 7, 2025.`,
-      `OFFER LETTER\nEmployee: Lisa Moreau\nYou must sign the Company's Confidential Information and Invention Assignment Agreement.`,
+      `STOCK OPTION EXERCISE NOTICE\nOptionholder: Steve Wozniak\nI exercise 40,000 shares pursuant to the Stock Option Agreement dated October 7, 2025.`,
+      `OFFER LETTER\nEmployee: Steve Wozniak\nYou must sign the Company's Confidential Information and Invention Assignment Agreement.`,
       `STOCK CERTIFICATE\nACME INC.\nTHE SHARES ARE SUBJECT TO THE CERTIFICATE OF INCORPORATION OF ACME INC.`,
     ];
     for (const d of docs) expect([d.slice(0, 20), sort(d).status]).toEqual([d.slice(0, 20), "review"]);
   });
   test("C4 a phrase found only in the body never files itself", () => {
-    const merged = `This Restricted Stock Purchase Agreement between Acme Inc. and Ana Ribeiro (the "Purchaser") covers 3,000,000 shares of the Company's Common Stock, entered into as of September 14, 2021; the Purchaser may file an election under Section 83(b) of the Internal Revenue Code within 30 days, as described in this agreement and in the exhibits attached to it.`;
+    const merged = `This Restricted Stock Purchase Agreement between Acme Inc. and Steve Jobs (the "Purchaser") covers 3,000,000 shares of the Company's Common Stock, entered into as of September 14, 2021; the Purchaser may file an election under Section 83(b) of the Internal Revenue Code within 30 days, as described in this agreement and in the exhibits attached to it.`;
     expect(sort(merged).status).toBe("review");
   });
   test("I7 no date and the holder has two holdings of that kind: review", () => {
@@ -51,10 +51,10 @@ RESOLVED, that the Company grants an option to purchase 140,000 shares to Lisa M
       [
         ...noDocs,
         ev("TX_STOCK_ISSUANCE", {
-          id: "tx_ana2",
+          id: "tx_steve2",
           date: "2024-01-01",
           security_id: "CS-9",
-          stakeholder_id: "sh_ana",
+          stakeholder_id: "sh_steve",
           stock_class_id: "sc_common",
           quantity: "5000",
           share_price: { amount: "0.01", currency: "USD" },
@@ -64,9 +64,9 @@ RESOLVED, that the Company grants an option to purchase 140,000 shares to Lisa M
       ],
       "9999-12-31",
     );
-    const r = sort("STOCK PURCHASE AGREEMENT\nPurchaser: Ana Ribeiro\nShares: 3,000,000", two);
+    const r = sort("STOCK PURCHASE AGREEMENT\nPurchaser: Steve Jobs\nShares: 3,000,000", two);
     expect(r.status).toBe("review");
-    expect(sort("STOCK PURCHASE AGREEMENT\nPurchaser: Ana Ribeiro\nShares: 3,000,000").status).toBe("auto");
+    expect(sort("STOCK PURCHASE AGREEMENT\nPurchaser: Steve Jobs\nShares: 3,000,000").status).toBe("auto");
   });
   test("I5 only a rule may skip a document; AI or past choices saying 'not equity' go to the founder", () => {
     const ai = sortText("whatever", state, { proposal: { type: "not_equity", fields: {} } });
@@ -81,7 +81,7 @@ RESOLVED, that the Company grants an option to purchase 140,000 shares to Lisa M
     const r = sort(`ACME INC.
 ACTION BY UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS
 RESOLVED, that the 2025 Equity Incentive Plan is adopted.
-RESOLVED, that the Company grants an option to purchase 40,000 shares to Lisa Moreau.
+RESOLVED, that the Company grants an option to purchase 40,000 shares to Steve Wozniak.
 Dated: Septem[illegible]`);
     expect(r.status).toBe("review");
     expect(r.targets).toEqual(["plan_2025", "OPT-1"]);
@@ -144,7 +144,7 @@ describe("M7 review: real PDFs wrap their lines", () => {
     expect(sort(wrap(`${legend}\n${yc}`)).status).toBe("auto");
   });
   test("a grant notice whose first paragraph mentions the Notice of Exercise is still a grant", () => {
-    const g = readFileSync(new URL("grant-lisa.txt", DIR), "utf8").replace(
+    const g = readFileSync(new URL("grant-woz.txt", DIR), "utf8").replace(
       "and the Option Agreement.",
       "and the Option Agreement, the Notice of Exercise and the Plan, all of which are attached.",
     );
@@ -159,7 +159,7 @@ describe("M7 review: papers about an agreement are not the agreement", () => {
     "NOTICE OF REPURCHASE\nRESTRICTED STOCK PURCHASE AGREEMENT",
     "STOCK TRANSFER\nSTOCK PURCHASE AGREEMENT",
   ])("%s", (title) => {
-    expect(sort(`${title}\nPurchaser: Ana Ribeiro\nShares: 3,000,000\nDate: September 14, 2021`).status).toBe(
+    expect(sort(`${title}\nPurchaser: Steve Jobs\nShares: 3,000,000\nDate: September 14, 2021`).status).toBe(
       "review",
     );
   });
@@ -173,7 +173,7 @@ describe("M7 review: papers about an agreement are not the agreement", () => {
   test("a resolution cancelling a grant doesn't link it as its approval", () => {
     const r = sort(`ACME INC.
 ACTION BY UNANIMOUS WRITTEN CONSENT OF THE BOARD OF DIRECTORS
-RESOLVED, that the option to purchase 40,000 shares held by João Silva is hereby cancelled.`);
+RESOLVED, that the option to purchase 40,000 shares held by Bill Gates is hereby cancelled.`);
     expect(r.targets).toEqual([]);
   });
 });

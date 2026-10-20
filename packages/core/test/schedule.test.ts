@@ -6,20 +6,20 @@ import { fullyVestedOn, nextVest, vestingSchedule } from "../src/schedule";
 import { acmeEvents, ev, readFix } from "./helpers";
 
 const s = reduce(acmeEvents(), "2026-10-07");
-const lisa = s.securities.get("OPT-1")!;
+const woz = s.securities.get("OPT-1")!;
 
-test("Lisa's next vest is 833 on Nov 7", () => {
-  expect(nextVest(lisa, s, "2026-10-07")).toEqual({ date: "2026-11-07", quantity: 833n });
+test("Woz's next vest is 833 on Nov 7", () => {
+  expect(nextVest(woz, s, "2026-10-07")).toEqual({ date: "2026-11-07", quantity: 833n });
 });
-test("João's next vest is the cliff", () => {
+test("Bill's next vest is the cliff", () => {
   expect(nextVest(s.securities.get("OPT-2")!, s, "2026-10-07")).toEqual({
     date: "2027-03-02",
     quantity: 10000n,
   });
 });
-test("fully vested on month 48", () => expect(fullyVestedOn(lisa, s)).toBe("2029-10-07"));
+test("fully vested on month 48", () => expect(fullyVestedOn(woz, s)).toBe("2029-10-07"));
 test("schedule has 48 monthly points, cliff at month 12", () => {
-  const pts = vestingSchedule(lisa, s)!;
+  const pts = vestingSchedule(woz, s)!;
   expect(pts).toHaveLength(48);
   expect(pts[0]).toEqual({ date: "2025-11-07", cumulative: 0n });
   expect(pts[11]).toEqual({ date: "2026-10-07", cumulative: 10000n });

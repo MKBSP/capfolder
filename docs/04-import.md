@@ -46,7 +46,7 @@ summary.total_outstanding, summary.fully_diluted, summary.per_class (for reconci
 
 ## 4. Validate
 - Run `ajv` against the OCF schemas for every object.
-- Errors are shown per source row, as "Row 14 (Lisa Moreau): strike price missing".
+- Errors are shown per source row, as "Row 14 (Steve Wozniak): strike price missing".
 
 ## 5. Reconcile (blocks save)
 Compare our computed values with the export's **own** summary numbers:

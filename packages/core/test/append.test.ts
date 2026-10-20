@@ -63,7 +63,7 @@ test("rejects a new invariant violation", async () => {
         date: "2026-01-01",
         security_id: "CS-9",
         custom_id: "CS-9",
-        stakeholder_id: "sh_ana",
+        stakeholder_id: "sh_steve",
         stock_class_id: "sc_common",
         quantity: "4000000",
         share_price: { amount: "1", currency: "USD" },

@@ -33,11 +33,11 @@ const noOcr = { image: async () => "", pdfPage: async () => "OCR TEXT" };
 describe("readText", () => {
   test("a text PDF keeps its lines and isn't OCR'd", async () => {
     const r = await readText(
-      await pdf([["STOCK OPTION GRANT NOTICE", "Optionholder: Lisa Moreau"]]),
+      await pdf([["STOCK OPTION GRANT NOTICE", "Optionholder: Steve Wozniak"]]),
       "a.pdf",
       noOcr,
     );
-    expect(r).toEqual({ text: "STOCK OPTION GRANT NOTICE\nOptionholder: Lisa Moreau", ocr: false });
+    expect(r).toEqual({ text: "STOCK OPTION GRANT NOTICE\nOptionholder: Steve Wozniak", ocr: false });
   });
   test("a page with no text layer goes through OCR", async () => {
     const r = await readText(await pdf([["A page with enough text on it"], []]), "a.pdf", noOcr);

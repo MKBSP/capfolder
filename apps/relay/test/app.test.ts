@@ -26,7 +26,7 @@ const json = (body: unknown, headers: Record<string, string> = {}) => ({
   body: JSON.stringify(body),
 });
 
-async function send(app: ReturnType<typeof setup>["app"], email = "tim@acme.example") {
+async function send(app: ReturnType<typeof setup>["app"], email = "tim@apple.com") {
   const form = new FormData();
   form.append("pdf", new Blob([new Uint8Array([37, 80, 68, 70])], { type: "application/pdf" }), "safe.pdf");
   form.append(
@@ -56,13 +56,13 @@ test("health", async () => {
 describe("auth (F-04)", () => {
   test("code by email, then a device token", async () => {
     const { app, mail } = setup();
-    expect((await app.request("/auth/start", json({ email: "Tim@Acme.example" }))).status).toBe(200);
+    expect((await app.request("/auth/start", json({ email: "Tim@Apple.com" }))).status).toBe(200);
     const code = /\b(\d{6})\b/.exec(mail[0]!.text)![1]!;
-    expect(mail[0]!.to).toBe("tim@acme.example");
-    expect(
-      (await app.request("/auth/verify", json({ email: "tim@acme.example", code: "000000" }))).status,
-    ).toBe(400);
-    const r = await app.request("/auth/verify", json({ email: "tim@acme.example", code }));
+    expect(mail[0]!.to).toBe("tim@apple.com");
+    expect((await app.request("/auth/verify", json({ email: "tim@apple.com", code: "000000" }))).status).toBe(
+      400,
+    );
+    const r = await app.request("/auth/verify", json({ email: "tim@apple.com", code }));
     const { token } = (await r.json()) as { token: string };
     expect((await app.request("/me", { headers: { Authorization: `Bearer ${token}` } })).status).toBe(200);
   });
@@ -89,7 +89,7 @@ describe("auth (F-04)", () => {
     expect(
       (await app.request("/envelopes/x", { headers: { Authorization: "Bearer abc.def.ghi" } })).status,
     ).toBe(401);
-    const forged = makeToken("other-secret", "tim@acme.example", clock);
+    const forged = makeToken("other-secret", "tim@apple.com", clock);
     expect(
       (await app.request("/envelopes/x", { headers: { Authorization: `Bearer ${forged}` } })).status,
     ).toBe(401);
@@ -109,7 +109,7 @@ describe("envelopes", () => {
     expect(e.externalId).toMatch(/^capfolder:[0-9a-f]{32}:/);
     expect(e.recipients.map((x) => [x.email, x.signingOrder])).toEqual([
       ["fund@y.example", 1],
-      ["tim@acme.example", 2],
+      ["tim@apple.com", 2],
     ]);
     expect(doc.calls).toEqual([`create ${id}`, `distribute ${id}`]);
   });
@@ -117,20 +117,18 @@ describe("envelopes", () => {
     const { app, doc } = setup();
     const { id } = (await (await send(app)).json()) as { id: string };
     doc.envelopes.get(id)!.recipients[0]!.readStatus = "OPENED";
-    expect(
-      await (await app.request(`/envelopes/${id}`, { headers: auth("tim@acme.example") })).json(),
-    ).toEqual({
+    expect(await (await app.request(`/envelopes/${id}`, { headers: auth("tim@apple.com") })).json()).toEqual({
       id,
       status: "pending",
       signers: [
         { name: "Fund Y", email: "fund@y.example", status: "opened", signedAt: null },
-        { name: "Tim", email: "tim@acme.example", status: "sent", signedAt: null },
+        { name: "Tim", email: "tim@apple.com", status: "sent", signedAt: null },
       ],
     });
     doc.sign(id, "fund@y.example");
-    doc.sign(id, "tim@acme.example");
+    doc.sign(id, "tim@apple.com");
     const done = (await (
-      await app.request(`/envelopes/${id}`, { headers: auth("tim@acme.example") })
+      await app.request(`/envelopes/${id}`, { headers: auth("tim@apple.com") })
     ).json()) as {
       status: string;
     };
@@ -152,7 +150,7 @@ describe("envelopes", () => {
     const { app } = setup();
     const { id } = (await (await send(app)).json()) as { id: string };
     expect(
-      await (await app.request(`/envelopes/${id}/signing-url`, { headers: auth("tim@acme.example") })).json(),
+      await (await app.request(`/envelopes/${id}/signing-url`, { headers: auth("tim@apple.com") })).json(),
     ).toEqual({
       url: "http://documenso.test/sign/tok1_2",
     });
@@ -164,31 +162,31 @@ describe("envelopes", () => {
       JSON.stringify({ title: "T", signers: [{ name: "Fund Y", email: "fund@y.example" }], fields: [] }),
     );
     const other = (await (
-      await app.request("/envelopes", { method: "POST", body: form, headers: auth("tim@acme.example") })
+      await app.request("/envelopes", { method: "POST", body: form, headers: auth("tim@apple.com") })
     ).json()) as { id: string };
     expect(
-      (await app.request(`/envelopes/${other.id}/signing-url`, { headers: auth("tim@acme.example") })).status,
+      (await app.request(`/envelopes/${other.id}/signing-url`, { headers: auth("tim@apple.com") })).status,
     ).toBe(404);
   });
   test("remind only the unsigned; cancel a pending one; delete a finished one", async () => {
     const { app, doc } = setup();
     const { id } = (await (await send(app)).json()) as { id: string };
     doc.sign(id, "fund@y.example");
-    await app.request(`/envelopes/${id}/remind`, { method: "POST", headers: auth("tim@acme.example") });
+    await app.request(`/envelopes/${id}/remind`, { method: "POST", headers: auth("tim@apple.com") });
     expect(doc.calls.at(-1)).toBe(`redistribute ${id} 2`);
-    await app.request(`/envelopes/${id}`, { method: "DELETE", headers: auth("tim@acme.example") });
+    await app.request(`/envelopes/${id}`, { method: "DELETE", headers: auth("tim@apple.com") });
     expect(doc.calls.slice(-2)).toEqual([`cancel ${id}`, `remove ${id}`]);
-    expect((await app.request(`/envelopes/${id}`, { headers: auth("tim@acme.example") })).status).toBe(404);
+    expect((await app.request(`/envelopes/${id}`, { headers: auth("tim@apple.com") })).status).toBe(404);
   });
   test("signed.pdf only when completed", async () => {
     const { app, doc } = setup();
     const { id } = (await (await send(app)).json()) as { id: string };
     expect(
-      (await app.request(`/envelopes/${id}/signed.pdf`, { headers: auth("tim@acme.example") })).status,
+      (await app.request(`/envelopes/${id}/signed.pdf`, { headers: auth("tim@apple.com") })).status,
     ).toBe(409);
     doc.sign(id, "fund@y.example");
-    doc.sign(id, "tim@acme.example", new Uint8Array([9, 9]));
-    const r = await app.request(`/envelopes/${id}/signed.pdf`, { headers: auth("tim@acme.example") });
+    doc.sign(id, "tim@apple.com", new Uint8Array([9, 9]));
+    const r = await app.request(`/envelopes/${id}/signed.pdf`, { headers: auth("tim@apple.com") });
     expect([r.status, r.headers.get("content-type"), [...new Uint8Array(await r.arrayBuffer())]]).toEqual([
       200,
       "application/pdf",
@@ -202,7 +200,7 @@ describe("envelopes", () => {
     const r = await app.request("/envelopes", {
       method: "POST",
       body: form,
-      headers: auth("tim@acme.example"),
+      headers: auth("tim@apple.com"),
     });
     expect([r.status, await r.json()]).toEqual([
       400,
@@ -290,7 +288,7 @@ describe("abuse limits (security review)", () => {
       }),
     );
     expect(
-      (await app.request("/envelopes", { method: "POST", body: many, headers: auth("tim@acme.example") }))
+      (await app.request("/envelopes", { method: "POST", body: many, headers: auth("tim@apple.com") }))
         .status,
     ).toBe(400);
     const big = new FormData();
@@ -300,8 +298,7 @@ describe("abuse limits (security review)", () => {
       JSON.stringify({ title: "T", signers: [{ name: "A", email: "a@x.example" }], fields: [] }),
     );
     expect(
-      (await app.request("/envelopes", { method: "POST", body: big, headers: auth("tim@acme.example") }))
-        .status,
+      (await app.request("/envelopes", { method: "POST", body: big, headers: auth("tim@apple.com") })).status,
     ).toBe(413);
   });
 });
@@ -353,7 +350,7 @@ describe("security review 2", () => {
     const r = await app.request("/envelopes", {
       method: "POST",
       headers: {
-        ...auth("tim@acme.example"),
+        ...auth("tim@apple.com"),
         "content-type": "multipart/form-data; boundary=x",
         "content-length": String(40 * 1024 * 1024),
       },
@@ -368,7 +365,7 @@ describe("M5 review", () => {
     const { app, doc } = setup();
     const { id } = (await (await send(app)).json()) as { id: string };
     doc.sign(id, "fund@y.example");
-    doc.sign(id, "tim@acme.example");
+    doc.sign(id, "tim@apple.com");
     const e = doc.envelopes.get(id)!;
     e.createdAt = new Date(clock - 31 * 864e5).toISOString();
     e.completedAt = new Date(clock - 2 * 864e5).toISOString();
@@ -380,7 +377,7 @@ describe("M5 review", () => {
   test("remind only the signer whose turn it is", async () => {
     const { app, doc } = setup();
     const { id } = (await (await send(app)).json()) as { id: string };
-    await app.request(`/envelopes/${id}/remind`, { method: "POST", headers: auth("tim@acme.example") });
+    await app.request(`/envelopes/${id}/remind`, { method: "POST", headers: auth("tim@apple.com") });
     expect(doc.calls.at(-1)).toBe(`redistribute ${id} 1`);
   });
   test("malformed sign-in input is a 400, not a 502", async () => {
@@ -510,7 +507,7 @@ describe("fair use on the hosted relay", () => {
     const r = await send(app);
     expect(r.status).toBe(503);
     expect((await r.json()).error).toBe("Sending is paused on the signing service. Try again later.");
-    expect((await app.request(`/envelopes/${id}`, { headers: auth("tim@acme.example") })).status).toBe(200);
+    expect((await app.request(`/envelopes/${id}`, { headers: auth("tim@apple.com") })).status).toBe(200);
   });
 });
 
@@ -520,9 +517,9 @@ describe("wire instructions after signing", () => {
     const t = setup();
     const { id } = (await (await send(t.app)).json()) as { id: string };
     t.doc.sign(id, "fund@y.example");
-    t.doc.sign(id, "tim@acme.example");
+    t.doc.sign(id, "tim@apple.com");
     const s = (await (
-      await t.app.request(`/envelopes/${id}`, { headers: auth("tim@acme.example") })
+      await t.app.request(`/envelopes/${id}`, { headers: auth("tim@apple.com") })
     ).json()) as {
       receipt?: string;
     };
@@ -531,7 +528,7 @@ describe("wire instructions after signing", () => {
   const wire = (
     app: ReturnType<typeof setup>["app"],
     meta: Record<string, unknown>,
-    who = "tim@acme.example",
+    who = "tim@apple.com",
   ) => {
     const form = new FormData();
     form.append("signed", pdf([37, 80, 68, 70, 1]), "signed.pdf");
@@ -541,13 +538,13 @@ describe("wire instructions after signing", () => {
   };
   const signers = [
     { name: "Fund Y", email: "fund@y.example" },
-    { name: "Tim", email: "tim@acme.example" },
+    { name: "Tim", email: "tim@apple.com" },
   ];
 
   test("a completed envelope's status carries a receipt; a pending one doesn't", async () => {
     const t = setup();
     const { id } = (await (await send(t.app)).json()) as { id: string };
-    const s = await (await t.app.request(`/envelopes/${id}`, { headers: auth("tim@acme.example") })).json();
+    const s = await (await t.app.request(`/envelopes/${id}`, { headers: auth("tim@apple.com") })).json();
     expect(s).not.toHaveProperty("receipt");
     expect((await completed()).receipt).toMatch(/^[\w-]{20,}$/);
   });
@@ -565,7 +562,7 @@ describe("wire instructions after signing", () => {
     expect(mail.map((m) => m.to)).toEqual(["fund@y.example"]);
     expect(mail[0]!.subject).toBe("Acme Inc.: your signed SAFE · Fund Y and wire instructions");
     expect(mail[0]!.text).toMatch(/confirm the bank details by phone/);
-    expect(mail[0]!.extra?.replyTo).toBe("tim@acme.example");
+    expect(mail[0]!.extra?.replyTo).toBe("tim@apple.com");
     expect(mail[0]!.extra?.attachments?.map((a) => a.filename)).toEqual([
       "SAFE · Fund Y (signed).pdf",
       "Wire instructions.pdf",

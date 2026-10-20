@@ -9,7 +9,7 @@ import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
 import { fakeRelay } from "../test/fakeRelay";
 
-const ME = "tim@acme.example";
+const ME = "tim@apple.com";
 
 async function pdf(text: string) {
   const d = await PDFDocument.create();
@@ -182,8 +182,8 @@ async function sendDocument(title: string) {
   await userEvent.click(await screen.findByRole("button", { name: "Send for signature" }));
   const dialog = await screen.findByRole("dialog");
   await userEvent.type(within(dialog).getByLabelText("Title"), title);
-  await userEvent.type(within(dialog).getByLabelText("Signer 1 name"), "Ana Ribeiro");
-  await userEvent.type(within(dialog).getByLabelText("Signer 1 email"), "ana@acme.example");
+  await userEvent.type(within(dialog).getByLabelText("Signer 1 name"), "Steve Jobs");
+  await userEvent.type(within(dialog).getByLabelText("Signer 1 email"), "steve@apple.com");
   await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
   await userEvent.click(within(dialog).getByRole("button", { name: "Send" }));
   await screen.findByRole("heading", { name: "Signatures" });
@@ -257,7 +257,7 @@ describe("M5 review", () => {
     await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
     await act(async () => {});
     expect(screen.queryByText("Not found")).toBeNull();
-    expect(await screen.findByText("Waiting for Ana Ribeiro")).toBeInTheDocument();
+    expect(await screen.findByText("Waiting for Steve Jobs")).toBeInTheDocument();
   });
 
   test("I2: switching relays keeps checking envelopes on the relay they were sent through", async () => {
@@ -282,7 +282,7 @@ describe("M5 review", () => {
     render(<App platform={fp.platform} />);
     await screen.findByText("Fully diluted");
     await userEvent.click(screen.getByRole("button", { name: "Signatures" }));
-    expect(await screen.findByText("Waiting for Ana Ribeiro")).toBeInTheDocument();
+    expect(await screen.findByText("Waiting for Steve Jobs")).toBeInTheDocument();
   });
 
   test("I4: a signed copy with something drawn or annotated on an original page isn't filed", async () => {
@@ -369,8 +369,8 @@ describe("send feedback (beta test)", () => {
     const dialog = await screen.findByRole("dialog");
     await userEvent.type(within(dialog).getByLabelText("Title"), "Consent");
     await userEvent.click(within(dialog).getByRole("button", { name: "Choose PDF…" }));
-    await userEvent.type(within(dialog).getByLabelText("Signer 1 name"), "Ana");
-    await userEvent.type(within(dialog).getByLabelText("Signer 1 email"), "ana@x.example");
+    await userEvent.type(within(dialog).getByLabelText("Signer 1 name"), "Steve");
+    await userEvent.type(within(dialog).getByLabelText("Signer 1 email"), "steve@apple.com");
     await userEvent.click(within(dialog).getByRole("button", { name: "Send" }));
     expect(await within(dialog).findByText(/Nothing was sent.*Operation not permitted/)).toBeInTheDocument();
     expect(fp.relay.doc.envelopes.size).toBe(0);

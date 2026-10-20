@@ -37,7 +37,7 @@ describe("acme-docs golden (F-09)", () => {
 
 describe("classify", () => {
   test("a grant notice that names the plan is a grant", () =>
-    expect(classify(txt("grant-lisa.txt"))?.type).toBe("option_grant"));
+    expect(classify(txt("grant-woz.txt"))?.type).toBe("option_grant"));
   test("an SPA that mentions 83(b) is an SPA", () => expect(classify(txt("spa-tim.txt"))?.type).toBe("spa"));
   test("a board consent adopting the plan is a consent", () =>
     expect(classify(txt("board-consent-2025.txt"))?.type).toBe("board_consent"));
@@ -64,15 +64,15 @@ describe("extract", () => {
   test("a number OCR couldn't read is unreadable, not guessed", () =>
     expect(extract("safe", txt("scan_0042.txt")).cap).toBe("unreadable"));
   test("grant notice", () =>
-    expect(extract("option_grant", txt("grant-lisa.txt"))).toMatchObject({
-      name: "Lisa Moreau",
+    expect(extract("option_grant", txt("grant-woz.txt"))).toMatchObject({
+      name: "Steve Wozniak",
       shares: "40000",
       price: "0.12",
       date: "2025-10-07",
     }));
   test("83(b)", () =>
-    expect(extract("83b", txt("83b-ana.txt"))).toMatchObject({
-      name: "Ana Ribeiro",
+    expect(extract("83b", txt("83b-steve.txt"))).toMatchObject({
+      name: "Steve Jobs",
       shares: "3000000",
       date: "2021-09-14",
     }));
@@ -81,7 +81,7 @@ describe("extract", () => {
 describe("matching", () => {
   test("the date may be 3 days off, not 4", () => {
     const at = (d: string) =>
-      sortText(txt("grant-lisa.txt").replace("Date of Grant: October 7, 2025", `Date of Grant: ${d}`), state);
+      sortText(txt("grant-woz.txt").replace("Date of Grant: October 7, 2025", `Date of Grant: ${d}`), state);
     expect(at("October 10, 2025").status).toBe("auto");
     expect(at("October 11, 2025")).toMatchObject({ status: "review", suggestion: "OPT-1" });
   });
@@ -100,7 +100,7 @@ describe("matching", () => {
     expect(r.problems.join(" ")).toMatch(/already has/);
   });
   test("two holdings with the same number and no name match: no suggestion", () => {
-    const r = sortText(txt("grant-joao.txt").replace("João Silva", "Someone Else"), state);
+    const r = sortText(txt("grant-bill.txt").replace("Bill Gates", "Someone Else"), state);
     expect(r).toMatchObject({ status: "review", suggestion: undefined });
   });
 });

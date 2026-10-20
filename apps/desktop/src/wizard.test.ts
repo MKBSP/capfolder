@@ -17,8 +17,8 @@ const input: WizardInput = {
   par: "0.00001",
   founders: [
     {
-      name: "Ana",
-      email: "ana@x.com",
+      name: "Steve",
+      email: "steve@apple.com",
       shares: "4000000",
       issueDate: "2026-01-02",
       vesting: true,
@@ -56,7 +56,7 @@ test("wizard drafts build the whole cap table in one valid batch", async () => {
   if (!r.ok) throw new Error(r.errors.join("; "));
   const rows = capTableRows(reduce([...v.events, ...r.events], "2026-10-07"));
   expect(rows.map((x) => [x.stakeholder, x.securityId, x.fdPercent, x.asConverted])).toEqual([
-    ["Ana", "CS-1", "50.00", ""],
+    ["Steve", "CS-1", "50.00", ""],
     ["Bo", "CS-2", "37.50", ""],
     ["Option pool (available)", rows[2]!.securityId, "12.50", ""],
     ["Y Combinator", "SAFE-1", "", "5.00"],

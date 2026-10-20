@@ -314,7 +314,7 @@ const PARSE: Record<FieldName | "discountRate", (raw: string) => string | null> 
   },
 };
 
-/** The fields this type of document carries: labelled lines first ("Optionholder: Lisa"), then template prose. */
+/** The fields this type of document carries: labelled lines first ("Optionholder: Woz"), then template prose. */
 export function extract(type: SortType, text: string): Fields {
   const t = clean(text);
   const want = new Set<string>(FIELDS_FOR[type]);

@@ -117,7 +117,7 @@ test("Portugal end to end: the wizard's defaults parse with comma decimals, labe
   await userEvent.clear(par);
   await userEvent.type(par, "0,0001");
   await userEvent.click(screen.getByRole("button", { name: "Next" }));
-  await userEvent.type(screen.getByLabelText("Name"), "Ana");
+  await userEvent.type(screen.getByLabelText("Name"), "Steve");
   await userEvent.type(screen.getByLabelText(/^Shares/), "4.000.000");
   await userEvent.click(screen.getByRole("button", { name: "No vesting" }));
   await userEvent.click(screen.getByRole("button", { name: "Next" }));

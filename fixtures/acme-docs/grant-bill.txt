@@ -1,7 +1,7 @@
 ACME INC.
 2025 EQUITY INCENTIVE PLAN
 STOCK OPTION GRANT NOTICE
-Optionholder: João Silva
+Optionholder: Bill Gates
 Date of Grant: March 2, 2026
 Number of Shares Subject to Option: 40,000
 Exercise Price (Per Share): $0.12

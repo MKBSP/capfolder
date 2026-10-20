@@ -67,13 +67,13 @@ test("ask, get an answer and a draft; the draft opens the grant form filled in",
                           type: "tool_use",
                           id: "t1",
                           name: "propose_grant",
-                          input: { person: "Ana Ribeiro", options: 40000 },
+                          input: { person: "Steve Jobs", options: 40000 },
                         },
                       ],
                     }
                   : {
                       stop_reason: "end_turn",
-                      content: [{ type: "text", text: "Here is a draft grant for Ana Ribeiro." }],
+                      content: [{ type: "text", text: "Here is a draft grant for Steve Jobs." }],
                     },
               ),
             ),
@@ -89,9 +89,9 @@ test("ask, get an answer and a draft; the draft opens the grant form filled in",
   const panel = await screen.findByRole("complementary", { name: "Ask AI" });
   await userEvent.type(
     within(panel).getByLabelText("Ask a question"),
-    "Add a grant for Ana: 40,000 options{Enter}",
+    "Add a grant for Steve: 40,000 options{Enter}",
   );
-  expect(await within(panel).findByText("Here is a draft grant for Ana Ribeiro.")).toBeInTheDocument();
+  expect(await within(panel).findByText("Here is a draft grant for Steve Jobs.")).toBeInTheDocument();
   expect(within(panel).getByText("Draft · New option grant")).toBeInTheDocument();
   await userEvent.click(within(panel).getByRole("button", { name: "Open in the grant form" }));
   expect(await screen.findByDisplayValue("40000")).toBeInTheDocument();
@@ -133,7 +133,7 @@ test("a SAFE draft's email lands in the form", async () => {
                           type: "tool_use",
                           id: "t1",
                           name: "propose_safe",
-                          input: { investor: "Jorge Sandoval", amount: 20000, email: "jorge@sandoval.example" },
+                          input: { investor: "Jeff Bezos", amount: 20000, email: "jeff@amazon.com" },
                         },
                       ],
                     }
@@ -154,7 +154,7 @@ test("a SAFE draft's email lands in the form", async () => {
   );
   render(<App platform={fp.platform} />);
   const panel = await screen.findByRole("complementary", { name: "Ask AI" });
-  await userEvent.type(within(panel).getByLabelText("Ask a question"), "SAFE for Jorge{Enter}");
+  await userEvent.type(within(panel).getByLabelText("Ask a question"), "SAFE for Jeff{Enter}");
   await userEvent.click(await within(panel).findByRole("button", { name: "Open in the SAFE form" }));
-  expect(await screen.findByDisplayValue("jorge@sandoval.example")).toBeInTheDocument();
+  expect(await screen.findByDisplayValue("jeff@amazon.com")).toBeInTheDocument();
 });

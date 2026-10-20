@@ -69,9 +69,9 @@ describe("transfer (F-20)", () => {
     });
     if ("error" in t) throw new Error(t.error);
     expect(t.drafts.filter((d) => d.type === "TX_STOCK_ISSUANCE")).toHaveLength(1);
-    const { events } = await write([holder("Ribeiro Holdings"), ...t.drafts]);
-    expect(rowsOf(events, "Ana Ribeiro")).toEqual([]);
-    expect(rowsOf(events, "Ribeiro Holdings")[0]!.shares).toBe(3000000n);
+    const { events } = await write([holder("Jobs Holdings"), ...t.drafts]);
+    expect(rowsOf(events, "Steve Jobs")).toEqual([]);
+    expect(rowsOf(events, "Jobs Holdings")[0]!.shares).toBe(3000000n);
   });
 
   test("the transfer date is when it happens: before it, the old holder still has everything", async () => {
@@ -83,9 +83,9 @@ describe("transfer (F-20)", () => {
       date: "2026-06-01",
     });
     if ("error" in t) throw new Error(t.error);
-    const { events } = await write([holder("Ribeiro Holdings"), ...t.drafts]);
-    expect(rowsOf(events, "Ana Ribeiro", "2026-05-31")[0]!.shares).toBe(3000000n);
-    expect(rowsOf(events, "Ribeiro Holdings", "2026-05-31")).toEqual([]);
+    const { events } = await write([holder("Jobs Holdings"), ...t.drafts]);
+    expect(rowsOf(events, "Steve Jobs", "2026-05-31")[0]!.shares).toBe(3000000n);
+    expect(rowsOf(events, "Jobs Holdings", "2026-05-31")).toEqual([]);
   });
 
   test("part of a SAFE: the amount moves, cap and discount come along", async () => {
@@ -112,7 +112,7 @@ describe("transfer (F-20)", () => {
       const r = b.transfer({
         state: s,
         securityId: "CS-1",
-        toStakeholderId: "sh_ana",
+        toStakeholderId: "sh_steve",
         date: "2026-01-01",
         ...p,
       });
@@ -136,9 +136,9 @@ describe("transfer (F-20)", () => {
       date: "2026-01-01",
     });
     if ("error" in t) throw new Error(t.error);
-    const { events } = await write([holder("Ribeiro Holdings"), ...t.drafts]);
+    const { events } = await write([holder("Jobs Holdings"), ...t.drafts]);
     const gaps = computeGaps(reduce(events, "2026-10-07")).filter((g) => g.kind === "no_signed_doc");
-    expect(gaps.map((g) => g.text)).toContain("No signed document for Ribeiro Holdings's shares");
+    expect(gaps.map((g) => g.text)).toContain("No signed document for Jobs Holdings's shares");
     // the 83(b) was the original holder's to file, at the original issuance
     expect(computeGaps(reduce(events, "2026-01-05")).filter((g) => g.kind === "missing_83b")).toEqual([]);
   });
@@ -200,7 +200,7 @@ describe("transfer refusals that protect vesting (review)", () => {
     const t = b.transfer({
       state: reduce(cancel.events, MAX_DATE),
       securityId: "CS-1",
-      toStakeholderId: "sh_ana",
+      toStakeholderId: "sh_steve",
       quantity: "1000000",
       date: "2026-01-01",
     });
@@ -213,7 +213,7 @@ describe("transfer refusals that protect vesting (review)", () => {
     const t = b.transfer({
       state: s,
       securityId: "CS-1",
-      toStakeholderId: "sh_ana",
+      toStakeholderId: "sh_steve",
       quantity: "10",
       date: "2026-01-01",
     });
@@ -275,7 +275,7 @@ describe("merge duplicate people (F-21)", () => {
   });
 
   test("merging into yourself or an unknown person records nothing", () => {
-    expect(b.mergePeople({ events: acmeEvents(), fromId: "sh_ana", intoId: "sh_ana" })).toEqual([]);
-    expect(b.mergePeople({ events: acmeEvents(), fromId: "sh_nobody", intoId: "sh_ana" })).toEqual([]);
+    expect(b.mergePeople({ events: acmeEvents(), fromId: "sh_steve", intoId: "sh_steve" })).toEqual([]);
+    expect(b.mergePeople({ events: acmeEvents(), fromId: "sh_nobody", intoId: "sh_steve" })).toEqual([]);
   });
 });

@@ -35,7 +35,7 @@ describe("every builder produces schema-valid OCF", () => {
     b.vestingTerms4y1y(),
     ...b.stockIssuance({
       state: s,
-      stakeholderId: "sh_ana",
+      stakeholderId: "sh_steve",
       classId: "sc_common",
       quantity: "1000",
       price: "0.00001",
@@ -52,7 +52,7 @@ describe("every builder produces schema-valid OCF", () => {
     b.poolAdjustment({ planId: "plan_2025", newTotal: "1500000", date: "2026-10-01" }),
     ...b.optionGrant({
       state: s,
-      stakeholderId: "sh_joao",
+      stakeholderId: "sh_bill",
       planId: "plan_2025",
       classId: "sc_common",
       quantity: "10000",
@@ -72,7 +72,7 @@ describe("every builder produces schema-valid OCF", () => {
     ...b.termination({ state: state("2026-11-07"), securityId: "OPT-1", date: "2026-11-07", reason: "left" }),
     ...b.exercise({ state: state("2026-11-01"), securityId: "OPT-1", quantity: "5000", date: "2026-11-01" }),
     ...b.repurchaseUnvested({ state: s, securityId: "CS-1", date: "2026-10-07" }),
-    b.stakeholderUpdate({ previous: s.stakeholders.get("sh_ana")!, name: "Ana R. Ribeiro" }),
+    b.stakeholderUpdate({ previous: s.stakeholders.get("sh_steve")!, name: "Steve R. Jobs" }),
   ];
   test("no schema errors", () => expect(ocfErrors(all)).toEqual([]));
   test("draft type matches object_type", () =>
@@ -88,7 +88,7 @@ describe("builders produce the right numbers", () => {
   test("a 10,000 grant takes the pool to 910,000", () => {
     const g = b.optionGrant({
       state: state(),
-      stakeholderId: "sh_joao",
+      stakeholderId: "sh_bill",
       planId: "plan_2025",
       classId: "sc_common",
       quantity: "10000",
@@ -99,7 +99,7 @@ describe("builders produce the right numbers", () => {
     const pool = capTableRows(state("2026-10-07", asEvents(g))).find((r) => r.group === 2)!;
     expect(pool.shares).toBe(910000n);
   });
-  test("termination of Lisa at month 13 cancels and returns 29,167", () => {
+  test("termination of Woz at month 13 cancels and returns 29,167", () => {
     const t = b.termination({
       state: state("2026-11-07"),
       securityId: "OPT-1",
@@ -110,8 +110,8 @@ describe("builders produce the right numbers", () => {
       ["TX_EQUITY_COMPENSATION_CANCELLATION", "29167"],
       ["TX_STOCK_PLAN_RETURN_TO_POOL", "29167"],
     ]);
-    const lisa = capTableRows(state("2027-10-07", asEvents(t))).find((r) => r.securityId === "OPT-1")!;
-    expect([lisa.shares, lisa.vested, lisa.unvested]).toEqual([10833n, 10833n, 0n]);
+    const woz = capTableRows(state("2027-10-07", asEvents(t))).find((r) => r.securityId === "OPT-1")!;
+    expect([woz.shares, woz.vested, woz.unvested]).toEqual([10833n, 10833n, 0n]);
   });
   test("termination with nothing unvested is empty", () => {
     expect(
@@ -126,7 +126,7 @@ describe("builders produce the right numbers", () => {
       date: "2026-11-01",
     });
     expect(x.map((d) => d.type)).toEqual(["TX_EQUITY_COMPENSATION_EXERCISE", "TX_STOCK_ISSUANCE"]);
-    expect(x[1]!.data).toMatchObject({ security_id: "CS-3", stakeholder_id: "sh_lisa", quantity: "5000" });
+    expect(x[1]!.data).toMatchObject({ security_id: "CS-3", stakeholder_id: "sh_woz", quantity: "5000" });
     expect(x[0]!.data.resulting_security_ids).toEqual(["CS-3"]);
     const s = state("2026-11-02", asEvents(x));
     expect(s.violations).toEqual([]);

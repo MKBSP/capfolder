@@ -12,7 +12,7 @@ const targets = (kind: string) =>
 
 test("acme gaps", () => {
   expect(targets("no_signed_doc")).toEqual(["CS-1", "CS-2", "OPT-2", "SAFE-3"]);
-  expect(targets("no_ip_assignment")).toEqual(["sh_ana", "sh_joao", "sh_lisa", "sh_tim"]);
+  expect(targets("no_ip_assignment")).toEqual(["sh_bill", "sh_steve", "sh_tim", "sh_woz"]);
   expect(targets("no_board_consent")).toEqual(["OPT-1", "OPT-2"]);
   expect(targets("no_plan_documents")).toEqual(["plan_2025"]);
   expect(targets("missing_83b")).toEqual([]);
@@ -27,7 +27,7 @@ test("83(b) within 30 days of a vesting stock issuance", () => {
       id: "i9",
       date: "2026-10-01",
       security_id: "CS-9",
-      stakeholder_id: "sh_ana",
+      stakeholder_id: "sh_steve",
       stock_class_id: "sc_common",
       quantity: "1000",
       share_price: { amount: "0.01", currency: "USD" },
@@ -44,7 +44,7 @@ test("83(b) within 30 days of a vesting stock issuance", () => {
   const g = computeGaps(reduce([...acmeEvents(), ...extra], "2026-10-07"));
   expect(g.find((x) => x.kind === "missing_83b")).toMatchObject({
     target: "CS-9",
-    text: "File Ana Ribeiro's 83(b) by 2026-10-31",
+    text: "File Steve Jobs's 83(b) by 2026-10-31",
   });
   expect(
     computeGaps(reduce([...acmeEvents(), ...extra], "2026-11-01")).some((x) => x.kind === "missing_83b"),
@@ -55,7 +55,7 @@ test("imported snapshot and unknown vesting are gaps", () => {
     id: "i8",
     date: "2026-01-01",
     security_id: "CS-8",
-    stakeholder_id: "sh_ana",
+    stakeholder_id: "sh_steve",
     stock_class_id: "sc_common",
     quantity: "1000",
     share_price: { amount: "0.01", currency: "USD" },

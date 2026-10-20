@@ -2,11 +2,11 @@ ACME INC.
 2025 EQUITY INCENTIVE PLAN
 STOCK OPTION GRANT NOTICE
 Acme Inc. (the "Company") has granted to you (the "Optionholder") an option to purchase the number of shares of Common Stock set forth below, subject to the terms of the 2025 Equity Incentive Plan and the Option Agreement.
-Optionholder: Lisa Moreau
+Optionholder: Steve Wozniak
 Date of Grant: October 7, 2025
 Vesting Commencement Date: October 7, 2025
 Number of Shares Subject to Option: 40,000
 Exercise Price (Per Share): $0.12
 Type of Grant: Incentive Stock Option
 Vesting Schedule: 1/4th of the shares vest one year after the Vesting Commencement Date; the balance vests monthly over the next 36 months.
-OPTIONHOLDER: Lisa Moreau
+OPTIONHOLDER: Steve Wozniak

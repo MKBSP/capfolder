@@ -34,7 +34,7 @@ async function founded(): Promise<Vault> {
     v,
     [
       b.stockClass({ id: "sc_c", name: "Common", authorized: "10000000", parValue: "0.00001" }),
-      b.stakeholder({ id: "sh_a", name: "Ana", type: "INDIVIDUAL" }),
+      b.stakeholder({ id: "sh_a", name: "Steve", type: "INDIVIDUAL" }),
       ...b.stockIssuance({
         state: s,
         stakeholderId: "sh_a",
@@ -113,7 +113,7 @@ describe("append", () => {
   test("appends lines, regenerates captable.csv and ocf/", async () => {
     const v = await founded();
     expect(fs.readSync(`${v.root}/events.jsonl`).trim().split("\n")).toHaveLength(5);
-    expect(fs.readSync(`${v.root}/captable.csv`)).toContain("Ana,common,Common,4000000,100.00");
+    expect(fs.readSync(`${v.root}/captable.csv`)).toContain("Steve,common,Common,4000000,100.00");
     expect(fs.readSync(`${v.root}/ocf/Stakeholders.ocf.json`)).toContain("sh_a");
   });
   test("an invalid change writes nothing", async () => {
@@ -161,7 +161,7 @@ describe("openVault (F-31)", () => {
     const o = await openVault(fs, v.root, ctx);
     expect(o.csvEdited).toBe(true);
     expect(fs.readSync(`${v.root}/captable.edited.csv`)).toBe("stakeholder\nme,1\n");
-    expect(fs.readSync(`${v.root}/captable.csv`)).toContain("Ana,common");
+    expect(fs.readSync(`${v.root}/captable.csv`)).toContain("Steve,common");
   });
   test("a CSV regenerated on another day is not reported as edited", async () => {
     const v = await founded();
@@ -190,13 +190,13 @@ describe("documents (F-26, F-27)", () => {
       bytes: pdf,
       docType: "spa",
       date: "2026-01-02",
-      person: "Ana",
+      person: "Steve",
       target: "CS-1",
     });
     if (r.ok !== true) throw new Error(JSON.stringify(r));
-    expect(fs.existsSync(`${v.root}/docs/founders/2026-01-02_ana_spa.pdf`)).toBe(true);
+    expect(fs.existsSync(`${v.root}/docs/founders/2026-01-02_steve_spa.pdf`)).toBe(true);
     expect(r.vault.events.slice(-2).map((e) => e.type)).toEqual(["doc_added", "doc_linked"]);
-    expect(r.vault.events.at(-2)!.data.path).toBe("docs/founders/2026-01-02_ana_spa.pdf");
+    expect(r.vault.events.at(-2)!.data.path).toBe("docs/founders/2026-01-02_steve_spa.pdf");
   });
   test("same content twice is a duplicate, not a second copy", async () => {
     const v = await founded();
@@ -205,7 +205,7 @@ describe("documents (F-26, F-27)", () => {
       bytes: pdf,
       docType: "spa",
       date: "2026-01-02",
-      person: "Ana",
+      person: "Steve",
       target: "CS-1",
     });
     if (a.ok !== true) throw new Error("attach");
@@ -214,7 +214,7 @@ describe("documents (F-26, F-27)", () => {
       bytes: pdf,
       docType: "spa",
       date: "2026-01-02",
-      person: "Ana",
+      person: "Steve",
     });
     expect(d.ok).toBe("duplicate");
   });
@@ -225,14 +225,14 @@ describe("documents (F-26, F-27)", () => {
       bytes: pdf,
       docType: "spa",
       date: "2026-01-02",
-      person: "Ana",
+      person: "Steve",
       target: "CS-1",
     });
     if (a.ok !== true) throw new Error("attach");
     const docId = a.vault.events.at(-2)!.data.doc_id as string;
     const r = await removeDocument(fs, a.vault, ctx, docId);
     if (!r.ok) throw new Error(r.errors.join("; "));
-    expect(fs.existsSync(`${v.root}/docs/_removed/2026-01-02_ana_spa.pdf`)).toBe(true);
+    expect(fs.existsSync(`${v.root}/docs/_removed/2026-01-02_steve_spa.pdf`)).toBe(true);
     expect(r.vault.events.at(-1)!.type).toBe("doc_removed");
 
     const b2 = await attachDocument(fs, r.vault, ctx, {
@@ -240,10 +240,10 @@ describe("documents (F-26, F-27)", () => {
       bytes: new TextEncoder().encode("other"),
       docType: "safe",
       date: "2026-02-01",
-      person: "Ana",
+      person: "Steve",
     });
     if (b2.ok !== true) throw new Error("attach 2");
-    fs.deleteSync(`${v.root}/docs/safes/2026-02-01_ana_safe.pdf`);
+    fs.deleteSync(`${v.root}/docs/safes/2026-02-01_steve_safe.pdf`);
     expect((await openVault(fs, v.root, ctx)).missingDocs).toHaveLength(1);
   });
 });
@@ -298,7 +298,7 @@ describe("rename and replace a document (F-28)", () => {
       bytes: pdf,
       docType: "spa",
       date: "2026-01-02",
-      person: "Ana",
+      person: "Steve",
       target: "CS-1",
       flags: ["draft"],
     });
@@ -309,12 +309,12 @@ describe("rename and replace a document (F-28)", () => {
 
   test("rename renames the file in its folder, keeps the extension, and records the new path", async () => {
     const { v, docId } = await withDoc();
-    const r = await renameDocument(fs, v, ctx, docId, "Ana SPA (countersigned)");
+    const r = await renameDocument(fs, v, ctx, docId, "Steve SPA (countersigned)");
     if (!r.ok) throw new Error(r.errors.join());
-    expect(fs.existsSync(`${v.root}/docs/founders/2026-01-02_ana_spa.pdf`)).toBe(false);
-    expect(fs.existsSync(`${v.root}/docs/founders/Ana SPA (countersigned).pdf`)).toBe(true);
+    expect(fs.existsSync(`${v.root}/docs/founders/2026-01-02_steve_spa.pdf`)).toBe(false);
+    expect(fs.existsSync(`${v.root}/docs/founders/Steve SPA (countersigned).pdf`)).toBe(true);
     expect(reduce(r.vault.events, "9999-12-31").docs.get(docId)!.data.path).toBe(
-      "docs/founders/Ana SPA (countersigned).pdf",
+      "docs/founders/Steve SPA (countersigned).pdf",
     );
   });
 
@@ -337,7 +337,7 @@ describe("rename and replace a document (F-28)", () => {
     expect(fresh[1].links).toEqual(new Set(["CS-1"]));
     expect(fresh[1].data.flags).not.toContain("draft");
     expect(fs.existsSync(`${v.root}/${fresh[1].data.path}`)).toBe(true);
-    expect(fs.existsSync(`${v.root}/docs/_removed/2026-01-02_ana_spa.pdf`)).toBe(true);
+    expect(fs.existsSync(`${v.root}/docs/_removed/2026-01-02_steve_spa.pdf`)).toBe(true);
     expect(r.vault.events.map((e) => e.type)).toContain("doc_replaced");
     expect((await verifyChain(r.vault.log)).ok).toBe(true);
   });

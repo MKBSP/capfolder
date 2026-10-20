@@ -19,11 +19,11 @@ test("acme due-diligence checklist", () => {
     ["Investors · SAFEs", 2, 3],
   ]);
   expect([c.done, c.total]).toEqual([3, 16]);
-  const lisa = c.groups[2]!.items.find((i) => i.label === "Option grant · Lisa Moreau")!;
-  expect(lisa).toMatchObject({
+  const woz = c.groups[2]!.items.find((i) => i.label === "Option grant · Steve Wozniak")!;
+  expect(woz).toMatchObject({
     ok: true,
-    path: "docs/grants/2025-10-07_lisa-moreau.pdf",
-    docId: "doc_lisa_grant",
+    path: "docs/grants/2025-10-07_steve-wozniak.pdf",
+    docId: "doc_woz_grant",
   });
   const fundx = c.groups[3]!.items.find((i) => i.label.startsWith("Fund X"))!;
   expect(fundx).toMatchObject({
@@ -58,6 +58,6 @@ test("an 83(b) or a consent linked to a holding doesn't tick its agreement (M4 r
     "2026-10-07",
   );
   const items = checklist(s, computeGaps(s)).groups.flatMap((g) => g.items);
-  expect(items.find((i) => i.label === "Stock purchase agreement · Ana Ribeiro")?.ok).toBe(false);
-  expect(items.find((i) => i.label === "Option grant · João Silva")?.ok).toBe(false);
+  expect(items.find((i) => i.label === "Stock purchase agreement · Steve Jobs")?.ok).toBe(false);
+  expect(items.find((i) => i.label === "Option grant · Bill Gates")?.ok).toBe(false);
 });

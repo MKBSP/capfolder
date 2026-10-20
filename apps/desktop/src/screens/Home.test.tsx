@@ -52,7 +52,7 @@ test("changing the as-of date recomputes everything", async () => {
   const rows = within(screen.getByRole("table")).getAllByRole("row").slice(1);
   expect(rows.map((r) => r.textContent?.split(/Founder|Post-money/)[0])).toEqual([
     "Tim Apple",
-    "Ana Ribeiro",
+    "Steve Jobs",
     "SAFEs · as-converted, not in fully diluted",
     "Y Combinator",
   ]);

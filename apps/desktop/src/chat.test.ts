@@ -50,20 +50,20 @@ describe("Claude", () => {
   test("looks things up with a tool, then answers with the sources it used", async () => {
     const { d, calls } = await deps([
       { stop_reason: "tool_use", content: [{ type: "tool_use", id: "t1", name: "cap_table", input: {} }] },
-      { stop_reason: "end_turn", content: [{ type: "text", text: "Lisa Moreau has 30,000 unvested." }] },
+      { stop_reason: "end_turn", content: [{ type: "text", text: "Steve Wozniak has 30,000 unvested." }] },
     ]);
     const m = await askChat(d, [], "Who has unvested options?");
-    expect(m.text).toBe("Lisa Moreau has 30,000 unvested.");
+    expect(m.text).toBe("Steve Wozniak has 30,000 unvested.");
     expect(calls[0]!.url).toBe("https://api.anthropic.com/v1/messages");
     const h = new Headers(calls[0]!.init?.headers);
     expect(h.get("x-api-key")).toBe("sk-test");
     expect(h.get("anthropic-dangerous-direct-browser-access")).toBe("true");
     expect(body(calls[0]!).model).toBe("claude-sonnet-5-5");
-    // the tool result went back as data, and named Lisa's holding
+    // the tool result went back as data, and named Woz's holding
     const result = body(calls[1]!).messages.at(-1).content[0];
     expect(result.type).toBe("tool_result");
-    expect(result.content).toContain("Lisa Moreau");
-    expect(m.sources?.some((s) => s.label.includes("Lisa Moreau"))).toBe(true);
+    expect(result.content).toContain("Steve Wozniak");
+    expect(m.sources?.some((s) => s.label.includes("Steve Wozniak"))).toBe(true);
   });
 
   test("no key: says where to add one, no request", async () => {
@@ -86,7 +86,7 @@ describe("Claude", () => {
                 type: "tool_use",
                 id: "t1",
                 name: "document_text",
-                input: { path: "docs/grants/2025-10-07_lisa-moreau.pdf" },
+                input: { path: "docs/grants/2025-10-07_steve-wozniak.pdf" },
               },
             ],
           },
@@ -95,11 +95,11 @@ describe("Claude", () => {
         { cloudDocs },
       );
     const off = await ask(false);
-    await askChat(off.d, [], "read Lisa's grant");
+    await askChat(off.d, [], "read Woz's grant");
     expect(body(off.calls[0]!).tools.map((t: { name: string }) => t.name)).not.toContain("document_text");
     expect(body(off.calls[1]!).messages.at(-1).content[0].content).toMatch(/not allowed/i);
     const on = await ask(true);
-    await askChat(on.d, [], "read Lisa's grant");
+    await askChat(on.d, [], "read Woz's grant");
     expect(body(on.calls[0]!).tools.map((t: { name: string }) => t.name)).toContain("document_text");
   });
 });
@@ -118,7 +118,7 @@ test("a document path from the event log that leaves docs/ is never read or sent
   );
   // a tampered or imported events.jsonl: the doc points outside the company folder
   const events = d.vault.events.map((e) =>
-    (e.data as { doc_id?: string }).doc_id === "doc_lisa_grant"
+    (e.data as { doc_id?: string }).doc_id === "doc_woz_grant"
       ? { ...e, data: { ...e.data, path: evil } }
       : e,
   );
@@ -135,7 +135,7 @@ test("a document path from the event log that leaves docs/ is never read or sent
 });
 
 test("a filed document that is a symlink (it could point anywhere) is never read or sent", async () => {
-  const path = "docs/grants/2025-10-07_lisa-moreau.pdf";
+  const path = "docs/grants/2025-10-07_steve-wozniak.pdf";
   const { d, calls } = await deps(
     [
       {
@@ -177,7 +177,7 @@ describe("drafts", () => {
 
   test("a grant becomes a card that opens the grant form filled in, with a template", async () => {
     const m = await propose("propose_grant", {
-      person: "Ana Ribeiro",
+      person: "Steve Jobs",
       options: 40000,
       vesting_months: 48,
       cliff_months: 12,
@@ -187,7 +187,7 @@ describe("drafts", () => {
     expect(c.kind).toBe("grant");
     expect(c.route).toMatchObject({
       name: "newGrant",
-      prefill: { person: "Ana Ribeiro", options: "40000", months: "48", cliff: "12", start: "2026-11-01" },
+      prefill: { person: "Steve Jobs", options: "40000", months: "48", cliff: "12", start: "2026-11-01" },
     });
     expect(c.rows).toContainEqual(["Pool after", "880,000 left"]);
     expect(c.template).toHaveProperty("name");
@@ -196,18 +196,18 @@ describe("drafts", () => {
   test("the email the founder gave goes on the card and into the form (SAFE and grant)", async () => {
     const safe = (
       await propose("propose_safe", {
-        investor: "Jorge Sandoval",
+        investor: "Jeff Bezos",
         amount: 20000,
         cap: 20000000,
-        email: "jorge@sandoval.example",
+        email: "jeff@amazon.com",
       })
     ).drafts![0]!;
-    expect(safe.rows).toContainEqual(["Email", "jorge@sandoval.example"]);
-    expect(safe.route).toMatchObject({ name: "newSafe", prefill: { email: "jorge@sandoval.example" } });
+    expect(safe.rows).toContainEqual(["Email", "jeff@amazon.com"]);
+    expect(safe.route).toMatchObject({ name: "newSafe", prefill: { email: "jeff@amazon.com" } });
     const grant = (
-      await propose("propose_grant", { person: "Ana Ribeiro", options: 40000, email: "ana@x.com" })
+      await propose("propose_grant", { person: "Steve Jobs", options: 40000, email: "steve@apple.com" })
     ).drafts![0]!;
-    expect(grant.route).toMatchObject({ name: "newGrant", prefill: { email: "ana@x.com" } });
+    expect(grant.route).toMatchObject({ name: "newGrant", prefill: { email: "steve@apple.com" } });
     // not an email: left out, not passed on
     const bad = (await propose("propose_safe", { investor: "X", amount: 1, email: "nope" })).drafts![0]!;
     expect((bad.route as { prefill: Record<string, string> }).prefill.email).toBe("");
@@ -215,7 +215,7 @@ describe("drafts", () => {
 
   test("acceleration has no template: the card says to get a lawyer", async () => {
     const m = await propose("propose_grant", {
-      person: "Ana Ribeiro",
+      person: "Steve Jobs",
       options: 40000,
       acceleration: "double trigger",
     });
@@ -223,7 +223,7 @@ describe("drafts", () => {
   });
 
   test("an invalid draft is dropped and the model is told why", async () => {
-    const m = await propose("propose_grant", { person: "Ana Ribeiro", options: 99_000_000 });
+    const m = await propose("propose_grant", { person: "Steve Jobs", options: 99_000_000 });
     expect(m.drafts ?? []).toHaveLength(0);
   });
 
@@ -280,7 +280,7 @@ describe("OpenAI-style providers", () => {
     const m = await askChat(d, [], "How many holders?");
     expect(calls[0]!.url).toBe("http://localhost:11434/v1/chat/completions");
     expect(body(calls[1]!).tools).toBeUndefined();
-    expect(body(calls[1]!).messages[0].content).toContain("Lisa Moreau");
+    expect(body(calls[1]!).messages[0].content).toContain("Steve Wozniak");
     expect(m.text).toBe("You have 8 holders.");
     expect(m.note).toMatch(/bigger model/);
   });

@@ -53,6 +53,6 @@ test("reversed transactions are left out, corrections applied", () => {
 });
 test("transactions after asOf are left out", () => {
   expect(toOcfExport(acmeEvents(), { ...opts, asOf: "2023-01-01" })["Transactions.ocf.json"]).not.toContain(
-    "tx_opt_lisa",
+    "tx_opt_woz",
   );
 });

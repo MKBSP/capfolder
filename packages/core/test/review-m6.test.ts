@@ -46,7 +46,7 @@ describe("one-person scope", () => {
     ev("doc_added", {
       doc_id: "doc_shared",
       doc_type: "board_consent",
-      path: "docs/consents/2025-10-07_mads-and-lisa.pdf",
+      path: "docs/consents/2025-10-07_tim-and-woz.pdf",
       sha256: "x",
       fields: {},
       flags: [],
@@ -55,9 +55,9 @@ describe("one-person scope", () => {
     ev("doc_linked", { doc_id: "doc_shared", target: "CS-1" }),
   ];
   test("a document linked to someone else too is left out, and counted in the README", async () => {
-    const scope = { kind: "person", stakeholderId: "sh_lisa" } as const;
+    const scope = { kind: "person", stakeholderId: "sh_woz" } as const;
     const paths = lawyerDocPaths(shared, scope);
-    expect(paths).toEqual(["docs/grants/2025-10-07_lisa-moreau.pdf"]);
+    expect(paths).toEqual(["docs/grants/2025-10-07_steve-wozniak.pdf"]);
     const files = await lawyerPackage({
       events: shared,
       asOf: "2026-10-07",
@@ -69,7 +69,7 @@ describe("one-person scope", () => {
     expect(files["README.txt"]).toContain("1 document is shared with other people and was left out");
   });
   test("no company totals that would reveal other holdings", () => {
-    const flat = sheets(base, "2026-10-07", { stakeholderId: "sh_lisa" }).flatMap((s) =>
+    const flat = sheets(base, "2026-10-07", { stakeholderId: "sh_woz" }).flatMap((s) =>
       s.rows.map((r) => String(r[0])),
     );
     for (const k of ["Fully diluted", "Option pool available", "SAFEs outstanding (USD)"])
