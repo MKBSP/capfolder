@@ -110,8 +110,11 @@ describe("buildImport", () => {
     expect(r.summary.safeTotal).toBe("900000");
     expect(r.poolAvailable).toBe(920000n);
     expect(r.classes).toEqual([{ name: "Common", issued: 7000000n, preferred: false }]);
-    expect(reconcile(r.summary, "8,000,000")).toEqual({ ok: true, text: "Fully diluted matches: 8,000,000" });
-    expect(reconcile(r.summary, "8000001")).toEqual({
+    expect(reconcile(r.summary, { fullyDiluted: "8,000,000" })).toMatchObject({
+      ok: true,
+      text: "Fully diluted matches: 8,000,000",
+    });
+    expect(reconcile(r.summary, { fullyDiluted: "8000001" })).toMatchObject({
       ok: false,
       text: "Fully diluted is 8,000,000 here but 8,000,001 in your old tool (1 short)",
     });

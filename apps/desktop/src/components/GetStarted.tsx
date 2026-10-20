@@ -9,7 +9,7 @@ export function GetStarted() {
   const { latest, vault, settings } = app;
   if (!latest || !vault || vault.meta.sample) return null;
   const mine = settings.onboarding[vault.root] ?? {};
-  if (mine.dismissed) return null;
+  if (mine.dismissed || (mine.movedFrom && !mine.moveDismissed)) return null; // MoveChecklist shows instead
   const steps = getStarted(latest, mine, !!aiFor(settings, "chat"));
   const done = steps.filter((x) => x.done).length;
   if (done === steps.length) return null;

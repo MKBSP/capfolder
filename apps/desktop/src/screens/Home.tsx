@@ -13,6 +13,7 @@ import { DateInput } from "../components/DateInput";
 import { ExportDialog } from "../components/ExportDialog";
 import { GetStarted } from "../components/GetStarted";
 import { MainHeader } from "../components/Header";
+import { MoveChecklist } from "../components/MoveChecklist";
 import { startTour, TourOffer } from "../components/Tour";
 import { Chip, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
@@ -81,6 +82,7 @@ export function Home() {
         {New}
       </MainHeader>
       <VaultBanners />
+      <MoveChecklist />
       <GetStarted />
       <TourOffer />
       {exporting ? (

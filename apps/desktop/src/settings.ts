@@ -28,7 +28,17 @@ export interface Settings {
   ping: { installId: string; firstRunSent: boolean; last: string }; // docs/11, only used while telemetry is on
   updates: "auto" | "ask" | "off"; // F-38: auto downloads in the background; installing always waits for a restart
   // docs/19, by company folder: the three start questions and a hidden Get started list (ticks are never stored)
-  onboarding: Record<string, Answers & { dismissed?: boolean }>;
+  // …and, after an import from another tool, the "Before you cancel …" card (components/MoveChecklist.tsx)
+  onboarding: Record<
+    string,
+    Answers & {
+      dismissed?: boolean;
+      movedFrom?: string;
+      tie?: "match" | "note";
+      moveTicks?: Record<string, boolean>;
+      moveDismissed?: boolean;
+    }
+  >;
   tourSeen: boolean; // the spotlight tour was offered (taken or declined); Settings → Take the tour still runs it
 }
 

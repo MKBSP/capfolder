@@ -16,7 +16,7 @@ import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
 import { ErrorList, Field, StatCard } from "../components/ui";
 import { formatConfig, money, shares, todayIso } from "../fmt";
-import { SOURCES, type SourceId } from "../importRules";
+import { MOVES, SOURCES, type SourceId } from "../importRules";
 import { useApp } from "../state";
 import { importIntoVault } from "../vault";
 
@@ -246,6 +246,7 @@ export function Import() {
               firstRow={headerRow + 2}
               mapping={mapping}
               date1904={!!sheets[sheetIdx]?.date1904}
+              from={source}
               onBack={() => setStep("map")}
             />
           )
@@ -288,7 +289,11 @@ function useSave(file: Loaded) {
   const app = useApp();
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<string[] | null>(null);
-  async function save(drafts: EventDraft[], note?: string) {
+  async function save(
+    drafts: EventDraft[],
+    note?: string,
+    moved?: { from: SourceId; tie: "match" | "note" },
+  ) {
     if (!app.vault) return;
     setBusy(true);
     setErrors(null);
@@ -296,6 +301,14 @@ function useSave(file: Loaded) {
       const r = await importIntoVault(app.platform.fs, app.vault, { drafts, ...file, note }, app.ctx);
       if (!r.ok) return setErrors(r.errors);
       app.setVault(r.vault);
+      if (moved)
+        await app.setSettings((s) => ({
+          ...s,
+          onboarding: {
+            ...s.onboarding,
+            [r.vault.root]: { ...s.onboarding[r.vault.root], movedFrom: moved.from, tie: moved.tie },
+          },
+        }));
       app.go({ name: "documents", imported: true });
     } finally {
       setBusy(false);
@@ -346,16 +359,16 @@ function SheetReview(p: {
   firstRow: number;
   mapping: (FieldId | null)[];
   date1904: boolean;
+  from: SourceId;
   onBack(): void;
 }) {
   const { busy, errors, save } = useSave(p.file);
   const { currency } = useApp();
   const [preferred, setPreferred] = useState<Record<string, boolean>>({});
-  const [expectedSafe, setExpectedSafe] = useState("");
+  const [theirs, setTheirs] = useState<Record<string, string>>({});
   const [exportDate, setExportDate] = useState(todayIso());
   const [authorized, setAuthorized] = useState<Record<string, string>>({});
   const [pool, setPool] = useState("");
-  const [expected, setExpected] = useState("");
   const [accept, setAccept] = useState(false);
   const [note, setNote] = useState("");
   const r = useMemo(
@@ -375,7 +388,23 @@ function SheetReview(p: {
       }),
     [p.header, p.body, p.mapping, p.firstRow, exportDate, authorized, pool, preferred, p.date1904, currency],
   );
-  const rec = reconcile(r.summary, expected, expectedSafe);
+  const move = MOVES[p.from];
+  const tool = move?.tool ?? "your old tool";
+  const expected = theirs.fullyDiluted ?? "";
+  const rec = reconcile(
+    r.summary,
+    {
+      fullyDiluted: expected,
+      perClass: Object.fromEntries(
+        Object.entries(theirs).flatMap(([k, v]) => (k.startsWith("class:") ? [[k.slice(6), v]] : [])),
+      ),
+      optionsOutstanding: theirs.optionsOutstanding,
+      poolAvailable: theirs.poolAvailable,
+      safeTotal: theirs.safeTotal,
+      stakeholders: theirs.stakeholders,
+    },
+    tool,
+  );
   // The old tool's total is always required; a mismatch needs an explicit note.
   const canSave =
     !busy && r.issues.length === 0 && expected.trim() !== "" && (rec.ok || (accept && note.trim() !== ""));
@@ -435,20 +464,61 @@ function SheetReview(p: {
           </div>
         ))}
       </div>
-      <div className="grid2">
-        <Field label="Fully diluted in your old tool" hint="Totals must match to the share before saving.">
-          <input className="inp num" value={expected} onChange={(e) => setExpected(e.target.value)} />
-        </Field>
-        {r.summary.safeTotal !== "0" ? (
-          <Field label="SAFE total in your old tool (optional)" hint="Checked to the cent when given.">
-            <input
-              className="inp num"
-              value={expectedSafe}
-              onChange={(e) => setExpectedSafe(e.target.value)}
-            />
-          </Field>
-        ) : null}
+      <div>
+        <h2 style={{ margin: "0 0 4px", fontSize: 17 }}>Compare with {move?.tool ?? "your old tool"}</h2>
+        <p className="meta" style={{ margin: "0 0 10px" }}>
+          {move?.where ?? "Copy them from your old tool's summary."} Only fully diluted is required; totals
+          must match to the share.
+        </p>
+        <table className="tbl" style={{ width: "100%" }}>
+          <thead>
+            <tr>
+              <th className="th">Number</th>
+              <th className="th right">Capfolder</th>
+              <th className="th">{move ? `${tool} says` : "Your old tool says"}</th>
+              <th className="th" />
+            </tr>
+          </thead>
+          <tbody>
+            {rec.lines.map((l) => (
+              <tr key={l.key}>
+                <td className="td">{l.label}</td>
+                <td className="td num right">{l.ours}</td>
+                <td className="td">
+                  <input
+                    className="inp num"
+                    style={{ width: 150 }}
+                    aria-label={`${l.label} in ${tool}`}
+                    placeholder={l.key === "fullyDiluted" ? "" : "optional"}
+                    value={theirs[l.key] ?? ""}
+                    onChange={(e) => setTheirs({ ...theirs, [l.key]: e.target.value })}
+                  />
+                </td>
+                <td className="td small">
+                  {l.ok === true ? (
+                    <span style={{ color: "var(--green-700)" }}>✓ Match</span>
+                  ) : l.ok === false ? (
+                    <span style={{ color: "var(--amber-text)" }}>{l.gap ?? "Check"}</span>
+                  ) : null}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+      {r.warnings.length ? (
+        <details className="banner amber">
+          <summary style={{ cursor: "pointer", fontWeight: 500 }}>
+            {r.warnings.length === 1 ? "1 grant vests" : `${r.warnings.length} grants vest`} differently from{" "}
+            {move ? tool : "the file"}
+          </summary>
+          <ul style={{ margin: "6px 0 0", paddingLeft: 20 }}>
+            {r.warnings.map((w) => (
+              <li key={w}>{w}</li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
       {expected.trim() ? <div className={`banner ${rec.ok ? "green" : "amber"}`}>{rec.text}</div> : null}
       {expected.trim() && !rec.ok ? (
         <>
@@ -473,7 +543,12 @@ function SheetReview(p: {
           type="button"
           className="btn primary"
           disabled={!canSave}
-          onClick={() => save(r.drafts, rec.ok ? undefined : `${note.trim()} (${rec.text})`)}
+          onClick={() =>
+            save(r.drafts, rec.ok ? undefined : `${note.trim()} (${rec.text})`, {
+              from: p.from,
+              tie: rec.ok ? "match" : "note",
+            })
+          }
         >
           Save to the cap table
         </button>

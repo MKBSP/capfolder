@@ -168,3 +168,48 @@ test("M2 review: clearing the old tool's total after accepting re-blocks the sav
   await userEvent.clear(total);
   expect(screen.getByRole("button", { name: "Save to the cap table" })).toBeDisabled();
 });
+
+test("from Pulley: compare every total with Pulley, then Home shows Before you cancel Pulley", async () => {
+  const fp = await freshVault({
+    name: "p.csv",
+    bytes: readFileSync(resolve(FIX, "import/acme-generic.csv"), "utf8"),
+  });
+  await userEvent.click(screen.getByRole("button", { name: "Choose file…" })); // Pulley is the default source
+  await userEvent.click(await screen.findByRole("button", { name: "Continue" }));
+  expect(screen.getByRole("heading", { name: "Compare with Pulley" })).toBeInTheDocument();
+  await userEvent.type(screen.getByLabelText("Fully diluted in Pulley"), "8,000,000");
+  await userEvent.type(screen.getByLabelText("Pool available in Pulley"), "900,000");
+  expect(
+    screen.getByText(/Pool available is 920,000 here but 900,000 in Pulley \(20,000 over\)/),
+  ).toBeInTheDocument();
+  await userEvent.click(screen.getByLabelText(/Accept with a note/));
+  await userEvent.type(screen.getByLabelText("Note"), "Pulley counts a returned grant");
+  await userEvent.click(screen.getByRole("button", { name: "Save to the cap table" }));
+  await screen.findByText(/Reports don't include signed documents/);
+  await userEvent.click(screen.getByRole("button", { name: "Cap table" }));
+  const card = await screen.findByRole("region", { name: "Before you cancel Pulley" });
+  expect(card).toHaveTextContent("Totals checked (saved with a note)");
+  expect(card).toHaveTextContent(/Data Room → Download All/);
+  expect(card).toHaveTextContent(/days left/);
+  await userEvent.click(screen.getByLabelText("Last 409A report saved"));
+  expect(JSON.parse(fp.fs.readSync("/appdata/settings.json")).onboarding[fp.root]).toMatchObject({
+    movedFrom: "pulley",
+    tie: "note",
+    moveTicks: { "409a": true },
+  });
+});
+
+test("from Carta: the wording says Carta, with no Pulley deadline", async () => {
+  await freshVault({ name: "c.csv", bytes: readFileSync(resolve(FIX, "import/acme-generic.csv"), "utf8") });
+  await userEvent.click(screen.getByLabelText("Carta"));
+  await userEvent.click(screen.getByRole("button", { name: "Choose file…" }));
+  await userEvent.click(await screen.findByRole("button", { name: "Continue" }));
+  expect(screen.getByRole("heading", { name: "Compare with Carta" })).toBeInTheDocument();
+  await userEvent.type(screen.getByLabelText("Fully diluted in Carta"), "8,000,000");
+  await userEvent.click(screen.getByRole("button", { name: "Save to the cap table" }));
+  await screen.findByText(/Reports don't include signed documents/);
+  await userEvent.click(screen.getByRole("button", { name: "Cap table" }));
+  const card = await screen.findByRole("region", { name: "Before you cancel Carta" });
+  expect(card).toHaveTextContent("Totals checked against Carta");
+  expect(card).not.toHaveTextContent(/Pulley|days left/);
+});

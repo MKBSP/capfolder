@@ -1,6 +1,6 @@
 {
   "format": "capfolder-rules/1",
-  "version": "2026.10.11-1",
+  "version": "2026.10.20-1",
   "min_app_version": "0.1.0",
   "export_guides": {
     "pulley": {
@@ -15,7 +15,7 @@
       "title": "Carta",
       "steps": [
         "Cap Table → Run reports → “Open Cap Table report” if it's listed, otherwise the Cap table report (Detailed).",
-        "Also the Vesting report and Stakeholder details, and download your signed documents separately.",
+        "Also the Securities ledger and Stakeholder details reports, and download your signed documents from the Documents library.",
         "Choose the .xlsx (or .csv) here. You'll check the columns next."
       ]
     },

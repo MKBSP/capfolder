@@ -19,7 +19,7 @@ export const SOURCES: { id: SourceId; label: string; steps: string[]; extensions
     label: "Carta",
     steps: [
       "Cap Table → Run reports → “Open Cap Table report” if it's listed, otherwise the Cap table report (Detailed).",
-      "Also the Vesting report and Stakeholder details, and download your signed documents separately.",
+      "Also the Securities ledger and Stakeholder details reports, and download your signed documents from the Documents library.",
       "Choose the .xlsx (or .csv) here. You'll check the columns next.",
     ],
     extensions: ["xlsx", "csv"],
@@ -50,3 +50,25 @@ export const SOURCES: { id: SourceId; label: string; steps: string[]; extensions
     extensions: ["xlsx", "csv"],
   },
 ];
+
+/** Moving off a tool: its name in the "Compare with …" step and the "Before you cancel …" card on Home. */
+export const MOVES: Partial<
+  Record<SourceId, { tool: string; where: string; docs: string; closes?: string }>
+> = {
+  pulley: {
+    tool: "Pulley",
+    where: "Copy them from Pulley's Dashboard (the cap table summary).",
+    docs: "Company → Data Room → Download All",
+    closes: "2026-12-08",
+  },
+  carta: {
+    tool: "Carta",
+    where: "Copy them from Carta's cap table summary.",
+    docs: "Documents library → download as zip",
+  },
+  cake: {
+    tool: "Cake Equity",
+    where: "Copy them from Cake Equity's cap table summary.",
+    docs: "Documents → download each folder",
+  },
+};

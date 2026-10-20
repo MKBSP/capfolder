@@ -130,11 +130,11 @@ describe("important", () => {
   });
   test("reconcile checks the SAFE total too", () => {
     const r = run(["Name", "Investment"], ["name", "safeAmount"], [["Fund", "100"]]);
-    expect(reconcile(r.summary, "0", "150").ok).toBe(false);
-    expect(reconcile(r.summary, "0", "150").text).toContain(
+    expect(reconcile(r.summary, { fullyDiluted: "0", safeTotal: "150" }).ok).toBe(false);
+    expect(reconcile(r.summary, { fullyDiluted: "0", safeTotal: "150" }).text).toContain(
       "SAFE total is $100 here but $150 in your old tool",
     );
-    expect(reconcile(r.summary, "0", "100")).toEqual({
+    expect(reconcile(r.summary, { fullyDiluted: "0", safeTotal: "100" })).toMatchObject({
       ok: true,
       text: "Fully diluted matches: 0. SAFE total matches: $100",
     });

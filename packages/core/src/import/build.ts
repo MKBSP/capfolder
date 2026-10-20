@@ -8,6 +8,7 @@ import { capTableRows } from "../rows";
 import { normName } from "../text";
 import { capTableTotals } from "../totals";
 import type { EventDraft, Row, VaultEvent } from "../types";
+import { vestedAt } from "../vesting";
 import type { Field } from "./fields";
 
 export { normName };
@@ -31,11 +32,14 @@ export interface ImportSummary {
   stakeholders: number;
   safeTotal: string;
   perClass: { name: string; outstanding: bigint }[];
+  optionsOutstanding: bigint;
+  poolAvailable: bigint;
 }
 
 export interface ImportResult {
   drafts: EventDraft[];
   issues: string[];
+  warnings: string[]; // shown, but don't block saving
   summary: ImportSummary;
   classes: { name: string; issued: bigint; preferred: boolean }[];
   defaultAuthorized: Record<string, bigint>;
@@ -127,6 +131,7 @@ export function buildImport(p: ImportInput): ImportResult {
   const amount = (r: string[], f: Field) => parseAmount(cell(r, f), decimalComma);
   const date = (raw: string, f: Field) => parseDate(raw, dayFirst.get(f)!, !!p.date1904);
   const issues: string[] = [];
+  const warnings: string[] = [];
   type Person = { id: string; name: string; email: string; type: "INSTITUTION" | "INDIVIDUAL" };
   const people = new Map<string, Person>();
   const terms = new Map<string, EventDraft>();
@@ -191,6 +196,11 @@ export function buildImport(p: ImportInput): ImportResult {
   };
 
   const vestingFor = (r: string[], qty: bigint, issue: string, label: string): Vest | undefined | false => {
+    const vested = cell(r, "vested") ? (parseWhole(cell(r, "vested"), decimalComma) ?? 0n) : null;
+    if (vested !== null && vested > qty) {
+      issues.push(`${label}: ${fmtInt(vested)} vested is more than the ${fmtInt(qty)} granted`);
+      return false;
+    }
     const months = cell(r, "vestingMonths");
     const startRaw = cell(r, "vestingStart");
     if (startRaw && !months) {
@@ -213,9 +223,14 @@ export function buildImport(p: ImportInput): ImportResult {
       }
       const key = `${m}/${cliff}`;
       if (!terms.has(key)) terms.set(key, b.vestingTerms({ months: m, cliffMonths: cliff }));
+      const ours = vested === null ? null : vestedAt(qty, terms.get(key)!.data, start, p.exportDate).vested;
+      // ponytail: 1 share of rounding allowed (tools round months differently)
+      if (ours !== null && vested !== null && (ours - vested > 1n || vested - ours > 1n))
+        warnings.push(
+          `${label}: the file says ${fmtInt(vested)} vested, Capfolder works out ${fmtInt(ours)}. Check the vesting start or cliff.`,
+        );
       return { terms: terms.get(key)!.data.id as string, start };
     }
-    const vested = cell(r, "vested") ? (parseWhole(cell(r, "vested"), decimalComma) ?? 0n) : null;
     if (vested !== null && vested < qty) {
       if (!terms.has("unknown")) terms.set("unknown", b.vestingTermsUnknown());
       return { terms: terms.get("unknown")!.data.id as string, start: issue };
@@ -466,11 +481,14 @@ export function buildImport(p: ImportInput): ImportResult {
   return {
     drafts,
     issues,
+    warnings,
     summary: {
       fullyDiluted: totals.fullyDiluted,
       stakeholders: uniquePeople.length,
       safeTotal: sumDec(rows.filter((r) => r.group === 3).map((r) => r.safeAmount)),
       perClass: [...classes.values()].map((c) => ({ name: c.name, outstanding: c.issued })),
+      optionsOutstanding: rows.filter((r) => r.group === 1).reduce((a, r) => a + (r.shares ?? 0n), 0n),
+      poolAvailable: totals.poolAvailable,
     },
     classes: [...classes.values()].map(({ name, issued, preferred }) => ({ name, issued, preferred })),
     defaultAuthorized: Object.fromEntries([...classes.values()].map((c) => [c.name, defaultAuthorized(c)])),
@@ -480,39 +498,85 @@ export function buildImport(p: ImportInput): ImportResult {
   };
 }
 
-/** Our totals vs the numbers the old tool shows (docs/04 §5: exact). The SAFE total is checked when given. */
+/** What the founder copied from the old tool. Only fully diluted is required; the rest is checked when typed. */
+export interface Theirs {
+  fullyDiluted: string;
+  perClass?: Record<string, string>;
+  optionsOutstanding?: string;
+  poolAvailable?: string;
+  safeTotal?: string;
+  stakeholders?: string;
+}
+export interface TieLine {
+  label: string;
+  key: string; // where the founder types it: "fullyDiluted", "class:Common", …
+  ours: string;
+  ok: boolean | null; // null: left empty
+  gap?: string;
+}
+
+/** Our totals vs the numbers the old tool shows (docs/04 §5: exact, to the share and the cent). */
 export function reconcile(
   s: ImportSummary,
-  fullyDiluted: string,
-  safeTotal = "",
-): { ok: boolean; text: string } {
-  const digits = fullyDiluted.replace(/[,\s.]/g, "");
-  if (!/^\d+$/.test(digits)) return { ok: false, text: "Type the fully diluted total from your old tool" };
-  const want = BigInt(digits);
+  theirs: Theirs,
+  tool = "your old tool",
+): { ok: boolean; text: string; lines: TieLine[] } {
+  const usd = (v: string) =>
+    `$${fmtInt(BigInt(v.split(".")[0]!))}${v.includes(".") && /[1-9]/.test(v.split(".")[1]!) ? `.${v.split(".")[1]}` : ""}`;
+  const lines: TieLine[] = [];
   const parts: string[] = [];
   let ok = true;
-  if (want === s.fullyDiluted) parts.push(`Fully diluted matches: ${fmtInt(want)}`);
-  else {
+  const whole = (key: string, label: string, ours: bigint, typed = "", plural = false) => {
+    const line: TieLine = { label, key, ours: fmtInt(ours), ok: null };
+    lines.push(line);
+    if (!typed.trim()) return;
+    const digits = typed.replace(/[,\s.]/g, "");
+    if (!/^\d+$/.test(digits)) {
+      line.ok = ok = false;
+      parts.push(`Type ${label} as a whole number`);
+      return;
+    }
+    const want = BigInt(digits);
+    if (want === ours) {
+      line.ok = true;
+      parts.push(`${label} ${plural ? "match" : "matches"}: ${fmtInt(want)}`);
+      return;
+    }
+    const diff = want - ours;
+    line.ok = ok = false;
+    line.gap = `${fmtInt(diff < 0n ? -diff : diff)} ${diff > 0n ? "short" : "over"}`;
+    parts.push(`${label} is ${fmtInt(ours)} here but ${fmtInt(want)} in ${tool} (${line.gap})`);
+  };
+  if (!theirs.fullyDiluted.trim()) {
     ok = false;
-    const diff = want - s.fullyDiluted;
-    parts.push(
-      `Fully diluted is ${fmtInt(s.fullyDiluted)} here but ${fmtInt(want)} in your old tool (${fmtInt(diff < 0n ? -diff : diff)} ${diff > 0n ? "short" : "over"})`,
-    );
+    parts.push(`Type the fully diluted total from ${tool}`);
   }
-  if (safeTotal.trim()) {
-    const usd = (v: string) =>
-      `$${fmtInt(BigInt(v.split(".")[0]!))}${v.includes(".") && /[1-9]/.test(v.split(".")[1]!) ? `.${v.split(".")[1]}` : ""}`;
-    const theirs = safeTotal.replace(/[$\s,]/g, "");
-    if (!/^\d+(\.\d+)?$/.test(theirs))
-      return { ok: false, text: `${parts.join(". ")}. Type the SAFE total as a number` };
-    const same = /^-?0(\.0+)?$/.test(subDec(theirs, s.safeTotal || "0"));
-    if (same) parts.push(`SAFE total matches: ${usd(s.safeTotal)}`);
-    else {
-      ok = false;
-      parts.push(`SAFE total is ${usd(s.safeTotal)} here but ${usd(theirs)} in your old tool`);
+  whole("fullyDiluted", "Fully diluted", s.fullyDiluted, theirs.fullyDiluted);
+  for (const c of s.perClass)
+    whole(`class:${c.name}`, `${c.name} shares`, c.outstanding, theirs.perClass?.[c.name], true);
+  if (s.optionsOutstanding || s.poolAvailable) {
+    whole("optionsOutstanding", "Options outstanding", s.optionsOutstanding, theirs.optionsOutstanding, true);
+    whole("poolAvailable", "Pool available", s.poolAvailable, theirs.poolAvailable);
+  }
+  if (s.safeTotal !== "0") {
+    const line: TieLine = { label: "SAFE total", key: "safeTotal", ours: usd(s.safeTotal), ok: null };
+    lines.push(line);
+    const typed = (theirs.safeTotal ?? "").replace(/[$\s,]/g, "");
+    if (typed && !/^\d+(\.\d+)?$/.test(typed)) {
+      line.ok = ok = false;
+      parts.push("Type the SAFE total as a number");
+    } else if (typed) {
+      line.ok = /^-?0(\.0+)?$/.test(subDec(typed, s.safeTotal || "0"));
+      if (line.ok) parts.push(`SAFE total matches: ${usd(s.safeTotal)}`);
+      else {
+        ok = false;
+        line.gap = "differs";
+        parts.push(`SAFE total is ${usd(s.safeTotal)} here but ${usd(typed)} in ${tool}`);
+      }
     }
   }
-  return { ok, text: parts.join(". ") };
+  whole("stakeholders", "Stakeholders", BigInt(s.stakeholders), theirs.stakeholders, true);
+  return { ok, text: parts.join(". "), lines };
 }
 
 /** The cap table these drafts would give, and any invariant they'd break, without writing anything. */

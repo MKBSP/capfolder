@@ -120,7 +120,7 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
 - **From the SumoShares gap analysis** (`docs/20-sumoshares.md`, with code links and what to copy or not):
   1. 409A record, expiry banner and a below-FMV grant warning (offline).
   2. Option deadlines: countdown on Person, "Expire them" on open (the founder confirms).
-  3. Import tie-out against Pulley/Carta totals, a per-grant balance check, and a "before you cancel Pulley" checklist.
+  3. ~~Import tie-out~~ built 2026-10-20: "Compare with Pulley/Carta" table (fully diluted required; each class, options outstanding, pool available, SAFE total, stakeholders optional), vested-so-far checked against the schedule (1 share of rounding allowed; more than granted blocks), "Before you cancel {tool}" card on Home and on the Pulley/Carta compare pages. Not yet: the full per-grant balance (needs exercised/cancelled columns from a real Pulley export). `[verify]` the "where to copy it from" hints against real Pulley and Carta screens.
   4. Exercises (Form 3921 inputs) and events CSV exports.
   5. With the web app / Pro: holder portal, online exercise through the signing relay, reminder emails.
 - Cloud tier ($50/mo): sync, roles, four-eyes approval (`docs/12`).

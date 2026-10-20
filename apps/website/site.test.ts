@@ -299,3 +299,15 @@ test("cache: the build adds a content hash to every CSS/JS link, so a new deploy
     '<link href="/page.css?v=abc"><script src="/roadmap.js?v=def"></script><a href="/page.css.html">',
   );
 });
+
+test("Pulley and Carta pages: a 'Before you cancel' checklist, same items as the app", () => {
+  for (const [page, tool] of [
+    ["compare/pulley/index.html", "Pulley"],
+    ["compare/carta/index.html", "Carta"],
+  ]) {
+    const h = read(page);
+    expect(h).toContain(`<h2>Before you cancel ${tool}</h2>`);
+    for (const item of ["Compare the totals", "Every signed document", "Board consents", "409A", "by hand"])
+      expect(h).toContain(item);
+  }
+});
