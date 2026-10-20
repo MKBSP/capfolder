@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Fully diluted shares: meaning and how to calculate them · Capfolder</title>
+<meta name="description" content="Fully diluted shares count every share that exists or could exist: options, the whole option pool, warrants. How to calculate it, an example and common mistakes.">
+<link rel="canonical" href="https://capfolder.com/learn/fully-diluted/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does fully diluted include unvested options?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Every granted option counts, vested or not, because the holder will get it if they stay. Unvested options only drop out if they are forfeited, and then they usually return to the pool, which is also counted."}}, {"@type": "Question", "name": "Does fully diluted include SAFEs?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on the definition. Cap table tools often list SAFEs separately, while term sheets and the post-money SAFE count them as if converted. Check the definition in the document you are reading."}}, {"@type": "Question", "name": "Why is my fully diluted percentage lower than my share of issued stock?", "acceptedAnswer": {"@type": "Answer", "text": "Because the fully diluted total is bigger. It adds options and the unused pool to the shares that exist today, so the same number of shares is a smaller slice."}}, {"@type": "Question", "name": "Is fully diluted the same as diluted shares in an earnings report?", "acceptedAnswer": {"@type": "Answer", "text": "No. Public companies report diluted shares for earnings per share using accounting rules, such as the treasury stock method. Startup cap tables use a simpler count."}}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/" aria-current="true">Learn</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<main class="narrow">
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · Fully diluted shares</div>
+  <h1>Fully diluted shares</h1>
+  <p class="crumb">Written by the Capfolder team · Checked October 2026 · 7 min read</p>
+  <div class="short"><b>In short:</b> <b>fully diluted</b> means counting every share that exists today plus every share that could come to exist: granted options, the rest of the option pool, warrants, and, in some definitions, SAFEs and notes. Investors use the fully diluted count to work out what percentage of the company they're buying.</div>
+
+  <h2>Why "fully diluted" exists</h2>
+  <p>Shares get created over time. When an employee exercises options, new common shares appear. When the board grants options from the pool, those shares are spoken for. When SAFEs convert, the investors get new shares. Each time, everyone else's percentage goes down: that's dilution.</p>
+  <p>If you only count the shares that exist today, you overstate everyone's ownership. A founder with 4,000,000 of 7,000,000 issued shares might feel like they own 57%, but some of the company has already been promised to others. Counting fully diluted gives a more honest picture: it assumes all those promises have been kept.</p>
+
+  <h2>How to calculate it</h2>
+  <p class="formula">Fully diluted shares = issued shares + options granted + option pool not yet granted + warrants (+ SAFEs and notes, as converted, if the definition includes them)</p>
+  <p>Then a holder's percentage is:</p>
+  <p class="formula">Fully diluted ownership = holder's shares and options ÷ fully diluted shares</p>
+  <p>Note that options count in full whether or not they have vested, and whether or not anyone has exercised them. The unused pool counts too, even though no one holds it.</p>
+
+  <h2>An example: Acme Inc.</h2>
+  <p>Here is how the sample company in Capfolder adds up:</p>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">Line</th><th scope="col" class="r">Shares</th><th scope="col" class="r">Counted as issued</th><th scope="col" class="r">Counted fully diluted</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Tim Apple, common</th><td class="r">4,000,000</td><td class="r">yes</td><td class="r">yes</td></tr>
+      <tr><th scope="row">Steve Jobs, common</th><td class="r">3,000,000</td><td class="r">yes</td><td class="r">yes</td></tr>
+      <tr><th scope="row">Options granted (Wozniak, Gates)</th><td class="r">80,000</td><td class="r">no</td><td class="r">yes</td></tr>
+      <tr><th scope="row">Pool not yet granted</th><td class="r">920,000</td><td class="r">no</td><td class="r">yes</td></tr>
+      <tr><th scope="row">Total</th><td class="r"></td><td class="r"><b>7,000,000</b></td><td class="r"><b>8,000,000</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>Tim's ownership depends on which total you use:</p>
+  <ul>
+    <li>Issued: 4,000,000 ÷ 7,000,000 = <b>57.1%</b></li>
+    <li>Fully diluted: 4,000,000 ÷ 8,000,000 = <b>50.0%</b></li>
+  </ul>
+  <p>Acme also has $900,000 of post-money SAFEs. At their caps they would add about 9.4% on top, which would take Tim to roughly 45% just before the next round. Whether that belongs in "fully diluted" depends on who's asking, which leads to the most confusing part of this topic.</p>
+
+  <h2>Not everyone means the same thing</h2>
+  <p>"Fully diluted" is a convention, not a law, and it varies by document:</p>
+  <ul>
+    <li><b>In a cap table tool</b>, it usually means issued shares plus options, warrants and the whole pool. SAFEs are often shown separately, because their share count isn't known until they convert.</li>
+    <li><b>In a term sheet</b>, investors often define the price per share on a fully diluted basis that includes the pool <i>and</i> any increase to the pool they ask for, plus converting SAFEs and notes. This is the "option pool shuffle": the bigger pool is counted before the new money, so it dilutes only the existing holders.</li>
+    <li><b>In a post-money SAFE</b>, YC defines a "company capitalization" that includes the pool and all converting securities, so that the SAFE's percentage comes out exactly right.</li>
+    <li><b>In public companies</b>, "diluted shares" is an accounting figure used for earnings per share, with its own rules. It isn't the same calculation.</li>
+  </ul>
+  <p>When a number matters, read the definition in the document. Two people can both be right and still disagree by several percent.</p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><b>Leaving out the unused pool.</b> Investors always count it. If you don't, your percentages won't match theirs.</li>
+    <li><b>Counting only vested options.</b> Fully diluted counts all granted options, vested or not.</li>
+    <li><b>Double-counting exercised options.</b> When options are exercised they become shares. Remove them from the options line when you add them to the shares line.</li>
+    <li><b>Forgetting returned options.</b> When someone leaves, their unvested options usually go back to the pool. The total stays the same, but the pool line grows.</li>
+    <li><b>Ignoring SAFEs when talking to investors.</b> Even if your cap table shows them separately, the next investor will count them. Know your number with and without them.</li>
+    <li><b>Comparing numbers from different definitions.</b> If your spreadsheet says 50% and the term sheet says 45%, check the definitions before you assume a mistake.</li>
+  </ul>
+
+  <h2>What happens to the count at the next round</h2>
+  <p>A priced round changes the fully diluted count in three ways, all at once:</p>
+  <ul>
+    <li><b>New preferred shares</b> are issued to the new investors. They are part of the count from the day the round closes.</li>
+    <li><b>The SAFEs convert.</b> They stop being an estimate and become real preferred shares, which join the count too.</li>
+    <li><b>The pool is often topped up.</b> Investors usually want enough unused pool to cover hiring until the next round, often 10 to 15% of the company after the round. The extra pool shares join the count as well.</li>
+  </ul>
+  <p>Say Acme's seed investors want a 10% unused pool after the round. Acme has 920,000 unused shares today, so the board may need to add several hundred thousand more, and if the term sheet counts that increase "pre-money", only Tim, Steve and the existing holders pay for it. That's why founders should ask early which shares the price per share is based on. A small change in the definition can move the founders' stake by a few percent, and that's worth more than most negotiating points.</p>
+  <p>After the round, the new fully diluted total is the base for everyone's percentage until the next change. A cap table tool recalculates it for you; in a spreadsheet, check that every formula points at the new total.</p>
+
+  <h2>Fully diluted vs authorized shares</h2>
+  <p>One more number shows up on your incorporation papers: <b>authorized shares</b>, the most shares the company is allowed to issue. Acme might have 10,000,000 authorized and 8,000,000 fully diluted. Authorized shares don't affect anyone's percentage; they're a ceiling. If the fully diluted count gets close to it, the board and shareholders need to approve more before granting new options.</p>
+
+  <h2>In Capfolder</h2>
+  <p>The cap table shows every holder's percentage fully diluted, with the total at the bottom: issued shares, options and the remaining pool. SAFEs are listed below it with an as-converted estimate, kept out of the fully diluted total. When you import from Pulley or Carta, Capfolder asks for the fully diluted total from your old tool and checks that the two match, so you know nothing got lost on the way.</p>
+  <img class="learn-shot" src="/compare/img/captable.jpg" width="795" height="576" alt="Capfolder's cap table for Acme Inc. with fully diluted percentages: Tim Apple 50%, Steve Jobs 37.5%, two option holders at 0.5% and the pool at 11.5%" loading="lazy">
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>Does fully diluted include unvested options?</summary><p>Yes. Every granted option counts, vested or not, because the holder will get it if they stay. Unvested options only drop out if they are forfeited, and then they usually return to the pool, which is also counted.</p></details>
+    <details><summary>Does fully diluted include SAFEs?</summary><p>It depends on the definition. Cap table tools often list SAFEs separately, while term sheets and the post-money SAFE count them as if converted. Check the definition in the document you are reading.</p></details>
+    <details><summary>Why is my fully diluted percentage lower than my share of issued stock?</summary><p>Because the fully diluted total is bigger. It adds options and the unused pool to the shares that exist today, so the same number of shares is a smaller slice.</p></details>
+    <details><summary>Is fully diluted the same as diluted shares in an earnings report?</summary><p>No. Public companies report diluted shares for earnings per share using accounting rules, such as the treasury stock method. Startup cap tables use a simpler count.</p></details>
+  </div>
+
+  <h2 id="sources">Sources</h2>
+  <ol class="srcs">
+    <li><a href="https://carta.com/learn/equity/fully-diluted-shares/">Carta: Fully diluted shares</a> (topic coverage)</li>
+    <li><a href="https://www.cooleygo.com/glossary/fully-diluted/">Cooley GO glossary: fully diluted</a></li>
+    <li><a href="https://docs.carta.com/api-platform/guides/guides/calculating-cap-table-percentages/">Carta API docs: calculating cap table percentages</a></li>
+    <li><a href="https://www.ycombinator.com/documents">Y Combinator: post-money SAFE and user guide</a> (the SAFE's definition of company capitalization)</li>
+  </ol>
+
+  <h2>Read next</h2>
+  <ul class="related"><li><a href="/learn/cap-table/">What is a cap table?</a></li><li><a href="/learn/safe/">What is a SAFE?</a></li></ul>
+
+  <p class="foot">Not legal or tax advice. Every company's documents are different: check yours with a lawyer. Spotted a mistake? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+</body>
+</html>

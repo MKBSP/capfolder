@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>What is a cap table? Capitalization table explained · Capfolder</title>
+<meta name="description" content="A cap table (capitalization table) lists who owns your startup: shares, options, SAFEs and the option pool. What goes in it, a worked example and common mistakes.">
+<link rel="canonical" href="https://capfolder.com/learn/cap-table/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does cap table stand for?", "acceptedAnswer": {"@type": "Answer", "text": "Capitalization table. A company's capitalization is the mix of shares and other securities it has issued, and the table lists who holds them."}}, {"@type": "Question", "name": "Who needs a cap table?", "acceptedAnswer": {"@type": "Answer", "text": "Every company with more than one owner. In practice it becomes urgent the first time you grant options, sign a SAFE or talk to an investor, because each of them will ask for it."}}, {"@type": "Question", "name": "Is the cap table a legal document?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is a summary. The legal record is the signed paperwork behind it: stock purchase agreements, option grants, SAFEs and board consents. A cap table is only as good as the documents it matches."}}, {"@type": "Question", "name": "Do SAFEs go on the cap table?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, usually in their own section, with the amount, valuation cap and discount. They have no share count until they convert at a priced round."}}, {"@type": "Question", "name": "What is a pro forma cap table?", "acceptedAnswer": {"@type": "Answer", "text": "A what-if version that shows ownership after a future event, such as a new round or SAFEs converting. It is a projection, not a record of what exists today."}}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/" aria-current="true">Learn</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<main class="narrow">
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · What is a cap table?</div>
+  <h1>What is a cap table?</h1>
+  <p class="crumb">Written by the Capfolder team · Checked October 2026 · 7 min read</p>
+  <div class="short"><b>In short:</b> a cap table, short for <b>capitalization table</b>, is the list of who owns your company and how much. It shows every share, option and SAFE, who holds it, and what percentage of the company that is. Investors, lawyers, accountants and future employees will all ask to see it.</div>
+
+  <h2>What a cap table is for</h2>
+  <p>When you start a company, ownership is simple: two founders, half each. It doesn't stay simple. You hire someone and promise them options. An angel writes a check on a SAFE. You set aside shares for future employees. A year later you raise a seed round. Each of these changes who owns what, and the cap table is where you keep track.</p>
+  <p>A good cap table answers three questions at any moment:</p>
+  <ul>
+    <li><b>Who owns something?</b> Founders, employees, advisors, investors.</li>
+    <li><b>What do they own?</b> Common shares, preferred shares, options, SAFEs or notes.</li>
+    <li><b>How much is that?</b> As a number of shares, and as a percentage of the company.</li>
+  </ul>
+  <p>It also has to agree with your legal paperwork. Every line on the cap table should point to a signed document: a stock purchase agreement, an option grant, a SAFE, a board consent. If the spreadsheet says one thing and the documents say another, the documents win, and you have a problem to fix before your next fundraise.</p>
+
+  <h2>An example: Acme Inc.</h2>
+  <p>Acme is the sample company in Capfolder. Tim Apple and Steve Jobs founded it. They issued 4,000,000 and 3,000,000 common shares to themselves, and set aside 1,000,000 shares as an option pool for future employees. Two early employees, Steve Wozniak and Bill Gates, each got 40,000 options from that pool. Three investors put money in on SAFEs.</p>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">Holder</th><th scope="col">What they hold</th><th scope="col" class="r">Shares</th><th scope="col" class="r">Fully diluted</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Tim Apple</th><td>Common shares</td><td class="r">4,000,000</td><td class="r">50.00%</td></tr>
+      <tr><th scope="row">Steve Jobs</th><td>Common shares</td><td class="r">3,000,000</td><td class="r">37.50%</td></tr>
+      <tr><th scope="row">Steve Wozniak</th><td>Options</td><td class="r">40,000</td><td class="r">0.50%</td></tr>
+      <tr><th scope="row">Bill Gates</th><td>Options</td><td class="r">40,000</td><td class="r">0.50%</td></tr>
+      <tr><th scope="row">Option pool</th><td>Not granted yet</td><td class="r">920,000</td><td class="r">11.50%</td></tr>
+      <tr><th scope="row">Total</th><td></td><td class="r"><b>8,000,000</b></td><td class="r"><b>100%</b></td></tr>
+    </tbody>
+  </table></div>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">SAFE holder</th><th scope="col" class="r">Invested</th><th scope="col" class="r">Valuation cap</th><th scope="col" class="r">Discount</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Y Combinator</th><td class="r">$500,000</td><td class="r">$10,000,000</td><td class="r">none</td></tr>
+      <tr><th scope="row">Angel A</th><td class="r">$150,000</td><td class="r">$8,000,000</td><td class="r">20%</td></tr>
+      <tr><th scope="row">Fund X</th><td class="r">$250,000</td><td class="r">$10,000,000</td><td class="r">none</td></tr>
+    </tbody>
+  </table></div>
+  <p>Notice two things. First, the SAFEs sit in their own table. They aren't shares yet, so they have no share count; they turn into shares at the next priced round. Second, the percentages are "fully diluted": they count the options and the whole pool as if they were already shares. Tim owns 4,000,000 of 7,000,000 issued shares today (57%), but 50% fully diluted. Both numbers are true; they answer different questions. We explain the difference in <a href="/learn/fully-diluted/">Fully diluted shares</a>.</p>
+
+  <h2>What goes in a cap table</h2>
+  <p>Most early-stage cap tables hold the same few kinds of things:</p>
+  <ul>
+    <li><b>Common shares.</b> What founders and, later, employees who exercise their options own. Usually one vote per share.</li>
+    <li><b>Preferred shares.</b> What investors get in a priced round (Seed, Series A). They come with extra rights, such as getting their money back first in a sale.</li>
+    <li><b>Options.</b> The right to buy common shares later at a fixed price (the strike price). Employees usually earn them over four years.</li>
+    <li><b>The option pool.</b> Shares the board has set aside for future option grants. They belong to no one yet, but investors count them.</li>
+    <li><b>SAFEs and convertible notes.</b> Money invested now that becomes shares later. See <a href="/learn/safe/">What is a SAFE?</a></li>
+    <li><b>Warrants.</b> Like options, but usually given to lenders or partners rather than employees.</li>
+  </ul>
+  <p>For each line, a complete cap table also keeps the details behind it: the date, the price paid, the vesting schedule, the share class, and the signed document. Those details matter the day someone leaves, the day an investor's lawyer runs due diligence, and the day your SAFEs convert.</p>
+
+  <h2>How the percentages are calculated</h2>
+  <p>A holder's percentage is their shares divided by a total. The question is which total.</p>
+  <p class="formula">Ownership % = holder's shares ÷ total shares counted</p>
+  <ul>
+    <li><b>Issued and outstanding:</b> only shares that exist today. Acme: 7,000,000.</li>
+    <li><b>Fully diluted:</b> issued shares plus every option granted and the whole remaining pool. Acme: 8,000,000.</li>
+    <li><b>As converted:</b> fully diluted plus an estimate of what the SAFEs will become. This one is an estimate, because the final number depends on the next round's price.</li>
+  </ul>
+  <p>When someone says "I own 10%", ask which total they mean. Investors almost always mean fully diluted.</p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><b>Keeping it in a spreadsheet nobody owns.</b> Three versions in three inboxes, and no one knows which is right. Keep one record, in one place.</li>
+    <li><b>Forgetting the documents.</b> A line without a signed document behind it is a promise, not equity. Missing board consents and missing 83(b) elections are the most common gaps lawyers find.</li>
+    <li><b>Leaving SAFEs off.</b> They aren't shares yet, but they will be. Founders who ignore them are often surprised by how much they own after the seed round.</li>
+    <li><b>Mixing up the totals.</b> Quoting an outstanding percentage to an investor who thinks in fully diluted terms makes your numbers look wrong.</li>
+    <li><b>Not recording people who leave.</b> When an employee leaves, unvested options go back to the pool and the exercise window starts. If the cap table isn't updated, the pool looks smaller than it is.</li>
+    <li><b>Waiting for due diligence to clean up.</b> Fixing a cap table during a fundraise is slow and expensive, because lawyers bill for every hour. Fixing it as you go is cheap.</li>
+  </ul>
+
+  <h2>Spreadsheet or software?</h2>
+  <p>A spreadsheet is fine for the first few months: two founders and a pool. It starts to hurt once you add SAFEs with different caps, vesting schedules, people leaving and a second share class. The math gets fiddly, and a spreadsheet can't tell you that a document is missing. That's when most founders move to a cap table tool.</p>
+  <p>Whatever you use, make sure you can export it. Investors and lawyers often want a standard spreadsheet, and there is now an open standard for cap table data, the <a href="https://www.opencaptablecoalition.com/format">Open Cap Format</a>, so your records aren't locked into one vendor.</p>
+
+  <h2>In Capfolder</h2>
+  <p>Your cap table is the home screen. Each row links to its signed document, and <b>What's missing</b> on the right lists the documents you don't have yet. The record lives in a folder on your computer, in the Open Cap Format, and exports to Excel in the layout lawyers expect. <a href="/help/founders/">Help: add your founders</a>.</p>
+  <img class="learn-shot" src="/compare/img/captable.jpg" width="795" height="576" alt="Capfolder's cap table screen for the sample company Acme Inc.: founders, employees, the option pool and three SAFEs, with what's missing on the right" loading="lazy">
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>What does cap table stand for?</summary><p>Capitalization table. A company's capitalization is the mix of shares and other securities it has issued, and the table lists who holds them.</p></details>
+    <details><summary>Who needs a cap table?</summary><p>Every company with more than one owner. In practice it becomes urgent the first time you grant options, sign a SAFE or talk to an investor, because each of them will ask for it.</p></details>
+    <details><summary>Is the cap table a legal document?</summary><p>No. It is a summary. The legal record is the signed paperwork behind it: stock purchase agreements, option grants, SAFEs and board consents. A cap table is only as good as the documents it matches.</p></details>
+    <details><summary>Do SAFEs go on the cap table?</summary><p>Yes, usually in their own section, with the amount, valuation cap and discount. They have no share count until they convert at a priced round.</p></details>
+    <details><summary>What is a pro forma cap table?</summary><p>A what-if version that shows ownership after a future event, such as a new round or SAFEs converting. It is a projection, not a record of what exists today.</p></details>
+  </div>
+
+  <h2 id="sources">Sources</h2>
+  <ol class="srcs">
+    <li><a href="https://carta.com/learn/startups/equity-management/cap-table/">Carta: What is a cap table? Key concepts and examples</a> (topic coverage)</li>
+    <li><a href="https://www.cooleygo.com/glossary/cap-table/">Cooley GO glossary: cap table</a></li>
+    <li><a href="https://www.opencaptablecoalition.com/format">Open Cap Table Coalition: Open Cap Format</a> (what a cap table records)</li>
+    <li><a href="https://en.wikipedia.org/wiki/Capitalization_table">Wikipedia: Capitalization table</a></li>
+  </ol>
+
+  <h2>Read next</h2>
+  <ul class="related"><li><a href="/learn/safe/">What is a SAFE?</a></li><li><a href="/learn/fully-diluted/">Fully diluted shares</a></li></ul>
+
+  <p class="foot">Not legal or tax advice. Every company's documents are different: check yours with a lawyer. Spotted a mistake? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+</body>
+</html>

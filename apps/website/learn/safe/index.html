@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>What is a SAFE? Simple agreement for future equity · Capfolder</title>
+<meta name="description" content="A SAFE (simple agreement for future equity) lets a startup raise money now and issue shares later. Post-money SAFEs, valuation caps, discounts and a worked example.">
+<link rel="canonical" href="https://capfolder.com/learn/safe/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is a SAFE debt or equity?", "acceptedAnswer": {"@type": "Answer", "text": "Neither, strictly. It isn't a loan, because there is no interest and no repayment date. It isn't shares yet either. It is a right to receive shares later, which is why it sits in its own section of the cap table."}}, {"@type": "Question", "name": "Do SAFE holders get voting rights?", "acceptedAnswer": {"@type": "Answer", "text": "Not until the SAFE converts into shares. Before that they have the rights written in the SAFE and any side letter, such as pro rata rights."}}, {"@type": "Question", "name": "What happens to a SAFE if the company never raises again?", "acceptedAnswer": {"@type": "Answer", "text": "It stays outstanding. If the company is sold, the holder gets the greater of their money back or the value of their shares at the cap. If the company shuts down, they are repaid what is left, up to their investment, before common shareholders."}}, {"@type": "Question", "name": "What is a good valuation cap?", "acceptedAnswer": {"@type": "Answer", "text": "There is no standard. It depends on the stage, the market and how much you raise. The cap is a negotiation: a higher cap means less dilution for the founders."}}, {"@type": "Question", "name": "Can I use SAFEs outside the US?", "acceptedAnswer": {"@type": "Answer", "text": "YC's SAFE is written for US companies, usually Delaware corporations. Other countries have their own versions, such as the UK's Advance Subscription Agreement. Use a local lawyer."}}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/" aria-current="true">Learn</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<main class="narrow">
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · What is a SAFE?</div>
+  <h1>What is a SAFE?</h1>
+  <p class="crumb">Written by the Capfolder team · Checked October 2026 · 8 min read</p>
+  <div class="short"><b>In short:</b> a <b>SAFE</b> (simple agreement for future equity) is a contract where an investor gives your startup money today, and gets shares later, usually at your next priced round. It isn't a loan: there's no interest and no repayment date. Y Combinator published it in 2013 and it is now the most common way to raise a first round in the US.</div>
+
+  <h2>Why SAFEs exist</h2>
+  <p>Pricing a company that is six months old is hard. A priced round means agreeing a valuation, creating a new class of preferred shares, and paying lawyers to draft a stack of documents. For a $100,000 check from an angel, that is a lot of work.</p>
+  <p>A SAFE skips the pricing. The investor and the founder agree on a few terms, sign a short standard document, and the money arrives. The question "how many shares is this worth?" is answered later, when a bigger investor sets a price in a real round.</p>
+  <p>Before SAFEs, founders used <b>convertible notes</b> for the same job. A note is a loan that turns into shares. Because it's debt, it has an interest rate and a maturity date, and when the maturity date arrives without a round, the founder and investor have to negotiate. A SAFE has neither, which is why most early rounds moved to SAFEs.</p>
+
+  <h2>The terms that matter</h2>
+  <ul>
+    <li><b>Investment amount.</b> How much money the investor puts in.</li>
+    <li><b>Valuation cap.</b> The highest valuation at which the money converts. If the next round is priced above the cap, the SAFE investor converts as if the company were worth only the cap, so they get more shares. It rewards them for investing early.</li>
+    <li><b>Discount.</b> A percentage off the price new investors pay, often 20%. Some SAFEs have a cap, some a discount, some both. With both, the investor gets whichever gives the lower price per share.</li>
+    <li><b>Most favored nation (MFN).</b> If you later sign a SAFE on better terms, this investor can switch to those terms. Usually used when there is no cap.</li>
+    <li><b>Pro rata rights.</b> The right to invest more in the next round to keep their percentage. In the current YC version this is a separate side letter.</li>
+  </ul>
+
+  <h2>Pre-money or post-money SAFE?</h2>
+  <p>In 2018 YC switched its standard SAFE from "pre-money" to "post-money". The difference is what the cap measures. With a <b>post-money SAFE</b>, the cap is the company's value <i>including</i> all the SAFE money. That makes the math clean:</p>
+  <p class="formula">SAFE ownership = amount invested ÷ post-money valuation cap</p>
+  <p>A $500,000 SAFE with a $10,000,000 post-money cap buys 5% of the company, measured just before the priced round. The founder can see exactly how much each SAFE costs them. The catch: every new SAFE dilutes the founders, not the earlier SAFE holders. Ten small SAFEs add up.</p>
+  <p>With the older <b>pre-money SAFE</b>, the cap excluded the SAFE money, and each new SAFE diluted the earlier SAFE holders too. It was harder to know what anyone would own. Check which version you signed; it's in the title of the document.</p>
+
+  <h2>An example: Acme's three SAFEs</h2>
+  <p>Acme, the sample company in Capfolder, has 8,000,000 shares fully diluted and three post-money SAFEs:</p>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">Investor</th><th scope="col" class="r">Invested</th><th scope="col" class="r">Post-money cap</th><th scope="col" class="r">Discount</th><th scope="col" class="r">Ownership at the cap</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Y Combinator</th><td class="r">$500,000</td><td class="r">$10,000,000</td><td class="r">none</td><td class="r">5.00%</td></tr>
+      <tr><th scope="row">Angel A</th><td class="r">$150,000</td><td class="r">$8,000,000</td><td class="r">20%</td><td class="r">1.88%</td></tr>
+      <tr><th scope="row">Fund X</th><td class="r">$250,000</td><td class="r">$10,000,000</td><td class="r">none</td><td class="r">2.50%</td></tr>
+      <tr><th scope="row">Total</th><td class="r"><b>$900,000</b></td><td></td><td></td><td class="r"><b>9.38%</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>Each percentage is simply the amount divided by the cap: $500,000 ÷ $10,000,000 = 5%. Together the SAFE holders will own about 9.4% just before the next round, and Tim and Steve's 87.5% shrinks accordingly.</p>
+  <p>Now say Acme raises a seed round where new investors pay $2.00 a share. Angel A has both a cap and a 20% discount, so they get the better of two prices:</p>
+  <ul>
+    <li><b>Discount price:</b> $2.00 less 20% = $1.60 a share.</li>
+    <li><b>Cap price:</b> roughly the $8,000,000 cap divided by Acme's shares, about $1.00 a share before counting the SAFE shares themselves.</li>
+  </ul>
+  <p>The cap price is lower, so the cap wins and Angel A gets about 150,000 shares instead of about 94,000. (The exact formula in the YC document counts the shares the SAFEs create, which is why the post-money percentages come out exact. Your lawyer or your cap table tool does this step at closing.)</p>
+
+  <h2>When a SAFE converts, and when it doesn't</h2>
+  <p>The standard YC SAFE has three triggers:</p>
+  <ul>
+    <li><b>A priced equity round.</b> The usual case. The SAFE turns into preferred shares, at the cap or discount price.</li>
+    <li><b>A sale of the company or an IPO.</b> The investor gets either their money back or what their shares would be worth at the cap, whichever is more.</li>
+    <li><b>The company shuts down.</b> SAFE holders are repaid from what's left, after creditors and before common shareholders, up to the amount they invested.</li>
+  </ul>
+  <p>If none of these happens, the SAFE just sits there. There's no deadline that forces a conversion.</p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><b>Not adding up the dilution.</b> Each post-money SAFE comes out of the founders' share. Model the total before you sign the next one.</li>
+    <li><b>Mixing caps without tracking them.</b> Different caps convert at different prices. A cap table that only lists amounts will be wrong at conversion.</li>
+    <li><b>Treating SAFE holders as shareholders.</b> They have no shares and no vote until conversion. Don't list them as stockholders in board consents.</li>
+    <li><b>Losing the signed copy.</b> The document with both signatures is what counts. Store it next to the cap table entry.</li>
+    <li><b>Forgetting the filings.</b> In the US, many SAFE rounds rely on Regulation D, which usually means filing a Form D with the SEC within 15 days of the first sale, plus some state notices. Ask your lawyer.</li>
+    <li><b>Forgetting the 409A.</b> New SAFE money can change the value of your common stock. Many companies get a new 409A valuation before granting more options.</li>
+  </ul>
+
+  <h2>In Capfolder</h2>
+  <p>Record a SAFE with its amount, cap, discount and date, and attach the signed document. Capfolder shows the SAFEs under the cap table with an as-converted estimate of each holder's ownership, and lists any SAFE whose signed copy is missing. You can send the YC template for signature from the app.</p>
+  <img class="learn-shot" src="/compare/img/captable.jpg" width="795" height="576" alt="Capfolder's cap table for Acme Inc., with three SAFEs from Y Combinator, Angel A and Fund X listed under the share table" loading="lazy">
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>Is a SAFE debt or equity?</summary><p>Neither, strictly. It isn't a loan, because there is no interest and no repayment date. It isn't shares yet either. It is a right to receive shares later, which is why it sits in its own section of the cap table.</p></details>
+    <details><summary>Do SAFE holders get voting rights?</summary><p>Not until the SAFE converts into shares. Before that they have the rights written in the SAFE and any side letter, such as pro rata rights.</p></details>
+    <details><summary>What happens to a SAFE if the company never raises again?</summary><p>It stays outstanding. If the company is sold, the holder gets the greater of their money back or the value of their shares at the cap. If the company shuts down, they are repaid what is left, up to their investment, before common shareholders.</p></details>
+    <details><summary>What is a good valuation cap?</summary><p>There is no standard. It depends on the stage, the market and how much you raise. The cap is a negotiation: a higher cap means less dilution for the founders.</p></details>
+    <details><summary>Can I use SAFEs outside the US?</summary><p>YC's SAFE is written for US companies, usually Delaware corporations. Other countries have their own versions, such as the UK's Advance Subscription Agreement. Use a local lawyer.</p></details>
+  </div>
+
+  <h2 id="sources">Sources</h2>
+  <ol class="srcs">
+    <li><a href="https://www.ycombinator.com/documents">Y Combinator: SAFE financing documents and user guide</a> (primary source)</li>
+    <li><a href="https://www.ycombinator.com/library/6m-understanding-safes-and-priced-equity-rounds">Y Combinator Library: Understanding SAFEs and priced equity rounds</a></li>
+    <li><a href="https://carta.com/learn/startups/fundraising/convertible-securities/safes/">Carta: What is a SAFE?</a> (topic coverage)</li>
+    <li><a href="https://www.cooleygo.com/glossary/safe/">Cooley GO glossary: SAFE</a></li>
+  </ol>
+
+  <h2>Read next</h2>
+  <ul class="related"><li><a href="/learn/cap-table/">What is a cap table?</a></li><li><a href="/learn/fully-diluted/">Fully diluted shares</a></li></ul>
+
+  <p class="foot">Not legal or tax advice. Every company's documents are different: check yours with a lawyer. Spotted a mistake? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+</body>
+</html>

@@ -8,6 +8,10 @@ const comparePages = () =>
   readdirSync(new URL("./compare", import.meta.url), { withFileTypes: true })
     .filter((d) => d.isDirectory() && d.name !== "img")
     .map((d) => `compare/${d.name}/index.html`);
+const learnPages = () =>
+  readdirSync(new URL("./learn", import.meta.url), { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => `learn/${d.name}/index.html`);
 const licenses = readFileSync(new URL("../../THIRD_PARTY_LICENSES.md", import.meta.url), "utf8");
 
 test("no placeholders, old names or dead links", () => {
@@ -213,6 +217,8 @@ test("every sub-page has the same navbar, with its section marked", () => {
     ["roadmap/index.html", "/roadmap/"],
     ["compare/index.html", "/compare/"],
     ...comparePages().map((c) => [c, "/compare/"]),
+    ["learn/index.html", "/learn/"],
+    ...learnPages().map((l) => [l, "/learn/"]),
   ]) {
     const nav = read(p).match(/<nav class="top"[\s\S]*?<\/nav>/)?.[0] ?? "";
     for (const must of [
@@ -220,6 +226,7 @@ test("every sub-page has the same navbar, with its section marked", () => {
       'href="/compare/"',
       'href="/roadmap/"',
       'href="/help/"',
+      'href="/learn/"',
       'href="/#download"',
       `href="${section}" aria-current="true"`,
     ])
@@ -310,4 +317,37 @@ test("Pulley and Carta pages: a 'Before you cancel' checklist, same items as the
     for (const item of ["Compare the totals", "Every signed document", "Board consents", "409A", "by hand"])
       expect(h).toContain(item);
   }
+});
+
+test("learn pages: SEO basics, 1,200–1,800 words, FAQ markup, sources, disclaimer; listed on /learn/, in the build and the home nav", () => {
+  const pages = learnPages();
+  expect(pages.length).toBeGreaterThanOrEqual(3);
+  const index = read("learn/index.html");
+  for (const p of pages) {
+    const page = read(p);
+    const slug = p.split("/")[1];
+    expect([slug, /<title>[^<]{10,70}<\/title>/.test(page)]).toEqual([slug, true]);
+    expect([slug, /<meta name="description" content="[^"]{70,170}">/.test(page)]).toEqual([slug, true]);
+    expect([
+      slug,
+      page.includes(`<link rel="canonical" href="https://capfolder.com/learn/${slug}/">`),
+    ]).toEqual([slug, true]);
+    expect([slug, (page.match(/<h1[ >]/g) ?? []).length]).toEqual([slug, 1]);
+    const sources =
+      page.match(/<h2 id="sources">Sources<\/h2>\s*<ol class="srcs">([\s\S]*?)<\/ol>/)?.[1] ?? "";
+    expect([slug, (sources.match(/<a href="https:/g) ?? []).length >= 3]).toEqual([slug, true]);
+    expect([slug, page.includes("Not legal or tax advice")]).toEqual([slug, true]);
+    const ld = page.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] ?? "{}";
+    const faq = JSON.parse(ld);
+    expect([slug, faq["@type"], faq.mainEntity?.length >= 3]).toEqual([slug, "FAQPage", true]);
+    const words = page
+      .match(/<main[^>]*>([\s\S]*?)<\/main>/)![1]!
+      .replace(/<[^>]+>/g, " ")
+      .split(/\s+/)
+      .filter(Boolean).length;
+    expect([slug, words >= 1200 && words <= 1900]).toEqual([slug, true]);
+    expect([slug, index.includes(`href="/learn/${slug}/"`)]).toEqual([slug, true]);
+  }
+  expect(read("package.json")).toMatch(/cp -r [^"]*\blearn\b/);
+  expect(html).toContain('href="/learn/"');
 });
