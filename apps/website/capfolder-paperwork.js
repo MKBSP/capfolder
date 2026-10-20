@@ -245,8 +245,8 @@
       if (this._root) return;
       const root = (this._root = this.attachShadow({ mode: "open" }));
       root.innerHTML =
-        `<style>:host{display:block;position:relative;aspect-ratio:16/9;background:#FAFAF8;overflow:hidden;font-family:'IBM Plex Sans',system-ui,sans-serif}svg{position:absolute;inset:0;width:100%;height:100%;display:block}.cap{position:absolute;left:5%;bottom:7%;right:5%;font-weight:500;font-size:clamp(14px,2.1cqw,40px);color:${INK};transition:opacity .18s;text-wrap:balance}:host{container-type:inline-size}</style>` +
-        `<svg viewBox="-480 -270 960 540" role="img" aria-label="Scattered cap table documents gather into one Capfolder folder"><defs><pattern id="d" width="16" height="16" patternUnits="userSpaceOnUse" x="-480" y="-270"><circle cx="8" cy="8" r="1" fill="#D5DAD6"/></pattern><radialGradient id="r"><stop offset="0.4" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="m"><rect x="-480" y="-270" width="960" height="540" fill="url(#r)"/></mask></defs><rect x="-480" y="-270" width="960" height="540" fill="url(#d)" mask="url(#m)"/><g id="s"></g></svg><div class="cap" aria-live="off"></div>`;
+        `<style>:host{display:block;position:relative;aspect-ratio:16/9;background:#fff;overflow:hidden;font-family:'IBM Plex Sans',system-ui,sans-serif}svg{position:absolute;inset:0;width:100%;height:100%;display:block}.cap{position:absolute;left:5%;bottom:7%;right:5%;font-weight:500;font-size:clamp(14px,2.1cqw,40px);color:${INK};transition:opacity .18s;text-wrap:balance}:host{container-type:inline-size}</style>` +
+        `<svg viewBox="-480 -270 960 540" role="img" aria-label="Scattered cap table documents gather into one Capfolder folder"><g id="s"></g></svg><div class="cap" aria-live="off"></div>`;
       this._g = root.getElementById("s");
       this._cap = root.querySelector(".cap");
       this._t = 0;

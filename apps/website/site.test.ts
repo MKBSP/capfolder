@@ -235,6 +235,9 @@ test("story: the paperwork animation replaces the old list, and the Pause button
   );
   expect(story).toContain("<capfolder-paperwork");
   expect(story).not.toContain('class="lost');
+  // Same card as the folder demo above: window bar, white, shadow
+  expect(story).toContain('<div class="demo">');
+  expect(read("capfolder-paperwork.js")).not.toContain("#FAFAF8");
   expect(html).toContain('<script src="/capfolder-paperwork.js" defer></script>');
   const anim = read("capfolder-paperwork.js");
   expect(anim).toContain("motion-paused");
