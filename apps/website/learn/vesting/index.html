@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Vesting schedules and cliffs: 4-year vesting, 1-year cliff · Capfolder</title>
+<meta name="description" content="How a 4-year vesting schedule with a 1-year cliff works, what happens when someone leaves, acceleration, and a month-by-month example for an employee and founders.">
+<link rel="canonical" href="https://capfolder.com/learn/vesting/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does a 1-year cliff mean?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing vests during the first year. On the first anniversary of the vesting start, a full year's worth (25% on a four-year schedule) vests at once."}}, {"@type": "Question", "name": "What happens to unvested shares when I leave?", "acceptedAnswer": {"@type": "Answer", "text": "Unvested options are cancelled and go back to the option pool. Unvested founder shares can be bought back by the company, usually at the price you paid."}}, {"@type": "Question", "name": "Do vested options become shares automatically?", "acceptedAnswer": {"@type": "Answer", "text": "No. Vested options give you the right to buy shares at the strike price. You own shares only after you exercise and pay."}}, {"@type": "Question", "name": "Is monthly or quarterly vesting more common?", "acceptedAnswer": {"@type": "Answer", "text": "Monthly after the cliff is the most common for startups, but quarterly and annual schedules exist. The grant agreement decides."}}, {"@type": "Question", "name": "Can a vesting schedule be changed?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, usually with board approval and the holder's consent if it makes the terms worse for them. It should be documented."}}, {"@type": "Question", "name": "Does the cliff apply to founders?", "acceptedAnswer": {"@type": "Answer", "text": "It can. Founders who start vesting at incorporation often have a one-year cliff too, unless they get credit for earlier work."}}, {"@type": "Question", "name": "Is vesting the same as exercising?", "acceptedAnswer": {"@type": "Answer", "text": "No. Vesting is earning the right; exercising is paying the strike price to turn vested options into shares."}}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/" aria-current="true">Learn</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<section class="lhero"><div class="lhero-in"><div>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · Vesting schedules and cliffs</div>
+  <h1>Vesting schedules and cliffs</h1>
+  <p class="meta">Written by the Capfolder team · Checked October 2026 · 6 min read</p>
+</div><img src="/img/ill/vesting.svg" width="400" height="300" alt=""></div></section>
+<main class="narrow">
+  <div class="short"><b>In short:</b> <b>vesting</b> means earning your shares or options over time. The most common schedule is <b>four years with a one-year cliff</b>: nothing for the first year, then 25% at once, then the rest monthly over the next three years. If you leave, you keep what has vested; the rest goes back to the company.</div>
+
+  <h2>Why vesting exists</h2>
+  <p>Equity is a reward for building the company over years, not for showing up on day one. Vesting ties the two together. An employee who leaves after six months shouldn't walk away with the same stake as one who stayed four years, and a co-founder who quits early shouldn't keep half the company. Investors expect vesting for founders too, for the same reason.</p>
+
+  <h2>The standard schedule</h2>
+  <p>Four years, one-year cliff, monthly after the cliff. In numbers:</p>
+  <ul>
+    <li><b>Months 1–11:</b> nothing vests.</li>
+    <li><b>Month 12 (the cliff):</b> 12/48 vests at once: 25%.</li>
+    <li><b>Months 13–48:</b> 1/48 vests each month.</li>
+  </ul>
+  <p class="formula">Vested after m months (m ≥ 12) = grant × m ÷ 48</p>
+  <p>The cliff protects the company from early mistakes: if a hire doesn't work out in the first year, they leave with nothing. In return, the employee gets a full year's worth on the first anniversary.</p>
+
+  <h2>An example: Steve Wozniak's options</h2>
+  <p>In Acme, the sample company in Capfolder, Steve Wozniak was granted 40,000 options on 7 October 2025, at a strike of $0.12, vesting over four years with a one-year cliff.</p>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">Date</th><th scope="col">What happens</th><th scope="col" class="r">Vested</th><th scope="col" class="r">Unvested</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">7 Oct 2025</th><td>Grant, vesting starts</td><td class="r">0</td><td class="r">40,000</td></tr>
+      <tr><th scope="row">7 Apr 2026</th><td>Six months, still before the cliff</td><td class="r">0</td><td class="r">40,000</td></tr>
+      <tr><th scope="row">7 Oct 2026</th><td>Cliff: 12/48 at once</td><td class="r">10,000</td><td class="r">30,000</td></tr>
+      <tr><th scope="row">7 Nov 2026</th><td>First monthly step (+833)</td><td class="r">10,833</td><td class="r">29,167</td></tr>
+      <tr><th scope="row">7 Oct 2027</th><td>Two years</td><td class="r">20,000</td><td class="r">20,000</td></tr>
+      <tr><th scope="row">7 Oct 2029</th><td>Fully vested</td><td class="r">40,000</td><td class="r">0</td></tr>
+    </tbody>
+  </table></div>
+  <p>Monthly steps don't divide evenly (40,000 ÷ 48 = 833.33), so most plans round down each month and catch up later, so the total is exact at the end.</p>
+  <p>If Steve had left in April 2026, before the cliff, all 40,000 options would go back to the pool. If he leaves in April 2027, he keeps 15,000 vested options (18 of 48 months) and has a limited time, often 90 days, to exercise them by paying $0.12 each.</p>
+
+  <h2>Founders vest too</h2>
+  <p>Founders usually get their shares at the start, as restricted stock, and the company holds a right to buy back the unvested part at the price paid if they leave. Acme's founders, Tim Apple and Steve Jobs, received their shares on 14 September 2021 on the same four-year schedule, so they were fully vested in September 2025. Founders who receive unvested shares should think about an <a href="/learn/83b-election/">83(b) election</a> within 30 days.</p>
+
+  <h2>Acceleration</h2>
+  <p>Acceleration means vesting faster than the schedule, usually when the company is sold:</p>
+  <ul>
+    <li><b>Single trigger:</b> some or all unvested equity vests when the company is acquired.</li>
+    <li><b>Double trigger:</b> it vests only if the company is acquired <i>and</i> the person is let go without cause (or quits for good reason) within a set period. Buyers prefer this, because the team still has a reason to stay.</li>
+  </ul>
+  <p>Double trigger is more common for founders and senior hires. It has to be written in the grant or the plan; it is not automatic.</p>
+
+  <p>One more practical point: write the schedule in words in the grant agreement, not only as a table. "25% on the first anniversary of the vesting start date and 1/48 of the total each month after" leaves no doubt about the rounding or the dates.</p>
+
+  <h2>Key terms</h2>
+  <ul>
+    <li><b>Grant date:</b> when the board approved the grant.</li>
+    <li><b>Vesting start date (vesting commencement date):</b> when the clock starts, often the first day of work. It can be before the grant date.</li>
+    <li><b>Cliff:</b> the first date on which anything vests. Before it, nothing has vested.</li>
+    <li><b>Vested:</b> earned. For options, you may exercise them; for founder stock, the company can no longer buy them back.</li>
+    <li><b>Unvested:</b> not earned yet. Lost, or subject to buy-back, if you leave.</li>
+    <li><b>Post-termination exercise period:</b> how long you have after leaving to exercise vested options. Often 90 days.</li>
+  </ul>
+
+  <h2>Other schedules you will see</h2>
+  <ul>
+    <li><b>No cliff, monthly from day one:</b> common for advisors and sometimes for founders who have already worked on the company for a while.</li>
+    <li><b>Credit for past work:</b> a founder who started a year before incorporating may get a vesting start date a year back, so part is vested on day one.</li>
+    <li><b>Back-loaded:</b> for example 10%, 20%, 30%, 40% over four years. Used by some large tech companies to reward staying longer.</li>
+    <li><b>Milestone vesting:</b> vesting when a goal is reached, such as a product launch. Harder to administer, because someone has to decide when the milestone is met.</li>
+    <li><b>Refresh grants:</b> new grants to existing employees, each with its own schedule, often without a cliff.</li>
+  </ul>
+  <p>Whatever the schedule, it lives in the grant agreement and the board consent. The cap table should match them exactly.</p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><b>No vesting for founders.</b> If a co-founder leaves early with half the company, the rest of the team and every future investor pay for it.</li>
+    <li><b>The wrong start date.</b> The vesting start date can differ from the grant date, often the first day of work. Record both.</li>
+    <li><b>Forgetting the cliff when someone leaves.</b> Leaving one day before the cliff means nothing vested. Check the exact dates.</li>
+    <li><b>Not stopping vesting on the last day.</b> When someone leaves, record it, so unvested options go back to the pool and the exercise window starts.</li>
+    <li><b>Assuming acceleration.</b> Without a clause in the documents, nothing accelerates on a sale.</li>
+  </ul>
+
+  <h2>In Capfolder</h2>
+  <p>Every grant and founder share block can carry a vesting schedule. Each person's page shows a chart of what has vested, what is next and when they are fully vested. Record a departure, and vesting stops on the last day, the unvested part returns to the pool, and the exercise deadline appears.</p>
+  <img class="learn-shot" src="/help/img/founders-wizard.jpg" width="934" height="758" alt="Capfolder's founders step with two founders, each with 4,000,000 shares on a 4-year vesting schedule with a 1-year cliff" loading="lazy">
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>What does a 1-year cliff mean?</summary><p>Nothing vests during the first year. On the first anniversary of the vesting start, a full year's worth (25% on a four-year schedule) vests at once.</p></details>
+    <details><summary>What happens to unvested shares when I leave?</summary><p>Unvested options are cancelled and go back to the option pool. Unvested founder shares can be bought back by the company, usually at the price you paid.</p></details>
+    <details><summary>Do vested options become shares automatically?</summary><p>No. Vested options give you the right to buy shares at the strike price. You own shares only after you exercise and pay.</p></details>
+    <details><summary>Is monthly or quarterly vesting more common?</summary><p>Monthly after the cliff is the most common for startups, but quarterly and annual schedules exist. The grant agreement decides.</p></details>
+    <details><summary>Can a vesting schedule be changed?</summary><p>Yes, usually with board approval and the holder's consent if it makes the terms worse for them. It should be documented.</p></details>
+    <details><summary>Does the cliff apply to founders?</summary><p>It can. Founders who start vesting at incorporation often have a one-year cliff too, unless they get credit for earlier work.</p></details>
+    <details><summary>Is vesting the same as exercising?</summary><p>No. Vesting is earning the right; exercising is paying the strike price to turn vested options into shares.</p></details>
+  </div>
+
+  <h2 id="sources">Sources</h2>
+  <ol class="srcs">
+    <li><a href="https://carta.com/learn/equity/stock-options/vesting/">Carta: Vesting explained, schedules, cliffs and acceleration</a> (topic coverage)</li>
+    <li><a href="https://carta.com/learn/equity/leaving-company/">Carta: What happens to vested equity when you leave</a> (topic coverage)</li>
+    <li><a href="https://www.law.cornell.edu/uscode/text/26/83">26 U.S. Code § 83: property transferred in connection with performance of services</a> (restricted stock and vesting)</li>
+    <li><a href="https://en.wikipedia.org/wiki/Vesting">Wikipedia: Vesting</a></li>
+  </ol>
+
+  <h2>Read next</h2>
+  <ul class="related"><li><a href="/learn/option-pool/">Option pool and ESOP</a></li><li><a href="/learn/83b-election/">The 83(b) election</a></li><li><a href="/learn/iso-vs-nso/">ISO vs NSO stock options</a></li></ul>
+
+  <p class="foot">Not legal or tax advice. Every company's documents are different: check yours with a lawyer. Spotted a mistake? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Liquidation preference: 1x non-participating explained · Capfolder</title>
+<meta name="description" content="A liquidation preference decides who gets paid first when a startup is sold. 1x non-participating, participating preferred, seniority and a worked exit example.">
+<link rel="canonical" href="https://capfolder.com/learn/liquidation-preference/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does 1x non-participating mean?", "acceptedAnswer": {"@type": "Answer", "text": "The investor gets the greater of their original investment back or what their shares would get if converted to common. Not both."}}, {"@type": "Question", "name": "What is participating preferred?", "acceptedAnswer": {"@type": "Answer", "text": "Preferred that gets its preference back first and then also shares in what is left by percentage. It costs common holders at every exit price."}}, {"@type": "Question", "name": "What does pari passu mean?", "acceptedAnswer": {"@type": "Answer", "text": "All preferred classes are paid at the same time, in proportion to their preferences, instead of the latest round being paid first."}}, {"@type": "Question", "name": "Do liquidation preferences matter in a big exit?", "acceptedAnswer": {"@type": "Answer", "text": "Usually not for non-participating preferred: at a high price the investors convert to common. They matter most in modest exits."}}, {"@type": "Question", "name": "Do common shareholders have a liquidation preference?", "acceptedAnswer": {"@type": "Answer", "text": "No. Common stock is paid last, after debts, preferred preferences and, in most cases, SAFE holders' money back."}}, {"@type": "Question", "name": "Where is the liquidation preference written?", "acceptedAnswer": {"@type": "Answer", "text": "In the company's certificate of incorporation, amended at each priced round. The term sheet summarises it first."}}, {"@type": "Question", "name": "Can a liquidation preference be negotiated away later?", "acceptedAnswer": {"@type": "Answer", "text": "Sometimes, as part of a later round or a sale, but it needs the preferred holders' consent. It is easiest to keep it simple from the start."}}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/" aria-current="true">Learn</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<section class="lhero"><div class="lhero-in"><div>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · Liquidation preference</div>
+  <h1>Liquidation preference, explained</h1>
+  <p class="meta">Written by the Capfolder team · Checked October 2026 · 6 min read</p>
+</div><img src="/img/ill/rounds.svg" width="400" height="300" alt=""></div></section>
+<main class="narrow">
+  <div class="short"><b>In short:</b> a <b>liquidation preference</b> gives preferred shareholders, usually investors, the right to get their money back before common shareholders when the company is sold or wound down. The most common version is <b>1x non-participating</b>: the investor gets either their money back or their percentage of the sale, whichever is more.</div>
+
+  <h2>Why investors ask for it</h2>
+  <p>An investor who pays $2 million for 20% of your company is betting on a big outcome. If the company is instead sold for $5 million, without a preference they would get 20% of it: $1 million, half their money back, while the founders take $4 million. The liquidation preference protects the investor in that downside case. In a good outcome, it usually doesn't matter.</p>
+  <p>"Liquidation" here doesn't only mean shutting down. In the documents it usually covers any sale of the company, a merger, or a sale of most of its assets. Most of the time it is about acquisitions.</p>
+
+  <h2>The parts of a preference</h2>
+  <ul>
+    <li><b>Multiple:</b> how much the investor gets back first. 1x means their money back; 2x means double. 1x is the market standard.</li>
+    <li><b>Participation:</b> <b>non-participating</b> means the investor chooses: take the preference, or convert to common and share the proceeds by percentage. <b>Participating</b> means they take the preference <i>and</i> their percentage of what is left. A cap on participation limits that.</li>
+    <li><b>Seniority:</b> when there are several rounds, either all preferred share equally (<b>pari passu</b>), or later rounds get paid first (<b>stacked</b>).</li>
+  </ul>
+
+  <h2>An example: Acme is sold</h2>
+  <p>Acme, Capfolder's sample company, has no preferred shares today. Imagine it raises a seed round: $2,000,000 for 20% of the company, as preferred stock with a 1x liquidation preference. Then Acme is sold. Here is what the seed investor receives under two kinds of preference:</p>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">Sale price</th><th scope="col" class="r">1x non-participating</th><th scope="col" class="r">1x participating</th><th scope="col" class="r">Everyone else, non-participating</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">$4,000,000</th><td class="r">$2,000,000</td><td class="r">$2,400,000</td><td class="r">$2,000,000</td></tr>
+      <tr><th scope="row">$10,000,000</th><td class="r">$2,000,000</td><td class="r">$3,600,000</td><td class="r">$8,000,000</td></tr>
+      <tr><th scope="row">$50,000,000</th><td class="r">$10,000,000</td><td class="r">$11,600,000</td><td class="r">$40,000,000</td></tr>
+    </tbody>
+  </table></div>
+  <p>How the non-participating column works: at $4M, 20% would be $800,000, so the investor takes the $2M preference instead. At $10M, 20% is exactly $2M, so it's a tie. At $50M, 20% is $10M, more than $2M, so they convert to common and take their percentage. Above $10M the preference stops mattering.</p>
+  <p>Participating: at $10M, the investor first takes $2M, then 20% of the remaining $8M ($1.6M), $3.6M in all. At every price, the founders and employees get less. That is why participating preferred is called investor-friendly, and why it is uncommon in early rounds today.</p>
+
+  <h2>Stacked preferences</h2>
+  <p>After several rounds the preferences add up. If Acme later raised a $10M Series A with a 1x preference senior to the seed, a $12M sale would pay the Series A $10M first, then the seed $2M, and leave nothing for common holders. That stack of preferences is the amount a sale has to beat before founders and employees see any money. Track it, and keep it in mind when you compare acquisition offers.</p>
+
+  <h2>Why it matters for employees</h2>
+  <p>Employees hold options on common stock, so they are paid after every preference. In the Series A example above, a $12M sale would leave common holders with nothing, and the options of Steve Wozniak and Bill Gates would be worth nothing, even though $12M sounds like a good result for a young company. In a $50M sale, the preferred holders would most likely convert, and common holders would share in the full amount.</p>
+  <p>This is why it helps to know your preference stack before you talk to employees about what their options could be worth, and why buyers sometimes add a separate bonus pool for the team when the stack is high.</p>
+
+  <h2>Key terms</h2>
+  <ul>
+    <li><b>Preferred stock:</b> the share class investors buy in priced rounds. It carries the liquidation preference and other rights.</li>
+    <li><b>Original issue price:</b> what the investor paid per preferred share. A 1x preference is this price times their shares.</li>
+    <li><b>Conversion:</b> preferred holders can turn their shares into common, usually one for one. Non-participating holders do it when their percentage beats the preference.</li>
+    <li><b>Waterfall:</b> the order in which sale proceeds are paid out: debts first, then preferences by seniority, then everyone by percentage.</li>
+    <li><b>Participation cap:</b> a limit on participating preferred, for example 3x the investment, after which the holder converts instead.</li>
+  </ul>
+
+  <h2>Reading the preference in your documents</h2>
+  <p>The preference is not in the cap table. It is in the company's charter, the certificate of incorporation, which every priced round amends. Look for the section on "liquidation, dissolution or winding up" and a definition of "deemed liquidation event". Check:</p>
+  <ul>
+    <li>the multiple (1x or more);</li>
+    <li>participating or non-participating, and any cap;</li>
+    <li>how each series ranks against the others;</li>
+    <li>whether unpaid dividends are added to the preference;</li>
+    <li>what counts as a liquidation: a merger, a sale of assets, an exclusive licence.</li>
+  </ul>
+  <p>Most early-stage charters follow the NVCA model documents, so the clauses look similar across companies. Differences from that model are worth asking about.</p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><b>Looking only at the valuation.</b> A high valuation with a 2x participating preference can pay founders less in a modest exit than a lower, clean 1x deal.</li>
+    <li><b>Forgetting that employees hold common.</b> Their options are only worth something above the preference stack.</li>
+    <li><b>Not modelling exits.</b> Work out the payout at a few sale prices before signing a term sheet.</li>
+    <li><b>Assuming SAFEs have no preference.</b> Before converting, a SAFE holder in a sale gets the greater of their money back or the as-converted amount, ahead of common.</li>
+  </ul>
+
+  <h2>In Capfolder</h2>
+  <p>Capfolder tracks share classes with their terms, and the SAFEs with their amounts, so the preference stack is visible on the cap table. Exit modeling, the payout at different sale prices, is on our roadmap.</p>
+  <img class="learn-shot" src="/compare/img/captable.jpg" width="795" height="576" alt="Capfolder's cap table for Acme Inc. with share classes and SAFEs" loading="lazy">
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>What does 1x non-participating mean?</summary><p>The investor gets the greater of their original investment back or what their shares would get if converted to common. Not both.</p></details>
+    <details><summary>What is participating preferred?</summary><p>Preferred that gets its preference back first and then also shares in what is left by percentage. It costs common holders at every exit price.</p></details>
+    <details><summary>What does pari passu mean?</summary><p>All preferred classes are paid at the same time, in proportion to their preferences, instead of the latest round being paid first.</p></details>
+    <details><summary>Do liquidation preferences matter in a big exit?</summary><p>Usually not for non-participating preferred: at a high price the investors convert to common. They matter most in modest exits.</p></details>
+    <details><summary>Do common shareholders have a liquidation preference?</summary><p>No. Common stock is paid last, after debts, preferred preferences and, in most cases, SAFE holders' money back.</p></details>
+    <details><summary>Where is the liquidation preference written?</summary><p>In the company's certificate of incorporation, amended at each priced round. The term sheet summarises it first.</p></details>
+    <details><summary>Can a liquidation preference be negotiated away later?</summary><p>Sometimes, as part of a later round or a sale, but it needs the preferred holders' consent. It is easiest to keep it simple from the start.</p></details>
+  </div>
+
+  <h2 id="sources">Sources</h2>
+  <ol class="srcs">
+    <li><a href="https://carta.com/learn/equity/liquidity-events/liquidation-preferences/">Carta: Liquidation preferences, standard and non-standard terms</a> (topic coverage)</li>
+    <li><a href="https://nvca.org/model-legal-documents/">NVCA model legal documents: term sheet and certificate of incorporation</a> (primary source)</li>
+    <li><a href="https://www.cooleygo.com/glossary/liquidation-preference/">Cooley GO glossary: liquidation preference</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Liquidation_preference">Wikipedia: Liquidation preference</a></li>
+  </ol>
+
+  <h2>Read next</h2>
+  <ul class="related"><li><a href="/learn/pre-money-post-money/">Pre-money vs post-money valuation</a></li><li><a href="/learn/dilution/">Share dilution</a></li><li><a href="/learn/cap-table/">What is a cap table?</a></li></ul>
+
+  <p class="foot">Not legal or tax advice. Every company's documents are different: check yours with a lawyer. Spotted a mistake? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+</body>
+</html>

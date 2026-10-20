@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>SAFE valuation cap and discount, explained · Capfolder</title>
+<meta name="description" content="How a SAFE's valuation cap and discount decide how many shares the investor gets. The math, a worked example with three SAFEs, and which one wins.">
+<link rel="canonical" href="https://capfolder.com/learn/valuation-cap-discount/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which is better for founders, a cap or a discount?", "acceptedAnswer": {"@type": "Answer", "text": "A discount alone is usually better for founders, because it scales with the round's price. A cap protects the investor if the round is priced high, which costs the founders more shares."}}, {"@type": "Question", "name": "What happens if the round is priced below the cap?", "acceptedAnswer": {"@type": "Answer", "text": "Then the cap doesn't help the investor. They convert at the round price, or at the discount price if the SAFE has a discount."}}, {"@type": "Question", "name": "What is an MFN SAFE?", "acceptedAnswer": {"@type": "Answer", "text": "A SAFE with no cap or discount but a most-favored-nation clause: if you later sign SAFEs on better terms, the holder can take those terms."}}, {"@type": "Question", "name": "Is the cap the company's valuation?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is a ceiling for conversion, not a price anyone paid. A $10M cap doesn't mean the company is worth $10M."}}, {"@type": "Question", "name": "Does a SAFE with a cap give a fixed number of shares?", "acceptedAnswer": {"@type": "Answer", "text": "No. A post-money cap fixes a percentage, not a share count. The share count is worked out at the round."}}, {"@type": "Question", "name": "Do all SAFEs convert at the same time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, normally all outstanding SAFEs convert at the next priced round, each at its own terms."}}, {"@type": "Question", "name": "Can a SAFE convert without a priced round?", "acceptedAnswer": {"@type": "Answer", "text": "Not into preferred shares. In a sale before a round, YC's SAFE pays the greater of the investment back or the amount the SAFE would get as converted at the cap."}}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/" aria-current="true">Learn</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<section class="lhero"><div class="lhero-in"><div>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · SAFE valuation cap and discount</div>
+  <h1>SAFE valuation cap and discount</h1>
+  <p class="meta">Written by the Capfolder team · Checked October 2026 · 6 min read</p>
+</div><img src="/img/ill/safe.svg" width="400" height="300" alt=""></div></section>
+<main class="narrow">
+  <div class="short"><b>In short:</b> a SAFE turns into shares at your next priced round. The <b>valuation cap</b> sets the highest price the investor will pay per share; the <b>discount</b> gives them a percentage off the round's price. If a SAFE has both, the investor gets whichever gives them more shares.</div>
+
+  <h2>Why SAFEs have a cap and a discount</h2>
+  <p>A SAFE investor gives you money today, before anyone has agreed what your shares are worth. They take more risk than the investors who come later, so they want a better price. The cap and the discount are the two ways to give them one.</p>
+  <ul>
+    <li><b>Valuation cap:</b> "I'll convert as if the company were worth no more than $X." If the round is priced higher, the SAFE holder still converts at the cap's lower price.</li>
+    <li><b>Discount:</b> "I'll pay the round's price minus Y%." A 20% discount is the most common.</li>
+  </ul>
+  <p>A SAFE can have a cap only, a discount only, both, or neither (an "MFN" SAFE that takes the best terms of later SAFEs). With both, the holder gets the lower of the two prices, and so the most shares.</p>
+
+  <h2>The math</h2>
+  <p>For a <b>post-money SAFE</b>, the version Y Combinator publishes, the cap gives the investor a fixed percentage of the company just before the priced round's new money:</p>
+  <p class="formula">Ownership at the cap = investment ÷ post-money valuation cap</p>
+  <p>For the <b>discount</b>, start from the price new investors pay:</p>
+  <p class="formula">Discount price = round price × (1 − discount)</p>
+  <p class="formula">Shares = investment ÷ the lower of the cap price and the discount price</p>
+  <p>The cap price is the cap divided by the company's capitalization just before the round, which includes the shares from all converting SAFEs. That is why it is easiest to think of the cap as a percentage.</p>
+
+  <h2>An example: Acme's three SAFEs</h2>
+  <p>Acme, Capfolder's sample company, has 8,000,000 shares fully diluted and three SAFEs. We treat them all as post-money SAFEs.</p>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">SAFE holder</th><th scope="col" class="r">Invested</th><th scope="col" class="r">Cap</th><th scope="col" class="r">Discount</th><th scope="col" class="r">Ownership at cap</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Y Combinator</th><td class="r">$500,000</td><td class="r">$10,000,000</td><td class="r">none</td><td class="r">5.000%</td></tr>
+      <tr><th scope="row">Angel A</th><td class="r">$150,000</td><td class="r">$8,000,000</td><td class="r">20%</td><td class="r">1.875%</td></tr>
+      <tr><th scope="row">Fund X</th><td class="r">$250,000</td><td class="r">$10,000,000</td><td class="r">none</td><td class="r">2.500%</td></tr>
+      <tr><th scope="row">Total</th><td class="r"><b>$900,000</b></td><td></td><td></td><td class="r"><b>9.375%</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>Together the SAFEs will own 9.375% of the company just before the new money. That means the 8,000,000 existing shares become 90.625% of a larger total: 8,000,000 ÷ 0.90625 ≈ 8,827,586 shares. Angel A's 1.875% of that is about 165,500 shares, a cap price of roughly $0.91 per share.</p>
+  <p>Now say Acme raises a Series A at $1.50 per share. Angel A's discount price would be $1.50 × 0.8 = $1.20, which buys 125,000 shares. The cap price of about $0.91 buys about 165,500. The cap wins, so Angel A converts at the cap. The discount only matters if the round is priced low, below about $1.13 here, where 0.8 × the round price drops under the cap price.</p>
+  <p>These numbers are an estimate. The final count depends on the round's exact terms and any pool top-up, which your lawyer will calculate at closing.</p>
+
+  <h2>Pre-money vs post-money SAFEs</h2>
+  <p>Before 2018 most SAFEs used a pre-money cap. With those, each new SAFE diluted the earlier SAFE holders as well as the founders, and nobody could say what they owned until the round. Post-money SAFEs fix each holder's percentage at signing. That is clearer for investors, and it means the founders absorb all the SAFE dilution. Adding up your post-money SAFEs, as in the table above, tells you how much of the company you have already sold. See <a href="/learn/pre-money-post-money/">Pre-money vs post-money valuation</a>.</p>
+
+  <h2>Key terms</h2>
+  <ul>
+    <li><b>Conversion:</b> the moment a SAFE becomes shares, normally at the next priced round.</li>
+    <li><b>Cap price:</b> the per-share price implied by the valuation cap. The SAFE converts at this price if it is lower than the round price.</li>
+    <li><b>Discount price:</b> the round's price per share reduced by the discount.</li>
+    <li><b>Company capitalization:</b> in YC's post-money SAFE, the share count used to work out the cap price. It includes issued shares, options, the pool and the converting SAFEs, but not the new round's shares.</li>
+    <li><b>Pro rata right:</b> a right, often in a side letter, to invest more in the next round to keep the same percentage.</li>
+  </ul>
+
+  <h2>Before you sign another SAFE</h2>
+  <p>SAFEs are quick to sign, which makes it easy to sign too many. Before each new one, answer three questions:</p>
+  <ol>
+    <li><b>What will all my SAFEs own together?</b> For post-money SAFEs, add investment ÷ cap for each one. This is the part of the company you have already sold.</li>
+    <li><b>What will the founders own after the next round?</b> Take the founders' fully diluted percentage, multiply by (1 − total SAFE ownership), then by (1 − the share you expect to sell in the round).</li>
+    <li><b>Is this cap consistent with the others?</b> Very different caps for similar timing can upset earlier investors and complicate the round.</li>
+  </ol>
+  <p>With Acme's numbers: the founders hold 87.5% fully diluted today, the SAFEs will take 9.375%, and a seed round selling 20% would leave the founders with about 87.5% × 0.906 × 0.8 ≈ 63%, before any pool top-up.</p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><b>Not adding the SAFEs up.</b> Five small SAFEs at different caps can add up to 15% or more. Keep a running total.</li>
+    <li><b>Mixing pre- and post-money SAFEs.</b> They convert differently. Check which version each investor signed.</li>
+    <li><b>Assuming the discount applies.</b> With a cap and a discount, the investor gets the better of the two, and in a strong round that is usually the cap.</li>
+    <li><b>Forgetting the side letters.</b> Pro rata rights and MFN clauses are often in a separate letter. Keep it with the SAFE.</li>
+    <li><b>Losing the signed copy.</b> At conversion, lawyers need every SAFE. A missing one holds up the closing.</li>
+  </ul>
+
+  <h2>In Capfolder</h2>
+  <p>Record each SAFE with its amount, cap, discount and date. Capfolder lists them under the cap table with each holder's estimated ownership at the cap, shows the total, and flags any SAFE whose signed copy is missing.</p>
+  <img class="learn-shot" src="/compare/img/captable.jpg" width="795" height="576" alt="Capfolder's cap table for Acme Inc. with three SAFEs listed under the shares, each with its cap" loading="lazy">
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>Which is better for founders, a cap or a discount?</summary><p>A discount alone is usually better for founders, because it scales with the round's price. A cap protects the investor if the round is priced high, which costs the founders more shares.</p></details>
+    <details><summary>What happens if the round is priced below the cap?</summary><p>Then the cap doesn't help the investor. They convert at the round price, or at the discount price if the SAFE has a discount.</p></details>
+    <details><summary>What is an MFN SAFE?</summary><p>A SAFE with no cap or discount but a most-favored-nation clause: if you later sign SAFEs on better terms, the holder can take those terms.</p></details>
+    <details><summary>Is the cap the company's valuation?</summary><p>No. It is a ceiling for conversion, not a price anyone paid. A $10M cap doesn't mean the company is worth $10M.</p></details>
+    <details><summary>Does a SAFE with a cap give a fixed number of shares?</summary><p>No. A post-money cap fixes a percentage, not a share count. The share count is worked out at the round.</p></details>
+    <details><summary>Do all SAFEs convert at the same time?</summary><p>Yes, normally all outstanding SAFEs convert at the next priced round, each at its own terms.</p></details>
+    <details><summary>Can a SAFE convert without a priced round?</summary><p>Not into preferred shares. In a sale before a round, YC's SAFE pays the greater of the investment back or the amount the SAFE would get as converted at the cap.</p></details>
+  </div>
+
+  <h2 id="sources">Sources</h2>
+  <ol class="srcs">
+    <li><a href="https://www.ycombinator.com/documents">Y Combinator: SAFE financing documents and post-money SAFE user guide</a> (primary source)</li>
+    <li><a href="https://carta.com/learn/startups/fundraising/convertible-securities/">Carta: Convertible securities, SAFEs vs. convertible notes</a> (topic coverage)</li>
+    <li><a href="https://carta.com/learn/startups/fundraising/convertible-securities/pre-money-vs-post-money-safes/">Carta: Pre-money SAFEs vs. post-money SAFEs</a> (topic coverage)</li>
+    <li><a href="https://www.cooleygo.com/glossary/safe/">Cooley GO glossary: SAFE</a></li>
+  </ol>
+
+  <h2>Read next</h2>
+  <ul class="related"><li><a href="/learn/safe/">What is a SAFE?</a></li><li><a href="/learn/pre-money-post-money/">Pre-money vs post-money valuation</a></li><li><a href="/learn/dilution/">Share dilution</a></li></ul>
+
+  <p class="foot">Not legal or tax advice. Every company's documents are different: check yours with a lawyer. Spotted a mistake? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Pre-money vs post-money valuation, explained · Capfolder</title>
+<meta name="description" content="Pre-money is what your company is worth before new money comes in; post-money is after. The formula, a worked seed round example and the mistakes founders make.">
+<link rel="canonical" href="https://capfolder.com/learn/pre-money-post-money/">
+<link rel="stylesheet" href="/page.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the formula for post-money valuation?", "acceptedAnswer": {"@type": "Answer", "text": "Post-money valuation equals pre-money valuation plus the new money raised. A $2M raise at an $8M pre-money gives a $10M post-money."}}, {"@type": "Question", "name": "How do I work out the investor's percentage?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the investment by the post-money valuation. $2M into a $10M post-money company is 20%."}}, {"@type": "Question", "name": "Is a SAFE valuation cap pre-money or post-money?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on the SAFE. Y Combinator's current SAFE uses a post-money cap. Older SAFEs and most convertible notes use a pre-money cap. Read the document."}}, {"@type": "Question", "name": "Why does the price per share use fully diluted shares?", "acceptedAnswer": {"@type": "Answer", "text": "Because investors want their percentage to hold after every option and pool share is counted. Using only issued shares would overprice the round for them."}}, {"@type": "Question", "name": "Does a higher valuation always mean a better deal?", "acceptedAnswer": {"@type": "Answer", "text": "No. Terms such as liquidation preferences, pool top-ups and board seats can matter more than the headline valuation."}}, {"@type": "Question", "name": "Who sets the pre-money valuation?", "acceptedAnswer": {"@type": "Answer", "text": "You and the lead investor negotiate it. Market comparables, traction and competition between investors all move it."}}, {"@type": "Question", "name": "Is the post-money valuation what the company is worth?", "acceptedAnswer": {"@type": "Answer", "text": "It is the price implied by the round, for preferred shares with extra rights. It isn't the value of a common share; that is what a 409A valuation estimates."}}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/" aria-current="true">Learn</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<section class="lhero"><div class="lhero-in"><div>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · Pre-money vs post-money valuation</div>
+  <h1>Pre-money vs post-money valuation</h1>
+  <p class="meta">Written by the Capfolder team · Checked October 2026 · 6 min read</p>
+</div><img src="/img/ill/valuation.svg" width="400" height="300" alt=""></div></section>
+<main class="narrow">
+  <div class="short"><b>In short:</b> <b>pre-money valuation</b> is what investors agree your company is worth just before they put money in. <b>Post-money valuation</b> is that number plus the new money. The investor's share of the company is their investment divided by the post-money valuation.</div>
+
+  <h2>The two numbers</h2>
+  <p>When you raise a priced round, you and the investor agree on a valuation. The trouble is that "valuation" can mean two different moments in time, and the difference decides how much of your company you give away.</p>
+  <ul>
+    <li><b>Pre-money:</b> the value of the company the minute before the new money arrives.</li>
+    <li><b>Post-money:</b> the value the minute after. It is simply pre-money plus the amount raised.</li>
+  </ul>
+  <p class="formula">Post-money = pre-money + new investment</p>
+  <p class="formula">Investor's ownership = new investment ÷ post-money</p>
+  <p>So "we raised $2 million at $8 million" is ambiguous. At $8 million pre-money, the investor owns 2 ÷ 10 = 20%. At $8 million post-money, they own 2 ÷ 8 = 25%. Same check, same headline number, five points of your company apart. Always ask which one is meant, and write it in the term sheet.</p>
+
+  <h2>An example: Acme raises a seed round</h2>
+  <p>Acme, the sample company in Capfolder, has 8,000,000 shares fully diluted: Tim Apple's 4,000,000, Steve Jobs' 3,000,000, and 1,000,000 in the option pool (80,000 already granted to Steve Wozniak and Bill Gates). Imagine an investor offers $2,000,000 at an $8,000,000 pre-money valuation. To keep it simple we leave out Acme's SAFEs here; <a href="/learn/dilution/">Share dilution</a> shows them converting too.</p>
+  <p>First, the price per share. In a priced round it comes from the pre-money valuation and the fully diluted share count before the round:</p>
+  <p class="formula">Price per share = pre-money valuation ÷ fully diluted shares before the round</p>
+  <p>$8,000,000 ÷ 8,000,000 = <b>$1.00 per share</b>. The investor's $2,000,000 buys 2,000,000 new shares, and the company now has 10,000,000 shares. Post-money is 10,000,000 × $1.00 = $10,000,000, the same as $8M + $2M.</p>
+  <div class="ex"><table>
+    <thead><tr><th scope="col">Holder</th><th scope="col" class="r">Shares</th><th scope="col" class="r">Before</th><th scope="col" class="r">After</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Tim Apple</th><td class="r">4,000,000</td><td class="r">50.0%</td><td class="r">40.0%</td></tr>
+      <tr><th scope="row">Steve Jobs</th><td class="r">3,000,000</td><td class="r">37.5%</td><td class="r">30.0%</td></tr>
+      <tr><th scope="row">Options and pool</th><td class="r">1,000,000</td><td class="r">12.5%</td><td class="r">10.0%</td></tr>
+      <tr><th scope="row">Seed investor</th><td class="r">2,000,000</td><td class="r">–</td><td class="r">20.0%</td></tr>
+      <tr><th scope="row">Total</th><td class="r"><b>10,000,000</b></td><td class="r"><b>100%</b></td><td class="r"><b>100%</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>Everyone who was there before is diluted by the same factor: 8 ÷ 10. Tim's stake drops from 50% to 40%, but his 4,000,000 shares are now priced at $1.00 each. A smaller slice of a more valuable company.</p>
+
+  <h2>The option pool shuffle</h2>
+  <p>Investors often ask that the option pool be enlarged as part of the round, and that the new pool be counted in the pre-money. That sounds like a detail. It isn't. If the pool is topped up before the round, the extra shares dilute only the existing holders, not the new investor.</p>
+  <p>Say the investor wants a pool of 15% after the round instead of today's 10%. Counting that bigger pool in the pre-money lowers the price per share, so the same $2,000,000 buys more shares and the founders end up with less than the table above shows. The headline "$8 million pre" stays the same, but the <b>effective</b> pre-money for the founders is lower. Model the round with the pool included before you agree to it. Our <a href="/learn/option-pool/">Option pool</a> page has more on sizing.</p>
+
+  <h2>Where SAFEs fit</h2>
+  <p>SAFEs and convertible notes complicate this, because they turn into shares at the same moment as the round. Post-money SAFEs, the version Y Combinator has published since 2018, fix the SAFE holder's percentage up front: a $500,000 SAFE with a $10,000,000 post-money cap converts to 5% of the company just before the new money comes in. The founders, not the new investor, absorb that dilution. See <a href="/learn/valuation-cap-discount/">SAFE valuation cap and discount</a>.</p>
+
+  <h2>Key terms</h2>
+  <ul>
+    <li><b>Priced round:</b> a round where investors buy shares at an agreed price per share, usually preferred stock. Seed, Series A and later rounds are priced rounds.</li>
+    <li><b>Price per share:</b> pre-money valuation divided by the fully diluted share count before the round.</li>
+    <li><b>Effective pre-money:</b> the value founders actually get once a pool top-up is counted. Lower than the headline number when the pool is enlarged before the round.</li>
+    <li><b>Term sheet:</b> the short, mostly non-binding summary of the deal. It states the valuation, and it should say whether that is pre- or post-money.</li>
+  </ul>
+
+  <h2>Working through a term sheet</h2>
+  <p>When a term sheet arrives, do the math yourself before you call your lawyer. It takes ten minutes and you will understand the deal much better.</p>
+  <ol>
+    <li><b>Write down the headline:</b> the amount raised and the valuation, and whether it is pre- or post-money.</li>
+    <li><b>Find the pool size</b> the investor wants after the round, and whether it comes before the round.</li>
+    <li><b>List every SAFE and note</b> with its cap and discount. They convert at the same time.</li>
+    <li><b>Build the after table:</b> founders, employees, pool, SAFE holders, new investor. Check that it adds up to 100%.</li>
+    <li><b>Compare the founders' percentage</b> with what the headline suggests. The gap is the cost of the pool and the SAFEs.</li>
+  </ol>
+  <p>If the numbers surprise you, that is the moment to negotiate: a smaller pool, a pool counted after the round, or a different valuation. After signing, it is too late.</p>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><b>Not asking which valuation.</b> Pre or post changes the deal by several percent. Get it in writing.</li>
+    <li><b>Ignoring the pool top-up.</b> A pool increase counted in the pre-money is a price cut in disguise.</li>
+    <li><b>Forgetting the SAFEs.</b> All the SAFEs convert at the round. Add them to your model, or the post-money table will be wrong the day you close.</li>
+    <li><b>Using the wrong share count.</b> Price per share uses fully diluted shares, including the whole pool, not just issued shares.</li>
+    <li><b>Chasing the biggest number.</b> A high valuation with heavy terms, such as a large liquidation preference, can be worth less to founders than a lower clean one.</li>
+  </ul>
+
+  <h2>In Capfolder</h2>
+  <p>Capfolder keeps the fully diluted share count you need for the price-per-share step, with the pool and every SAFE listed under the cap table. Record the round's documents when it closes, and the new shares and the converted SAFEs land on the cap table with their signed papers.</p>
+  <img class="learn-shot" src="/compare/img/captable.jpg" width="795" height="576" alt="Capfolder's cap table for Acme Inc. with the fully diluted share count, the option pool and three SAFEs" loading="lazy">
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>What is the formula for post-money valuation?</summary><p>Post-money valuation equals pre-money valuation plus the new money raised. A $2M raise at an $8M pre-money gives a $10M post-money.</p></details>
+    <details><summary>How do I work out the investor's percentage?</summary><p>Divide the investment by the post-money valuation. $2M into a $10M post-money company is 20%.</p></details>
+    <details><summary>Is a SAFE valuation cap pre-money or post-money?</summary><p>It depends on the SAFE. Y Combinator's current SAFE uses a post-money cap. Older SAFEs and most convertible notes use a pre-money cap. Read the document.</p></details>
+    <details><summary>Why does the price per share use fully diluted shares?</summary><p>Because investors want their percentage to hold after every option and pool share is counted. Using only issued shares would overprice the round for them.</p></details>
+    <details><summary>Does a higher valuation always mean a better deal?</summary><p>No. Terms such as liquidation preferences, pool top-ups and board seats can matter more than the headline valuation.</p></details>
+    <details><summary>Who sets the pre-money valuation?</summary><p>You and the lead investor negotiate it. Market comparables, traction and competition between investors all move it.</p></details>
+    <details><summary>Is the post-money valuation what the company is worth?</summary><p>It is the price implied by the round, for preferred shares with extra rights. It isn't the value of a common share; that is what a 409A valuation estimates.</p></details>
+  </div>
+
+  <h2 id="sources">Sources</h2>
+  <ol class="srcs">
+    <li><a href="https://carta.com/learn/startups/equity-management/private-company-valuations/pre-money-vs-post-money-valuations/">Carta: Pre-money vs. post-money valuations</a> (topic coverage)</li>
+    <li><a href="https://www.cooleygo.com/glossary/pre-money-valuation/">Cooley GO glossary: pre-money valuation</a></li>
+    <li><a href="https://www.cooleygo.com/glossary/post-money-valuation/">Cooley GO glossary: post-money valuation</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Pre-money_valuation">Wikipedia: Pre-money valuation</a></li>
+  </ol>
+
+  <h2>Read next</h2>
+  <ul class="related"><li><a href="/learn/dilution/">Share dilution</a></li><li><a href="/learn/valuation-cap-discount/">SAFE valuation cap and discount</a></li><li><a href="/learn/fully-diluted/">Fully diluted shares</a></li></ul>
+
+  <p class="foot">Not legal or tax advice. Every company's documents are different: check yours with a lawyer. Spotted a mistake? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+</body>
+</html>
