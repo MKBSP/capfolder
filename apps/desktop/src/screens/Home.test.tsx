@@ -1,7 +1,7 @@
 import { builders } from "@capfolder/core";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { App } from "../App";
 import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
@@ -106,4 +106,23 @@ test("Get started: Import is the main button while the company is empty", async 
   expect(fp.opened).toEqual(["https://capfolder.com/help/founders/"]);
   await userEvent.click(within(card).getByRole("button", { name: "Add a SAFE" }));
   expect(await screen.findByText(/New SAFE/)).toBeInTheDocument();
+});
+
+test("left open past midnight, As of moves to the new day; a date the founder picked stays", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    vi.setSystemTime(new Date(2026, 9, 20, 23, 59));
+    await home();
+    const asOf = screen.getByLabelText("As of") as HTMLInputElement;
+    expect(asOf.value).toBe("20 Oct 2026");
+    vi.setSystemTime(new Date(2026, 9, 21, 0, 1));
+    await act(() => vi.advanceTimersByTimeAsync(60_000));
+    expect(asOf.value).toBe("21 Oct 2026");
+    fireEvent.change(asOf, { target: { value: "2026-10-07" } });
+    vi.setSystemTime(new Date(2026, 9, 22, 0, 1));
+    await act(() => vi.advanceTimersByTimeAsync(60_000));
+    expect(asOf.value).toBe("7 Oct 2026");
+  } finally {
+    vi.useRealTimers();
+  }
 });

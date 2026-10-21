@@ -117,4 +117,8 @@ export const plusDays = (d: string, n: number) => {
   return new Date(Date.UTC(y, m - 1, dd + n)).toISOString().slice(0, 10);
 };
 
-export const todayIso = () => new Date().toISOString().slice(0, 10);
+// The founder's own calendar day, not UTC (8 pm in California is already tomorrow in UTC).
+export const todayIso = () => {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+};

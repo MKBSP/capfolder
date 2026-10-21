@@ -1,6 +1,6 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
-import { createContext, type ReactNode, useContext, useMemo, useRef, useState } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ChatMsg } from "./chat";
 import type { SortItem } from "./docsort";
 import { configureFormat, todayIso } from "./fmt";
@@ -105,7 +105,15 @@ export function AppProvider(p: {
     latestVault.current = v;
     setVaultState(v);
   };
-  const [asOf, setAsOf] = useState(todayIso());
+  // As of follows the calendar (the app can stay open past midnight) until the founder picks another date.
+  const [today, setToday] = useState(todayIso());
+  const [picked, setPicked] = useState<string | null>(null);
+  useEffect(() => {
+    const t = setInterval(() => setToday(todayIso()), 60_000);
+    return () => clearInterval(t);
+  }, []);
+  const asOf = picked ?? today;
+  const setAsOf = (d: string) => setPicked(d === todayIso() ? null : d);
   const [route, go] = useState<Route>(p.initialRoute);
   const [rules, setRules] = useState<RulesPack>(BUNDLED_RULES);
   const [update, setUpdate] = useState<App["update"]>(null);
