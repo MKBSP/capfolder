@@ -1,4 +1,5 @@
 // The launch page must not ship placeholders or claim things the app doesn't do (docs/09 M8).
+import { execSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 
@@ -40,10 +41,16 @@ test("download goes through the Tally form, then GitHub Releases; donations thro
   expect(html).toContain("https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df");
 });
 
-test("cookieless analytics, no banner (docs/11): Umami Cloud with a real website id", () => {
-  expect(html).toMatch(
-    /<script defer src="https:\/\/cloud\.umami\.is\/script\.js" data-website-id="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"><\/script>/,
-  );
+test("cookieless analytics, no banner (docs/11): Umami Cloud through our own /stats proxy, on every page", () => {
+  const tag =
+    /<script defer src="\/stats\/script\.js" data-host-url="\/stats" data-website-id="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"><\/script>/;
+  for (const f of execSync("git ls-files '*.html'", { cwd: new URL(".", import.meta.url) })
+    .toString()
+    .trim()
+    .split("\n"))
+    expect([f, tag.test(read(f))]).toEqual([f, true]);
+  // same-origin only: the CSP no longer needs (or allows) Umami's hosts
+  expect(read("_headers")).not.toMatch(/umami/);
   expect(html).not.toContain("plausible");
   // the buttons we want counted
   for (const ev of [
@@ -357,4 +364,36 @@ test("learn pages: SEO basics, 1,200–1,800 words, FAQ markup, sources, disclai
   }
   expect(read("package.json")).toMatch(/cp -r [^"]*\blearn\b/);
   expect(html).toContain('href="/learn/"');
+});
+
+test("/stats proxy: the script from cloud.umami.is, events to gateway.umami.is with the visitor's IP and browser", async () => {
+  const { onRequest } = await import("./functions/stats/[[path]].js");
+  const calls: [string, RequestInit][] = [];
+  const real = globalThis.fetch;
+  globalThis.fetch = (async (u: string, init: RequestInit) => {
+    calls.push([u, init]);
+    return new Response("ok");
+  }) as typeof fetch;
+  try {
+    const req = (path: string, init: RequestInit = {}) =>
+      onRequest({ request: new Request(`https://capfolder.com${path}`, init) });
+    await req("/stats/script.js");
+    await req("/stats/api/send", {
+      method: "POST",
+      body: '{"type":"event"}',
+      headers: { "user-agent": "Safari", "cf-connecting-ip": "1.2.3.4", "content-type": "application/json" },
+    });
+    expect((await req("/stats/../secret")).status).toBe(404);
+    expect(calls.map((c) => c[0])).toEqual([
+      "https://cloud.umami.is/script.js",
+      "https://gateway.umami.is/api/send",
+    ]);
+    const sent = calls[1]![1];
+    expect(sent.method).toBe("POST");
+    expect(await new Response(sent.body).text()).toBe('{"type":"event"}');
+    const h = new Headers(sent.headers);
+    expect([h.get("user-agent"), h.get("x-forwarded-for")]).toEqual(["Safari", "1.2.3.4"]);
+  } finally {
+    globalThis.fetch = real;
+  }
 });
