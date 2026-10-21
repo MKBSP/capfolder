@@ -1,7 +1,7 @@
 // docs/18 · Ask AI: the header button and the collapsible side panel (like Gemini in Gmail).
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { aiLabel, isCloud } from "../ai";
-import { askChat, type ChatMsg, type DraftCard, type Source } from "../chat";
+import { askChat, type ChatMsg, type DraftCard, type GoTo, type Source } from "../chat";
 import { aiFor } from "../settings";
 import { type Route, useApp } from "../state";
 
@@ -27,7 +27,20 @@ const FORM: Record<DraftCard["kind"], string> = {
   person: "person form",
   plan: "option pool form",
 };
-const SUGGEST = ["What's missing?", "Who has unvested options?", "Draft a SAFE"];
+const ATTENTION_Q = "What needs my attention?";
+const SUGGEST = [ATTENTION_Q, "Who has unvested options?", "Draft a SAFE"];
+
+/** After "Take me there": scroll the row into view and pulse it (the screen may still be rendering). */
+function flash(id: string, tries = 20) {
+  const el = [...document.querySelectorAll("[data-focus]")].find((e) => e.getAttribute("data-focus") === id);
+  if (!el) {
+    if (tries) setTimeout(() => flash(id, tries - 1), 50);
+    return;
+  }
+  el.scrollIntoView?.({ block: "center", behavior: "smooth" });
+  el.classList.add("pulse");
+  setTimeout(() => el.classList.remove("pulse"), 2400);
+}
 
 /** Opens or closes the panel; the choice is kept in settings (never the vault). */
 function useToggle() {
@@ -140,6 +153,9 @@ function Panel({ onClose }: { onClose(): void }) {
             <p style={{ margin: 0 }}>
               Ask about your cap table, or describe a grant or SAFE and get a draft you check before saving.
             </p>
+            <button type="button" className="btn small" onClick={() => send(ATTENTION_Q)}>
+              {ATTENTION_Q}
+            </button>
             <button type="button" className="btn primary small" onClick={() => app.go({ name: "settings" })}>
               Connect an AI
             </button>
@@ -157,6 +173,25 @@ function Panel({ onClose }: { onClose(): void }) {
           ) : (
             <div key={i} className="stack" style={{ gap: 8 }}>
               {m.text ? <p className={m.error ? "ask-error" : ""}>{m.text}</p> : null}
+              {m.goto?.length ? (
+                <ol className="ask-goto">
+                  {m.goto.map((g: GoTo) => (
+                    <li key={g.text}>
+                      <span>{g.text}</span>
+                      <button
+                        type="button"
+                        className="btn link small"
+                        onClick={() => {
+                          app.go(g.to);
+                          if (g.focus) flash(g.focus);
+                        }}
+                      >
+                        Take me there →
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              ) : null}
               {m.sources?.length ? (
                 <div className="ask-src">
                   {m.sources.map((x) => (

@@ -291,3 +291,60 @@ test("answers use the company's currency", async () => {
   await askChat({ ...d, currency: "EUR" }, [], "how much did we raise?");
   expect(body(calls[0]!).system).toMatch(/EUR/);
 });
+
+describe("What needs my attention (no AI call: built from Capfolder's own gaps and signatures)", () => {
+  test("at most 3 items, red first, each with a screen to open; the rest point to What's missing", async () => {
+    const { d, calls } = await deps([], { provider: "" });
+    const m = await askChat(d, [], "What needs my attention?");
+    expect(calls).toEqual([]);
+    expect(m.text).toBe("3 things, most urgent first:");
+    expect(m.goto?.map((g) => [g.text, g.to, g.focus])).toEqual([
+      ["No signed document for Tim Apple's shares, and 3 more like it", { name: "home" }, "CS-1"],
+      ["No board consent for Steve Wozniak's grant, and 1 more like it", { name: "home" }, "OPT-1"],
+      ["No IP assignment for Tim Apple, and 3 more like it", { name: "person", id: "sh_tim" }, undefined],
+    ]);
+    expect(m.note).toBe("1 more is in What's missing on the Cap table.");
+  });
+
+  test("a signed SAFE without wire instructions comes first and opens Signatures", async () => {
+    const { d } = await deps([], { provider: "" });
+    d.vault.events.push(
+      {
+        kind: "app",
+        type: "envelope_sent",
+        ts: "2026-10-15T10:00:00Z",
+        data: {
+          envelope_id: "env_1",
+          title: "SAFE · Camilo",
+          doc_type: "safe",
+          person: "Camilo",
+          signers: [],
+        },
+      } as never,
+      {
+        kind: "app",
+        type: "envelope_signed",
+        ts: "2026-10-16T09:00:00Z",
+        data: { envelope_id: "env_1", doc_id: "doc_x", receipt: "r" },
+      } as never,
+    );
+    const m = await askChat(d, [], "what needs my attention");
+    expect(m.goto?.[0]).toEqual({
+      text: "SAFE · Camilo is signed: send the wire instructions",
+      to: { name: "signatures" },
+      focus: "env_1",
+    });
+    expect(m.goto).toHaveLength(3);
+  });
+
+  test("a target that isn't in the cap table is never offered", async () => {
+    const { safeGoto } = await import("./chat");
+    const { d } = await deps([], { provider: "" });
+    const s = (await import("@capfolder/core")).reduce(d.vault.events, "9999-12-31");
+    expect(safeGoto({ name: "person", id: "sh_tim" }, s)).toBe(true);
+    expect(safeGoto({ name: "person", id: "sh_nobody" }, s)).toBe(false);
+    expect(safeGoto({ name: "settings" }, s)).toBe(false);
+    expect(safeGoto({ name: "home" }, s, "OPT-1")).toBe(true);
+    expect(safeGoto({ name: "home" }, s, "javascript:alert(1)")).toBe(false);
+  });
+});

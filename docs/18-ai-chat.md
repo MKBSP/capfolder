@@ -29,3 +29,16 @@
 - Templates on drafts: YC SAFE by terms (`ycSafeFor`), Cooley GO grant notice / plan; acceleration or no matching YC SAFE → amber "No template… have a lawyer draft it".
 - A local model that refuses tools gets a one-shot cap-table summary and a "connect a bigger model" note.
 - Not yet: chat history is in memory per company (lost on restart); streaming answers; doc → plan settings are proposed but only the pool size/name reach the form.
+
+## "What needs my attention?" + Take me there (built 2026-10-21)
+- **The list:** at most 3 items, the most urgent first.
+  - **Where they come from:** Capfolder's own data, never the AI's guess (`attention()` in `chat.ts`). Signed SAFEs still waiting for wire instructions come first, then documents waiting for signatures, then What's missing gaps grouped by kind (red before amber).
+  - **The rest:** counted in a note that points to What's missing.
+- **No AI needed:** the question is answered locally, so it also works with no AI connected. The panel shows a "What needs my attention?" button.
+- **Take me there:**
+  - opens the screen (Cap table, the person, or Signatures);
+  - pulses the row there for about 2 seconds, held still when the computer asks for reduced motion;
+  - rows carry `data-focus` (holding/plan id on the Cap table, envelope id on Signatures).
+- **Safety:** `safeGoto` whitelists the screens and only accepts a person, holding, plan or envelope that exists. The AI never navigates by itself: only a click moves you.
+- **Not yet:** the AI model can't return its own Take me there links (a `go_to` tool); its answers keep their source buttons.
+- **Not yet:** option-deadline items, which wait on the option-deadlines feature.

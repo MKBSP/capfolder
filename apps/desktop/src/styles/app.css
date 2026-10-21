@@ -935,3 +935,30 @@ dialog.modal::backdrop {
   margin: 0 0 6px;
   font-size: 14px;
 }
+
+/* Ask AI "Take me there": the list, and the row it lands on */
+.ask-goto {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+.ask-goto li span {
+  display: block;
+}
+.pulse {
+  animation: pulse 1.2s ease-out 2;
+  outline: 2px solid var(--green-600);
+  outline-offset: -2px;
+}
+@keyframes pulse {
+  from {
+    background: var(--green-tint);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+    background: var(--green-tint);
+  }
+}

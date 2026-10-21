@@ -158,3 +158,19 @@ test("a SAFE draft's email lands in the form", async () => {
   await userEvent.click(await within(panel).findByRole("button", { name: "Open in the SAFE form" }));
   expect(await screen.findByDisplayValue("jeff@amazon.com")).toBeInTheDocument();
 });
+
+test("'What needs my attention?' works without an AI; Take me there opens the screen and highlights the row", async () => {
+  render(<App platform={acmePlatform().platform} />);
+  await userEvent.click(await screen.findByRole("button", { name: /Ask AI/ }));
+  const panel = await screen.findByRole("complementary", { name: "Ask AI" });
+  await userEvent.click(within(panel).getByRole("button", { name: "What needs my attention?" }));
+  expect(await within(panel).findByText("3 things, most urgent first:")).toBeInTheDocument();
+  const go = within(panel).getAllByRole("button", { name: /Take me there/ });
+  expect(go).toHaveLength(3);
+  await userEvent.click(screen.getByRole("button", { name: "People" }));
+  await userEvent.click(go[1]!);
+  const row = await screen.findByText("Steve Wozniak", { selector: "tr[data-focus='OPT-1'] *" });
+  expect(row.closest("tr")).toHaveClass("pulse");
+  await userEvent.click(within(panel).getAllByRole("button", { name: /Take me there/ })[2]!);
+  expect(await within(panel).findByText(/Looking at: Tim Apple/)).toBeInTheDocument();
+});

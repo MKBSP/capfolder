@@ -20,6 +20,7 @@ import { money, shares } from "./fmt";
 import { baseName, join } from "./fs/types";
 import type { Platform } from "./platform";
 import type { AiProvider } from "./settings";
+import { envelopes } from "./signing";
 import type { Route } from "./state";
 import { TEMPLATE_LINKS, YC_FORMS, ycSafeFor } from "./templates";
 import { isPlainDocPath, isSafeDocPath, type Vault } from "./vault";
@@ -39,9 +40,16 @@ export interface DraftCard {
   route: Route;
   template?: { name: string; url?: string } | { none: string };
 }
+/** One "Take me there" item: what needs doing, the screen to open and the row to highlight there. */
+export interface GoTo {
+  text: string;
+  to: Route;
+  focus?: string;
+}
 export interface ChatMsg {
   role: "user" | "assistant";
   text: string;
+  goto?: GoTo[];
   sources?: Source[];
   drafts?: DraftCard[];
   note?: string;
@@ -506,7 +514,64 @@ const safeJson = (t: string) => {
 };
 
 /** One question → one answer, after as many tool calls as the model needs (at most MAX_STEPS). */
+const ATTENTION = /needs? (my )?attention|what('s| is) urgent|what should i do/i;
+const GO_SCREENS = new Set<Route["name"]>(["home", "person", "signatures", "documents", "vesting"]);
+
+/** Only screens Ask AI may open, a person who exists, and a row id that is a holding, a plan or an envelope. */
+export function safeGoto(to: Route, s: State, focus?: string): boolean {
+  if (!GO_SCREENS.has(to.name)) return false;
+  if (to.name === "person" && !s.stakeholders.has(to.id)) return false;
+  return focus === undefined || s.securities.has(focus) || s.plans.has(focus) || /^env_[\w-]+$/.test(focus);
+}
+
+/** docs/18 · "What needs my attention?": at most 3 items from our own signatures and gaps (never the AI guessing). */
+export function attention(d: Pick<ChatDeps, "vault" | "asOf">): ChatMsg {
+  const s = reduce(d.vault.events, d.asOf);
+  const items: GoTo[] = [];
+  for (const env of envelopes(d.vault.events)) {
+    if (env.state === "signed" && env.docType === "safe" && env.receipt && !env.wireSentAt)
+      items.push({
+        text: `${env.title} is signed: send the wire instructions`,
+        to: { name: "signatures" },
+        focus: env.id,
+      });
+    if (env.state === "open")
+      items.push({
+        text: `${env.title} is waiting for signatures`,
+        to: { name: "signatures" },
+        focus: env.id,
+      });
+  }
+  const gaps = computeGaps(s).sort((a, b) => (a.severity === b.severity ? 0 : a.severity === "red" ? -1 : 1));
+  const kinds = [...new Set(gaps.map((g) => g.kind))];
+  let shown = 0;
+  for (const kind of kinds) {
+    if (items.length >= 3) break;
+    const same = gaps.filter((g) => g.kind === kind);
+    const g = same[0]!;
+    const holder = s.stakeholders.has(g.target);
+    items.push({
+      text: same.length > 1 ? `${g.text}, and ${same.length - 1} more like it` : g.text,
+      to: holder ? { name: "person", id: g.target } : { name: "home" },
+      ...(holder ? {} : { focus: g.target }),
+    });
+    shown += same.length;
+  }
+  const top = items.slice(0, 3).filter((x) => safeGoto(x.to, s, x.focus));
+  const rest = gaps.length - shown;
+  if (!top.length) return { role: "assistant", text: "Nothing needs your attention right now." };
+  return {
+    role: "assistant",
+    text: top.length === 1 ? "1 thing:" : `${top.length} things, most urgent first:`,
+    goto: top,
+    ...(rest > 0
+      ? { note: `${rest} more ${rest === 1 ? "is" : "are"} in What's missing on the Cap table.` }
+      : {}),
+  };
+}
+
 export async function askChat(d: ChatDeps, history: ChatMsg[], question: string): Promise<ChatMsg> {
+  if (ATTENTION.test(question)) return attention(d);
   const post = await transport(d);
   if (typeof post === "string") return { role: "assistant", text: post, error: true };
   const s = reduce(d.vault.events, MAX_DATE);

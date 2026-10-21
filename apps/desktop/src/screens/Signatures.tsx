@@ -182,6 +182,7 @@ export function Signatures(p: { sent?: { titles: string[]; emails: string[]; war
             return (
               <div
                 key={env.id}
+                data-focus={env.id}
                 className="stack"
                 style={{ borderTop: "1px solid var(--row-divider)", paddingTop: 10 }}
               >
@@ -240,7 +241,7 @@ export function Signatures(p: { sent?: { titles: string[]; emails: string[]; war
           <section className="card stack">
             <h2 style={{ margin: 0 }}>Done · back in your folder</h2>
             {done.map((env) => (
-              <div key={env.id} className="row spread wrap">
+              <div key={env.id} data-focus={env.id} className="row spread wrap">
                 <span>{env.title}</span>
                 <span className="row wrap">
                   <span className="meta">

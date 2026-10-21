@@ -159,7 +159,11 @@ export function Home() {
                       {safes.map((r) => {
                         const chip = docChip(state, r, gaps);
                         return (
-                          <tr key={r.securityId} className={chip?.tone === "red" ? "attn" : ""}>
+                          <tr
+                            key={r.securityId}
+                            data-focus={r.securityId}
+                            className={chip?.tone === "red" ? "attn" : ""}
+                          >
                             <td className="td">
                               <button
                                 type="button"
@@ -235,6 +239,7 @@ function CapRow({ r, gaps, open, toggle }: { r: Row; gaps: Gap[]; open: boolean;
   return (
     <>
       <tr
+        data-focus={r.securityId}
         className={`click ${open ? "sel" : ""} ${chip?.tone !== "green" && r.group !== 2 ? "attn" : ""}`}
         onClick={toggle}
       >
