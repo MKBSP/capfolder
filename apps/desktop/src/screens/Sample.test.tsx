@@ -63,3 +63,9 @@ test("the sample banner stays on every screen, not only the cap table", async ()
     expect(screen.getAllByText(/Sample company · nothing here is real/)).toHaveLength(1);
   }
 });
+
+test("Welcome shows the sample company as a real button, not a text link", async () => {
+  render(<App platform={fakePlatform().platform} />);
+  const b = await screen.findByRole("button", { name: "Try the sample company" });
+  expect(b.className).toBe("btn");
+});

@@ -33,6 +33,7 @@ export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
       action: "Set up shares",
       to: { name: "wizard" },
       capTable: true,
+      how: { label: "What is a cap table?", url: "https://capfolder.com/learn/cap-table/" },
     },
     {
       label: "Founders and their shares",
@@ -50,6 +51,7 @@ export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
       action: s.plans.size ? "Add a grant" : "Add an option pool",
       to: { name: s.plans.size ? "newGrant" : "pool" },
       capTable: true,
+      how: { label: "How do option pools work?", url: "https://capfolder.com/learn/option-pool/" },
     },
     a.safes !== false && {
       label: "SAFEs",
@@ -58,6 +60,7 @@ export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
       action: "Add a SAFE",
       to: { name: "newSafe" },
       capTable: true,
+      how: { label: "What is a SAFE?", url: "https://capfolder.com/learn/safe/" },
     },
     a.priced !== false && {
       label: "Priced round",
@@ -66,6 +69,7 @@ export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
       action: "Import",
       to: { name: "import" },
       capTable: true,
+      how: { label: "Pre-money vs post-money", url: "https://capfolder.com/learn/pre-money-post-money/" },
     },
     {
       label: "File your signed documents",

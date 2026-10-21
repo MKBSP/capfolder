@@ -47,12 +47,13 @@ export function Welcome() {
       <div className="stack">
         <Logo size={40} />
         <h1>Welcome to Capfolder</h1>
-        <p className="muted">
-          Your cap table will live in a folder on this computer. No account needed. Want to look around first?{" "}
-          <button type="button" className="btn link" onClick={() => openSample(app)}>
+        <p className="muted">Your cap table will live in a folder on this computer. No account needed.</p>
+        <div className="row wrap" style={{ alignItems: "center" }}>
+          <button type="button" className="btn" onClick={() => openSample(app)}>
             Try the sample company
           </button>
-        </p>
+          <span className="meta">Look around a made-up company first. Nothing is saved.</span>
+        </div>
         {settings.recentVaults.length ? (
           <div className="row wrap">
             {settings.recentVaults.map((r) => (

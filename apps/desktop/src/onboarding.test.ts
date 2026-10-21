@@ -45,3 +45,16 @@ test("every step says what it is and where to go", () => {
     expect(x.to.name).toBeTruthy();
   }
 });
+
+test("each cap table step has a How? link to its capfolder.com guide", () => {
+  const how = Object.fromEntries(
+    getStarted(reduce(events, MAX_DATE), {}, false).map((x) => [x.label, x.how?.url]),
+  );
+  expect(how).toMatchObject({
+    "Share classes": "https://capfolder.com/learn/cap-table/",
+    "Founders and their shares": "https://capfolder.com/help/founders/",
+    "Option pool and grants": "https://capfolder.com/learn/option-pool/",
+    SAFEs: "https://capfolder.com/learn/safe/",
+    "Priced round": "https://capfolder.com/learn/pre-money-post-money/",
+  });
+});

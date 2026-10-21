@@ -73,4 +73,5 @@ All five build steps are done, one commit each, tests first. Hand tests: `docs/t
 - **Sample company:** `sample.ts`. It's the golden fixture "Acme Inc." (not "Acme Robotics"), bundled as text and copied to `<app data>/sample` on first open, with placeholder PDFs for its 3 documents. `capfolder.json` has `"sample": true`, and `vault.ts` refuses every save (and the currency change). It isn't added to the recent companies list.
 - **Tour:** `components/Tour.tsx`, Driver.js 1.8.0 (MIT; 1.9.0 was exactly two weeks old, so we used the version before it). The Settings key is `tourSeen`. The offer shows once when the company has a holding, or in the sample. Settings → Tour runs it again.
 - **Tips:** `copy.ts` `TIPS` + `Tip` in `components/ui.tsx`.
-- **Not done:** the "How?" docs link per step (no docs pages to link to yet), and the items under Later.
+- **2026-10-21:** "How?" links on the Share classes, Option pool, SAFEs and Priced round steps go to the capfolder.com/learn guides (Founders already linked to help/founders). Welcome shows "Try the sample company" as a real button instead of a text link (a tester missed the link).
+- **Not done:** the items under Later.
