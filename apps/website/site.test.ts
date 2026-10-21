@@ -367,7 +367,7 @@ test("learn pages: SEO basics, 1,200–1,800 words, FAQ markup, sources, disclai
 });
 
 test("/stats proxy: the script from cloud.umami.is, events to gateway.umami.is with the visitor's IP and browser", async () => {
-  const { onRequest } = await import("./functions/stats/[[path]].js");
+  const { onRequest } = await import("../../functions/stats/[[path]].js");
   const calls: [string, RequestInit][] = [];
   const real = globalThis.fetch;
   globalThis.fetch = (async (u: string, init: RequestInit) => {
@@ -396,4 +396,9 @@ test("/stats proxy: the script from cloud.umami.is, events to gateway.umami.is w
   } finally {
     globalThis.fetch = real;
   }
+});
+
+test("Bing Webmaster verification file is published at the site root", () => {
+  expect(read("BingSiteAuth.xml")).toMatch(/<user>[0-9A-F]{32}<\/user>/);
+  expect(read("package.json")).toMatch(/cp -r [^"]*\bBingSiteAuth\.xml\b/);
 });
