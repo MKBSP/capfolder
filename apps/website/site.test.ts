@@ -402,3 +402,15 @@ test("Bing Webmaster verification file is published at the site root", () => {
   expect(read("BingSiteAuth.xml")).toMatch(/<user>[0-9A-F]{32}<\/user>/);
   expect(read("package.json")).toMatch(/cp -r [^"]*\bBingSiteAuth\.xml\b/);
 });
+
+test("sitemap.xml lists every page (built from dist, so new pages need no edit); robots.txt points to it", async () => {
+  const { sitemap } = await import("./sitemap.mjs");
+  const xml: string = sitemap(["index.html", "learn/safe/index.html", "img/x.svg", "help/index.html"]);
+  expect(xml.match(/<loc>[^<]+<\/loc>/g)).toEqual([
+    "<loc>https://capfolder.com/</loc>",
+    "<loc>https://capfolder.com/help/</loc>",
+    "<loc>https://capfolder.com/learn/safe/</loc>",
+  ]);
+  expect(read("package.json")).toMatch(/node sitemap\.mjs/);
+  expect(read("robots.txt")).toContain("Sitemap: https://capfolder.com/sitemap.xml");
+});

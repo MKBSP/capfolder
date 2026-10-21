@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --port 4321",
     "test": "vitest run",
-    "build": "rm -rf dist && mkdir dist && cp -r index.html help roadmap compare learn img roadmap.js capfolder-paperwork.js page.css _headers *.png *.ico *.svg site.webmanifest BingSiteAuth.xml fonts dist/ && node bust.mjs"
+    "build": "rm -rf dist && mkdir dist && cp -r index.html help roadmap compare learn img roadmap.js capfolder-paperwork.js page.css _headers *.png *.ico *.svg site.webmanifest BingSiteAuth.xml robots.txt fonts dist/ && node bust.mjs && node sitemap.mjs"
   },
   "devDependencies": {
     "vite": "8.3.1"
