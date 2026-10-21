@@ -31,9 +31,9 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 
 ## To do (outside the code, owner: Mads)
 - [ ] Get the pilot company's Pulley exports + every signed PDF **before Dec 8, 2026** (M2 test data).
-- [ ] Install CLA Assistant on `MKBSP/capfolder`, pointing at `CLA.md`.
+- [x] Install CLA Assistant on `MKBSP/capfolder`, pointing at `CLA.md` (done 2026-10-21).
 - [ ] Lawyer review of `CLA.md` / `CCLA.md` (incl. explicit "relicense" wording, docs/13).
-- [ ] Register capfolder.com; trademark search (USPTO, EUIPO).
+- [ ] Trademark search (USPTO, EUIPO). (capfolder.com is registered and live.)
 - [ ] Apple Developer ID + Windows code-signing certificate (M7).
 - [ ] **Back up offline** `~/.tauri/capfolder-updater.key` (lose it and installed apps can never update) and `~/.capfolder/rules-signing.key`.
 - **Decision 2026-10-18:** stay unsigned ("allow unsigned" builds) until there's real interest; then pay Apple ($99/yr) first, Microsoft later. How-to: `docs/07` → Getting the certificates.
@@ -44,9 +44,10 @@ Target: launch before **Nov 30, 2026**. Pulley shuts down Dec 8.
 - [ ] Source the YC post-money SAFE template so New SAFE can fill it (today the founder attaches the filled PDF).
 - [ ] Lawyer review of the in-app terms and conditions (`apps/desktop/src/copy.ts`, TERMS).
 - [x] Tally form `rjxQjR` published 2026-10-15 (thank-you page → releases/latest, optional "Email me when there's a new version" consent box).
-- [ ] Website: enable GitHub Pages (Settings → Pages → GitHub Actions), point capfolder.com at it, then add `apps/website/CNAME` with `capfolder.com`.
+- [x] Website hosting: Cloudflare Pages (project `capfolder`, functions at the repo root).
+- [ ] Google Search Console + Bing Webmaster: verify capfolder.com, submit `https://capfolder.com/sitemap.xml` (Bing file is live).
 - [x] Umami Cloud site `capfolder.com` (id in `apps/website/index.html`).
-- [ ] Cloudflare Email Routing: `privacy@capfolder.com` → your inbox (the site links to it).
+- [x] Cloudflare Email Routing: `privacy@capfolder.com` → your inbox (done 2026-10-21).
 - [ ] Check the site's personal story is right ("28 investors", "YC W22", the name "Tim Apple") and re-check the comparison table against vendors' pages in launch week.
 - [ ] Relay hosting: set `PING_FILE` to a persistent path; turn off reverse-proxy access logs for `/ping` (IP + time would undo "no IP"). The site says "with our hosted signing relay": host it (Documenso storage encrypted at rest) before launch, or drop that line.
 - [ ] Privacy contact: the site's privacy section points to GitHub issues; add a contact email (and your legal name/address if the lawyer says so, GDPR Art. 13). Lawyer: is the random install id OK without a deletion route?
@@ -119,6 +120,22 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
 16. **Vesting screen** built 2026-10-20 (Mads' Claude Design "Vesting Overview"): a Vesting tab with the pool cards (total, allocated, vested, available incl. returned), one pool bar, a row per grant (vested %, strike, next vest, documents) that opens to the graph (flat to the cliff, the jump, monthly steps or a straight line, Today marker, stops at a leaving date, hover/arrow-key card), key dates, price (strike, FMV, exercise cost, vested value, exercise by) and that person's signed documents; "Show former employees". The Person page uses the same graph. Not yet: role/title under the name (no stakeholder roles yet), a help page for it (`apps/website/help/pages.json`).
 
 ## Future ideas (not in v1)
+- **Stakeholders see their own holdings from their own AI (Mads, 2026-10-21; research first).**
+  - **Pitch to founders:** "Give your stakeholders access to their own documents, without them leaving your laptop." Never "create an MCP server for your stakeholders": the MCP is how it works, not what we sell.
+  - **Flow:**
+    1. The founder clicks a few buttons ("Share with Steve").
+    2. Capfolder starts a local MCP server that only exposes that person's own documents, vesting, shares and SAFEs.
+    3. The founder sends the stakeholder a link or invite.
+    4. The stakeholder adds it in ChatGPT, Claude or whatever AI they use.
+    5. Their AI authenticates, and **the founder approves each one in Capfolder** before anything is readable.
+  - **Scope:** read-only, per-person, can be revoked any time, and every access is logged.
+  - **Later:** a web app does the same in a browser.
+  - **To research:**
+    - how a remote AI reaches a server on a laptop (tunnel through our relay? the laptop must be on);
+    - MCP auth (OAuth 2.1 / the MCP authorization spec), and which clients support remote MCP with auth;
+    - per-person data scoping, rate limits and audit;
+    - what happens when the laptop sleeps;
+    - prompt injection through documents.
 - **From the SumoShares gap analysis** (`docs/20-sumoshares.md`, with code links and what to copy or not):
   1. ~~409A record~~ and the below-FMV grant warning built 2026-10-20 (OCF `VALUATION`, "Add 409A" on the Vesting screen, FMV = latest 409A on or before the as-of date; the sample company has one at $0.42). Not yet: the 12-month expiry banner, and attaching the report in the same form (attach it in Documents).
   2. Option deadlines: countdown on Person, "Expire them" on open (the founder confirms).
