@@ -414,3 +414,23 @@ test("sitemap.xml lists every page (built from dist, so new pages need no edit);
   expect(read("package.json")).toMatch(/node sitemap\.mjs/);
   expect(read("robots.txt")).toContain("Sitemap: https://capfolder.com/sitemap.xml");
 });
+
+test("every click is counted: track.js on every page (in the build), named from the button text; form submits counted", async () => {
+  for (const f of execSync("git ls-files '*.html'", { cwd: new URL(".", import.meta.url) })
+    .toString()
+    .trim()
+    .split("\n"))
+    expect([f, read(f).includes('<script defer src="/track.js"></script>')]).toEqual([f, true]);
+  expect(read("package.json")).toMatch(/cp -r [^"]*\btrack\.js\b/);
+  await import("./track.js");
+  const name = (globalThis as unknown as { capfolderEventName(el: unknown): string }).capfolderEventName;
+  const el = (text: string, label?: string) => ({
+    textContent: text,
+    getAttribute: (a: string) => (a === "aria-label" ? (label ?? null) : null),
+  });
+  expect(name(el("  What is a SAFE? "))).toBe("what-is-a-safe");
+  expect(name(el("★ Star", "Star on GitHub"))).toBe("star-on-github");
+  expect(name(el(" → "))).toBe("click");
+  expect(html).toContain('window.umami?.track("download-form-submitted")');
+  expect(html).toContain('window.umami?.track("pro-waitlist-submitted")');
+});

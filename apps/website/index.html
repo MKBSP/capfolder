@@ -12,6 +12,7 @@
 <meta name="description" content="Free, open-source cap table app. Your equity records live in a folder on your computer, not in someone else's cloud. No setup needed: download and open.">
 <!-- docs/11: cookieless visits, referrers and button clicks (data-umami-event), no banner. Umami Cloud site for capfolder.com. -->
 <script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
 <!-- fonts are served from this site (no Google Fonts request); SIL OFL, fonts/OFL.txt -->
 <style>
 @font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
@@ -593,8 +594,8 @@ function showDownloads() {
   document.getElementById("gate").hidden = true;
   document.getElementById("dlthanks").hidden = false;
 }
-document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: showDownloads }));
-document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", {})); // Pro waitlist (integrations/tally.md)
+document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
+document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") })); // Pro waitlist (integrations/tally.md)
 document.getElementById("skipdl").addEventListener("click", showDownloads); // Show HN: no signup required to try
 // Tally is loaded only when someone asks for the download (no third-party request before that)
 // download form: autoClose closes Tally's own thank-you and the page shows the download links
