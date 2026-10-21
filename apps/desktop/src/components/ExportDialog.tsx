@@ -8,7 +8,7 @@ const FORMATS: { id: ExportFormat; label: string; note: string }[] = [
   {
     id: "xlsx",
     label: "Excel (.xlsx), full cap table",
-    note: "Summary, ownership, a ledger per share class and option plan, convertibles and voting, like a Pulley or Carta export.",
+    note: "An overview with charts, then summary, ownership, a ledger per share class and option plan, convertibles and voting, like a Pulley or Carta export, plus vesting by month and missing documents.",
   },
   { id: "csv", label: "CSV (.csv)", note: "Every holding on one row, with all its ledger columns." },
   { id: "ocf", label: "OCF (.zip)", note: "Open Cap Table Format, for lawyers and other cap table tools." },

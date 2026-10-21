@@ -1,12 +1,16 @@
 // Labels for Home/Person derived from core output. No cap-table math here: every number comes from core.
-import { type Gap, nextVest, type Row, type Security, type State, vestingSchedule } from "@capfolder/core";
+import {
+  type Gap,
+  isFounder,
+  nextVest,
+  type Row,
+  type Security,
+  type State,
+  vestingSchedule,
+} from "@capfolder/core";
 import { day, month } from "./fmt";
 
-/** Founder = holder of common stock issued on the formation date or with vesting (ponytail: until roles exist). */
-export function isFounder(s: State, x: Security | undefined): boolean {
-  if (x?.kind !== "stock") return false;
-  return x.date === s.issuer?.formation_date || !!x.vestingTermsId || !!x.vestings?.length;
-}
+export { isFounder } from "@capfolder/core"; // the export's Overview counts founders the same way
 
 export function typeLabel(s: State, r: Row): string {
   if (r.group === 2) return "Pool";

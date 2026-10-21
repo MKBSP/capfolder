@@ -18,7 +18,7 @@ Updated 2026-10-11 (after M4). Milestones and acceptance tests: `docs/09-build-p
 | M0 Repo + CI | Done 2026-10-10 |
 | M1 Core engine | Done 2026-10-10 |
 | M3 Desktop shell (Tauri) | Done 2026-10-10 (built before M2, see below) |
-| M6 Export (xlsx, lawyer zip) | Done 2026-10-10 |
+| M6 Export (xlsx, lawyer zip) | Done 2026-10-10; richer xlsx 2026-10-21: Overview tab first (4 key numbers, ownership doughnut, vested-over-time line as real chart parts, checked in Numbers), Vesting by month and Missing documents before All holdings. Skipped: "if the SAFEs converted" estimate (reads as advice). |
 | M2 Import | Done 2026-10-10 (OCF + generic spreadsheet). Still to come: OCF + generic spreadsheet first; Pulley/Carta/Cake when real files arrive (Mads is collecting testers' exports and template docs) |
 | M5 Signing | Done 2026-10-10, runs locally; hosting relay.capfolder.com is Mads' decision |
 | M4 Document sorting | Done 2026-10-11 (rules + kNN + local AI, OCR; tested on a synthetic folder, run the pilot's folder when it arrives) |

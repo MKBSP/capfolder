@@ -7,6 +7,7 @@ import { liveEvents, reduce, txType } from "../reduce";
 import { capTableRows, securityVested } from "../rows";
 import { capTableTotals } from "../totals";
 import type { Data, Security, State, VaultEvent } from "../types";
+import { overviewTabs } from "./overview";
 import { type Cell, cellText, type Sheet } from "./sheets";
 
 const num = (s?: string): Cell => (s ? { num: s } : "");
@@ -723,14 +724,18 @@ export function fullCapTable(events: VaultEvent[], asOf: string, opts: { currenc
   voteRows.push(["Totals", "", num(dec(allVotes)), vn > 0n ? { pct: "1" } : ""]);
   const voting = sheet("Voting Ownership", voteRows, [vTotal]);
 
+  const extra = overviewTabs(s, rows, totals, company, asOf, opts.currency ?? "USD");
   return [
+    extra.overview,
     summary,
     ownership,
     ...classLedgers,
     ...planLedgers,
     cvSheet,
     voting,
-    holdingsSheet(s, secs, fact, rows),
+    extra.vesting,
+    extra.missing,
+    holdingsSheet(s, secs, fact, rows), // last: holdingsCsv reads it
   ];
 }
 

@@ -22,12 +22,15 @@ const col = (s: Sheet, header: string) => s.rows[3]!.map(text).indexOf(header);
 describe("full cap table workbook", () => {
   test("Pulley's tabs: summary, ownership, a ledger per class and per plan, convertibles, voting", () =>
     expect(book.map((s) => s.name)).toEqual([
+      "Overview", // richer export: export-overview.test.ts
       "Summary",
       "Ownership",
       "Common (CS) Ledger",
       "2025 Equity Incentive Plan Ledger",
       "Convertibles",
       "Voting Ownership",
+      "Vesting by month",
+      "Missing documents",
       "All holdings",
     ]));
 

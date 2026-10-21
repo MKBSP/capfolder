@@ -16,6 +16,17 @@ export interface Sheet {
   rows: Cell[][];
   header: number[]; // row indexes drawn bold
   freeze?: number; // rows kept in view while scrolling (title rows + the column header)
+  charts?: Chart[]; // real Excel charts drawn on this tab (xlsx only)
+}
+
+/** One series of a chart: cell ranges as Excel writes them ('Tab'!$A$1:$A$4) plus their values for the cache. */
+export interface Chart {
+  kind: "doughnut" | "line";
+  title: string;
+  series: string;
+  cat: { ref: string; values: string[] };
+  val: { ref: string; values: string[] };
+  at: { col: number; row: number; cols: number; rows: number }; // where it sits, in cells (0-based)
 }
 
 /** A cell as plain text (no thousands separators): what a CSV or a reader sees. */

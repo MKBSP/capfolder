@@ -149,3 +149,9 @@ export function capTableRows(s: State): Row[] {
   });
   return rows;
 }
+
+/** Founder = holder of common stock issued on the formation date or with vesting (ponytail: until roles exist). */
+export function isFounder(s: State, x: Security | undefined): boolean {
+  if (x?.kind !== "stock") return false;
+  return x.date === s.issuer?.formation_date || !!x.vestingTermsId || !!x.vestings?.length;
+}
