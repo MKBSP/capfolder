@@ -13,6 +13,10 @@ const learnPages = () =>
   readdirSync(new URL("./learn", import.meta.url), { withFileTypes: true })
     .filter((d) => d.isDirectory())
     .map((d) => `learn/${d.name}/index.html`);
+const blogPosts = () =>
+  readdirSync(new URL("./blog", import.meta.url), { withFileTypes: true })
+    .filter((d) => d.isDirectory() && d.name !== "img")
+    .map((d) => `blog/${d.name}/index.html`);
 const licenses = readFileSync(new URL("../../THIRD_PARTY_LICENSES.md", import.meta.url), "utf8");
 
 test("no placeholders, old names or dead links", () => {
@@ -230,6 +234,8 @@ test("every sub-page has the same navbar, with its section marked", () => {
     ["features/index.html", "/features/"],
     ["features/import/index.html", "/features/"],
     ["migrate/from-pulley/index.html", "/features/"],
+    ["blog/index.html", "/blog/"],
+    ...blogPosts().map((b) => [b, "/blog/"]),
   ]) {
     const nav = read(p).match(/<nav class="top"[\s\S]*?<\/nav>/)?.[0] ?? "";
     for (const must of [
@@ -239,6 +245,7 @@ test("every sub-page has the same navbar, with its section marked", () => {
       'href="/roadmap/"',
       'href="/help/"',
       'href="/learn/"',
+      'href="/blog/"',
       'href="/#download"',
       `href="${section}" aria-current="true"`,
     ])
@@ -521,4 +528,34 @@ test("IndexNow: the key file sits at the site root and the script posts the site
   const script = readFileSync(new URL("../../scripts/indexnow.mjs", import.meta.url), "utf8");
   expect(script).toContain("https://api.indexnow.org/indexnow");
   expect(script).toContain("sitemap.xml");
+});
+
+test("blog posts: ≤60-char title, ≤155-char description, OG image, BlogPosting JSON-LD, images exist with alt text, only released features, listed on /blog/ and in the build", () => {
+  const index = read("blog/index.html");
+  expect(blogPosts().length).toBeGreaterThan(0);
+  for (const p of blogPosts()) {
+    const page = read(p);
+    expect([p, (page.match(/<title>([^<]*)<\/title>/)?.[1] ?? "").length <= 60]).toEqual([p, true]);
+    expect([
+      p,
+      (page.match(/<meta name="description" content="([^"]*)">/)?.[1] ?? "x".repeat(200)).length <= 155,
+    ]).toEqual([p, true]);
+    expect([p, page.includes('property="og:image"')]).toEqual([p, true]);
+    const ld = [...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) =>
+      JSON.parse(m[1]!),
+    );
+    expect([p, ld.some((j) => j["@type"] === "BlogPosting" && j.datePublished)]).toEqual([p, true]);
+    for (const [, src, alt] of page.matchAll(/<img src="(\/blog\/img\/[^"?]+)[^"]*"[^>]*alt="([^"]*)"/g)) {
+      expect([src, existsSync(new URL(`.${src}`, import.meta.url))]).toEqual([src, true]);
+      expect([src, alt.length > 20]).toEqual([src, true]);
+    }
+    // a post names the release it describes, and that release is tagged
+    const v = page.match(/releases\/tag\/(v[\d.]+)/)?.[1];
+    expect([p, !!v && execSync(`git tag -l ${v}`, { encoding: "utf8" }).trim() === v]).toEqual([p, true]);
+    for (const bad of ["Hippo", "days left", "Mads", "Camilo"])
+      expect([p, bad, page.includes(bad)]).toEqual([p, bad, false]);
+    expect([p, index.includes(`href="/${p.replace(/index\.html$/, "")}"`)]).toEqual([p, true]);
+  }
+  expect(read("package.json")).toMatch(/cp -r [^"]*\bblog\b/);
+  expect(html).toContain('href="/blog/"');
 });

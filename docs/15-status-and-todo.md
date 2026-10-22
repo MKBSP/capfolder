@@ -119,6 +119,10 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
 
 16. **Vesting screen** built 2026-10-20 (Mads' Claude Design "Vesting Overview"): a Vesting tab with the pool cards (total, allocated, vested, available incl. returned), one pool bar, a row per grant (vested %, strike, next vest, documents) that opens to the graph (flat to the cliff, the jump, monthly steps or a straight line, Today marker, stops at a leaving date, hover/arrow-key card), key dates, price (strike, FMV, exercise cost, vested value, exercise by) and that person's signed documents; "Show former employees". The Person page uses the same graph. Not yet: role/title under the name (no stakeholder roles yet), a help page for it (`apps/website/help/pages.json`).
 
+17. **Signing blocks in the right place (requested 2026-10-22).** The SAFE and other key documents sent for signature must put each signature block where the document's signature page has it, in the right format. Today it looks wrong: see the SAFE signed by Mads and Camilo in the pilot company's Documents. Check every built-in template (YC SAFE, pro rata side letter) against a signed copy.
+
+18. **Field editor for your own templates (requested 2026-10-22).** When a founder uploads a new template, they mark where things go: fields like `<name>`, amount and date, and the signature block for each signer, placed on the right area of the page. Needed before "attach your own" documents can be sent for signature properly.
+
 ## Future ideas (not in v1)
 - **Stakeholders see their own holdings from their own AI (Mads, 2026-10-21; research first).**
   - **Pitch to founders:** "Give your stakeholders access to their own documents, without them leaving your laptop." Never "create an MCP server for your stakeholders": the MCP is how it works, not what we sell.
