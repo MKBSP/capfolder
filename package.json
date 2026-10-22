@@ -16,11 +16,13 @@
     "build:desktop": "pnpm --filter @capfolder/desktop tauri build",
     "rules:sign": "node apps/desktop/scripts/rules.mjs sign",
     "dev:web": "pnpm --filter @capfolder/website dev",
-    "help:check": "node scripts/help-check.mjs"
+    "help:check": "node scripts/help-check.mjs",
+    "shots": "node scripts/shots.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
     "@types/node": "22.20.5",
+    "playwright-core": "1.63.0",
     "typescript": "7.0.2",
     "vitest": "5.0.1"
   },

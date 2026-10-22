@@ -203,7 +203,7 @@ test("help pages: each one is in help/pages.json with the app files it shows, an
   expect(Object.keys(pages).sort()).toEqual(dirs.sort());
   const index = readFileSync(new URL("index.html", help), "utf8");
   for (const [page, p] of Object.entries<{ checked: string; covers: string[] }>(pages)) {
-    expect(p.checked).toMatch(/^v\d+\.\d+\.\d+$/);
+    expect(p.checked).toMatch(/^(v\d+\.\d+\.\d+|[0-9a-f]{7,40})$/); // a release, or the commit for a page written before the next one
     expect(p.covers.length).toBeGreaterThan(0);
     for (const f of p.covers)
       expect([f, existsSync(new URL(`../../${f}`, import.meta.url))]).toEqual([f, true]);
@@ -226,10 +226,15 @@ test("every sub-page has the same navbar, with its section marked", () => {
     ...comparePages().map((c) => [c, "/compare/"]),
     ["learn/index.html", "/learn/"],
     ...learnPages().map((l) => [l, "/learn/"]),
+    ["help/import/index.html", "/help/"],
+    ["features/index.html", "/features/"],
+    ["features/import/index.html", "/features/"],
+    ["migrate/from-pulley/index.html", "/features/"],
   ]) {
     const nav = read(p).match(/<nav class="top"[\s\S]*?<\/nav>/)?.[0] ?? "";
     for (const must of [
       'src="/favicon.svg"',
+      'href="/features/"',
       'href="/compare/"',
       'href="/roadmap/"',
       'href="/help/"',
@@ -433,4 +438,87 @@ test("every click is counted: track.js on every page (in the build), named from 
   expect(name(el(" → "))).toBe("click");
   expect(html).toContain('window.umami?.track("download-form-submitted")');
   expect(html).toContain('window.umami?.track("pro-waitlist-submitted")');
+});
+
+const allPages = () =>
+  execSync("git ls-files --cached --others --exclude-standard '*.html'", {
+    cwd: new URL(".", import.meta.url),
+  })
+    .toString()
+    .trim()
+    .split("\n");
+
+test("every page: a title, a description, a canonical URL, alt text on every image, and JSON-LD that parses", () => {
+  for (const p of allPages()) {
+    const page = read(p);
+    const url = `https://capfolder.com/${p.replace(/index\.html$/, "")}`;
+    expect([p, /<title>[^<]{10,}<\/title>/.test(page)]).toEqual([p, true]);
+    expect([p, /<meta name="description" content="[^"]{50,170}">/.test(page)]).toEqual([p, true]);
+    expect([p, page.includes(`<link rel="canonical" href="${url}">`)]).toEqual([p, true]);
+    for (const img of page.match(/<img [^>]*>/g) ?? [])
+      expect([p, img, /\balt="/.test(img)]).toEqual([p, img, true]);
+    for (const ld of page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g))
+      expect(() => JSON.parse(ld[1]!), p).not.toThrow();
+  }
+});
+
+test("feature pages (/features/, /migrate/): ≤60-char title, ≤155-char description, OG tags, app + FAQ + HowTo JSON-LD, a done help page, listed on /features/", () => {
+  const index = read("features/index.html");
+  const feats = allPages().filter((p) => /^(features|migrate)\/[^/]+\/index\.html$/.test(p));
+  expect(feats).toEqual(
+    expect.arrayContaining(["features/import/index.html", "migrate/from-pulley/index.html"]),
+  );
+  const record = JSON.parse(read("features/pages.json"));
+  for (const p of feats) {
+    const page = read(p);
+    const slug = p.replace(/index\.html$/, "");
+    expect([p, (page.match(/<title>([^<]*)<\/title>/)?.[1] ?? "").length <= 60]).toEqual([p, true]);
+    expect([
+      p,
+      (page.match(/<meta name="description" content="([^"]*)">/)?.[1] ?? "x".repeat(200)).length <= 155,
+    ]).toEqual([p, true]);
+    for (const og of ["og:title", "og:description", "og:image"])
+      expect([p, page.includes(`property="${og}"`)]).toEqual([p, true]);
+    const types = [...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(
+      (m) => JSON.parse(m[1]!)["@type"],
+    );
+    expect([p, types]).toEqual([p, ["SoftwareApplication", "FAQPage", "HowTo"]]);
+    const help = page.match(/href="\/help\/([a-z-]+)\/"/)?.[1];
+    expect([p, !!help && existsSync(new URL(`./help/${help}/index.html`, import.meta.url))]).toEqual([
+      p,
+      true,
+    ]);
+    expect([p, index.includes(`href="/${slug}"`)]).toEqual([p, true]);
+    expect([p, !!record[slug.replace(/\/$/, "")]]).toEqual([p, true]);
+  }
+  expect(read("package.json")).toMatch(/cp -r [^"]*\bfeatures\b[^"]*\bmigrate\b/);
+  expect(html).toContain('href="/features/"');
+});
+
+test("help/import is recorded in pages.json, its screenshots exist with their orange boxes, and the learn, compare and home pages link to the import pages", () => {
+  const help = JSON.parse(read("help/pages.json"));
+  expect(help.import.covers).toContain("apps/desktop/src/screens/Import.tsx");
+  const page = read("help/import/index.html");
+  for (const { file, hl } of JSON.parse(read("help/img/import.shots.json"))) {
+    expect([file, existsSync(new URL(`./help/img/${file}`, import.meta.url))]).toEqual([file, true]);
+    expect([file, page.includes(`/help/img/${file}`)]).toEqual([file, true]);
+    for (const b of hl)
+      expect(page).toContain(`left:${b.left}%;top:${b.top}%;width:${b.width}%;height:${b.height}%`);
+  }
+  for (const p of ["learn/cap-table/index.html", "learn/fully-diluted/index.html"])
+    expect([p, read(p).includes('href="/features/import/"')]).toEqual([p, true]);
+  expect(read("compare/pulley/index.html")).toContain('href="/migrate/from-pulley/"');
+  expect(read("compare/carta/index.html")).toContain('href="/features/import/"');
+  expect(html).toContain('href="/features/import/"');
+  expect(read("help/index.html")).toContain('href="/help/import/"');
+});
+
+test("IndexNow: the key file sits at the site root and the script posts the sitemap's URLs", () => {
+  const key = readdirSync(new URL(".", import.meta.url)).find((f) => /^[0-9a-f]{32}\.txt$/.test(f));
+  expect(key).toBeTruthy();
+  expect(read(key!).trim()).toBe(key!.replace(".txt", ""));
+  expect(read("package.json")).toMatch(new RegExp(`cp -r [^"]*\\b${key!.replace(".", "\\.")}`));
+  const script = readFileSync(new URL("../../scripts/indexnow.mjs", import.meta.url), "utf8");
+  expect(script).toContain("https://api.indexnow.org/indexnow");
+  expect(script).toContain("sitemap.xml");
 });

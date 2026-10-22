@@ -1,0 +1,99 @@
+[
+  {
+    "file": "import-1-start.jpg",
+    "w": 1480,
+    "h": 812,
+    "crop": null,
+    "hl": [
+      {
+        "left": 58.8,
+        "top": 88.3,
+        "width": 9.1,
+        "height": 4.2
+      }
+    ]
+  },
+  {
+    "file": "import-2-source.jpg",
+    "w": 1080,
+    "h": 628,
+    "crop": {
+      "x": 200,
+      "y": 43.296875,
+      "width": 1080,
+      "height": 628
+    },
+    "hl": [
+      {
+        "left": 5.3,
+        "top": 20.9,
+        "width": 89.4,
+        "height": 50.2
+      },
+      {
+        "left": 82.5,
+        "top": 79.5,
+        "width": 12.3,
+        "height": 8.9
+      }
+    ]
+  },
+  {
+    "file": "import-3-columns.jpg",
+    "w": 1080,
+    "h": 1361,
+    "crop": {
+      "x": 200,
+      "y": 43.296875,
+      "width": 1080,
+      "height": 1360.703125
+    },
+    "hl": [
+      {
+        "left": 5.3,
+        "top": 16.7,
+        "width": 89.4,
+        "height": 75.7
+      },
+      {
+        "left": 84.7,
+        "top": 92,
+        "width": 10,
+        "height": 4.1
+      }
+    ]
+  },
+  {
+    "file": "import-4-compare.jpg",
+    "w": 990,
+    "h": 510,
+    "crop": {
+      "x": 245,
+      "y": 496.140625,
+      "width": 990,
+      "height": 510.421875
+    },
+    "hl": [
+      {
+        "left": 1.2,
+        "top": 10.6,
+        "width": 97.6,
+        "height": 87.1
+      }
+    ]
+  },
+  {
+    "file": "import-5-before-you-cancel.jpg",
+    "w": 1480,
+    "h": 812,
+    "crop": null,
+    "hl": [
+      {
+        "left": 1.1,
+        "top": 9,
+        "width": 97.8,
+        "height": 36.1
+      }
+    ]
+  }
+]

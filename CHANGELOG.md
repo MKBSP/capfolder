@@ -3,6 +3,16 @@
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
 ## [Unreleased]
+### Added
+- **Import: compare with Pulley, Carta or Cake.** Check and save shows each total next to a box for the old tool's
+  number (fully diluted required; each class, options outstanding, pool available, SAFE total and stakeholders
+  optional), checked to the share. Vested-so-far in the file is checked against the schedule (one share of rounding);
+  more vested than granted blocks the import. After saving, a "Before you cancel {tool}" card on the cap table lists
+  what to keep (Pulley: days left until December 8).
+### Website
+- Feature pages: `/features/` with `/features/import/`, and `/migrate/from-pulley/` (dates, what to download, the
+  move). Help: `/help/import/`, with screenshots taken by `pnpm shots import`. "Features" in every navbar; every page
+  has a canonical URL; `node scripts/indexnow.mjs` sends the sitemap to IndexNow after a deploy.
 
 ## [0.1.3] — 2026-10-17
 ### Fixed

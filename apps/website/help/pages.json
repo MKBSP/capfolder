@@ -11,5 +11,19 @@
       "apps/desktop/src/copy.ts",
       "apps/desktop/src/styles/app.css"
     ]
+  },
+  "import": {
+    "checked": "0b9db93",
+    "covers": [
+      "apps/desktop/src/screens/Import.tsx",
+      "apps/desktop/src/importRules.ts",
+      "apps/desktop/src/components/MoveChecklist.tsx",
+      "apps/desktop/src/screens/Home.tsx",
+      "apps/desktop/src/components/GetStarted.tsx",
+      "apps/desktop/src/screens/StartChoice.tsx",
+      "apps/desktop/src/screens/Documents.tsx",
+      "packages/core/src/import/build.ts",
+      "apps/desktop/src/styles/app.css"
+    ]
   }
 }

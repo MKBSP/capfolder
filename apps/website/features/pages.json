@@ -1,0 +1,21 @@
+{
+  "features/import": {
+    "checked": "0b9db93",
+    "covers": [
+      "apps/desktop/src/screens/Import.tsx",
+      "apps/desktop/src/importRules.ts",
+      "apps/desktop/src/components/MoveChecklist.tsx",
+      "packages/core/src/import/build.ts",
+      "packages/core/src/import/fields.ts"
+    ]
+  },
+  "migrate/from-pulley": {
+    "checked": "0b9db93",
+    "covers": [
+      "apps/desktop/src/screens/Import.tsx",
+      "apps/desktop/src/importRules.ts",
+      "apps/desktop/src/components/MoveChecklist.tsx",
+      "packages/core/src/import/build.ts"
+    ]
+  }
+}
