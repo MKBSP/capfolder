@@ -26,7 +26,7 @@ Before you start: `git pull` if needed, restart `pnpm dev:desktop` (the native s
 ## Sorting documents
 - [ ] 17. Choose a folder with your SAFEs (`~/Downloads/AI Library/Financial Reports`): "Looking through… N found", then a progress bar with time left. **If it still does nothing or shows "couldn't open", send Claude the exact message.**
 - [ ] 18. Leave the page mid-sort: the "Sorting 3/9" chip in the top bar brings you back, results are kept.
-- [ ] 19. Review: document preview with page buttons, a 1–2 sentence summary, fields filled in, clear buttons ("File as proof for…" / "Add this SAFE to the cap table"). Hippo documents in "Test 2" warn "this document is for Hippobuild, but the open company is Test 2".
+- [ ] 19. Review: document preview with page buttons, a 1–2 sentence summary, fields filled in, clear buttons ("File as proof for…" / "Add this SAFE to the cap table"). Another company's documents (e.g. Globex Corporation's) opened in "Test 2" warn "this document is for Globex Corporation, but the open company is Test 2".
 
 ## Export (new)
 - [ ] 20. Export → Excel: compare with the Pulley file (Summary, Ownership, ledgers, Convertibles, Voting). Numbers match the cap table screen.
@@ -34,7 +34,7 @@ Before you start: `git pull` if needed, restart `pnpm dev:desktop` (the native s
 - [ ] 22. Share with lawyer (.zip): the full Excel file is inside.
 
 ## Import and data
-- [ ] 23. Import from Pulley (your Hippobanco xlsx is a good test) and Carta.
+- [ ] 23. Import from Pulley (a real export with names and emails replaced is a good test) and Carta.
 - [ ] 24. Employee stock options: grant, vesting, exercise; cap table and dilution update.
 - [ ] 25. Delete a whole company folder: no crash, no ghost company in the switcher.
 - [ ] 26. Two companies: switch between them, data stays separate.

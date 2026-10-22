@@ -64,7 +64,7 @@ After batch 1, also add `/features/index.html` listing every feature page (card 
 ## Feature page rules (`/features/<slug>/index.html`)
 Use the same base styles and navbar as the help pages. 600–900 words. Sections, in order:
 1. **H1 plus 2-sentence lead.** Answer first (AI Overviews quote this). Hero figure: the best screenshot from the help flow.
-2. **The problem**, 2–3 sentences. Use Mads's real story only where it's true (HippoBuild SAFEs signed three ways, docs scattered). Otherwise state the general founder problem.
+2. **The problem**, 2–3 sentences. State the general founder problem (SAFEs signed in different tools, documents scattered). No real company names.
 3. **How it works:** 3–5 short steps, linking "Step by step →" to `/help/<slug>/`.
 4. **What Capfolder checks for you:** the real safeguards from the CHANGELOG (e.g. totals must match the old tool; sealed PDF pages compared; AI only proposes).
 5. **Where your data goes:** local files, what touches the relay, what's never uploaded.

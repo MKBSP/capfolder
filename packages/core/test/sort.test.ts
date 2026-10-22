@@ -123,10 +123,10 @@ describe("nearest (kNN)", () => {
 
 describe("the document's company", () => {
   test("another company's document never files by itself and says why", () => {
-    const r = sortText(txt("yc-safe.txt").replaceAll("Acme Inc.", "Hippobuild Corporation"), state);
+    const r = sortText(txt("yc-safe.txt").replaceAll("Acme Inc.", "Globex Corporation"), state);
     expect(r.status).toBe("review");
     expect(r.problems).toContain(
-      "This document is for Hippobuild Corporation, but the open company is Acme Inc.",
+      "This document is for Globex Corporation, but the open company is Acme Inc.",
     );
   });
   test("Inc / Corp / LLC and punctuation don't count as a different company", () => {

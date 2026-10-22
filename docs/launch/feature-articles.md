@@ -94,7 +94,7 @@ Copy `help/founders/` exactly:
   - feature articles go in `/features/`
   - comparisons in `/compare/`
   - migration guides in `/migrate/`
-- **Add `/blog/` only for dated posts:** build-in-public updates, the HippoBuild SAFE story, release notes with context. Every blog post should link to one feature or compare page.
+- **Add `/blog/` only for dated posts:** build-in-public updates, release notes with context. Every blog post should link to one feature or compare page.
 
 | Place | How | Canonical link back to your site? |
 |---|---|---|
