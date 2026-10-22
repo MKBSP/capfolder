@@ -48,6 +48,8 @@ const FLOWS = {
           await p.getByRole("button", { name: "Save to the cap table" }).click();
           await p.getByText(/Reports don't include signed documents/).waitFor();
           await p.getByRole("button", { name: "Cap table" }).click();
+          // "N days left" changes daily; a static web page can't keep it right, so it's left out of the shot.
+          await p.getByText(/^\d+ days left$/).evaluate((el) => el.remove());
         },
         hl: (p) => [p.getByRole("region", { name: "Before you cancel Pulley" })],
       },
