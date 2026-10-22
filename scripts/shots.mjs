@@ -57,6 +57,67 @@ const FLOWS = {
   },
 };
 
+// First run with no lock → a new Acme Inc. folder → Start from zero, two sample founders → the cap table.
+FLOWS.founders = {
+  url: BASE,
+  steps: [
+    {
+      name: "start-choice",
+      act: async (p) => {
+        await p.getByLabel("No lock").click();
+        await p.getByLabel(/I accept the/).click();
+        await p.getByRole("button", { name: "Continue" }).click();
+        await p.getByRole("button", { name: "Skip for now" }).click();
+        await p.getByLabel("Legal name").fill("Acme Inc.");
+        await p.getByLabel("Incorporated").fill("2021-09-14");
+        await p.getByRole("button", { name: "Create folder" }).click();
+        await p.getByRole("heading", { name: "How do you want to start?" }).waitFor();
+      },
+      crop: (p) => p.getByRole("heading", { name: "How do you want to start?" }).locator(".."),
+      hl: (p) => [p.getByRole("button", { name: /Start from zero/ })],
+    },
+    {
+      name: "wizard",
+      act: async (p) => {
+        await p.getByRole("button", { name: /Start from zero/ }).click();
+        await p.getByRole("button", { name: "Skip" }).click();
+        await p.getByRole("button", { name: "Next" }).click();
+        const founder = async (i, name, email, shares) => {
+          await p.getByLabel("Name").nth(i).fill(name);
+          await p.getByLabel("Email").nth(i).fill(email);
+          await p
+            .getByLabel(/^Shares/)
+            .nth(i)
+            .fill(shares);
+          await p.getByLabel("Issued on").nth(i).fill("2021-09-14");
+        };
+        await founder(0, "Tim Apple", "tim@acme.example", "4000000");
+        await p.getByRole("button", { name: "Add another founder" }).click();
+        await founder(1, "Steve Jobs", "steve@acme.example", "3000000");
+        await p.getByLabel("Live cap table").click(); // blur the last field so its date shows formatted
+      },
+      crop: (p) => p.locator("main"),
+      hl: (p) => [
+        p.locator("main fieldset, main .card").first(),
+        p.getByRole("button", { name: "Add another founder" }),
+      ],
+    },
+    {
+      name: "get-started",
+      act: async (p) => {
+        await p.getByRole("button", { name: "Next" }).click();
+        await p.getByRole("button", { name: "Next" }).click();
+        await p.getByRole("button", { name: "Save cap table" }).click();
+        await p
+          .getByRole("button", { name: "No thanks" })
+          .click({ timeout: 5000 })
+          .catch(() => {});
+      },
+      hl: (p) => [p.locator(`details[aria-label="Get started"]`)],
+    },
+  ],
+};
+
 const slug = process.argv[2];
 const flow = FLOWS[slug];
 if (!flow) {

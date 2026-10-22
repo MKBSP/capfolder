@@ -1,0 +1,60 @@
+[
+  {
+    "file": "founders-1-start-choice.jpg",
+    "w": 1080,
+    "h": 685,
+    "crop": {
+      "x": 200,
+      "y": -6,
+      "width": 1080,
+      "height": 685.390625
+    },
+    "hl": [
+      {
+        "left": 34.4,
+        "top": 23.3,
+        "width": 31.1,
+        "height": 32.1
+      }
+    ]
+  },
+  {
+    "file": "founders-2-wizard.jpg",
+    "w": 1320,
+    "h": 988,
+    "crop": {
+      "x": 80,
+      "y": -6,
+      "width": 1320,
+      "height": 988
+    },
+    "hl": [
+      {
+        "left": 2.7,
+        "top": 18.3,
+        "width": 49.7,
+        "height": 34.6
+      },
+      {
+        "left": 2.7,
+        "top": 86.7,
+        "width": 13.8,
+        "height": 5.7
+      }
+    ]
+  },
+  {
+    "file": "founders-3-get-started.jpg",
+    "w": 1480,
+    "h": 812,
+    "crop": null,
+    "hl": [
+      {
+        "left": 1.1,
+        "top": 9,
+        "width": 97.8,
+        "height": 63.5
+      }
+    ]
+  }
+]

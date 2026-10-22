@@ -1,6 +1,6 @@
 {
   "founders": {
-    "checked": "v0.1.3",
+    "checked": "0b9db93",
     "covers": [
       "apps/desktop/src/screens/StartChoice.tsx",
       "apps/desktop/src/screens/Questions.tsx",
