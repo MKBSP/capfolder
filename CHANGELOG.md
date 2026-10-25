@@ -12,7 +12,10 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 ### Changed
 - Free signing limit is 5 signing requests a month (was 10). Self-hosters set `RELAY_PER_EMAIL_MONTH`.
 ### Website
-- Homepage: the "What happens if we shut down?" section is gone; the compare row is now "Access to your data, always".
+- Homepage cleanup for first-time founders: the shut-down, compare, open-source, roadmap, competitor and marquee
+  sections are gone (about 2,100 → 1,500 words); the nav matches the sub-pages without in-page anchors or the star
+  count; no eyebrows, no Pulley/Carta pitch above the footer; the hero shows at once (no blur reveal, highlighter or
+  dot grid); one nav line on phones.
 - Feature pages: `/features/` with `/features/import/`, and `/migrate/from-pulley/` (dates, what to download, the
   move). Help: `/help/import/`, with screenshots taken by `pnpm shots import`. "Features" in every navbar; every page
   has a canonical URL; `node scripts/indexnow.mjs` sends the sitemap to IndexNow after a deploy.

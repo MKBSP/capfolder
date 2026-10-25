@@ -70,13 +70,13 @@ test("cookieless analytics, no banner (docs/11): Umami Cloud through our own /st
     expect([ev, html.includes(`data-umami-event="${ev}"`)]).toEqual([ev, true]);
 });
 
-test("public roadmap: one module (roadmap.js) on home, /roadmap and every compare page; no internal infrastructure", () => {
+test("public roadmap: one module (roadmap.js) on /roadmap and every compare page, linked from home; no internal infrastructure", () => {
   const rm = readFileSync(new URL("./roadmap.js", import.meta.url), "utf8");
   for (const col of ['"Now"', '"Next"', '"Later"', '"Done recently"', "feature.yml", "bug.yml"])
     expect(rm).toContain(col);
   expect(rm).not.toMatch(/laptop|Hetzner|AWS|relay/i);
   expect(html).toContain('href="/roadmap/"');
-  for (const page of [html, read("roadmap/index.html"), ...comparePages().map(read)]) {
+  for (const page of [read("roadmap/index.html"), ...comparePages().map(read)]) {
     expect(page).toContain("data-roadmap");
     expect(page).toContain('<script src="/roadmap.js" defer></script>');
   }
@@ -156,8 +156,8 @@ test("no claims the hosted relay can't back yet, and privacy answered honestly",
 test("a11y: moving content can be paused (WCAG 2.2.2), the comparison table has row headers", () => {
   expect(html).toMatch(/<button[^>]*id="pause-motion"[^>]*aria-pressed="false"/);
   expect(html).toContain(".motion-paused *");
-  const rows = html.match(/<tbody>[\s\S]*?<\/tbody>/)![0];
-  expect(rows.match(/<tr>/g)!.length).toBe(rows.match(/<th scope="row"/g)!.length);
+  for (const rows of html.match(/<tbody>[\s\S]*?<\/tbody>/g) ?? [])
+    expect(rows.match(/<tr>/g)!.length).toBe(rows.match(/<th scope="row"/g)!.length);
 });
 
 test("HN-friendly download: email optional, works without JS, unsigned-beta steps, exact disclaimer in the footer", () => {
@@ -170,6 +170,25 @@ test("HN-friendly download: email optional, works without JS, unsigned-beta step
     "Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.",
   );
   expect(html).not.toMatch(/then the relay deletes them\./);
+});
+
+test("homepage is short and talks to first-time founders: no compare, open-source, roadmap or marquee sections, no eyebrows, Pulley only in the footer", () => {
+  for (const gone of [
+    'id="compare"',
+    'id="open"',
+    'id="roadmap"',
+    'aria-label="What Capfolder is"',
+    'aria-label="Built on open source"',
+    'class="eyebrow"',
+    "AGPL-3.0 →",
+    "Everything Pulley did",
+  ])
+    expect([gone, html.includes(gone)]).toEqual([gone, false]);
+  const nav = html.match(/<nav aria-label="Main"[\s\S]*?<\/nav>/)![0];
+  expect(nav).not.toMatch(/href="#(story|signing|ai|open|pricing)"/);
+  expect(nav).not.toContain("Star");
+  const body = html.slice(0, html.indexOf("<footer"));
+  expect(body.slice(body.indexOf("<body")).match(/Pulley|Carta/g)).toBeNull();
 });
 
 test("the homepage never asks what happens if we shut down", () => {
@@ -219,9 +238,8 @@ test("help pages: each one is in help/pages.json with the app files it shows, an
   }
 });
 
-test("no setup needed: said in the hero, the comparison and the FAQ", () => {
+test("no setup needed: said in the hero and the FAQ", () => {
   expect(html).toContain("No setup needed.");
-  expect(html).toContain(">Setup needed</th>");
   expect(html).toContain("Do I need a server");
 });
 
@@ -506,7 +524,7 @@ test("feature pages (/features/, /migrate/): ≤60-char title, ≤155-char descr
   expect(html).toContain('href="/features/"');
 });
 
-test("help/import is recorded in pages.json, its screenshots exist with their orange boxes, and the learn, compare and home pages link to the import pages", () => {
+test("help/import is recorded in pages.json, its screenshots exist with their orange boxes, and the learn and compare pages link to the import pages", () => {
   const help = JSON.parse(read("help/pages.json"));
   expect(help.import.covers).toContain("apps/desktop/src/screens/Import.tsx");
   const page = read("help/import/index.html");
@@ -520,7 +538,6 @@ test("help/import is recorded in pages.json, its screenshots exist with their or
     expect([p, read(p).includes('href="/features/import/"')]).toEqual([p, true]);
   expect(read("compare/pulley/index.html")).toContain('href="/migrate/from-pulley/"');
   expect(read("compare/carta/index.html")).toContain('href="/features/import/"');
-  expect(html).toContain('href="/features/import/"');
   expect(read("help/index.html")).toContain('href="/help/import/"');
 });
 

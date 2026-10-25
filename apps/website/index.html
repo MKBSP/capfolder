@@ -29,7 +29,6 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 :root{--ease-out:cubic-bezier(0.23,1,0.32,1);--ease-io:cubic-bezier(0.77,0,0.175,1)}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .wrap{max-width:1160px;margin:0 auto;padding:0 24px;box-sizing:border-box}
-.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
 .h2{font-weight:600;font-size:clamp(32px,7vw,46px);line-height:1.08;letter-spacing:-0.03em;margin:0}
 .lead{font-size:18px;line-height:1.6;margin:0;color:#3A3E46}
 
@@ -47,12 +46,13 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 }
 
 /* hero headline: words rise in once */
-.w{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(18px);animation:rise 800ms var(--ease-out) forwards}
+.w{display:inline-block}
+header .fade-in{animation:none;opacity:1}
+@media (max-width:640px){nav[aria-label="Main"] .navlink:not([href="/learn/"]){display:none}}
 @keyframes rise{to{opacity:1;filter:blur(0);transform:translateY(0)}}
 .fade-in{opacity:0;animation:fadeup 700ms var(--ease-out) forwards}
 @keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .mark{position:relative;white-space:nowrap}
-.mark::after{content:"";position:absolute;left:-4px;right:-4px;bottom:6px;height:16px;background:#BFE3CC;z-index:-1;border-radius:4px;clip-path:inset(0 100% 0 0);animation:draw 700ms var(--ease-io) 1000ms forwards}
 @keyframes draw{to{clip-path:inset(0 0 0 0)}}
 
 /* hero demo: messy -> sorted */
@@ -127,7 +127,6 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 @media (prefers-reduced-motion: reduce){#pause-motion{display:none}}
 @media (prefers-reduced-motion: reduce){
   .w,.fade-in{animation:none;opacity:1;filter:none;transform:none}
-  .mark::after{animation:none;clip-path:none}
   .track,.mover,.scan,.ping,.sig{animation:none}
   .raw{animation:none;opacity:0}.parsed{animation:none;opacity:1;filter:none;transform:none}
   .cA{animation:none;opacity:0}.cB{animation:none;opacity:1}
@@ -151,31 +150,22 @@ a{color:#1F6F4A}a:hover{color:#16543A}
       Capfolder
     </a>
     <div style="margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 22px; font-size: 15px">
-      <a href="#story" class="navlink" style="color: #3A3E46; text-decoration: none">Why</a>
       <a href="/features/" class="navlink" style="color: #3A3E46; text-decoration: none">Features</a>
       <a href="/compare/" class="navlink" style="color: #3A3E46; text-decoration: none">Compare</a>
-      <a href="#signing" class="navlink" style="color: #3A3E46; text-decoration: none">Signing</a>
-      <a href="#ai" class="navlink" style="color: #3A3E46; text-decoration: none">AI</a>
-      <a href="#open" class="navlink" style="color: #3A3E46; text-decoration: none">Open source</a>
-      <a href="#pricing" class="navlink" style="color: #3A3E46; text-decoration: none">Pricing</a>
       <a href="/roadmap/" class="navlink" style="color: #3A3E46; text-decoration: none">Roadmap</a>
       <a href="/help/" class="navlink" style="color: #3A3E46; text-decoration: none">Help</a>
       <a href="/learn/" class="navlink" style="color: #3A3E46; text-decoration: none">Learn</a>
       <a href="/blog/" class="navlink" style="color: #3A3E46; text-decoration: none">Blog</a>
-      <a href="https://github.com/MKBSP/capfolder" data-umami-event="github" class="btn btn-s" style="font-size: 14px; font-weight: 500; padding: 9px 14px">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 15 8.6l6.7 1-4.9 4.7 1.2 6.7L12 17.8 6 21l1.2-6.7-4.9-4.7 6.7-1z"/></svg>
-        Star <span class="num stars" style="color: #5B606B"></span>
-      </a>
+      <a href="https://github.com/MKBSP/capfolder" class="navlink" style="color: #3A3E46; text-decoration: none">GitHub</a>
       <a href="#download" class="btn btn-p" data-umami-event="nav-download" style="font-size: 14px; padding: 10px 16px">Download</a>
     </div>
   </nav>
 
   <header class="wrap" style="padding-top: 80px; padding-bottom: 40px; text-align: center; position: relative">
-    <div aria-hidden="true" style="position: absolute; inset: 0 -200px auto -200px; height: 560px; background-image: radial-gradient(#D5DED7 1px, transparent 1px); background-size: 22px 22px; mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 65%); -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 0%, transparent 65%); z-index: 0"></div>
     <div style="position: relative; z-index: 1">
-      <a href="#open" class="fade-in" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #C9DECF; color: #16543A; text-decoration: none">
+      <a href="https://github.com/MKBSP/capfolder" class="fade-in" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #C9DECF; color: #16543A; text-decoration: none">
         <span style="width: 8px; height: 8px; border-radius: 50%; background: #4FBF85; box-shadow: 0 0 0 3px #DDF1E5"></span>
-        100% open source · AGPL-3.0 →
+        Free and open source
       </a>
       <h1 style="font-weight: 600; font-size: clamp(40px, 10.5vw, 80px); line-height: 1.02; letter-spacing: -0.04em; margin: 28px auto 0 auto; max-width: 940px; isolation: isolate">
         <span class="w" style="animation-delay: 80ms">Your</span> <span class="w" style="animation-delay: 140ms">cap</span> <span class="w" style="animation-delay: 200ms">table,</span> <span class="w" style="animation-delay: 260ms">in</span> <span class="w" style="animation-delay: 320ms">a</span> <span class="w mark" style="animation-delay: 380ms">folder you own.</span>
@@ -241,27 +231,12 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     <p style="text-align: center; margin: 18px 0 0 0; font-size: 14px; color: #5B606B">Any file name, any layout. Read on your computer, matched to your cap table.</p>
   </section>
 
-  <section class="wrap reveal" aria-label="What Capfolder is" style="padding-bottom: 72px">
-    <p style="max-width: 760px; margin: 0 auto; text-align: center; font-size: clamp(18px, 2.4vw, 22px); line-height: 1.55; color: #3A3E46">Capfolder does what <b style="font-weight: 600; color: #111311">Carta, Pulley, Cake Equity, Ledgy, Eqvista</b> and every other cap table and stakeholder platform do. The difference: <b style="font-weight: 600; color: #111311">it's free</b>, <b style="font-weight: 600; color: #111311">your data stays on your own devices</b>, and you can <b style="font-weight: 600; color: #111311">plug in your own AI</b> to make the annoying tasks disappear.</p>
-  </section>
-
-  <section aria-label="Built on open source" style="padding-bottom: clamp(56px, 12vw, 104px)">
-    <div class="eyebrow" style="text-align: center; color: #5B606B; margin-bottom: 22px">Built on open source</div>
-    <div class="marquee">
-      <div class="track">
-        <span>Tauri</span><span style="color: #C9CBC6">✦</span><span>Open Cap Format</span><span style="color: #C9CBC6">✦</span><span>Documenso</span><span style="color: #C9CBC6">✦</span><span>PDF.js</span><span style="color: #C9CBC6">✦</span><span>pdf-lib</span><span style="color: #C9CBC6">✦</span><span>Tesseract</span><span style="color: #C9CBC6">✦</span><span>Ollama</span><span style="color: #C9CBC6">✦</span><span>tesseract.js</span><span style="color: #C9CBC6">✦</span>
-        <span aria-hidden="true">Tauri</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Open Cap Format</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Documenso</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">PDF.js</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">pdf-lib</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Tesseract</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">Ollama</span><span style="color: #C9CBC6" aria-hidden="true">✦</span><span aria-hidden="true">tesseract.js</span><span style="color: #C9CBC6" aria-hidden="true">✦</span>
-      </div>
-    </div>
-  </section>
-
   <section id="story" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
       <div style="flex: 1 1 440px; min-width: 0" class="reveal">
-        <div class="eyebrow" style="color: #1F6F4A">Why we built this</div>
         <h2 class="h2" style="margin-top: 14px">We lost our cap table paperwork.</h2>
         <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px; font-size: 18px; line-height: 1.65; color: #2B2E33">
-          <p style="margin: 0">We raised our seed on SAFEs from 28 investors. Some signed in Pulley. Some sent their own paperwork. Some signed by email.</p>
+          <p style="margin: 0">We raised our seed on SAFEs from 28 investors. Some signed in one tool. Some sent their own paperwork. Some signed by email.</p>
           <p style="margin: 0">When we needed the documents, the data was gone. We're now digging through old inboxes and asking investors to sign again.</p>
           <p style="margin: 0">A cap table is the most important record a company has. It shouldn't depend on a vendor, a subscription or a login. So we built one that lives in a folder you own, and open-sourced it so it's always yours.</p>
         </div>
@@ -280,8 +255,7 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 
   <section class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="reveal" style="max-width: 640px">
-      <div class="eyebrow" style="color: #1F6F4A">What it does</div>
-      <h2 class="h2" style="margin-top: 14px">Everything Pulley did that you actually used.</h2>
+      <h2 class="h2" style="margin-top: 14px">What it does for you.</h2>
     </div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 40px">
       <div class="lift reveal" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
@@ -335,30 +309,9 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section id="compare" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
-    <div class="reveal" style="max-width: 760px">
-      <div class="eyebrow" style="color: #1F6F4A">Compare</div>
-      <h2 class="h2" style="margin-top: 14px">Rent your cap table, or own it.</h2>
-      <p class="lead" style="margin-top: 18px">Hosted tools do more today. With Capfolder, your data is always yours.</p>
-    </div>
-    <div class="reveal2" style="margin-top: 36px; background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; overflow-x: auto">
-      <table style="width: 100%; border-collapse: collapse; min-width: 820px; font-size: 15px; line-height: 1.45">
-        <thead><tr style="text-align: left; font-size: 14px; vertical-align: top">
-          <td style="padding: 16px 22px; border-bottom: 1px solid #E4E4E0; width: 30%"></td>
-          <th style="padding: 16px 16px; border-bottom: 1px solid #C9DECF; background: #E8F3EC; color: #16543A; font-weight: 600; width: 22%">Capfolder</th>
-          <th style="padding: 16px 16px; border-bottom: 1px solid #E4E4E0; font-weight: 600; width: 28%">Hosted cap table tools<br><span style="font-weight: 400; font-size: 13px; color: #5B606B">Carta · Mantle · Cake Equity · Eqvista · Ledgy · Pulley</span></th>
-          <th style="padding: 16px 22px; border-bottom: 1px solid #E4E4E0; font-weight: 600">Spreadsheet<br><span style="font-weight: 400; font-size: 13px; color: #5B606B">Excel · Google Sheets</span></th>
-        </tr></thead>
-        <tbody><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Where your data lives</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">A folder on your computer</td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Their servers</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">A file on your computer</td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Setup needed</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">None</span><br><span style="color:#5B606B;font-size:13px">download and open</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">An account, then their onboarding<br><span style="color:#5B606B;font-size:13px">Carta and Pulley: often days, with a call</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">None</td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Access to your data, always</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">Only while their servers are up</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Open source, auditable math</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">—</td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Price</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top">Free<br><span style="color:#5B606B;font-size:13px">pay what you want</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free tiers for up to 20 stakeholders, then about $1,000–15,000/yr<br><span style="color:#5B606B;font-size:13px">Carta: typically $3,000–8,000/yr under 50 stakeholders; median $15,450/yr</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Free</td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Import from Pulley / Carta / OCF</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Investors sign from a link</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Vesting tracked, missing documents flagged</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">By hand</td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Reads messy PDFs and sorts them</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span><br><span style="color:#5B606B;font-size:13px">your local AI</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Mantle only</td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">Export Excel, CSV and OCF</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top">Varies<br><span style="color:#5B606B;font-size:13px">Carta exports an OCX report</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top">Excel</td></tr><tr><th scope="row" style="padding:14px 22px;border-bottom:1px solid #EFEFEC;font-weight:500;vertical-align:top;text-align:left">409A valuations, multiple admins, employee portals</th><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;background:#F3F8F4;vertical-align:top"><span style="color:#A1261A">No</span><br><span style="color:#5B606B;font-size:13px">not yet</span></td><td style="padding:14px 16px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#16543A;font-weight:600">Yes</span></td><td style="padding:14px 22px;border-bottom:1px solid #EFEFEC;vertical-align:top"><span style="color:#A1261A">No</span></td></tr></tbody>
-      </table>
-    </div>
-    <p style="margin: 14px 0 0 0; font-size: 13px; color: #5B606B; line-height: 1.55">Features vary by vendor and plan. Free tiers: Cake Equity ≤5, Eqvista ≤20, Carta Launch ≤25 stakeholders (and under $1M raised), Ledgy ≤25; Mantle has a free plan. Paid entry points: Cake $1,000/yr, Mantle $1,200/yr, Ledgy from €5,000/yr; Carta doesn't publish prices, so its figures are from Vendr purchase data (Feb 2026). AngelList stopped taking new cap-table customers in 2026. Checked October 2026; check each vendor before deciding. Spotted something wrong? <a href="https://github.com/MKBSP/capfolder/issues">Open an issue</a>. Full comparisons: <a href="/compare/pulley/">Pulley alternative</a> · <a href="/compare/carta/">Carta alternative</a> · <a href="/compare/sumoshares/">SumoShares</a>.</p>
-  </section>
-
   <section id="signing" style="background: #F3F1F9; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="wrap">
       <div class="reveal" style="max-width: 760px">
-        <div class="eyebrow" style="color: #4E3F86">Signatures</div>
         <h2 class="h2" style="margin-top: 14px">The only thing in the cloud is the unsigned document.</h2>
         <p class="lead" style="margin-top: 18px">It waits on the relay until everyone has signed. Then it comes back to your folder, is checked against your original, and the relay deletes its copy (within 7 days).</p>
       </div>
@@ -391,17 +344,15 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 
   <section id="ai" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px); display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
     <div class="reveal" style="flex: 1 1 380px; min-width: 0">
-      <div class="eyebrow" style="color: #1F6F4A">Bring your own AI</div>
       <h2 class="h2" style="margin-top: 14px">Plug in your local AI. Give your folder superpowers.</h2>
       <p class="lead" style="margin-top: 18px">Ollama or LM Studio keep everything on your machine. The AI reads the odd PDFs the rules can't, and fills in a proposal. Every field is checked against the cap table, and nothing is saved until you click.</p>
       <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; font-family: 'IBM Plex Mono', monospace; font-size: 12px">
         <span style="padding: 5px 10px; border-radius: 999px; background: #E8F3EC; color: #16543A">Ollama · local</span>
         <span style="padding: 5px 10px; border-radius: 999px; background: #E8F3EC; color: #16543A">LM Studio · local</span>
-        <span style="padding: 5px 10px; border-radius: 999px; background: #F0F1EE; color: #5B606B">Claude Code, Codex, MCP · coming later</span>
       </div>
     </div>
     <div style="flex: 1 1 440px; min-width: 0; background: #fff; border: 1px solid #E4E4E0; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 14px; font-size: 15px; line-height: 1.55; box-shadow: 0 40px 80px -50px rgba(17,19,17,.35)">
-      <div class="msg1" style="align-self: flex-end; max-width: 80%; background: #1F6F4A; color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px">Sort my old Pulley folder (14 files)</div>
+      <div class="msg1" style="align-self: flex-end; max-width: 80%; background: #1F6F4A; color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px">Sort my SAFEs folder (14 files)</div>
       <div class="msg2" style="max-width: 92%; background: #F3F4F1; border-radius: 14px 14px 14px 4px; padding: 10px 14px">11 filed. 3 need you. <span class="num">scan_0042.pdf</span> looks like Fund X's SAFE (<span class="num">$250k</span>, Mar 14, 2023), signed as “Fund X Ventures I, L.P.” Same investor?</div>
       <div class="msg3" style="align-self: flex-end; max-width: 80%; background: #1F6F4A; color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px">Yes. Remember that name.</div>
       <div class="msg4" style="max-width: 92%; background: #F3F4F1; border-radius: 14px 14px 14px 4px; padding: 10px 14px">Filed as <span class="num">docs/safes/2023-03-14_fund-x_safe.pdf</span>. Next time it’s automatic.</div>
@@ -410,35 +361,8 @@ a{color:#1F6F4A}a:hover{color:#16543A}
     </div>
   </section>
 
-  <section id="open" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
-    <div class="reveal" style="max-width: 760px">
-      <div class="eyebrow" style="color: #1F6F4A">Open source</div>
-      <h2 class="h2" style="margin-top: 14px">Every line is public. Fork it, audit it, run it yourself.</h2>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 40px">
-      <div class="lift reveal" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Use it as is</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Download the app. Free, with our hosted signing relay.</p>
-        <a href="#download" class="btn btn-p" style="margin-top: 20px; font-size: 15px; padding: 12px 18px">Download</a>
-      </div>
-      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Self-host the relay</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Keep even unsigned documents on your own server.</p>
-        <pre class="num" style="margin: 18px 0 0 0; background: #F6F7F4; border: 1px solid #E4E4E0; border-radius: 8px; padding: 12px 14px; font-size: 13px; overflow-x: auto">git clone https://github.com/MKBSP/capfolder
-cd capfolder/apps/relay
-# then follow README.md</pre>
-      </div>
-      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Read the code</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">App, engine, relay and the cap-table test suite. AGPL-3.0.</p>
-        <a href="https://github.com/MKBSP/capfolder" data-umami-event="github" class="btn btn-s" style="margin-top: 20px; font-size: 15px; padding: 12px 18px">View on GitHub<span class="num stars-sep"></span></a>
-      </div>
-    </div>
-  </section>
-
   <section id="pricing" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="reveal" style="max-width: 760px">
-      <div class="eyebrow" style="color: #1F6F4A">Pricing</div>
       <h2 class="h2" style="margin-top: 14px">Free forever. Your cap table never sits behind a paywall.</h2>
     </div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 40px">
@@ -463,37 +387,27 @@ cd capfolder/apps/relay
     </div>
   </section>
 
-  <section id="roadmap" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
-    <div class="reveal" style="max-width: 760px">
-      <div class="eyebrow" style="color: #1F6F4A">Roadmap</div>
-      <h2 class="h2" style="margin-top: 14px">What we're building next</h2>
-      <p style="font-size: 17px; line-height: 1.6; color: #3A3E46; margin: 14px 0 0 0">What we're working on, what's coming, and what just shipped. Missing something? Request it below.</p>
-    </div>
-    <div class="reveal2" data-roadmap style="margin-top: 40px"><noscript><a href="/roadmap/">See the roadmap</a></noscript></div>
-  </section>
-
   <section id="thanks" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
     <div class="reveal">
-      <div class="eyebrow" style="color: #1F6F4A">Standing on shoulders</div>
       <h2 class="h2" style="margin-top: 14px">Open source we use, with thanks.</h2>
     </div>
     <div class="reveal2" style="margin-top: 32px; background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; overflow-x: auto">
       <table style="width: 100%; border-collapse: collapse; min-width: 620px; font-size: 15px">
         <thead><tr style="font-size: 13px; color: #5B606B; text-align: left"><th style="padding: 14px 22px; font-weight: 500; border-bottom: 1px solid #E4E4E0">Project</th><th style="padding: 14px 12px; font-weight: 500; border-bottom: 1px solid #E4E4E0">What we use it for</th><th style="padding: 14px 22px; font-weight: 500; border-bottom: 1px solid #E4E4E0">License</th></tr></thead>
         <tbody>
-                    <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/tauri-apps/tauri" style="font-weight: 600">Tauri</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The desktop app</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT / Apache-2.0</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/Open-Cap-Table-Coalition/Open-Cap-Format-OCF" style="font-weight: 600">Open Cap Format</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The data model and export</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">OCF Schema and Documentation License</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/documenso/documenso" style="font-weight: 600">Documenso</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The signing relay</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">AGPL-3.0</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/mozilla/pdf.js" data-npm="pdfjs-dist" style="font-weight: 600">PDF.js</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading PDFs and checking signed copies</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">Apache-2.0</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/Hopding/pdf-lib" data-npm="pdf-lib" style="font-weight: 600">pdf-lib</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Signature pages and PDF exports</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/naptha/tesseract.js" data-npm="tesseract.js" style="font-weight: 600">tesseract.js</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading scans, offline</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">Apache-2.0</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/ollama/ollama" style="font-weight: 600">Ollama</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Running local AI models (optional)</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/facebook/react" data-npm="react" style="font-weight: 600">React</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The app's screens</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/mholt/PapaParse" data-npm="papaparse" style="font-weight: 600">Papa Parse</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading CSV exports</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/101arrowz/fflate" data-npm="fflate" style="font-weight: 600">fflate</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Excel files and zips</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/ajv-validator/ajv" data-npm="ajv" style="font-weight: 600">Ajv</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Checking every record against OCF</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/honojs/hono" data-npm="hono" style="font-weight: 600">Hono</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The relay's API</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
-          <tr><td style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC"><a href="https://github.com/paulmillr/noble-ed25519" data-npm="@noble/ed25519" style="font-weight: 600">noble-ed25519</a></td><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Checking the signed rules pack</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+                    <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/tauri-apps/tauri" style="font-weight: 600">Tauri</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The desktop app</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT / Apache-2.0</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/Open-Cap-Table-Coalition/Open-Cap-Format-OCF" style="font-weight: 600">Open Cap Format</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The data model and export</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">OCF Schema and Documentation License</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/documenso/documenso" style="font-weight: 600">Documenso</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The signing relay</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">AGPL-3.0</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/mozilla/pdf.js" data-npm="pdfjs-dist" style="font-weight: 600">PDF.js</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading PDFs and checking signed copies</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">Apache-2.0</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/Hopding/pdf-lib" data-npm="pdf-lib" style="font-weight: 600">pdf-lib</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Signature pages and PDF exports</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/naptha/tesseract.js" data-npm="tesseract.js" style="font-weight: 600">tesseract.js</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading scans, offline</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">Apache-2.0</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/ollama/ollama" style="font-weight: 600">Ollama</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Running local AI models (optional)</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/facebook/react" data-npm="react" style="font-weight: 600">React</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The app's screens</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/mholt/PapaParse" data-npm="papaparse" style="font-weight: 600">Papa Parse</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Reading CSV exports</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/101arrowz/fflate" data-npm="fflate" style="font-weight: 600">fflate</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Excel files and zips</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/ajv-validator/ajv" data-npm="ajv" style="font-weight: 600">Ajv</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Checking every record against OCF</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/honojs/hono" data-npm="hono" style="font-weight: 600">Hono</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">The relay's API</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
+          <tr><th scope="row" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; text-align: left; font-weight: 400"><a href="https://github.com/paulmillr/noble-ed25519" data-npm="@noble/ed25519" style="font-weight: 600">noble-ed25519</a></th><td style="padding: 13px 12px; border-bottom: 1px solid #EFEFEC; color: #3A3E46">Checking the signed rules pack</td><td class="num" style="padding: 13px 22px; border-bottom: 1px solid #EFEFEC; font-size: 13px">MIT</td></tr>
         </tbody>
       </table>
     </div>
@@ -505,7 +419,7 @@ cd capfolder/apps/relay
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px 56px; margin-top: 32px">
       <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Who can see my data?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Your cap table and documents stay on your computer. A document you send for signature sits on the relay until it's signed, and whoever runs the relay could read it (self-host it if that matters). The app sends an anonymous install count; turn it off in Settings. Details below.</p></div>
       <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Do I need a server or any setup?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">No. Capfolder is a normal app: download it, open it, pick a folder. No server, no database, no account, no terminal. Signing goes through our hosted relay, so that needs no setup either. Running your own relay is optional.</p></div>
-      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Can I move from Pulley or Carta?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Import their export (spreadsheet or OCF). Totals are checked against it before anything is saved. Then drop in your signed documents and they're sorted for you. See <a href="/features/import/">how the import works</a>, <a href="/migrate/from-pulley/">leaving Pulley before December 8</a>, and the <a href="/compare/carta/">Carta alternative</a>.</p></div>
+      
       <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">What does it cost?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Free forever, or free on your own server. A $50/month Pro plan with sync, online backup and built-in AI is coming. See <a href="#pricing">Pricing</a>.</p></div>
       <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Which companies does it support?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Delaware C-corps first. More jurisdictions after.</p></div>
       <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Is this legal advice?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">No. Capfolder records what you and your lawyer decided. It fills in YC's standard SAFE and side letter word for word, and drafts nothing else. Have a lawyer review them.</p></div>
