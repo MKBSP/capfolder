@@ -13,7 +13,7 @@ Before you start: `git pull` if needed, restart `pnpm dev:desktop` (the native s
 - [ ] 7. SAFE with your own PDF.
 - [ ] 8. Documents → Send for signature (any PDF).
 - [ ] 9. Send reminder, then Cancel.
-- [ ] 10. Free limit (10 a month): send from an email that is NOT in `apps/relay/docker/.host/plans/plans.json`. The 11th send shows "That's 10 signing requests this month…". Your two emails are Pro, so they never hit it. Note: restarting the relay resets the count.
+- [ ] 10. Free limit (5 a month): send from an email that is NOT in `apps/relay/docker/.host/plans/plans.json`. The 6th send shows "That's 5 signing requests this month…". Your two emails are Pro, so they never hit it. Note: restarting the relay resets the count.
 
 ## Ask AI (new)
 - [ ] 11. Settings → AI → Ask AI: pick Claude, paste your API key, Save key. Also try a local model (Ollama / LM Studio).

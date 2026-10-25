@@ -172,6 +172,10 @@ test("HN-friendly download: email optional, works without JS, unsigned-beta step
   expect(html).not.toMatch(/then the relay deletes them\./);
 });
 
+test("the homepage never asks what happens if we shut down", () => {
+  expect(html).not.toMatch(/shut ?down|shuts down/i);
+});
+
 test("pricing: free forever, self-hosted, and a paid plan that's clearly not out yet", () => {
   expect(html).toContain('href="#pricing"');
   const pricing = html.slice(
@@ -183,7 +187,7 @@ test("pricing: free forever, self-hosted, and a paid plan that's clearly not out
     "Self-hosted",
     "$50",
     "Coming",
-    "10 signing requests a month",
+    "5 signing requests a month",
     "No online backup",
     "Bring your own AI",
   ])

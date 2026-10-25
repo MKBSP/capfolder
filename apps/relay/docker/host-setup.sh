@@ -24,7 +24,7 @@ if [ ! -f .host/host.env ]; then
     echo "RELAY_SECRET=$(openssl rand -hex 32)"
     echo "RELAY_ACCOUNT_EMAIL=$ACCOUNT"
     echo "RELAY_ACCOUNT_PASSWORD=$(openssl rand -base64 24 | tr -d '/+=')Aa1!"
-    echo "RELAY_PER_EMAIL_MONTH=10"
+    echo "RELAY_PER_EMAIL_MONTH=5"
     echo "RELAY_TOTAL_DAY=15"
     echo "TUNNEL_TOKEN="
     echo "DOCUMENSO_API_TOKEN="

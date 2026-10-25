@@ -217,13 +217,13 @@ describe("envelopes", () => {
   });
 });
 
-describe("plans: free accounts 10 a month, pro unlimited", () => {
+describe("plans: free accounts 5 a month, pro unlimited", () => {
   test("the limit resets on the 1st of the next month (UTC)", async () => {
     const saved = clock;
     try {
       clock = Date.parse("2026-10-31T23:00:00Z");
       const { app } = setup();
-      for (let i = 0; i < 10; i++) await send(app, "month@acme.example");
+      for (let i = 0; i < 5; i++) await send(app, "month@acme.example");
       expect((await send(app, "month@acme.example")).status).toBe(429);
       clock = Date.parse("2026-11-01T00:00:01Z");
       expect((await send(app, "month@acme.example")).status).toBe(201);
@@ -234,7 +234,7 @@ describe("plans: free accounts 10 a month, pro unlimited", () => {
   test("a pro account has no limit; the plan is keyed by the sender's email, any case", async () => {
     const { app } = setup({ plan: (email) => (email === "pro@acme.example" ? "pro" : "free") });
     for (let i = 0; i < 15; i++) expect((await send(app, "Pro@Acme.example")).status).toBe(201);
-    for (let i = 0; i < 10; i++) await send(app, "free@acme.example");
+    for (let i = 0; i < 5; i++) await send(app, "free@acme.example");
     expect((await send(app, "free@acme.example")).status).toBe(429);
   });
   test("plans file: edits are picked up, a missing or broken file means everyone is free", async () => {
@@ -269,13 +269,13 @@ describe("abuse limits (security review)", () => {
       (await app.request("/auth/verify", json({ email: "v1@x.example", code: "123456" }, ip(3)))).status,
     ).toBe(429);
   });
-  test("a free account can send at most 10 envelopes a month, 10 signers each, 15 MB", async () => {
+  test("a free account can send at most 5 envelopes a month, 10 signers each, 15 MB", async () => {
     const { app } = setup();
-    for (let i = 0; i < 10; i++) expect((await send(app, "busy@acme.example")).status).toBe(201);
+    for (let i = 0; i < 5; i++) expect((await send(app, "busy@acme.example")).status).toBe(201);
     const r = await send(app, "busy@acme.example");
     expect(r.status).toBe(429);
     expect((await r.json()).error).toBe(
-      "That's 10 signing requests this month, the free limit. It resets on November 1. Pro has no limit.",
+      "That's 5 signing requests this month, the free limit. It resets on November 1. Pro has no limit.",
     );
     const many = new FormData();
     many.append("pdf", new Blob([new Uint8Array([1])]), "x.pdf");

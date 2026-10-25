@@ -63,7 +63,7 @@ services:
       SMTP_PASS: ${SMTP_PASS}
       SMTP_FROM: Capfolder <${MAIL_FROM}>
       TRUST_PROXY: "true" # requests arrive through Cloudflare, which sets X-Forwarded-For
-      RELAY_PER_EMAIL_MONTH: ${RELAY_PER_EMAIL_MONTH:-10}
+      RELAY_PER_EMAIL_MONTH: ${RELAY_PER_EMAIL_MONTH:-5}
       RELAY_PLANS_FILE: /app/plans/plans.json # edit .host/plans/plans.json on this computer, no restart
       RELAY_TOTAL_DAY: ${RELAY_TOTAL_DAY:-15} # ~5 emails per envelope stays under Resend's free 100/day
     ports:

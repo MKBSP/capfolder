@@ -9,7 +9,10 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
   optional), checked to the share. Vested-so-far in the file is checked against the schedule (one share of rounding);
   more vested than granted blocks the import. After saving, a "Before you cancel {tool}" card on the cap table lists
   what to keep (Pulley: days left until December 8).
+### Changed
+- Free signing limit is 5 signing requests a month (was 10). Self-hosters set `RELAY_PER_EMAIL_MONTH`.
 ### Website
+- Homepage: the "What happens if we shut down?" section is gone; the compare row is now "Access to your data, always".
 - Feature pages: `/features/` with `/features/import/`, and `/migrate/from-pulley/` (dates, what to download, the
   move). Help: `/help/import/`, with screenshots taken by `pnpm shots import`. "Features" in every navbar; every page
   has a canonical URL; `node scripts/indexnow.mjs` sends the sitemap to IndexNow after a deploy.

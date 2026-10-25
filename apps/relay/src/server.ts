@@ -39,7 +39,7 @@ const app = createApp({
   secret,
   now: () => Date.now(),
   limits: {
-    perEmailPerMonth: Number(process.env.RELAY_PER_EMAIL_MONTH ?? 10),
+    perEmailPerMonth: Number(process.env.RELAY_PER_EMAIL_MONTH ?? 5),
     totalPerDay: process.env.RELAY_TOTAL_DAY ? Number(process.env.RELAY_TOTAL_DAY) : undefined,
   },
   // who's Pro, edited by hand without a restart: {"pro": ["founder@example.com"]}

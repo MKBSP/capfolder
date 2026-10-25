@@ -22,7 +22,7 @@ Point the desktop app at `http://localhost:8787` (Settings → Signing). Every e
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | email for the codes |
 | `PORT` (8787), `HOST` | where it listens |
 | `PING_FILE` (`data/pings.jsonl`) | where anonymous install pings go, one JSON line each (docs/11). No IPs are stored |
-| `RELAY_PER_EMAIL_MONTH` (10) | signing requests (envelopes + wire emails) one free account can send per calendar month (UTC) |
+| `RELAY_PER_EMAIL_MONTH` (5) | signing requests (envelopes + wire emails) one free account can send per calendar month (UTC) |
 | `RELAY_PLANS_FILE` (`data/plans.json`) | who is Pro (no monthly limit), by verified email: `{"pro": ["founder@example.com"]}`. Re-read when it changes; missing or broken = everyone free |
 | `RELAY_TOTAL_DAY` (none) | envelopes everyone together can send per day; keep it under your email quota (~5 emails each) |
 | `PAUSE_FILE` (`data/PAUSED`) | kill switch: while this file exists, new envelopes are refused (status and downloads still work) |

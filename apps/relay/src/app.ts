@@ -16,7 +16,7 @@ export interface RelayDeps {
   clientIp?(c: Context): string;
   /** docs/11: where anonymous install pings go (one row each). Without it pings are accepted and dropped. */
   recordPing?(row: PingRow): Promise<void>;
-  /** Fair use on a hosted relay: signing requests per free account per calendar month (10, UTC) and across
+  /** Fair use on a hosted relay: signing requests per free account per calendar month (5, UTC) and across
    * everyone per day (unlimited). */
   limits?: { perEmailPerMonth?: number; totalPerDay?: number };
   /** The sender's plan, by lowercased email. Pro has no per-account limit. Default: everyone is free. */
@@ -187,7 +187,7 @@ export function createApp(d: RelayDeps) {
   // Abuse limits: code emails and guesses per IP (across addresses), sends per verified email per month.
   const startPerIp = new Limit(20, 3600e3, d.now);
   const verifyPerIp = new Limit(60, 3600e3, d.now);
-  const perEmail = d.limits?.perEmailPerMonth ?? 10;
+  const perEmail = d.limits?.perEmailPerMonth ?? 5;
   // ponytail: counts live in memory, so a relay restart resets them; persist them when billing arrives
   const sent = new Map<string, { month: string; n: number }>();
   let sentMonth = "";

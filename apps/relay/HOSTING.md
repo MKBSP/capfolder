@@ -58,7 +58,7 @@ Then in the app: Settings → Signing → verify your email, and send yourself a
 | `./host.sh pause` / `resume` | kill switch: refuse new envelopes (status, downloads and reminders keep working) |
 | `./host.sh down` | stop everything (data is kept) |
 
-Fair use (in `.host/host.env`, then `./host.sh up`): `RELAY_PER_EMAIL_MONTH=10` signing requests (envelopes and
+Fair use (in `.host/host.env`, then `./host.sh up`): `RELAY_PER_EMAIL_MONTH=5` signing requests (envelopes and
 wire-instruction emails) per free account per calendar month (UTC), `RELAY_TOTAL_DAY=15` for everyone together (about 5 emails each keeps Resend under 100 a day). Raise both when you move
 to a paid email plan.
 
