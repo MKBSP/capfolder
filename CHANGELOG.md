@@ -10,8 +10,8 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
   more vested than granted blocks the import. After saving, a "Before you cancel {tool}" card on the cap table lists
   what to keep (Pulley: days left until December 8).
 ### Changed
-- Person page: the vesting graph is smaller and on the left, with vested, unvested, cliff, next vest and fully vested
-  beside it (stacked on narrow windows); y-axis labels are short (40K, 4M) so they no longer get cut off (CAP-48).
+- Person page: vested, next vest and fully vested sit by the name; the vesting graph is on the left with the
+  holding and its history beside it (stacked on narrow windows); y-axis labels are short (40K, 4M) so they no longer get cut off (CAP-48).
 - Free signing limit is 5 signing requests a month (was 10). Self-hosters set `RELAY_PER_EMAIL_MONTH`.
 ### Website
 - Homepage cleanup for first-time founders: the shut-down, compare, open-source, roadmap, competitor and marquee

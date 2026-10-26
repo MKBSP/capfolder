@@ -26,13 +26,13 @@ test("Woz: summary, chart and history", async () => {
       name: /^Vesting schedule for Steve Wozniak: 10,000 of 40,000 vested/,
     }),
   ).toBeInTheDocument();
-  // key data sits next to the graph, in the same card
-  const keyData = within(vesting).getByRole("list", { name: "Key data" }).textContent;
-  expect(keyData).toContain("Vested10,000 / 40,000");
-  expect(keyData).toContain("Unvested30,000");
-  expect(keyData).toContain("Cliff7 Oct 2026");
-  expect(keyData).toContain("Next vest833 · 7 Nov 2026");
-  expect(keyData).toContain("Fully vested7 Oct 2029");
+  // Mads: key numbers in the header; the holding and its history to the right of the graph
+  expect(within(vesting).getByRole("heading", { name: "Grant · OPT-1" })).toBeInTheDocument();
+  expect(within(vesting).getByRole("heading", { name: "History" })).toBeInTheDocument();
+  const head = screen.getByRole("heading", { name: "Steve Wozniak", level: 1 }).closest(".row")!.textContent;
+  expect(head).toContain("Vested10,000 / 40,000");
+  expect(head).toContain("Next vest833 7 Nov");
+  expect(head).toContain("Fully vestedOct 2029");
   expect(screen.getByText("Granted 40,000 options at $0.12 (OPT-1)")).toBeInTheDocument();
 });
 

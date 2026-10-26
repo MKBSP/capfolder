@@ -57,6 +57,47 @@ export function Person({ id }: { id: string }) {
         ? "Investor"
         : "No holdings";
 
+  const cards = (
+    <>
+      {secs.map((x) => (
+        <HoldingCard key={x.id} x={x} />
+      ))}
+      <div className="card">
+        <h2>History</h2>
+        {history.map((h) => (
+          <div
+            key={h.event.id}
+            className="row"
+            style={{
+              alignItems: "flex-start",
+              padding: "6px 0",
+              borderBottom: "1px solid var(--row-divider)",
+            }}
+          >
+            <span className="mono meta" style={{ width: 92, flex: "none" }}>
+              {h.date}
+            </span>
+            <span className="small grow" style={{ textDecoration: h.reversed ? "line-through" : undefined }}>
+              {h.text}
+              {h.reversed ? <span className="meta"> (reversed)</span> : null}
+            </span>
+            {h.correctable && !h.reversed ? (
+              <span className="row" style={{ gap: 8 }}>
+                {CORRECTABLE[h.event.type] ? (
+                  <button type="button" className="btn link small" onClick={() => setDialog({ correct: h })}>
+                    Correct…
+                  </button>
+                ) : null}
+                <button type="button" className="btn link small" onClick={() => setDialog({ reverse: h })}>
+                  Reverse…
+                </button>
+              </span>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </>
+  );
   return (
     <>
       <CrumbHeader title={p.name?.legal_name} back={{ name: "people" }}>
@@ -93,72 +134,26 @@ export function Person({ id }: { id: string }) {
             </div>
             <h1>{p.name?.legal_name}</h1>
           </div>
-          {main && !vests ? <Summary x={main} /> : null}
+          {main ? <Summary x={main} /> : null}
         </div>
         {main && vests ? (
-          <section className="card" aria-label="Vesting schedule" style={{ marginBottom: 16 }}>
-            <div className="row spread">
-              <h2 style={{ margin: 0 }}>Vesting schedule</h2>
-              <span className="meta">{scheduleText(s, main)}</span>
-            </div>
-            <div className="vsplit">
-              <VestingGraph x={main} name={p.name?.legal_name ?? id} />
-              <KeyData x={main} />
-            </div>
-          </section>
-        ) : null}
-        <div
-          style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}
-        >
-          {secs.map((x) => (
-            <HoldingCard key={x.id} x={x} />
-          ))}
-          <div className="card">
-            <h2>History</h2>
-            {history.map((h) => (
-              <div
-                key={h.event.id}
-                className="row"
-                style={{
-                  alignItems: "flex-start",
-                  padding: "6px 0",
-                  borderBottom: "1px solid var(--row-divider)",
-                }}
-              >
-                <span className="mono meta" style={{ width: 92, flex: "none" }}>
-                  {h.date}
-                </span>
-                <span
-                  className="small grow"
-                  style={{ textDecoration: h.reversed ? "line-through" : undefined }}
-                >
-                  {h.text}
-                  {h.reversed ? <span className="meta"> (reversed)</span> : null}
-                </span>
-                {h.correctable && !h.reversed ? (
-                  <span className="row" style={{ gap: 8 }}>
-                    {CORRECTABLE[h.event.type] ? (
-                      <button
-                        type="button"
-                        className="btn link small"
-                        onClick={() => setDialog({ correct: h })}
-                      >
-                        Correct…
-                      </button>
-                    ) : null}
-                    <button
-                      type="button"
-                      className="btn link small"
-                      onClick={() => setDialog({ reverse: h })}
-                    >
-                      Reverse…
-                    </button>
-                  </span>
-                ) : null}
+          <section className="vsplit" aria-label="Vesting schedule">
+            <div className="card">
+              <div className="row spread">
+                <h2 style={{ margin: 0 }}>Vesting schedule</h2>
+                <span className="meta">{scheduleText(s, main)}</span>
               </div>
-            ))}
+              <VestingGraph x={main} name={p.name?.legal_name ?? id} />
+            </div>
+            <div style={{ display: "grid", gap: 16, alignContent: "start" }}>{cards}</div>
+          </section>
+        ) : (
+          <div
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}
+          >
+            {cards}
           </div>
-        </div>
+        )}
       </main>
       {dialog === "edit" ? (
         <EditDialog
@@ -215,36 +210,6 @@ function Summary({ x }: { x: Security }) {
         </div>
       </div>
     </div>
-  );
-}
-
-/** Next to the graph: where the grant stands today and the dates that matter. */
-function KeyData({ x }: { x: Security }) {
-  const s = useApp().state!;
-  const v = securityVested(x, s, s.asOf);
-  const next = nextVest(x, s, s.asOf);
-  const full = fullyVestedOn(x, s);
-  const pts = vestingSchedule(x, s) ?? [];
-  const cliff = pts.findIndex((p) => p.cumulative > 0n);
-  const item = (k: string, v: ReactNode) => (
-    <li className="stat">
-      <div className="meta">{k}</div>
-      <div className="val">{v}</div>
-    </li>
-  );
-  return (
-    <ul className="vkeys" aria-label="Key data">
-      {item(
-        "Vested",
-        <>
-          {shares(v.vested)} <span className="meta">/ {shares(x.quantity)}</span>
-        </>,
-      )}
-      {item("Unvested", shares(v.unvested))}
-      {item("Cliff", cliff > 0 ? day(pts[cliff]!.date) : "—")}
-      {item("Next vest", next ? `${shares(next.quantity)} · ${day(next.date)}` : "—")}
-      {item("Fully vested", full ? day(full) : "—")}
-    </ul>
   );
 }
 
