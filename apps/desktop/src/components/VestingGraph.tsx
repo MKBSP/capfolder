@@ -1,10 +1,10 @@
 import { type Security, vestingSchedule } from "@capfolder/core";
 import { useState } from "react";
-import { day, month, shares } from "../fmt";
+import { day, month, shares, sharesShort } from "../fmt";
 import { useApp } from "../state";
 
 const W = 640;
-const H = 280;
+const H = 250;
 const L = 60;
 const R = 12;
 const T = 22;
@@ -83,7 +83,7 @@ export function VestingGraph({ x, name }: { x: Security; name: string }) {
             <g key={String(v)}>
               <line x1={L} x2={W - R} y1={py(v)} y2={py(v)} className="grid" />
               <text x={L - 8} y={py(v) + 4} textAnchor="end" className="lbl">
-                {shares(v)}
+                {sharesShort(v)}
               </text>
             </g>
           ))}

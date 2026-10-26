@@ -20,13 +20,28 @@ const backHome = async () => {
 
 test("Woz: summary, chart and history", async () => {
   await person("Steve Wozniak");
-  expect(screen.getByText("10,000", { selector: "div, span" })).toBeInTheDocument();
-  expect(screen.getByText("833 7 Nov")).toBeInTheDocument();
-  expect(screen.getAllByText("Oct 2029").length).toBeGreaterThan(0);
+  const vesting = screen.getByRole("region", { name: "Vesting schedule" });
   expect(
-    screen.getByRole("img", { name: /^Vesting schedule for Steve Wozniak: 10,000 of 40,000 vested/ }),
+    within(vesting).getByRole("img", {
+      name: /^Vesting schedule for Steve Wozniak: 10,000 of 40,000 vested/,
+    }),
   ).toBeInTheDocument();
+  // key data sits next to the graph, in the same card
+  const keyData = within(vesting).getByRole("list", { name: "Key data" }).textContent;
+  expect(keyData).toContain("Vested10,000 / 40,000");
+  expect(keyData).toContain("Unvested30,000");
+  expect(keyData).toContain("Cliff7 Oct 2026");
+  expect(keyData).toContain("Next vest833 · 7 Nov 2026");
+  expect(keyData).toContain("Fully vested7 Oct 2029");
   expect(screen.getByText("Granted 40,000 options at $0.12 (OPT-1)")).toBeInTheDocument();
+});
+
+test("CAP-48: y-axis labels are short so they fit (40K, not 40,000)", async () => {
+  await person("Steve Wozniak");
+  const graph = screen.getByRole("img", { name: /^Vesting schedule for Steve Wozniak/ });
+  const labels = [...graph.querySelectorAll("text")].map((t) => t.textContent);
+  expect(labels).toEqual(expect.arrayContaining(["0", "10K", "20K", "30K", "40K"]));
+  expect(labels).not.toContain("40,000");
 });
 
 test("terminate Woz after the cliff: unvested returns to the pool", async () => {

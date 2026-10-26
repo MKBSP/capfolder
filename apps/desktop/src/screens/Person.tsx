@@ -46,6 +46,7 @@ export function Person({ id }: { id: string }) {
   const transferable = secs.filter((x) => x.kind === "stock" || x.convertibleType === "SAFE");
   const vestingStock = secs.filter((x) => x.kind === "stock" && (x.vestingTermsId || x.vestings?.length));
   const main = equity.find((x) => vestingSchedule(x, s)) ?? equity[0];
+  const vests = main && vestingSchedule(main, s);
   const history = historyFor(app.vault.events, s, id);
   const email = p.contact_info?.emails?.[0]?.email_address;
   const role = options.length
@@ -92,18 +93,19 @@ export function Person({ id }: { id: string }) {
             </div>
             <h1>{p.name?.legal_name}</h1>
           </div>
-          {main ? <Summary x={main} /> : null}
+          {main && !vests ? <Summary x={main} /> : null}
         </div>
-        {main && vestingSchedule(main, s) ? (
-          <div className="card" style={{ marginBottom: 16 }}>
+        {main && vests ? (
+          <section className="card" aria-label="Vesting schedule" style={{ marginBottom: 16 }}>
             <div className="row spread">
               <h2 style={{ margin: 0 }}>Vesting schedule</h2>
               <span className="meta">{scheduleText(s, main)}</span>
             </div>
-            <div style={{ marginTop: 12 }}>
+            <div className="vsplit">
               <VestingGraph x={main} name={p.name?.legal_name ?? id} />
+              <KeyData x={main} />
             </div>
-          </div>
+          </section>
         ) : null}
         <div
           style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}
@@ -213,6 +215,36 @@ function Summary({ x }: { x: Security }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/** Next to the graph: where the grant stands today and the dates that matter. */
+function KeyData({ x }: { x: Security }) {
+  const s = useApp().state!;
+  const v = securityVested(x, s, s.asOf);
+  const next = nextVest(x, s, s.asOf);
+  const full = fullyVestedOn(x, s);
+  const pts = vestingSchedule(x, s) ?? [];
+  const cliff = pts.findIndex((p) => p.cumulative > 0n);
+  const item = (k: string, v: ReactNode) => (
+    <li className="stat">
+      <div className="meta">{k}</div>
+      <div className="val">{v}</div>
+    </li>
+  );
+  return (
+    <ul className="vkeys" aria-label="Key data">
+      {item(
+        "Vested",
+        <>
+          {shares(v.vested)} <span className="meta">/ {shares(x.quantity)}</span>
+        </>,
+      )}
+      {item("Unvested", shares(v.unvested))}
+      {item("Cliff", cliff > 0 ? day(pts[cliff]!.date) : "—")}
+      {item("Next vest", next ? `${shares(next.quantity)} · ${day(next.date)}` : "—")}
+      {item("Fully vested", full ? day(full) : "—")}
+    </ul>
   );
 }
 

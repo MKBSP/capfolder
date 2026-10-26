@@ -43,6 +43,10 @@ const knownCurrency = (c: string) => {
 export const shares = (n: bigint | null | undefined) =>
   n === null || n === undefined ? "—" : new Intl.NumberFormat(cfg.locale).format(n);
 
+/** Chart axes: "4000000" → "4M", "12500" → "12.5K" (short, so a label never runs off the edge). */
+export const sharesShort = (n: bigint) =>
+  new Intl.NumberFormat(cfg.locale, { notation: "compact", maximumFractionDigits: 1 }).format(n);
+
 /** "500000" → "$500,000" / "500.000 €" (keeps cents if present). Display only. */
 export const money = (amount: string | undefined, currency = cfg.currency) => {
   if (!amount) return "—";
