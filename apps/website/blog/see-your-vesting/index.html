@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>See who owns what, and when · Capfolder</title>
+<meta name="description" content="Capfolder 0.1.4: a vesting screen for your option pool, a person page with each vesting graph, and an import check against Pulley, Carta or Cake.">
+<link rel="canonical" href="https://capfolder.com/blog/see-your-vesting/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="See who owns what, and when">
+<meta property="og:description" content="Capfolder 0.1.4: a vesting screen for your option pool, a person page with each vesting graph, and an import check against Pulley, Carta or Cake.">
+<meta property="og:url" content="https://capfolder.com/blog/see-your-vesting/">
+<meta property="og:image" content="https://capfolder.com/blog/img/v014-vesting.jpg">
+<link rel="stylesheet" href="/page.css">
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<style>
+figure{margin:20px 0 0}
+figure img{display:block;width:100%;height:auto;border:1px solid #E4E4E0;border-radius:12px;background:#fff}
+figure.small img{max-width:600px}
+figure.narrow img{max-width:380px}
+figcaption{font-size:14px;color:#5B606B;margin-top:6px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "See who owns what, and when", "datePublished": "2026-10-27", "dateModified": "2026-10-27", "author": {"@type": "Organization", "name": "Capfolder", "url": "https://capfolder.com/"}, "image": "https://capfolder.com/blog/img/v014-vesting.jpg", "mainEntityOfPage": "https://capfolder.com/blog/see-your-vesting/"}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/features/">Features</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/">Learn</a><a href="/blog/" aria-current="true">Blog</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<section class="lhero"><div class="lhero-in"><div>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/blog/">Blog</a> · Capfolder 0.1.4</div>
+  <h1>See who owns what, and when</h1>
+  <p class="meta">October 27, 2026 · Capfolder 0.1.4 · 4 min read</p>
+</div><img src="/img/ill/folder.svg" width="400" height="300" alt=""></div></section>
+<main class="narrow">
+  <div class="short"><b>In short:</b> <a href="https://github.com/MKBSP/capfolder/releases/tag/v0.1.4">Capfolder 0.1.4</a> adds a Vesting screen for your option pool and a clearer page for each person: what's vested, what vests next, and when it's done. It also checks an import from Pulley, Carta or Cake against the old tool's numbers, to the share.</div>
+
+  <h2>The problem</h2>
+  <p>A cap table tells you who owns what today. The question founders and employees actually ask is about time: how much has vested, when is the next vest, when is it all mine? Until now Capfolder answered that one holding at a time. You had to click into each row and read the math.</p>
+  <p>Version 0.1.4 puts the answer on one screen, and on each person's page.</p>
+
+  <h2>1. A Vesting screen for the option pool</h2>
+  <p>The new <b>Vesting</b> tab shows the pool at a glance: total, allocated, vested and still available to grant, as cards and as one bar. Below it, a row per grant with its strike price, how much has vested and the next vest date. Open a row to see its vesting graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves. The key dates and the signed documents sit next to it.</p>
+  <figure><img src="/blog/img/v014-vesting.jpg" width="1480" height="1033" alt="Capfolder's Vesting screen on the sample company: cards for the 1,000,000-share pool, 80,000 allocated, 10,000 vested and 920,000 available, a bar below, and Steve Wozniak's grant opened to its vesting graph with the cliff and today marked, key dates, price and his signed option grant." loading="lazy"><figcaption>Steve Wozniak's grant, opened: 10,000 of 40,000 vested after the cliff, then 833 more each month.</figcaption></figure>
+
+  <h2>2. A person page you can read in five seconds</h2>
+  <p>Click a name anywhere and the three numbers people ask about sit next to it: vested, next vest and fully vested. The vesting graph is on the left, the holding and its history on the right. On a narrow window they stack. The graph's axis labels are short now (40K, 4M), so they no longer get cut off.</p>
+  <figure><img src="/blog/img/v014-person.jpg" width="1480" height="685" alt="Tim Apple's page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right." loading="lazy"><figcaption>Tim Apple, a founder in the sample company: 75% vested, done in Oct 2027.</figcaption></figure>
+
+  <h2>3. Check an import against Pulley, Carta or Cake</h2>
+  <p>When you import, the last step now shows each total next to a box for the old tool's number. Fully diluted is required. Each share class, options outstanding, pool available, SAFE total and number of stakeholders are optional. Capfolder checks them to the share. It also checks the vested-so-far column in the file against the schedule, and blocks the import if a grant shows more vested than granted.</p>
+  <figure><img src="/blog/img/v014-import-compare.jpg" width="1032" height="571" alt="The Compare with Pulley step of Capfolder's import: fully diluted, common shares and pool available typed in from Pulley each show Match; options outstanding, SAFE total and stakeholders are optional boxes." loading="lazy"><figcaption>Type in the numbers from the old tool's dashboard. Each one says Match, or is flagged when it doesn't.</figcaption></figure>
+  <p>After you save, a <b>Before you cancel</b> card on the cap table lists what to keep from the old tool before you cancel it: every signed document, the board consents and option plan, the last 409A report, and a hand check of 3 people.</p>
+
+  <h2>4. "What needs my attention?"</h2>
+  <p>Ask AI now has one question that works with no AI connected: <b>What needs my attention?</b> It lists up to three things to do next, most urgent first, each with a <b>Take me there</b> button.</p>
+  <figure class="narrow"><img src="/blog/img/v014-attention.jpg" width="380" height="480" alt="Capfolder's Ask AI panel with no AI connected, answering What needs my attention? with three things: no signed document for Tim Apple's shares, no board consent for Steve Wozniak's grant, and no IP assignment for Tim Apple, each with Take me there." loading="lazy"></figure>
+
+  <h2>And a few smaller things</h2>
+  <ul>
+    <li><b>Excel export</b> starts with an Overview tab: the key numbers, an ownership chart and vested over time, as real Excel charts. Then Vesting by month and Missing documents.</li>
+    <li><b>Try the sample company</b> is now a button on the first screen, and the Get started steps link to the <a href="/learn/">guides</a>.</li>
+    <li><b>As of follows the calendar.</b> If you leave the app open overnight, the date moves with it, so a SAFE signed today no longer hides behind yesterday's date. A date you pick yourself still stays put.</li>
+    <li><b>Free signing is now 5 requests a month</b> (it was 10). If you host the signing relay yourself, you set the limit.</li>
+  </ul>
+
+  <h2>What it doesn't do yet</h2>
+  <ul>
+    <li>The import check compares totals, not every row. That's why the Before you cancel card asks you to check 3 people by hand.</li>
+    <li>The builds are still unsigned, so the first time you open Capfolder you confirm it once. On macOS: System Settings → Privacy &amp; Security → Open Anyway. On Windows: More info → Run anyway.</li>
+  </ul>
+
+  <h2>Try it</h2>
+  <p>Capfolder is free and open source (AGPL-3.0), and runs on macOS, Windows and Linux. Your cap table stays in a folder on your own computer. There's no account to create: download it, open it, and click <b>Try the sample company</b> to see the Vesting screen first.</p>
+  <div class="ctas"><a class="btn" href="/#download">Download Capfolder, free</a><a href="/help/import/">Import from Pulley or Carta</a><a href="/learn/cap-table/">What a cap table is</a></div>
+  <p>When someone on your team asks "how much of mine has vested?", how do you answer today? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+  <p class="foot">Screenshots from Capfolder 0.1.4 with the sample company. Full list of changes: <a href="https://github.com/MKBSP/capfolder/blob/main/CHANGELOG.md">CHANGELOG</a>. Capfolder isn't legal advice.</p>
+</main>
+</body>
+</html>

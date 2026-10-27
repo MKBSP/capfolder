@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LinkedIn</title><style>body{margin:0;background:#F2F2EE;color:#111311;font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 80px}
+h1{font-size:28px;margin:0 0 4px}.sub{color:#5B606B;margin:0 0 20px}
+.rules{background:#fff;border:1px solid #C9DECF;border-radius:12px;padding:12px 18px;font-size:14px}
+.rules li{margin:3px 0}
+.post{background:#fff;border:1px solid #E4E4E0;border-radius:12px;padding:18px 20px;margin-top:18px}
+.post h2{font-size:15px;margin:0 0 8px;color:#5B606B;text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.text{white-space:pre-wrap;font-size:16px}
+.count{font:12px "IBM Plex Mono",monospace;color:#5B606B}
+.count.bad{color:#B42318;font-weight:700}
+button{font:inherit;font-size:13px;border:1px solid #1F6F4A;background:#1F6F4A;color:#fff;border-radius:8px;padding:5px 10px;cursor:pointer;text-transform:none;letter-spacing:0}
+figure{margin:12px 0 0}figure img{width:100%;border:1px solid #E4E4E0;border-radius:10px;display:block}
+figcaption{font-size:13px;color:#5B606B;margin-top:4px}
+.article h1,.article h2,.article h3{text-transform:none;letter-spacing:0;color:#111311}
+.article h2{font-size:22px;margin:24px 0 8px;display:block}
+pre{background:#111311;color:#E8F3EC;padding:12px 14px;border-radius:8px;overflow:auto;font:13px/1.5 "IBM Plex Mono",monospace;white-space:pre}
+code{font-family:"IBM Plex Mono",monospace;font-size:.92em}
+a{color:#1F6F4A}</style></head><body><div class="wrap"><p class="sub"><a href="index.html">← All versions</a> · Original: <a href="https://capfolder.com/blog/see-your-vesting/">https://capfolder.com/blog/see-your-vesting/</a></p><h1>LinkedIn</h1><p class="sub">Founder angle. 150–250 words, one screenshot, no link, no hashtags, ends with a question.</p><div class="rules"><b>Before you post</b><ul><li>Mon–Thu, 11:00–13:00 Lisbon.</li><li><b>No link in the post.</b> If someone asks, reply with it.</li><li>Attach <b>one</b> image: the Person page.</li><li>Be free for the next hour to reply to every comment with a full sentence.</li></ul></div><section class="post"><h2><span>Post</span><span><span class="count">1112/1800 chars</span> <button data-copy="p1">Copy</button></span></h2><div class="text" id="p1">How much of your equity has vested?
+
+It&#x27;s a simple question. Answering it usually means opening a spreadsheet and doing some math by hand.
+
+So Capfolder 0.1.4 puts it on one screen:
+
+1. A Vesting screen. The option pool at a glance: total, granted, vested, still available. A row per grant. Open one and you see its graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves.
+2. A person page you can read in five seconds. Vested, next vest and fully vested, right next to the name.
+3. An import check. Moving from Pulley, Carta or Cake? Type in the old tool&#x27;s totals and Capfolder checks them to the share. A grant with more vested than granted blocks the import.
+4. &quot;What needs my attention?&quot; Up to 3 things to do next, each with a Take me there button. It works with no AI connected.
+
+One honest limit: the import check compares totals, not every row, so you still check a few people by hand.
+
+Capfolder is free, open source, and keeps your cap table in a folder on your own computer.
+
+Founders: when someone on your team asks how much of theirs has vested, how do you answer today?</div><figure><img src="../../../../apps/website/blog/img/v014-person.jpg" alt="Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right."><figcaption>Alt text: Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right. · <a href="../../../../apps/website/blog/img/v014-person.jpg" download>Download image</a></figcaption></figure></section></div><script>
+for (const b of document.querySelectorAll("button[data-copy]")) b.addEventListener("click", async () => {
+  const el = document.getElementById(b.dataset.copy);
+  const rich = el.classList.contains("article");
+  try {
+    if (rich && window.ClipboardItem) await navigator.clipboard.write([new ClipboardItem({"text/html": new Blob([el.innerHTML], {type: "text/html"}), "text/plain": new Blob([el.innerText], {type: "text/plain"})})]);
+    else await navigator.clipboard.writeText(el.dataset.raw ?? el.innerText);
+    b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy"), 1500);
+  } catch { b.textContent = "Select and copy by hand"; }
+});
+</script></body></html>

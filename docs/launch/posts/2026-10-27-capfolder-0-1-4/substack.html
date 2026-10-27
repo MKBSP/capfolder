@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Substack</title><style>body{margin:0;background:#F2F2EE;color:#111311;font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 80px}
+h1{font-size:28px;margin:0 0 4px}.sub{color:#5B606B;margin:0 0 20px}
+.rules{background:#fff;border:1px solid #C9DECF;border-radius:12px;padding:12px 18px;font-size:14px}
+.rules li{margin:3px 0}
+.post{background:#fff;border:1px solid #E4E4E0;border-radius:12px;padding:18px 20px;margin-top:18px}
+.post h2{font-size:15px;margin:0 0 8px;color:#5B606B;text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.text{white-space:pre-wrap;font-size:16px}
+.count{font:12px "IBM Plex Mono",monospace;color:#5B606B}
+.count.bad{color:#B42318;font-weight:700}
+button{font:inherit;font-size:13px;border:1px solid #1F6F4A;background:#1F6F4A;color:#fff;border-radius:8px;padding:5px 10px;cursor:pointer;text-transform:none;letter-spacing:0}
+figure{margin:12px 0 0}figure img{width:100%;border:1px solid #E4E4E0;border-radius:10px;display:block}
+figcaption{font-size:13px;color:#5B606B;margin-top:4px}
+.article h1,.article h2,.article h3{text-transform:none;letter-spacing:0;color:#111311}
+.article h2{font-size:22px;margin:24px 0 8px;display:block}
+pre{background:#111311;color:#E8F3EC;padding:12px 14px;border-radius:8px;overflow:auto;font:13px/1.5 "IBM Plex Mono",monospace;white-space:pre}
+code{font-family:"IBM Plex Mono",monospace;font-size:.92em}
+a{color:#1F6F4A}</style></head><body><div class="wrap"><p class="sub"><a href="index.html">← All versions</a> · Original: <a href="https://capfolder.com/blog/see-your-vesting/">https://capfolder.com/blog/see-your-vesting/</a></p><h1>Substack</h1><p class="sub">The newsletter version: shorter than the blog post, written to subscribers, links to the full post.</p><div class="rules"><b>Before you post</b><ul><li>Send Tue–Thu morning.</li><li>Click <b>Copy with formatting</b> and paste into the Substack editor. Images come across once capfolder.com has the post live; otherwise drag them in.</li><li>Title and subtitle are the first two lines.</li></ul></div><section class="post"><h2><span>Post</span><button data-copy="art">Copy with formatting</button></h2><div class="article" id="art"><h1>See who owns what, and when</h1>
+<h3>Capfolder 0.1.4: a Vesting screen, a clearer person page, and an import check against Pulley, Carta or Cake</h3>
+<p>A cap table tells you who owns what today. The question people actually ask is about time: how much has vested, when is the next vest, when is it all mine? Until now, Capfolder answered that one holding at a time.</p>
+<p>The new release puts the answer on one screen.</p>
+<p><b>A Vesting screen.</b> The option pool at a glance: total, granted, vested and still available. A row per grant opens to its graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves. Key dates and signed documents sit next to it.</p>
+<figure><img src="../../../../apps/website/blog/img/v014-vesting.jpg" alt="Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant."><figcaption>Alt text: Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant. · <a href="../../../../apps/website/blog/img/v014-vesting.jpg" download>Download image</a></figcaption></figure>
+<p><b>A person page you can read in five seconds.</b> Vested, next vest and fully vested sit next to the name, with the graph beside the holding and its history.</p>
+<figure><img src="../../../../apps/website/blog/img/v014-person.jpg" alt="Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right."><figcaption>Alt text: Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right. · <a href="../../../../apps/website/blog/img/v014-person.jpg" download>Download image</a></figcaption></figure>
+<p><b>An import check.</b> Coming from Pulley, Carta or Cake? Type in the old tool's totals and Capfolder checks them to the share. A grant with more vested than granted blocks the import.</p>
+<p><b>"What needs my attention?"</b> Up to 3 things to do next, each with a Take me there button. It works with no AI connected.</p>
+<p>Also: the Excel export opens on an Overview tab with real charts, "As of" now follows the calendar if you leave the app open overnight, and free signing is 5 requests a month.</p>
+<p><b>What it doesn't do yet:</b> the import check compares totals, not every row, so you still check a few people by hand.</p>
+<p>Capfolder is free, open source, and keeps your cap table in a folder on your own computer. <a href="https://capfolder.com/blog/see-your-vesting/">The full post, with every screenshot.</a></p>
+<p><b>When someone on your team asks how much of theirs has vested, how do you answer today?</b> Hit reply, I read every one.</p></div></section></div><script>
+for (const b of document.querySelectorAll("button[data-copy]")) b.addEventListener("click", async () => {
+  const el = document.getElementById(b.dataset.copy);
+  const rich = el.classList.contains("article");
+  try {
+    if (rich && window.ClipboardItem) await navigator.clipboard.write([new ClipboardItem({"text/html": new Blob([el.innerHTML], {type: "text/html"}), "text/plain": new Blob([el.innerText], {type: "text/plain"})})]);
+    else await navigator.clipboard.writeText(el.dataset.raw ?? el.innerText);
+    b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy"), 1500);
+  } catch { b.textContent = "Select and copy by hand"; }
+});
+</script></body></html>

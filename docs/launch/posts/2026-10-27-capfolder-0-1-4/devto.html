@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>dev.to</title><style>body{margin:0;background:#F2F2EE;color:#111311;font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 80px}
+h1{font-size:28px;margin:0 0 4px}.sub{color:#5B606B;margin:0 0 20px}
+.rules{background:#fff;border:1px solid #C9DECF;border-radius:12px;padding:12px 18px;font-size:14px}
+.rules li{margin:3px 0}
+.post{background:#fff;border:1px solid #E4E4E0;border-radius:12px;padding:18px 20px;margin-top:18px}
+.post h2{font-size:15px;margin:0 0 8px;color:#5B606B;text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.text{white-space:pre-wrap;font-size:16px}
+.count{font:12px "IBM Plex Mono",monospace;color:#5B606B}
+.count.bad{color:#B42318;font-weight:700}
+button{font:inherit;font-size:13px;border:1px solid #1F6F4A;background:#1F6F4A;color:#fff;border-radius:8px;padding:5px 10px;cursor:pointer;text-transform:none;letter-spacing:0}
+figure{margin:12px 0 0}figure img{width:100%;border:1px solid #E4E4E0;border-radius:10px;display:block}
+figcaption{font-size:13px;color:#5B606B;margin-top:4px}
+.article h1,.article h2,.article h3{text-transform:none;letter-spacing:0;color:#111311}
+.article h2{font-size:22px;margin:24px 0 8px;display:block}
+pre{background:#111311;color:#E8F3EC;padding:12px 14px;border-radius:8px;overflow:auto;font:13px/1.5 "IBM Plex Mono",monospace;white-space:pre}
+code{font-family:"IBM Plex Mono",monospace;font-size:.92em}
+a{color:#1F6F4A}</style></head><body><div class="wrap"><p class="sub"><a href="index.html">← All versions</a> · Original: <a href="https://capfolder.com/blog/see-your-vesting/">https://capfolder.com/blog/see-your-vesting/</a></p><h1>dev.to</h1><p class="sub">The technical version: a full article with canonical_url pointing at capfolder.com, 4 tags.</p><div class="rules"><b>Before you post</b><ul><li>Tue–Wed.</li><li><b>Wait until Google has indexed the original</b> (Search Console → URL Inspection), usually 3–7 days.</li><li>Create the post in the Markdown editor: paste the front matter first, then the article. Upload each image with the editor's image button, because dev.to won't take local files.</li><li><code>published: false</code> saves a draft; flip it when you're happy.</li></ul></div><section class="post"><h2><span>Front matter</span><span><button data-copy="fm">Copy</button></span></h2><div class="text" id="fm">---
+title: One vesting engine, four screens: what we shipped in Capfolder 0.1.4
+published: false
+description: How Capfolder draws vesting, checks imports against Pulley, Carta or Cake, and answers &quot;What needs my attention?&quot; without an AI.
+tags: opensource, tauri, react, showdev
+canonical_url: https://capfolder.com/blog/see-your-vesting/
+cover_image: https://capfolder.com/blog/img/v014-vesting.jpg
+---</div></section><section class="post"><h2><span>Article</span><button data-copy="art">Copy with formatting</button></h2><div class="article" id="art"><p><i>Originally published on <a href="https://capfolder.com/blog/see-your-vesting/">capfolder.com</a>.</i></p>
+<p>Capfolder is an open-source (AGPL) cap table app built with Tauri and React. Your cap table lives in a folder of plain files on your own computer: an append-only, hash-chained <code>events.jsonl</code> in the Open Cap Format, plus your signed PDFs.</p>
+<p>0.1.4 is about time: who owns what, and when. Here's how the pieces fit, in very little new math.</p>
+<h2>1. One vesting engine, every screen</h2>
+<p>The vesting math already existed: the golden tests check it to the share. The new Vesting screen, the person page and the Excel export's Overview and Vesting by month tabs all read from that one engine. None of them does its own math, so they can't disagree.</p>
+<p>The graph shows the cliff, the monthly steps (or a straight line), today, and where vesting stops when someone leaves. The 409A price behind "vested value" is stored as an OCF <code>VALUATION</code>, not a setting.</p>
+<figure><img src="../../../../apps/website/blog/img/v014-vesting.jpg" alt="Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant."><figcaption>Alt text: Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant. · <a href="../../../../apps/website/blog/img/v014-vesting.jpg" download>Download image</a></figcaption></figure>
+<h2>2. The person page</h2>
+<p>Vested, next vest and fully vested moved next to the name. The graph went left, the holding and its history right, stacking on narrow windows. Y-axis labels got short (40K, 4M), which fixed labels being cut off.</p>
+<figure><img src="../../../../apps/website/blog/img/v014-person.jpg" alt="Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right."><figcaption>Alt text: Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right. · <a href="../../../../apps/website/blog/img/v014-person.jpg" download>Download image</a></figcaption></figure>
+<h2>3. Checking an import to the share</h2>
+<p>The last import step puts each total next to a box for the old tool's number. Fully diluted is required; each class, options outstanding, pool available, SAFE total and stakeholders are optional. If the file has a vested-so-far column, each grant is checked against our own schedule as of the export date:</p>
+<pre>const ours = vested === null ? null : vestedAt(qty, terms.get(key)!.data, start, p.exportDate).vested;
+// 1 share of rounding allowed (tools round months differently)</pre>
+<p>More vested than granted blocks the import outright.</p>
+<figure><img src="../../../../apps/website/blog/img/v014-import-compare.jpg" alt="The Compare with Pulley step of Capfolder&#x27;s import: fully diluted, common shares and pool available typed in from Pulley each show Match; options outstanding, SAFE total and stakeholders are optional."><figcaption>Alt text: The Compare with Pulley step of Capfolder&#x27;s import: fully diluted, common shares and pool available typed in from Pulley each show Match; options outstanding, SAFE total and stakeholders are optional. · <a href="../../../../apps/website/blog/img/v014-import-compare.jpg" download>Download image</a></figcaption></figure>
+<h2>4. "What needs my attention?" without a model</h2>
+<p>Ask AI routes this one question to plain code before any model is called:</p>
+<pre>const ATTENTION = /needs? (my )?attention|what('s| is) urgent|what should i do/i;
+// in askChat:
+if (ATTENTION.test(question)) return attention(d);</pre>
+<p><code>attention()</code> takes open and signed-but-not-wired envelopes, then the What's missing gaps (red first, grouped by kind), and keeps at most 3. Each <b>Take me there</b> target passes a whitelist: only certain screens, a person who exists, a row id that's a holding, a plan or an envelope.</p>
+<figure><img src="../../../../apps/website/blog/img/v014-attention.jpg" alt="Capfolder&#x27;s Ask AI panel with no AI connected, answering What needs my attention? with three things, most urgent first, each with a Take me there button."><figcaption>Alt text: Capfolder&#x27;s Ask AI panel with no AI connected, answering What needs my attention? with three things, most urgent first, each with a Take me there button. · <a href="../../../../apps/website/blog/img/v014-attention.jpg" download>Download image</a></figcaption></figure>
+<h2>5. A date bug</h2>
+<p>"As of" was set once, when the app opened. Leave it open overnight and a SAFE signed today was hidden behind yesterday's date. Now it follows the calendar (the founder's local day, not UTC) until you pick a date yourself.</p>
+<h2>What it doesn't do yet</h2>
+<p>The import check compares totals, not every row. The Before you cancel checklist asks you to check 3 people by hand.</p>
+<p>The code is on <a href="https://github.com/MKBSP/capfolder">GitHub</a>. If you've built an app where several screens show the same numbers, how do you keep them from drifting apart?</p></div></section></div><script>
+for (const b of document.querySelectorAll("button[data-copy]")) b.addEventListener("click", async () => {
+  const el = document.getElementById(b.dataset.copy);
+  const rich = el.classList.contains("article");
+  try {
+    if (rich && window.ClipboardItem) await navigator.clipboard.write([new ClipboardItem({"text/html": new Blob([el.innerHTML], {type: "text/html"}), "text/plain": new Blob([el.innerText], {type: "text/plain"})})]);
+    else await navigator.clipboard.writeText(el.dataset.raw ?? el.innerText);
+    b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy"), 1500);
+  } catch { b.textContent = "Select and copy by hand"; }
+});
+</script></body></html>
