@@ -58,8 +58,21 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
 .kicker{margin:22px auto 0 auto;max-width:34em;font-size:20px;line-height:1.5;color:#3A3E46;text-wrap:pretty}
 .kicker b{color:#111311;font-weight:600}
 
+/* hero buttons */
+.cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:34px}
+.works-line{margin:16px auto 0;font-size:14px;color:#5B606B}
+/* install section: heading left, steps right */
+.isec{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(28px,5vw,72px);align-items:start}
+.isteps{list-style:none;margin:0;padding:0}
+.isteps li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:16px;padding:22px 0;border-bottom:1px solid #E4E4E0}
+.isteps li:first-child{padding-top:0}
+.isteps .n{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:1px solid #D9DAD6;font-weight:600;font-size:15px}
+.isteps li:first-child .n{background:#111311;border-color:#111311;color:#fff}
+.isteps h3{margin:3px 0 0;font-size:20px;font-weight:600;letter-spacing:-0.01em}
+.isteps p{margin:8px 0 0;font-size:16px;line-height:1.6;color:#3A3E46}
+@media (max-width:820px){.isec{grid-template-columns:minmax(0,1fr)}}
 /* install: tabs and a command to copy */
-.install{max-width:680px;margin:36px auto 0 auto;text-align:left}
+.install{margin-top:16px}
 .itabs{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:14px}
 .ilabel{color:#5B606B;font-size:15px;margin-right:8px}
 .itabs button{all:unset;cursor:pointer;font-size:15px;padding:8px 12px;border-radius:8px;color:#3A3E46}
@@ -138,6 +151,28 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
 .mailbody.left{text-align:left;margin:0}
 .dbtn{display:inline-block;margin-top:14px;padding:9px 18px;border-radius:8px;background:#A2E771;color:#111311;font-weight:600;font-family:Inter,system-ui,sans-serif;transition:transform 160ms var(--ease-out),box-shadow 200ms ease}
 .dbtn.press{transform:scale(.93);box-shadow:0 0 0 4px rgba(162,231,113,.45)}
+.inbox3{transform:translateX(112%)}
+.stage.zoom3 .chat{transform:scale(.86) translateX(-16%);opacity:.45}
+.stage.zoom3 .inbox3{transform:translateX(4%) scale(.95)}
+.stage.zoom3 .inbox3 .mrow.new{opacity:1;transform:none}
+.stage.law-open .inbox3 .read{opacity:1;transform:none}
+.att{display:flex;align-items:center;gap:12px;margin-top:14px;padding:10px 12px;border:1px solid #E4E4E0;border-radius:10px;background:#FAFAF8}
+.att>span{font-size:22px}.att small{display:block;color:#5B606B}
+/* the money comes in: a mail notification, then the camera moves in on it */
+.toast{position:absolute;z-index:3;top:40px;right:40px;width:340px;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 16px 50px rgba(17,19,17,.18);font-size:13px;color:#3A3E46;opacity:0;transform:translateY(-24px);transform-origin:100% 0;transition:opacity 500ms ease,transform 900ms var(--ease-out)}
+.toast b{display:block;font-size:15px;color:#111311;margin:2px 0}
+.toast small{color:#5B606B}
+.ticon{width:36px;height:36px;border-radius:10px;background:#1F6F4A;color:#fff;display:grid;place-items:center;font-size:18px;flex:none}
+.stage.toast-in .toast{opacity:1;transform:none}
+.stage.money .toast{transform:translate(-55%,45%) scale(1.7)}
+.stage.money .chat{filter:blur(3px);opacity:.5;transform:scale(1.04)}
+/* a title card between the stories */
+.tcard{position:absolute;inset:0;z-index:4;display:grid;place-items:center;text-align:center;padding:24px;background:#1F6F4A;color:#fff;opacity:0;pointer-events:none;transition:opacity 600ms ease}
+.tcard b{display:block;font-size:clamp(26px,4vw,46px);font-weight:600;letter-spacing:-0.03em;line-height:1.1;max-width:16em;margin:0 auto;text-wrap:balance}
+.tcard span{display:block;margin:14px auto 0;max-width:30em;font-size:clamp(15px,1.6vw,19px);color:#D6EBDD;text-wrap:pretty}
+.tcard div{transform:translateY(10px);transition:transform 900ms var(--ease-out)}
+.stage.title .tcard{opacity:1}.stage.title .tcard div{transform:none}
+@media (max-width:700px){.toast{top:20px;right:12px;left:12px;width:auto}.stage.money .toast{transform:translateY(90%) scale(1.02)}.stage.zoom3 .inbox3{transform:none}}
 /* the signing page, in the look of our Documenso signing page */
 .signwin{opacity:0;transform:scale(.3);transform-origin:50% 60%;pointer-events:none;font-family:Inter,system-ui,sans-serif}
 .stage.signing .signwin{opacity:1;transform:none}
@@ -235,8 +270,8 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
 
 @media (prefers-reduced-motion:no-preference){
   @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  header h1,header .kicker,header .install{animation:fadeup 600ms var(--ease-out) both}
-  header .kicker{animation-delay:80ms}header .install{animation-delay:160ms}
+  header h1,header .kicker,header .cta,header .works-line{animation:fadeup 600ms var(--ease-out) both}
+  header .kicker{animation-delay:80ms}header .cta,header .works-line{animation-delay:160ms}
 }
 </style>
 </head>
@@ -259,60 +294,12 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
   <header class="wrap" style="padding-top: clamp(48px, 9vw, 96px); padding-bottom: clamp(40px, 6vw, 64px); text-align: center">
     <h1>Run your cap table and fundraise from Claude, ChatGPT or your own AI.</h1>
     <p class="kicker"><b>The agentic cap table and fundraising manager.</b> Free and open source.</p>
-    <div class="install" id="install">
-      <div class="itabs" role="tablist" aria-label="Install via"><span class="ilabel">Install via</span><button role="tab" id="it-claude" aria-controls="ip-claude" aria-selected="true">Claude Code</button><button role="tab" id="it-codex" aria-controls="ip-codex" aria-selected="false" tabindex="-1">Codex</button><button role="tab" id="it-cli" aria-controls="ip-cli" aria-selected="false" tabindex="-1">CLI</button><button role="tab" id="it-skills" aria-controls="ip-skills" aria-selected="false" tabindex="-1">skills.sh</button><button role="tab" id="it-app" aria-controls="ip-app" aria-selected="false" tabindex="-1">Desktop app</button></div>
-      <div class="ip" role="tabpanel" id="ip-claude" aria-labelledby="it-claude">
-        <p>In Claude Code, add the marketplace:</p>
-        <div class="code"><span class="pr" aria-hidden="true">›</span><code><i class="k">/plugin</i> marketplace add <i class="h">MKBSP/capfolder</i></code><button type="button" class="copy" data-copy="/plugin marketplace add MKBSP/capfolder" data-umami-event="install-copy-claude" aria-label="Copy command">Copy</button></div>
-        <p>Then install <b>Capfolder</b> from <code class="ic">/plugin</code> and ask: <b>“Set up my cap table.”</b></p>
-      </div>
-      <div class="ip" role="tabpanel" id="ip-codex" aria-labelledby="it-codex" hidden>
-        <p>Add Capfolder to Codex:</p>
-        <div class="code"><span class="pr" aria-hidden="true">$</span><code>codex mcp add capfolder -- npx -y <i class="h">@capfolder/mcp</i></code><button type="button" class="copy" data-copy="codex mcp add capfolder -- npx -y @capfolder/mcp" data-umami-event="install-copy-codex" aria-label="Copy command">Copy</button></div>
-        <p>Then ask Codex: <b>“Set up my cap table.”</b></p>
-      </div>
-      <div class="ip" role="tabpanel" id="ip-cli" aria-labelledby="it-cli" hidden>
-        <p>Run it in the folder for your company, then follow the prompts:</p>
-        <div class="code"><span class="pr" aria-hidden="true">$</span><code>npx <i class="h">capfolder</i> install</code><button type="button" class="copy" data-copy="npx capfolder install" data-umami-event="install-copy-cli" aria-label="Copy command">Copy</button></div>
-        <p>It sets up Claude Code, Codex, Cursor or Gemini CLI, whichever you use.</p>
-      </div>
-      <div class="ip" role="tabpanel" id="ip-skills" aria-labelledby="it-skills" hidden>
-        <p>Add the Capfolder skill to any agent:</p>
-        <div class="code"><span class="pr" aria-hidden="true">$</span><code>npx skills add <i class="h">MKBSP/capfolder</i></code><button type="button" class="copy" data-copy="npx skills add MKBSP/capfolder" data-umami-event="install-copy-skills" aria-label="Copy command">Copy</button></div>
-      </div>
-      <div class="ip" role="tabpanel" id="ip-app" aria-labelledby="it-app" hidden>
-        <p>Prefer clicking? Get the desktop app, with Ask AI built in.</p>
-    <div id="download">
-      <div id="gate">
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px">
-          <button type="button" class="btn btn-p" id="getdl" data-umami-event="get-download">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
-            Get the download
-          </button>
-        </div>
-        <p style="font-size: 14px; line-height: 1.5; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · leave your email to hear about new versions, or <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">just download</button></p>
-        <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
-      </div>
-      <div id="dlthanks" hidden aria-live="polite">
-        <div style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left">
-          <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-            Your download is ready
-          </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
-            <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
-            <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
-            <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
-          </div>
-          <div style="font-size: 14px; color: #5B606B; margin-top: 10px">
-            <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
-          </div>
-          <p style="font-size: 14px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
-        </div>
-      </div>
+    <div class="cta">
+      <a href="#install" class="btn btn-p" data-umami-event="hero-install">Install Capfolder
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+      <a href="#demo-h" class="btn btn-s" data-umami-event="hero-demo">See it work</a>
     </div>
-      </div>
-    </div>
+    <p class="works-line">Works with Claude Code, Codex, ChatGPT, Gemini and local models. Or get the desktop app.</p>
   </header>
 
   <section class="wrap" aria-labelledby="demo-h" style="padding-bottom: clamp(56px, 9vw, 104px)">
@@ -366,6 +353,25 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
           </div>
           <div class="msg card" data-k="c5"><h4>Email to Jill · draft</h4><div style="font-size: 14px; color: #3A3E46">How to exercise your 12,500 vested options: the price, the 90-day window, and the form to sign.</div><span class="approve" id="approve3">Approve and send</span></div>
           <div class="msg ok" data-k="ok4">✓ Sent to jill@acme.example. I'll remind her before the 90 days run out.</div>
+          <div class="msg me" data-k="m4">I need my cap table.</div>
+          <div class="msg tool" data-k="t4">capfolder · get_cap_table</div>
+          <div class="msg card" data-k="c6" style="width: min(480px, 100%); box-sizing: border-box">
+            <h4>Acme Inc. · cap table, fully diluted</h4>
+            <table class="t"><tr><th>Holder</th><th>Shares</th><th>%</th></tr>
+              <tr><td>Tim Apple</td><td class="num">4,000,000</td><td class="num">50.0%</td></tr>
+              <tr><td>Steve Jobs</td><td class="num">3,000,000</td><td class="num">37.5%</td></tr>
+              <tr><td>Option pool</td><td class="num">1,000,000</td><td class="num">12.5%</td></tr>
+              <tr><td>Bill Gates · SAFE</td><td class="num">$50,000</td><td class="num">converts later</td></tr></table>
+          </div>
+          <div class="msg" data-k="q4">Do you want to share it with an investor or your lawyers?</div>
+          <div class="msg me" data-k="m5">My lawyers, at legal@lawfirm.example.</div>
+          <div class="msg tool" data-k="t5">capfolder · export_for_review</div>
+          <div class="msg card" data-k="c7">
+            <h4>🔒 acme-cap-table.zip · encrypted</h4>
+            <div style="font-size: 14px; color: #3A3E46; line-height: 1.6">Cap table (Excel and Open Cap Format), signed SAFE, stock purchase agreements, 83(b) elections, option grants. 14 files.</div>
+            <span class="approve" id="approve4">Approve and send</span>
+          </div>
+          <div class="msg ok" data-k="ok5">✓ Sent to legal@lawfirm.example. The password goes to them by text message, not in the email.</div>
         </div>
         <div class="input" id="input"></div>
       </div>
@@ -417,6 +423,25 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
           </main>
         </div>
       </div>
+      <div class="win inbox3">
+        <div class="bar"><i></i><i></i><i></i><span style="margin-left: 8px">Mail · legal@lawfirm.example</span></div>
+        <div class="mx">
+          <nav><span class="compose">Compose</span><span class="cur">Inbox <em>3</em></span><span>Starred</span><span>Sent</span><span>Drafts</span><span>Archive</span></nav>
+          <main>
+            <div class="search">Search mail</div>
+            <div class="mrow new unread"><span class="av" style="background: #1F6F4A">TA</span><b>Tim Apple</b><span><b>Acme Inc. cap table and documents</b> – Encrypted, 14 files</span><span class="t">16:20</span></div>
+            <div class="mrow unread"><span class="av" style="background: #5B3FA6">FX</span><b>Fund X</b><span><b>Term sheet: Acme Inc.</b> – Draft for your review</span><span class="t">15:02</span></div>
+            <div class="mrow"><span class="av" style="background: #64748B">CL</span><b>Court filings</b><span><b>Weekly digest</b> – 3 new filings</span><span class="t">Mon</span></div>
+            <div class="read">
+              <h5>Acme Inc. cap table and documents</h5>
+              <div class="from"><span class="av" style="background: #1F6F4A">TA</span><div><b>Tim Apple</b><small>to legal@lawfirm.example</small></div></div>
+              <div class="mailbody left">Hi,<br><br>Here is Acme Inc.'s cap table with every signed document behind it, for the seed. The password comes by text message.<div class="att"><span>🔒</span><div><b>acme-cap-table.zip</b><small>Encrypted · 14 files · 2.4 MB</small></div></div></div>
+            </div>
+          </main>
+        </div>
+      </div>
+      <div class="toast" aria-hidden="true"><span class="ticon">✉</span><div><small>Mail · Your bank · now</small><b>Incoming wire: $50,000.00</b><span>From Bill Gates to Acme Inc. · SAFE</span></div></div>
+      <div class="tcard"><div><b id="tc-h"></b><span id="tc-s"></span></div></div>
       <span class="label">Preview</span>
       <button type="button" id="pause-motion" aria-pressed="false" aria-hidden="false">Pause</button>
     </div>
@@ -522,6 +547,75 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
     </div>
   </section>
 
+  <section id="install" class="band sec" aria-labelledby="install-h">
+    <div class="wrap isec">
+      <div>
+        <h2 class="h2" id="install-h">Install Capfolder.</h2>
+        <p class="lead" style="margin-top: 16px">Add it to your AI, ask for your cap table, and approve each change. Two minutes.</p>
+      </div>
+      <ol class="isteps">
+        <li><span class="n">1</span><div><h3>Add Capfolder to your AI</h3>
+    <div class="install">
+      <div class="itabs" role="tablist" aria-label="Install via"><span class="ilabel">Install via</span><button role="tab" id="it-claude" aria-controls="ip-claude" aria-selected="true">Claude Code</button><button role="tab" id="it-codex" aria-controls="ip-codex" aria-selected="false" tabindex="-1">Codex</button><button role="tab" id="it-cli" aria-controls="ip-cli" aria-selected="false" tabindex="-1">CLI</button><button role="tab" id="it-skills" aria-controls="ip-skills" aria-selected="false" tabindex="-1">skills.sh</button><button role="tab" id="it-app" aria-controls="ip-app" aria-selected="false" tabindex="-1">Desktop app</button></div>
+      <div class="ip" role="tabpanel" id="ip-claude" aria-labelledby="it-claude">
+        <p>In Claude Code, add the marketplace:</p>
+        <div class="code"><span class="pr" aria-hidden="true">›</span><code><i class="k">/plugin</i> marketplace add <i class="h">MKBSP/capfolder</i></code><button type="button" class="copy" data-copy="/plugin marketplace add MKBSP/capfolder" data-umami-event="install-copy-claude" aria-label="Copy command">Copy</button></div>
+        <p>Then install <b>Capfolder</b> from <code class="ic">/plugin</code> and ask: <b>“Set up my cap table.”</b></p>
+      </div>
+      <div class="ip" role="tabpanel" id="ip-codex" aria-labelledby="it-codex" hidden>
+        <p>Add Capfolder to Codex:</p>
+        <div class="code"><span class="pr" aria-hidden="true">$</span><code>codex mcp add capfolder -- npx -y <i class="h">@capfolder/mcp</i></code><button type="button" class="copy" data-copy="codex mcp add capfolder -- npx -y @capfolder/mcp" data-umami-event="install-copy-codex" aria-label="Copy command">Copy</button></div>
+        <p>Then ask Codex: <b>“Set up my cap table.”</b></p>
+      </div>
+      <div class="ip" role="tabpanel" id="ip-cli" aria-labelledby="it-cli" hidden>
+        <p>Run it in the folder for your company, then follow the prompts:</p>
+        <div class="code"><span class="pr" aria-hidden="true">$</span><code>npx <i class="h">capfolder</i> install</code><button type="button" class="copy" data-copy="npx capfolder install" data-umami-event="install-copy-cli" aria-label="Copy command">Copy</button></div>
+        <p>It sets up Claude Code, Codex, Cursor or Gemini CLI, whichever you use.</p>
+      </div>
+      <div class="ip" role="tabpanel" id="ip-skills" aria-labelledby="it-skills" hidden>
+        <p>Add the Capfolder skill to any agent:</p>
+        <div class="code"><span class="pr" aria-hidden="true">$</span><code>npx skills add <i class="h">MKBSP/capfolder</i></code><button type="button" class="copy" data-copy="npx skills add MKBSP/capfolder" data-umami-event="install-copy-skills" aria-label="Copy command">Copy</button></div>
+      </div>
+      <div class="ip" role="tabpanel" id="ip-app" aria-labelledby="it-app" hidden>
+        <p>Prefer clicking? Get the desktop app, with Ask AI built in.</p>
+    <div id="download">
+      <div id="gate">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px">
+          <button type="button" class="btn btn-p" id="getdl" data-umami-event="get-download">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+            Get the download
+          </button>
+        </div>
+        <p style="font-size: 14px; line-height: 1.5; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · leave your email to hear about new versions, or <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">just download</button></p>
+        <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
+      </div>
+      <div id="dlthanks" hidden aria-live="polite">
+        <div style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left">
+          <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Your download is ready
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
+            <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
+            <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
+            <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
+          </div>
+          <div style="font-size: 14px; color: #5B606B; margin-top: 10px">
+            <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
+          </div>
+          <p style="font-size: 14px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+        </div></li>
+        <li><span class="n">2</span><div><h3>Ask: “Set up my cap table.”</h3><p>It asks for your company, cofounders and vesting, then reads the documents you already have.</p></div></li>
+        <li><span class="n">3</span><div><h3>Approve each change</h3><p>Nothing is saved until you click. Everything lands in a folder on your computer.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
   <section id="pricing" class="sec" aria-labelledby="pricing-h">
     <div class="wrap">
       <h2 class="h2" id="pricing-h">Price.</h2>
@@ -583,7 +677,7 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
   function show(k) { var el = msg(k); el.classList.add("on"); void el.offsetWidth; el.classList.add("in"); }
   async function type(text) {
     input.classList.add("typing");
-    for (var i = 1; i <= text.length; i++) { input.textContent = text.slice(0, i); await sleep(45); }
+    for (var i = 1; i <= text.length; i++) { input.textContent = text.slice(0, i); await sleep(35); }
     await sleep(500);
     input.textContent = ""; input.classList.remove("typing");
   }
@@ -615,11 +709,16 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
       show("ok2"); await sleep(2800);
       show("c3"); await sleep(2200);
       press("approve2"); await sleep(700);
-      show("ok3"); await sleep(2400);
+      show("ok3"); await sleep(1800);
+      stage.classList.add("toast-in"); await sleep(1400);
+      stage.classList.add("money"); await sleep(3000);
+      stage.classList.remove("money", "toast-in"); await sleep(600);
+      await card("Tell your agent what to prepare.", "You focus on pitching, finding investors and reaching your goals.");
       clear();
       await type(msg("m2").textContent); show("m2"); await sleep(1000);
       show("t2"); await sleep(800);
-      show("c2"); await sleep(5500);
+      show("c2"); await sleep(5000);
+      await card("Be on top of your cap table.", "");
       clear();
       await type(msg("m3").textContent); show("m3"); await sleep(1000);
       show("t3"); await sleep(800);
@@ -629,8 +728,31 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
       show("ok4"); await sleep(1600);
       stage.classList.add("zoom2"); await sleep(2200);
       stage.classList.add("jill-open"); await sleep(4500);
-      stage.classList.remove("zoom2", "jill-open"); await sleep(1000);
+      stage.classList.remove("zoom2", "jill-open"); await sleep(700);
+      await card("Guide your stakeholders, without the effort.", "");
+      clear();
+      await type(msg("m4").textContent); show("m4"); await sleep(900);
+      show("t4"); await sleep(700);
+      show("c6"); await sleep(2600);
+      show("q4"); await sleep(1800);
+      ["m4", "t4"].forEach(function (k) { msg(k).classList.remove("on", "in"); });
+      await type(msg("m5").textContent); show("m5"); await sleep(900);
+      ["c6"].forEach(function (k) { msg(k).classList.remove("on", "in"); });
+      show("t5"); await sleep(700);
+      show("c7"); await sleep(2400);
+      press("approve4"); await sleep(700);
+      show("ok5"); await sleep(1800);
+      stage.classList.add("zoom3"); await sleep(1800);
+      stage.classList.add("law-open"); await sleep(3800);
+      stage.classList.remove("zoom3", "law-open"); await sleep(700);
+      await card("Diligence-ready, whenever you need it.", "");
     }
+  }
+  async function card(h, sub) {
+    document.getElementById("tc-h").textContent = h;
+    document.getElementById("tc-s").textContent = sub;
+    stage.classList.add("title"); await sleep(sub ? 3400 : 2600);
+    stage.classList.remove("title"); await sleep(700);
   }
   function finalScene() { ["m2", "t2", "c2"].forEach(show); }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
