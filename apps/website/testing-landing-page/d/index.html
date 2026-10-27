@@ -111,23 +111,7 @@ h1{font-weight:600;font-size:clamp(36px,8.4vw,76px);line-height:1.04;letter-spac
   .rv{opacity:0;transform:translateY(16px);transition:opacity 600ms var(--ease-out),transform 600ms var(--ease-out)}
   .rv.in{opacity:1;transform:none}
 }
-.motion-paused *,/* motion: one hero entrance, only when the visitor allows motion */
-@media (prefers-reduced-motion:no-preference){
-  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  header h1,header .hero-sub,header #download{animation:fadeup 600ms var(--ease-out) both}
-  header .hero-sub{animation-delay:80ms}header #download{animation-delay:160ms}
-  .rv{opacity:0;transform:translateY(16px);transition:opacity 600ms var(--ease-out),transform 600ms var(--ease-out)}
-  .rv.in{opacity:1;transform:none}
-}
-.motion-paused *::before,/* motion: one hero entrance, only when the visitor allows motion */
-@media (prefers-reduced-motion:no-preference){
-  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  header h1,header .hero-sub,header #download{animation:fadeup 600ms var(--ease-out) both}
-  header .hero-sub{animation-delay:80ms}header #download{animation-delay:160ms}
-  .rv{opacity:0;transform:translateY(16px);transition:opacity 600ms var(--ease-out),transform 600ms var(--ease-out)}
-  .rv.in{opacity:1;transform:none}
-}
-.motion-paused *::after{animation-play-state:paused!important}
+.motion-paused *,.motion-paused *::before,.motion-paused *::after{animation-play-state:paused!important}
 @media (max-width:640px){
   .hero-sub{font-size:18px}
   #pause-motion{padding:8px 12px;right:14px;bottom:14px;font-size:14px}
@@ -359,7 +343,7 @@ h1{font-weight:600;font-size:clamp(36px,8.4vw,76px);line-height:1.04;letter-spac
 
 // Sections rise in as they arrive. Only with motion allowed; without JS or IntersectionObserver nothing is hidden.
 if (matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) {
-  var io = new IntersectionObserver(function (es) {
+  const io = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
   }, { rootMargin: "0px 0px -10% 0px" });
   document.querySelectorAll(".step, .why li, .guides li, .faq > div, .prompt, .story > *, .player").forEach(function (el) {

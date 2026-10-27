@@ -628,7 +628,7 @@ footer .fl a{color:#3D4148}
 
 // Sections rise in once as they arrive; content is visible without JS.
 if ("IntersectionObserver" in window) {
-  var io = new IntersectionObserver(function (entries) {
+  const io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
   }, { rootMargin: "0px 0px -8% 0px" });
   document.querySelectorAll("[data-rise]").forEach(function (el) { io.observe(el); });

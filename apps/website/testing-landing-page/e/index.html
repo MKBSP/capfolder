@@ -190,7 +190,7 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
 .side{background:#F3F4F6;border:1px solid #E5E7EB;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;font-size:13px;color:#0F172A}
 .side h6{margin:0;font-size:16px;font-weight:600}
 .side small{color:#64748B;margin-top:-6px}
-.side label{font-weight:500}
+.side .lbl{font-weight:500}
 .side .in{background:#fff;border:1px solid #E5E7EB;border-radius:6px;padding:8px 10px}
 .pad{background:#fff;border:1px solid #E5E7EB;border-radius:6px;height:84px;display:flex;align-items:flex-end;padding:0 12px 10px;font:italic 30px/1 'Brush Script MT','Segoe Script',cursive;color:#0F172A}
 .side .dbtn{margin-top:auto;text-align:center}
@@ -400,7 +400,7 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
           <div><h5>SAFE · Bill Gates</h5><div class="sub">Tim Apple (tim@acme.example) has invited you to sign this document.</div></div>
           <div class="sggrid">
             <div class="pdf"><b>SAFE (Simple Agreement for Future Equity)</b><br>Acme Inc. · Post-money valuation cap $8,000,000<div class="ln"></div><div class="ln" style="width: 92%"></div><div class="ln" style="width: 96%"></div><div class="ln" style="width: 70%"></div><div class="ln"></div><div class="ln" style="width: 88%"></div>INVESTOR: Bill Gates · Purchase Amount: $50,000<div class="sfield"><i>Signature</i><span>Bill Gates</span></div></div>
-            <div class="side"><h6>Sign document</h6><small>Please review the document before signing.</small><label>Full name</label><div class="in">Bill Gates</div><label>Signature</label><div class="pad" id="sigline"></div><span class="dbtn" id="signbtn">Complete</span></div>
+            <div class="side"><h6>Sign document</h6><small>Please review the document before signing.</small><span class="lbl">Full name</span><div class="in">Bill Gates</div><span class="lbl">Signature</span><div class="pad" id="sigline"></div><span class="dbtn" id="signbtn">Complete</span></div>
           </div>
         </div>
         <div class="done"><div><div class="ck">✓</div><b style="font-size: 20px">Document signed</b><p>You have signed “SAFE · Bill Gates”. A copy is on its way to your inbox.</p></div></div>
@@ -452,12 +452,12 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
       <h2 class="h2" id="features-h">Tell your AI. Capfolder does the paperwork.</h2>
       <div class="fx">
         <div class="fxlist" role="tablist" aria-label="What it does" aria-orientation="vertical">
-          <button role="tab" id="ft-1" aria-controls="fp-1" aria-selected="true"><b>Issue and send SAFEs</b><span>One sentence makes every SAFE, filled from YC's template, word for word.</span></button>
-          <button role="tab" id="ft-2" aria-controls="fp-2" aria-selected="false" tabindex="-1"><b>Chase the signatures</b><span>Anyone who hasn't signed in 3 days gets a reminder. You see who's left.</span></button>
-          <button role="tab" id="ft-3" aria-controls="fp-3" aria-selected="false" tabindex="-1"><b>Ask anything</b><span>Vesting, dilution, what you'll own after the round, what's missing before diligence.</span></button>
-          <button role="tab" id="ft-4" aria-controls="fp-4" aria-selected="false" tabindex="-1"><b>Rules your AI can't break</b><span>Every change follows the Open Cap Format, the standard for cap tables. Your AI proposes, you approve, and it's logged.</span></button>
-          <button role="tab" id="ft-5" aria-controls="fp-5" aria-selected="false" tabindex="-1"><b>A real app, too</b><span>Cap table, vesting and documents in a desktop app. The chat and the app share one folder.</span></button>
-          <button role="tab" id="ft-6" aria-controls="fp-6" aria-selected="false" tabindex="-1"><b>A portal for everyone <span class="pro">Pro</span></b><span>Investors and employees see their own shares and papers, on the web or from their own AI.</span></button>
+          <button type="button" role="tab" id="ft-1" aria-controls="fp-1" aria-selected="true"><b>Issue and send SAFEs</b><span>One sentence makes every SAFE, filled from YC's template, word for word.</span></button>
+          <button type="button" role="tab" id="ft-2" aria-controls="fp-2" aria-selected="false" tabindex="-1"><b>Chase the signatures</b><span>Anyone who hasn't signed in 3 days gets a reminder. You see who's left.</span></button>
+          <button type="button" role="tab" id="ft-3" aria-controls="fp-3" aria-selected="false" tabindex="-1"><b>Ask anything</b><span>Vesting, dilution, what you'll own after the round, what's missing before diligence.</span></button>
+          <button type="button" role="tab" id="ft-4" aria-controls="fp-4" aria-selected="false" tabindex="-1"><b>Rules your AI can't break</b><span>Every change follows the Open Cap Format, the standard for cap tables. Your AI proposes, you approve, and it's logged.</span></button>
+          <button type="button" role="tab" id="ft-5" aria-controls="fp-5" aria-selected="false" tabindex="-1"><b>A real app, too</b><span>Cap table, vesting and documents in a desktop app. The chat and the app share one folder.</span></button>
+          <button type="button" role="tab" id="ft-6" aria-controls="fp-6" aria-selected="false" tabindex="-1"><b>A portal for everyone <span class="pro">Pro</span></b><span>Investors and employees see their own shares and papers, on the web or from their own AI.</span></button>
         </div>
         <div class="fxview">
           <div class="fp" role="tabpanel" id="fp-1" aria-labelledby="ft-1">
@@ -556,7 +556,7 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
       <ol class="isteps">
         <li><span class="n">1</span><div><h3>Add Capfolder to your AI</h3>
     <div class="install">
-      <div class="itabs" role="tablist" aria-label="Install via"><span class="ilabel">Install via</span><button role="tab" id="it-claude" aria-controls="ip-claude" aria-selected="true">Claude Code</button><button role="tab" id="it-codex" aria-controls="ip-codex" aria-selected="false" tabindex="-1">Codex</button><button role="tab" id="it-cli" aria-controls="ip-cli" aria-selected="false" tabindex="-1">CLI</button><button role="tab" id="it-skills" aria-controls="ip-skills" aria-selected="false" tabindex="-1">skills.sh</button><button role="tab" id="it-app" aria-controls="ip-app" aria-selected="false" tabindex="-1">Desktop app</button></div>
+      <div class="itabs" role="tablist" aria-label="Install via"><span class="ilabel">Install via</span><button type="button" role="tab" id="it-claude" aria-controls="ip-claude" aria-selected="true">Claude Code</button><button type="button" role="tab" id="it-codex" aria-controls="ip-codex" aria-selected="false" tabindex="-1">Codex</button><button type="button" role="tab" id="it-cli" aria-controls="ip-cli" aria-selected="false" tabindex="-1">CLI</button><button type="button" role="tab" id="it-skills" aria-controls="ip-skills" aria-selected="false" tabindex="-1">skills.sh</button><button type="button" role="tab" id="it-app" aria-controls="ip-app" aria-selected="false" tabindex="-1">Desktop app</button></div>
       <div class="ip" role="tabpanel" id="ip-claude" aria-labelledby="it-claude">
         <p>In Claude Code, add the marketplace:</p>
         <div class="code"><span class="pr" aria-hidden="true">›</span><code><i class="k">/plugin</i> marketplace add <i class="h">MKBSP/capfolder</i></code><button type="button" class="copy" data-copy="/plugin marketplace add MKBSP/capfolder" data-umami-event="install-copy-claude" aria-label="Copy command">Copy</button></div>
@@ -671,13 +671,13 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
   var msg = function (k) { return stage.querySelector('[data-k="' + k + '"]'); };
   function sleep(ms) {
     return new Promise(function (done) {
-      var left = ms, t = setInterval(function () { if (!paused && (left -= 50) <= 0) { clearInterval(t); done(); } }, 50);
+      var left = ms, t = setInterval(function () { if (paused) return; left -= 50; if (left <= 0) { clearInterval(t); done(); } }, 50);
     });
   }
   function show(k) { var el = msg(k); el.classList.add("on"); void el.offsetWidth; el.classList.add("in"); }
   async function type(text) {
     input.classList.add("typing");
-    for (var i = 1; i <= text.length; i++) { input.textContent = text.slice(0, i); await sleep(35); }
+    for (let i = 1; i <= text.length; i++) { input.textContent = text.slice(0, i); await sleep(35); }
     await sleep(500);
     input.textContent = ""; input.classList.remove("typing");
   }
@@ -701,8 +701,8 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
       stage.classList.add("mail-open"); await sleep(2200);
       press("review"); await sleep(600);
       stage.classList.add("signing"); await sleep(1400);
-      var sig = document.getElementById("sigline");
-      for (var i = 1; i <= 10; i++) { sig.textContent = "Bill Gates".slice(0, i); await sleep(90); }
+      const sig = document.getElementById("sigline");
+      for (let i = 1; i <= 10; i++) { sig.textContent = "Bill Gates".slice(0, i); await sleep(90); }
       await sleep(600); press("signbtn"); await sleep(500);
       stage.classList.add("signed-ok"); await sleep(2600);
       stage.classList.remove("zoom", "mail-in", "mail-open", "signing", "signed-ok"); clear(); await sleep(900);
