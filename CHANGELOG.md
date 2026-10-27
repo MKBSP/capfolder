@@ -3,20 +3,34 @@
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
 ## [Unreleased]
+
+## [0.1.4] — 2026-10-27
 ### Added
-- **Website: four homepage versions to compare** at /testing-landing-page/a/ (live), /b/, /c/ and /d/, with the new
-  product video (a first SAFE, from the cap table to signed). Not indexed, not in the sitemap; the homepage is
-  unchanged.
+- **Vesting screen:** the option pool at a glance (cards and a bar), and a row per grant that opens to its vesting
+  graph: the cliff, monthly steps, today, and where vesting stops when someone leaves. Key dates and the signed
+  documents sit next to it.
 - **Import: compare with Pulley, Carta or Cake.** Check and save shows each total next to a box for the old tool's
   number (fully diluted required; each class, options outstanding, pool available, SAFE total and stakeholders
   optional), checked to the share. Vested-so-far in the file is checked against the schedule (one share of rounding);
   more vested than granted blocks the import. After saving, a "Before you cancel {tool}" card on the cap table lists
-  what to keep (Pulley: days left until December 8).
+  what to keep.
+- **Excel export:** an Overview tab first (key numbers, an ownership doughnut and vested over time as real charts), then
+  Vesting by month and Missing documents.
+- **Ask AI: "What needs my attention?"** lists up to 3 things to do next, with Take me there. It works with no AI
+  connected.
+- **Welcome:** Try the sample company is a button; the Get started steps link to the capfolder.com/learn guides.
 ### Changed
-- Person page: vested, next vest and fully vested sit by the name; the vesting graph is on the left with the
-  holding and its history beside it (stacked on narrow windows); y-axis labels are short (40K, 4M) so they no longer get cut off (CAP-48).
-- Free signing limit is 5 signing requests a month (was 10). Self-hosters set `RELAY_PER_EMAIL_MONTH`.
+- **Person page:** vested, next vest and fully vested sit by the name; the vesting graph is on the left with the
+  holding and its history beside it (stacked on narrow windows). Y-axis labels are short (40K, 4M) so they're no longer
+  cut off (CAP-48).
+- **Free signing:** 5 signing requests a month (was 10). Self-hosters set `RELAY_PER_EMAIL_MONTH`.
+### Fixed
+- **As of follows the calendar** while the app stays open, so a SAFE signed today no longer hides behind yesterday's
+  date. Picking a date yourself still holds it.
 ### Website
+- **Website: four homepage versions to compare** at /testing-landing-page/a/ (live), /b/, /c/ and /d/, with the new
+  product video (a first SAFE, from the cap table to signed). Not indexed, not in the sitemap; the homepage is
+  unchanged.
 - Homepage cleanup for first-time founders: the shut-down, compare, open-source, roadmap, competitor and marquee
   sections are gone (about 2,100 → 1,500 words); the nav matches the sub-pages without in-page anchors or the star
   count; no eyebrows, no Pulley/Carta pitch above the footer; the hero shows at once (no blur reveal, highlighter or
@@ -24,6 +38,7 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 - Feature pages: `/features/` with `/features/import/`, and `/migrate/from-pulley/` (dates, what to download, the
   move). Help: `/help/import/`, with screenshots taken by `pnpm shots import`. "Features" in every navbar; every page
   has a canonical URL; `node scripts/indexnow.mjs` sends the sitemap to IndexNow after a deploy.
+
 
 ## [0.1.3] — 2026-10-17
 ### Fixed

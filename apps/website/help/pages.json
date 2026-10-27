@@ -1,6 +1,6 @@
 {
   "founders": {
-    "checked": "0b9db93",
+    "checked": "v0.1.4",
     "covers": [
       "apps/desktop/src/screens/StartChoice.tsx",
       "apps/desktop/src/screens/Questions.tsx",
@@ -13,7 +13,7 @@
     ]
   },
   "import": {
-    "checked": "0b9db93",
+    "checked": "v0.1.4",
     "covers": [
       "apps/desktop/src/screens/Import.tsx",
       "apps/desktop/src/importRules.ts",
