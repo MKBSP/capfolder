@@ -877,7 +877,7 @@ fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
     set("dl-linux", find(/\.AppImage$/) || find(/\.deb$/));
   })
   .catch(() => {});
-// Hero: a slot-machine reel. Each spin passes every logo, eases out and lands on the next name:
+// Hero: a slot-machine reel. Each spin passes every logo, eases out over about 3s and lands on the next name:
 // Claude, ChatGPT, Gemini, Ollama, Grok, your own AI, and round again. It holds 3s on each.
 // Hover or the demo's Pause button holds it (WCAG 2.2.2); with reduced motion it stays on Claude.
 (() => {
@@ -901,7 +901,7 @@ fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
       if (left <= 0) { clearInterval(t); done(); }
     }, 50);
   });
-  const SPIN = 1900;
+  const SPIN = 2900;
   const place = (pos, ms) => {
     reel.style.transition = ms ? `transform ${ms}ms cubic-bezier(.2,.65,.15,1)` : "none";
     reel.style.transform = `translateY(${-pos * 1.15}em)`;
