@@ -103,28 +103,59 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
 .open{margin:14px 18px;padding:16px;border:1px solid #E4E4E0;border-radius:12px;font-size:14px;line-height:1.55;opacity:0;transition:opacity 500ms ease}
 .stage.mail-open .open{opacity:1}
 .sign{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:8px;background:#1F6F4A;color:#fff;font-weight:600;font-size:13px}
+.inbox2{transform:translateX(112%)}
+.stage.zoom2 .chat{transform:scale(.86) translateX(-16%);opacity:.45}
+.stage.zoom2 .inbox2{transform:translateX(18%) scale(.92)}
+.stage.zoom2 .inbox2 .mail.new{opacity:1;transform:none}
+.stage.zoom2 .inbox2 .env{animation:env 900ms var(--ease-out)}
+.stage.mail-in .inbox2 .mail.new{opacity:0}
+.sign.press{transform:scale(.92);box-shadow:0 0 0 4px rgba(31,111,74,.25)}
+.sign{transition:transform 160ms var(--ease-out),box-shadow 200ms ease}
+.signwin{opacity:0;transform:scale(.25);transform-origin:38% 62%;pointer-events:none}
+.stage.signing .signwin{opacity:1;transform:none}
+.doc{flex:1;overflow:hidden;padding:20px clamp(16px,4vw,48px);font-size:14px;line-height:1.6;color:#3A3E46}
+.doc h4{margin:0 0 6px 0;font-size:16px;color:#111311}
+.sigbox{margin-top:18px;border:1px dashed #9A9EA6;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.sigline{flex:1;min-width:160px;border-bottom:1px solid #111311;font:italic 28px/1.2 'Brush Script MT','Segoe Script',cursive;color:#111311;min-height:34px}
+.signed{display:none;color:#16543A;font-weight:600}
+.stage.signed-ok .signed{display:inline}
+.stage.signed-ok .sigbox .sign{display:none}
 .label{position:absolute;left:clamp(10px,2vw,28px);bottom:16px;font-size:13px;color:#5B606B;background:#fff;padding:3px 10px;border-radius:999px;z-index:2}
 #pause-motion{position:absolute;right:clamp(10px,2vw,28px);bottom:12px;font:inherit;font-size:14px;font-weight:500;padding:7px 14px;border-radius:999px;border:0;background:rgba(17,19,17,.78);color:#fff;cursor:pointer;z-index:2}
 @media (max-width:700px){
   .stage{height:600px}
   .stage.zoom .chat{transform:scale(.9);opacity:.2}
-  .stage.zoom .inbox{transform:none}
+  .stage.zoom .inbox,.stage.zoom2 .inbox2{transform:none}
+  .stage.zoom2 .chat{transform:scale(.9);opacity:.2}
   .msg{font-size:14px}
 }
 
-/* features */
-.feats{list-style:none;margin:40px 0 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
-.feats li{background:#FAFAF8;border:1px solid #ECECE8;border-radius:16px;padding:24px}
-.feats h3{margin:0;font-size:19px;font-weight:600;letter-spacing:-0.01em}
-.feats p{margin:8px 0 0 0;font-size:16px;line-height:1.6;color:#3A3E46}
-.feats q{color:#111311}
-.feats .rules{background:#E8F3EC;border-color:#C9DECF}
+/* features: A's cards, each with a small picture */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;margin-top:40px}
+.fcard{background:#fff;border:1px solid #E4E4E0;border-radius:16px;padding:26px}
+.fcard h3{font-size:18px;font-weight:600;margin:0 0 8px 0}
+.fcard p{margin:0;font-size:15px;line-height:1.6;color:#3A3E46}
+.fcard.rules{border-color:#C9DECF;box-shadow:inset 0 0 0 1px #C9DECF}
+.fpic{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;font-size:13px;min-height:72px;align-content:flex-start}
+.fpic.col{flex-direction:column;flex-wrap:nowrap}
+.fpic .row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:#F6F7F4}
+.fpic .row.ok{background:#E8F3EC;color:#16543A}
+.fpic .row.wait{background:#FFFBF4;color:#8A3E05}
+.fpic .r{margin-left:auto;color:inherit;opacity:.8}
+.fpic .ocf{color:#16543A;font-weight:600;opacity:1}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.dot.pur{color:#5B3FA6}
+.bub{background:#111311;color:#fff;padding:10px 14px;border-radius:14px 14px 4px 14px;line-height:1.45;margin-left:auto;max-width:90%}
+.chip{display:inline-block;padding:8px 12px;border-radius:8px;background:#F0F1EE;font-size:13px;color:#111311}
+.chip.go{background:#1F6F4A;color:#fff}
+.chip.go-soft{background:#E8F3EC;color:#16543A}
+@media (prefers-reduced-motion:no-preference) and (hover:hover){.fcard{transition:transform 250ms var(--ease-out),box-shadow 250ms ease}.fcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(17,19,17,.25)}}
 .pro{display:inline-block;margin-left:6px;font-size:12px;font-weight:500;padding:2px 8px;border-radius:999px;background:#F3F1F9;color:#5B3FA6;vertical-align:2px}
-.works{margin-top:28px;font-size:16px;color:#3A3E46}
-.works b{font-weight:600;color:#111311}
+.works{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:32px;font-size:15px}
+.works b{font-weight:600;margin-right:6px}
 
-/* story */
-.story p{margin:0 0 16px 0;font-size:18px;line-height:1.65;color:#2B2E33}
+/* story (from A) */
+.demo{position:relative;background:#fff;border:1px solid #E4E4E0;border-radius:18px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(31,111,74,.35)}
 
 /* price */
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;margin-top:36px}
@@ -198,7 +229,7 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
 
   <section class="wrap" aria-labelledby="demo-h" style="padding-bottom: clamp(56px, 9vw, 104px)">
     <h2 class="sr" id="demo-h">See it work</h2>
-    <p class="sr">Preview. A founder asks their AI to make a $50,000 SAFE for Bill Gates at an $8M cap and send it. The AI shows the draft, the founder approves, and the SAFE arrives in Bill's inbox to sign. Then the founder asks for the team's vesting, and the AI shows Tim Apple, Steve Jobs and Steve Wozniak with a vesting graph.</p>
+    <p class="sr">Preview. A founder asks their AI to make a $50,000 SAFE for Bill Gates at an $8M cap and send it. The AI shows the draft, the founder approves, and the SAFE arrives in Bill's inbox. Bill signs it, and the AI tells the founder and sends Bill the wire instructions. Then the founder asks for the team's vesting, and the AI shows Tim Apple, Steve Jobs and Steve Wozniak with a vesting graph. Last, Jill from Sales resigns: the AI shows her vested options and sends her how to exercise them.</p>
     <div class="stage" id="stage" aria-hidden="true">
       <div class="win chat">
         <div class="bar"><i></i><i></i><i></i><span style="margin-left: 8px">Your AI</span><span class="tag">Capfolder connected</span></div>
@@ -211,6 +242,9 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
             <span class="approve" id="approve">Approve and send</span>
           </div>
           <div class="msg ok" data-k="ok1">✓ Checked against your cap table. Sent to bill@gates.example. I'll remind him if he hasn't signed in 3 days.</div>
+          <div class="msg ok" data-k="ok2">✓ Bill Gates signed the SAFE. I filed the signed copy in your folder and updated the cap table.<br>Next: send Bill the wire instructions so the $50,000 can come in.</div>
+          <div class="msg card" data-k="c3"><h4>Email to Bill Gates · draft</h4><div style="font-size: 14px; color: #3A3E46">Thanks for signing, Bill. Here are Acme Inc.'s wire instructions for the $50,000.</div><span class="approve" id="approve2">Approve and send</span></div>
+          <div class="msg ok" data-k="ok3">✓ Sent to bill@gates.example.</div>
           <div class="msg me" data-k="m2">Show me the vesting for my team.</div>
           <div class="msg tool" data-k="t2">capfolder · get_vesting</div>
           <div class="msg card" data-k="c2" style="width: min(480px, 100%); box-sizing: border-box">
@@ -229,6 +263,21 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
               <text x="0" y="165" font-size="11" fill="#5B606B">4-year vesting, 1-year cliff</text>
             </svg>
           </div>
+          <div class="msg me" data-k="m3">Jill from Sales sent us her resignation letter. Check her vesting and send her instructions on how to exercise her options.</div>
+          <div class="msg tool" data-k="t3">capfolder · get_vesting · Jill</div>
+          <div class="msg card" data-k="c4" style="width: min(480px, 100%); box-sizing: border-box">
+            <h4>Jill · 30,000 options · 4 years, 1-year cliff</h4>
+            <dl><dt>Vested on her last day</dt><dd class="num">12,500 (41.7%)</dd><dt>Back to the pool</dt><dd class="num">17,500</dd><dt>Exercise price</dt><dd class="num">$0.10 · $1,250 in total</dd><dt>Window to exercise</dt><dd>90 days after her last day</dd></dl>
+            <svg class="graph" viewBox="0 0 400 168" role="presentation">
+              <line x1="0" y1="150" x2="400" y2="150" stroke="#E4E4E0"/>
+              <line x1="167" y1="4" x2="167" y2="150" stroke="#9A9EA6" stroke-dasharray="3 3"/>
+              <text x="171" y="14" font-size="11" fill="#5B606B">last day</text>
+              <path d="M167 92L400 10" stroke="#D9DAD6" style="stroke-dasharray: 4 4; stroke-dashoffset: 0"/>
+              <path d="M0 150H100V115L167 92H400" stroke="#1F6F4A"/>
+            </svg>
+          </div>
+          <div class="msg card" data-k="c5"><h4>Email to Jill · draft</h4><div style="font-size: 14px; color: #3A3E46">How to exercise your 12,500 vested options: the price, the 90-day window, and the form to sign.</div><span class="approve" id="approve3">Approve and send</span></div>
+          <div class="msg ok" data-k="ok4">✓ Sent to jill@acme.example. I'll remind her before the 90 days run out.</div>
         </div>
         <div class="input" id="input"></div>
       </div>
@@ -242,60 +291,119 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
         <div class="mail"><span class="env" aria-hidden="true"></span><div>Calendar · Coffee with Steve</div></div>
         <div class="open">
           <b>Tim Apple</b> sent you a SAFE from Acme Inc.: $50,000 at an $8,000,000 post-money cap.<br>
-          <span class="sign">Review and sign</span>
+          <span class="sign" id="review">Review and sign</span>
           <div style="margin-top: 8px; color: #5B606B; font-size: 13px">No account needed. Sign in your browser.</div>
         </div>
+      </div>
+      <div class="win signwin">
+        <div class="bar"><i></i><i></i><i></i><span style="margin-left: 8px">sign.capfolder.com</span></div>
+        <div class="doc">
+          <h4>SAFE · Acme Inc. · Bill Gates</h4>
+          <div>Post-money valuation cap $8,000,000 · Purchase amount $50,000</div>
+          <div style="margin-top: 10px; color: #9A9EA6">THIS INSTRUMENT AND ANY SECURITIES ISSUABLE PURSUANT HERETO HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933…</div>
+          <div class="sigbox"><div class="sigline" id="sigline"></div><span class="sign" id="signbtn">Sign</span><span class="signed">✓ Signed</span></div>
+        </div>
+      </div>
+      <div class="win inbox2">
+        <div class="bar"><i></i><i></i><i></i><span style="margin-left: 8px">Inbox · jill@acme.example</span></div>
+        <div class="mail new">
+          <svg class="env" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>
+          <div><b>Acme Inc.</b><br><b>How to exercise your vested options</b> · 12,500 options at $0.10, within 90 days</div>
+        </div>
+        <div class="mail"><span class="env" aria-hidden="true"></span><div>HR · Your last day</div></div>
+        <div class="mail"><span class="env" aria-hidden="true"></span><div>Calendar · Team lunch</div></div>
       </div>
       <span class="label">Preview</span>
       <button type="button" id="pause-motion" aria-pressed="false" aria-hidden="false">Pause</button>
     </div>
   </section>
 
-  <section id="features" class="band sec" aria-labelledby="features-h">
+  <section id="features" class="sec" aria-labelledby="features-h">
     <div class="wrap">
       <h2 class="h2" id="features-h">Tell your AI. Capfolder does the paperwork.</h2>
-      <ul class="feats">
-        <li><h3>Issue and send SAFEs</h3><p><q>Make SAFEs for these 5 angels and send them.</q> Filled from YC's template, word for word.</p></li>
-        <li><h3>Chase the signatures</h3><p>Anyone who hasn't signed in 3 days gets a reminder. Ask who's left at any time.</p></li>
-        <li><h3>Ask anything</h3><p>Vesting, dilution, what you'll own after the round, what's missing before diligence.</p></li>
-        <li class="rules"><h3>Rules your AI can't break</h3><p>Every change follows the Open Cap Format, the standard for cap tables. Your AI proposes, you approve, and every change is logged.</p></li>
-        <li><h3>A real app, too</h3><p>Cap table, vesting graphs, documents and signatures in a desktop app. Use the chat, the app, or both.</p></li>
-        <li><h3>Your investors can ask too <span class="pro">Pro</span></h3><p>Investors and employees connect their own AI and see only their own shares and papers.</p></li>
-      </ul>
-      <p class="works"><b>Works with</b> Claude, ChatGPT, Gemini, Claude Code, or a model on your own computer (Ollama, LM Studio). Your files stay on your computer, 24/7. Open source (AGPL-3.0), so you can self-host it.</p>
+      <div class="fgrid">
+        <div class="fcard">
+          <div class="fpic" aria-hidden="true"><span class="bub">Make SAFEs for these 5 angels and send them.</span></div>
+          <h3>Issue and send SAFEs</h3><p>Filled from YC's template, word for word.</p>
+        </div>
+        <div class="fcard">
+          <div class="fpic col" aria-hidden="true">
+            <span class="row ok"><span class="dot"></span>Bill Gates<span class="r">signed</span></span>
+            <span class="row wait"><span class="dot"></span>Steve Jobs<span class="r">reminded, day 3</span></span>
+          </div>
+          <h3>Chase the signatures</h3><p>Anyone who hasn't signed in 3 days gets a reminder.</p>
+        </div>
+        <div class="fcard">
+          <div class="fpic" aria-hidden="true"><span class="chip">Who's vested?</span><span class="chip">My dilution?</span><span class="chip">What's missing?</span></div>
+          <h3>Ask anything</h3><p>Vesting, dilution, what you'll own after the round, what's missing before diligence.</p>
+        </div>
+        <div class="fcard rules">
+          <div class="fpic col" aria-hidden="true">
+            <span class="row"><span class="num">+ SAFE · Bill Gates · $50,000</span><span class="r ocf">OCF ✓</span></span>
+            <span style="display: flex; gap: 8px"><span class="chip go">Approve</span><span class="chip">Reject</span></span>
+          </div>
+          <h3>Rules your AI can't break</h3><p>Every change follows the Open Cap Format, the standard for cap tables. Your AI proposes, you approve, and it's logged.</p>
+        </div>
+        <div class="fcard">
+          <div class="fpic" aria-hidden="true"><span class="chip">Cap table</span><span class="chip">Vesting</span><span class="chip">Documents</span><span class="chip go-soft">Works offline</span></div>
+          <h3>A real app, too</h3><p>Use the chat, the desktop app, or both. They share the same folder.</p>
+        </div>
+        <div class="fcard">
+          <div class="fpic col" aria-hidden="true">
+            <span class="row"><span class="dot pur"></span>Steve Jobs<span class="r num">3,000,000 shares</span></span>
+            <span class="row"><span class="dot pur"></span>Bill Gates<span class="r num">SAFE · $50,000</span></span>
+          </div>
+          <h3>A portal for everyone <span class="pro">Pro</span></h3><p>Investors and employees see their own shares and papers, on the web or from their own AI.</p>
+        </div>
+      </div>
+      <div class="works"><b>Works with</b><span class="chip">Claude</span><span class="chip">ChatGPT</span><span class="chip">Gemini</span><span class="chip">Claude Code</span><span class="chip">Ollama</span><span class="chip">LM Studio</span></div>
+      <p class="lead" style="margin-top: 14px; font-size: 16px">Your files stay on your computer, 24/7. Open source (AGPL-3.0), so you can self-host it.</p>
     </div>
   </section>
 
-  <section id="story" class="wrap sec story" aria-labelledby="story-h">
-    <h2 class="h2" id="story-h">We lost our cap table paperwork.</h2>
-    <div style="margin-top: 22px">
-      <p>We raised our seed on SAFEs from 28 investors. Some signed in one tool. Some sent their own paperwork. Some signed by email.</p>
-      <p>When we needed the documents, they were gone. We're still asking investors to sign again.</p>
-      <p style="margin-bottom: 0">So we built the tool we wish we'd had: you ask, your AI does the paperwork, and every paper ends up in a folder you own.</p>
+  <section id="story" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
+    <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
+      <div style="flex: 1 1 440px; min-width: 0">
+        <h2 class="h2" style="margin-top: 14px">We lost our cap table paperwork.</h2>
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px; font-size: 18px; line-height: 1.65; color: #2B2E33">
+          <p style="margin: 0">We raised our seed on SAFEs from 28 investors. Some signed in one tool. Some sent their own paperwork. Some signed by email.</p>
+          <p style="margin: 0">When we needed the documents, the data was gone. We're now digging through old inboxes and asking investors to sign again.</p>
+          <p style="margin: 0">A cap table is the most important record a company has. It shouldn't depend on a vendor, a subscription or a login. So we built one that lives in a folder you own, and open-sourced it so it's always yours.</p>
+        </div>
+      </div>
+      <div style="flex: 1 1 520px; min-width: 0">
+        <div class="demo">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 0 22px; height: 56px; border-bottom: 1px solid #E4E4E0; background: #FBFBFA">
+            <span style="display: flex; gap: 6px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span></span>
+            <span style="font-weight: 600; font-size: 14px">Your company folder</span>
+          </div>
+          <capfolder-paperwork captions></capfolder-paperwork>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="pricing" class="band sec" aria-labelledby="pricing-h">
+  <section id="pricing" class="sec" aria-labelledby="pricing-h">
     <div class="wrap">
       <h2 class="h2" id="pricing-h">Price.</h2>
       <div class="plans">
         <div class="plan">
           <h3>Free</h3>
           <div style="margin-top: 10px"><span class="num" style="font-size: 34px; font-weight: 600">$0</span></div>
-          <ul><li>Everything on this page except Pro</li><li>Use your own AI as much as you like</li><li>5 signature requests a month</li><li>Self-host it for free</li></ul>
+          <ul><li>The desktop app, the AI and everything above except Pro</li><li>Use your own AI as much as you like</li><li>5 signature requests a month</li><li>Self-host it for free</li></ul>
           <div style="margin-top: auto; padding-top: 24px"><a href="#download" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">Download</a></div>
         </div>
         <div class="plan">
           <h3>Pro</h3>
           <div style="margin-top: 10px"><span class="num" style="font-size: 34px; font-weight: 600">$50</span> <span style="color: #5B606B; font-size: 14px">per month · coming</span></div>
-          <ul><li>Investors and employees see their own shares from their AI</li><li>More signature requests</li><li>Sync between your computers</li><li>Encrypted online backup</li></ul>
+          <ul><li>Everything in Free</li><li>A web app, so you can work from any browser</li><li>A portal for all your stakeholders: investors and employees see their own shares and papers</li><li>Your documents available to any AI agent over MCP</li><li>Cloud backup of every document, encrypted</li><li>Sync between your computers</li><li>More signature requests</li></ul>
           <div style="margin-top: auto; padding-top: 24px"><button type="button" id="prowait" data-umami-event="pro-waitlist" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">I want Pro: tell me when it's ready</button></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="faq" class="wrap sec" aria-labelledby="faq-h">
+  <section id="faq" class="band sec" aria-labelledby="faq-h"><div class="wrap">
     <h2 class="h2" id="faq-h">Questions</h2>
     <div class="faq">
       <div><h3>Which AI can I use?</h3><p>Claude, ChatGPT, Gemini, Claude Code, or a model on your computer with Ollama or LM Studio. You bring it, so there's no AI limit from us.</p></div>
@@ -303,6 +411,7 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
       <div><h3>Does my data go to an AI company?</h3><p>Only what your AI reads to answer you, and only if you use a cloud AI. Use a model on your computer and nothing leaves it.</p></div>
       <div><h3>Is this legal advice?</h3><p>No. Capfolder fills in YC's standard SAFE word for word. Have a lawyer review your documents.</p></div>
     </div>
+  </div>
   </section>
 
   <section class="sec" style="background: #1F6F4A; color: #fff; text-align: center">
@@ -339,10 +448,12 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
     await sleep(500);
     input.textContent = ""; input.classList.remove("typing");
   }
+  function clear() { stage.querySelectorAll(".msg").forEach(function (el) { el.classList.remove("on", "in"); }); }
+  function press(id) { document.getElementById(id).classList.add("press"); }
   function reset() {
-    stage.className = "stage";
-    stage.querySelectorAll(".msg").forEach(function (el) { el.classList.remove("on", "in"); });
-    document.getElementById("approve").classList.remove("press");
+    stage.className = "stage"; clear();
+    stage.querySelectorAll(".press").forEach(function (el) { el.classList.remove("press"); });
+    document.getElementById("sigline").textContent = "";
   }
   async function loop() {
     for (;;) {
@@ -350,16 +461,35 @@ h1{font-weight:600;font-size:clamp(34px,7.2vw,68px);line-height:1.05;letter-spac
       await type(msg("m1").textContent); show("m1"); await sleep(1000);
       show("t1"); await sleep(800);
       show("c1"); await sleep(2600);
-      document.getElementById("approve").classList.add("press"); await sleep(700);
+      press("approve"); await sleep(700);
       show("ok1"); await sleep(2400);
       stage.classList.add("zoom"); await sleep(900);
       stage.classList.add("mail-in"); await sleep(2000);
-      stage.classList.add("mail-open"); await sleep(3000);
-      stage.classList.remove("zoom"); await sleep(1000);
-      ["m1", "t1", "c1", "ok1"].forEach(function (k) { msg(k).classList.remove("on", "in"); });
+      stage.classList.add("mail-open"); await sleep(2200);
+      press("review"); await sleep(600);
+      stage.classList.add("signing"); await sleep(1400);
+      var sig = document.getElementById("sigline");
+      for (var i = 1; i <= 10; i++) { sig.textContent = "Bill Gates".slice(0, i); await sleep(90); }
+      await sleep(600); press("signbtn"); await sleep(500);
+      stage.classList.add("signed-ok"); await sleep(2200);
+      stage.classList.remove("zoom", "mail-in", "mail-open", "signing", "signed-ok"); clear(); await sleep(900);
+      show("ok2"); await sleep(2800);
+      show("c3"); await sleep(2200);
+      press("approve2"); await sleep(700);
+      show("ok3"); await sleep(2400);
+      clear();
       await type(msg("m2").textContent); show("m2"); await sleep(1000);
       show("t2"); await sleep(800);
-      show("c2"); await sleep(6000);
+      show("c2"); await sleep(5500);
+      clear();
+      await type(msg("m3").textContent); show("m3"); await sleep(1000);
+      show("t3"); await sleep(800);
+      show("c4"); await sleep(4500);
+      ["m3", "t3"].forEach(function (k) { msg(k).classList.remove("on", "in"); }); show("c5"); await sleep(2200);
+      press("approve3"); await sleep(700);
+      show("ok4"); await sleep(1600);
+      stage.classList.add("zoom2"); await sleep(3200);
+      stage.classList.remove("zoom2"); await sleep(1000);
     }
   }
   function finalScene() { ["m2", "t2", "c2"].forEach(show); }
@@ -415,5 +545,6 @@ fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
   })
   .catch(() => {});
 </script>
+<script src="/capfolder-paperwork.js" defer></script>
 </body>
 </html>
