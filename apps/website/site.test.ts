@@ -584,8 +584,8 @@ test("blog posts: ≤60-char title, ≤155-char description, OG image, BlogPosti
   expect(html).toContain('href="/blog/"');
 });
 
-test("homepage test variants: /testing-landing-page/a-d are built, noindex and kept out of the sitemap", async () => {
-  for (const v of ["a", "b", "c", "d"])
+test("homepage test variants: /testing-landing-page/a-e are built, noindex and kept out of the sitemap", async () => {
+  for (const v of ["a", "b", "c", "d", "e"])
     expect(read(`testing-landing-page/${v}/index.html`)).toContain('<meta name="robots" content="noindex">');
   expect(read("package.json")).toMatch(/cp -r [^"]* testing-landing-page /);
   const { sitemap } = await import("./sitemap.mjs");
