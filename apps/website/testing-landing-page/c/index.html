@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1F6F4A">
+<title>Capfolder — Like Carta, but free. And the files are yours.</title>
+<meta name="description" content="Free, open-source cap table app. Your first SAFE, cap table and signatures, in a folder on your laptop.">
+<link rel="canonical" href="https://capfolder.com/">
+<!-- docs/11: cookieless visits, referrers and button clicks (data-umami-event), no banner. Umami Cloud site for capfolder.com. -->
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<!-- fonts are served from this site (no Google Fonts request); SIL OFL, fonts/OFL.txt -->
+<style>
+@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:700;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
+</style>
+<style>
+body{margin:0;background:#FAFAF8}
+a{color:#1F6F4A}a:hover{color:#16543A}
+:root{--ease-out:cubic-bezier(0.23,1,0.32,1)}
+.page{font-family:'IBM Plex Sans',system-ui,sans-serif;color:#111311;background:#FAFAF8;overflow-x:hidden}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+.h2{font-weight:600;font-size:clamp(30px,5.4vw,46px);line-height:1.08;letter-spacing:-0.03em;margin:0;text-wrap:balance}
+.h3{font-size:20px;font-weight:600;margin:0 0 8px 0;letter-spacing:-0.01em}
+.lead{font-size:18px;line-height:1.6;margin:0;color:#3A3E46}
+.body{margin:0;font-size:16px;line-height:1.6;color:#3A3E46}
+.sec{padding-top:clamp(56px,10vw,104px);padding-bottom:clamp(56px,10vw,104px)}
+.card{background:#fff;border:1px solid #E4E4E0;border-radius:16px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;padding:15px 22px;border-radius:10px;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform 160ms var(--ease-out),background-color 200ms ease}
+.btn:active{transform:scale(0.97)}
+.btn-p{background:#1F6F4A;color:#fff}
+.btn-s{background:#fff;color:#111311;border-color:#D9DAD6}
+@media (hover:hover) and (pointer:fine){
+  .btn-p:hover{background:#18603F;color:#fff}
+  .btn-s:hover{background:#F3F4F1;color:#111311}
+  .navlink:hover{color:#111311}
+}
+.navlink{color:#3A3E46;text-decoration:none}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
+
+/* hero video */
+.demo{position:relative;background:#fff;border:1px solid #E4E4E0;border-radius:18px;overflow:hidden}
+.demo video{display:block;width:100%;height:auto;aspect-ratio:1440/900}
+#pause-motion{position:absolute;right:16px;bottom:16px;font:500 14px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 12px;border-radius:999px;border:1px solid #D6D6D0;background:#FFFFFFE6;color:#3A3E46;cursor:pointer}
+#pause-motion:focus-visible{outline:2px solid #1F6F4A;outline-offset:2px}
+#pause-motion[hidden]{display:none}
+
+/* app screenshots, cropped: margins are % of the frame's width */
+.crop{overflow:hidden;border:1px solid #E4E4E0;border-radius:14px;background:#FAFAF8}
+.crop img{display:block;max-width:none;height:auto}
+
+/* features */
+.big{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:40px;align-items:center;padding:32px}
+.pair{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:18px;margin-top:18px}
+.pair > .card{padding:26px;display:flex;flex-direction:column;gap:22px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:44px 0;border-top:1px solid #ECECE8}
+.row.flip > :first-child{order:2}
+.chip{font-size:14px;padding:10px 12px;border-radius:8px;background:#F6F7F4;line-height:1.5}
+
+/* chat (local AI) */
+.chat{display:flex;flex-direction:column;gap:12px;padding:22px;font-size:15px;line-height:1.55}
+.me{align-self:flex-end;max-width:80%;background:#1F6F4A;color:#fff;border-radius:14px 14px 4px 14px;padding:10px 14px}
+.ai{max-width:92%;background:#F3F4F1;border-radius:14px 14px 14px 4px;padding:10px 14px}
+
+/* price */
+.price{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.price > div{padding:24px 26px}
+.price > div + div{border-left:1px solid #ECECE8}
+.amt{font-size:30px;font-weight:600;margin-top:6px}
+
+/* learn */
+.guides{list-style:none;margin:28px 0 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px}
+.guides a{display:flex;flex-direction:column;gap:4px;padding:18px 0;border-top:1px solid #E4E4E0;text-decoration:none;color:#111311}
+.guides b{font-weight:600;font-size:17px;color:#1F6F4A}
+.guides span{font-size:16px;color:#3A3E46;line-height:1.5}
+
+/* faq */
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 56px;margin-top:32px}
+
+.motion-paused *,.motion-paused *::before,.motion-paused *::after{animation-play-state:paused!important}
+@media (max-width:860px){
+  .big{grid-template-columns:minmax(0,1fr);padding:22px;gap:24px}
+  .row{gap:28px;padding:36px 0}
+}
+@media (max-width:700px){
+  .pair,.row{grid-template-columns:minmax(0,1fr)}
+  .row{gap:22px}
+  .row.flip > :first-child{order:0}
+}
+@media (max-width:640px){
+  nav[aria-label="Main"] .navlink:not([href="/learn/"]){display:none}
+  .price{grid-template-columns:minmax(0,1fr)}
+  .price > div + div{border-left:0;border-top:1px solid #ECECE8}
+  .guides,.faq{grid-template-columns:minmax(0,1fr)}
+  #pause-motion{right:10px;bottom:10px;padding:7px 10px;font-size:13px}
+  .chat{padding:16px;font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav aria-label="Main" class="wrap" style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; padding-top: 20px; padding-bottom: 20px">
+    <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111311; font-weight: 600; font-size: 18px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>
+      Capfolder
+    </a>
+    <div style="margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 22px; font-size: 15px">
+      <a href="/learn/" class="navlink">Learn</a>
+      <a href="/blog/" class="navlink">Blog</a>
+      <a href="https://github.com/MKBSP/capfolder" class="navlink">GitHub</a>
+      <a href="#download" class="btn btn-p" data-umami-event="nav-download" style="font-size: 14px; padding: 10px 16px">Download</a>
+    </div>
+  </nav>
+
+  <header id="top" class="wrap" style="padding-top: clamp(40px, 8vw, 80px); padding-bottom: 40px; text-align: center">
+    <h1 style="font-weight: 600; font-size: clamp(34px, 7.4vw, 76px); line-height: 1.04; letter-spacing: -0.04em; margin: 0 auto; max-width: 980px; text-wrap: balance">Like Carta, but free. And the files are yours.</h1>
+    <p class="lead" style="margin: 24px auto 0 auto; max-width: 620px; font-size: 20px">Your first SAFE, cap table and signatures, in a folder on your laptop.</p>
+    <div id="download" style="max-width: 560px; margin: 32px auto 0 auto">
+      <div id="gate">
+        <div style="display: flex; justify-content: center">
+          <button type="button" class="btn btn-p" id="getdl" data-umami-event="get-download" style="font-size: 17px; padding: 14px 22px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+            Get the download
+          </button>
+        </div>
+        <p style="font-size: 14px; line-height: 1.5; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · leave your email to hear about new versions, or <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">No thanks, just download</button></p>
+        <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
+      </div>
+      <div id="dlthanks" hidden aria-live="polite">
+        <div style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left">
+          <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Your download is ready
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
+            <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
+            <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
+            <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
+          </div>
+          <div style="font-size: 14px; color: #5B606B; margin-top: 10px">
+            <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
+          </div>
+          <p style="font-size: 14px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECECE8">
+            <span style="flex: 1 1 240px; font-size: 15px; line-height: 1.5; color: #3A3E46">Capfolder is free. If it saves you a headache, <b style="font-weight: 600; color: #111311">pay what you want.</b></span>
+            <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Buy me a coffee</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="wrap" aria-label="Product video" style="padding-bottom: clamp(56px, 10vw, 96px)">
+    <div class="demo">
+      <video id="demo" autoplay muted loop playsinline preload="metadata" poster="/img/home/demo-poster.jpg" width="1440" height="900" aria-label="Capfolder: a first SAFE, from the cap table to signed">
+        <source src="/img/home/demo.webm" type="video/webm">
+        <source src="/img/home/demo.mp4" type="video/mp4">
+      </video>
+      <button type="button" id="pause-motion" aria-pressed="false">Pause video</button>
+    </div>
+  </section>
+
+  <section id="story" class="sec" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8">
+    <div class="wrap">
+      <p class="lead" style="font-size: 22px; max-width: 760px; color: #111311">Today your cap table is a spreadsheet, and the signed PDFs are lost in email.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center; margin-top: 48px">
+        <div style="flex: 1 1 400px; min-width: 0">
+          <h2 class="h2">We lost our cap table paperwork.</h2>
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px; max-width: 62ch; font-size: 18px; line-height: 1.65; color: #2B2E33">
+            <p style="margin: 0">We raised our seed on SAFEs from 28 investors. Some signed in one tool, some sent their own paperwork, some signed by email.</p>
+            <p style="margin: 0">When we needed the documents, they were gone. So we built the tool we wanted: one folder, every paper in it.</p>
+          </div>
+        </div>
+        <div style="flex: 1 1 440px; min-width: 0; max-width: 560px">
+          <div class="demo">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 0 22px; height: 56px; border-bottom: 1px solid #E4E4E0; background: #FBFBFA">
+              <span style="display: flex; gap: 6px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span></span>
+              <span style="font-weight: 600; font-size: 14px">Your company folder</span>
+            </div>
+            <capfolder-paperwork captions></capfolder-paperwork>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="wrap sec">
+    <h2 class="h2" style="max-width: 640px">What you get.</h2>
+
+    <div class="card big" style="margin-top: 40px">
+      <div>
+        <h3 class="h3" style="font-size: 26px">Your SAFE, filled in and signed.</h3>
+        <p class="body">Fill the YC post-money SAFE from a short form. Investors sign from a link, with no account.</p>
+      </div>
+      <div class="crop"><img src="/img/home/step-safe.jpg" width="1280" height="800" alt="The SAFE form for Bill Gates, $250,000 at an $8M cap, next to the filled-in YC SAFE" style="width: 103%; margin: -7.6% 0 -6.8% -1.6%"></div>
+    </div>
+
+    <div class="pair">
+      <div class="card">
+        <div style="position: relative">
+          <div class="crop" style="aspect-ratio: 16/10"><img src="/blog/img/v013-sample.jpg" width="1480" height="812" alt="The cap table: Tim Apple, Steve Jobs, Steve Wozniak and Bill Gates with their shares and vesting" loading="lazy" style="width: 159%; margin: -25.8% 0 0 -11.8%"></div>
+          <div class="chip" style="position: absolute; right: 12px; bottom: 12px; background: #fff; border: 1px solid #E4E4E0" aria-hidden="true"><span class="num">10,000</span> = <span class="num">40,000</span> × 12/48 months</div>
+        </div>
+        <div>
+          <h3 class="h3">Cap table and vesting, with the math shown.</h3>
+          <p class="body">Click any number to see how it was worked out.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="crop" style="aspect-ratio: 330/300"><img src="/blog/img/v013-sample.jpg" width="1480" height="812" alt="The What's missing list: no signed document for Tim Apple's shares, no board consent for a grant" loading="lazy" style="width: 448%; margin: -74% 0 0 -315%"></div>
+        <div>
+          <h3 class="h3">What's missing.</h3>
+          <p class="body">The papers an investor's lawyer will ask for, listed before they ask.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 56px">
+      <div class="row">
+        <div>
+          <h3 class="h3">Your files, 24/7.</h3>
+          <p class="body">Plain files in a folder on your computer. Open them with any app, back them up your way. Nobody can take them down.</p>
+        </div>
+        <div class="crop" style="aspect-ratio: 710/380; background: #fff"><img src="/img/home/step-folder.jpg" width="1280" height="800" alt="The folder Capfolder creates: README.txt, AGENTS.md, events.jsonl, captable.csv and docs" loading="lazy" style="width: 180%; margin: -31% 0 0 -7%"></div>
+      </div>
+      <div class="row flip">
+        <div>
+          <h3 class="h3">Ask your cap table anything.</h3>
+          <p class="body">Your AI answers from your own folder and drafts the changes. Nothing is saved until you click yes. Use Claude, ChatGPT, or a model on your computer, so nothing leaves it.</p>
+          <p class="body" style="margin-top: 12px"><span style="font-size: 13px; padding: 2px 8px; border-radius: 999px; background: #EEF5F0; color: #1F6F4A">Coming</span> "Make SAFEs for these 5 angels, send them, and chase anyone who hasn't signed in 3 days."</p>
+        </div>
+        <div class="card chat" aria-label="Example chat with Ask AI">
+          <div class="me">What's missing before our seed?</div>
+          <div class="ai">3 things: Steve Jobs's 83(b), a signed SAFE from Bill Gates, approval for the option pool.</div>
+          <div class="me">Draft Bill's SAFE: $50k at an $8M cap.</div>
+          <div class="ai">Done. Check it and click Save.</div>
+          <div style="font-size: 13px; color: #5B606B; border-top: 1px solid #E4E4E0; padding-top: 12px">Ask AI · your model, your folder</div>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3 class="h3">Open source.</h3>
+          <p class="body">Read the code and the math (AGPL-3.0). Host the signing relay yourself if you'd rather nothing touches ours. <a href="https://github.com/MKBSP/capfolder/tree/main/apps/relay" data-umami-event="relay-setup">Relay setup</a></p>
+        </div>
+        <div class="card chat" aria-label="Hosting the signing relay yourself">
+          <div style="font-size: 13px; color: #5B606B">github.com/MKBSP/capfolder · AGPL-3.0</div>
+          <pre class="num" style="margin: 0; font-size: 14px; line-height: 1.7; white-space: pre-wrap">cd apps/relay/docker
+./host-setup.sh
+./host.sh account</pre>
+          <div style="font-size: 13px; color: #5B606B; border-top: 1px solid #E4E4E0; padding-top: 12px">Your own signing relay, on your own server</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
+    <h2 class="h2">Free. Pro if you want sync.</h2>
+    <div class="card price" style="margin-top: 32px">
+      <div>
+        <b style="font-weight: 600">Free</b>
+        <div class="amt num">$0</div>
+        <p class="body" style="margin-top: 6px">Everything, plus 5 signature requests a month.</p>
+      </div>
+      <div>
+        <b style="font-weight: 600">Self-host</b>
+        <div class="amt num">$0</div>
+        <p class="body" style="margin-top: 6px">Run the signing relay on your own server.</p>
+      </div>
+      <div>
+        <b style="font-weight: 600">Pro</b>
+        <div class="amt"><span class="num">$50</span><span style="font-size: 15px; font-weight: 400; color: #5B606B"> /month, coming</span></div>
+        <p class="body" style="margin-top: 6px">Sync and an encrypted backup. <button type="button" id="prowait" data-umami-event="pro-waitlist" class="linkbtn" style="color: #1F6F4A">Tell me when it's ready</button></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="learn" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
+    <h2 class="h2">Learn before you raise.</h2>
+    <ul class="guides">
+      <li><a href="/learn/safe/"><b>What is a SAFE?</b><span>Raise money now, issue the shares later.</span></a></li>
+      <li><a href="/learn/valuation-cap-discount/"><b>Valuation cap and discount</b><span>How they decide your investor's shares.</span></a></li>
+      <li><a href="/learn/vesting/"><b>Vesting and the cliff</b><span>Four years with a one-year cliff, month by month.</span></a></li>
+      <li><a href="/learn/83b-election/"><b>The 83(b) election</b><span>Who should file, and the 30-day deadline.</span></a></li>
+    </ul>
+    <p style="margin: 18px 0 0 0; font-size: 15px"><a href="/learn/">All guides</a></p>
+  </section>
+
+  <section id="faq" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
+    <h2 class="h2">Questions</h2>
+    <div class="faq">
+      <div><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Who can see my data?</h3><p class="body">Your cap table and documents stay on your computer. A document you send for signature sits on the relay until it's signed (self-host the relay if that matters). The app sends an anonymous install count; turn it off in Settings.</p></div>
+      <div><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Do I need a server or any setup?</h3><p class="body">No. Download it, open it, pick a folder. No server, no account, no terminal. Signing goes through our hosted relay, so that needs no setup either.</p></div>
+      <div><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Which companies does it support?</h3><p class="body">Delaware C-corps first. More jurisdictions after.</p></div>
+      <div><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Is this legal advice?</h3><p class="body">No. Capfolder records what you and your lawyer decided. It fills in YC's standard SAFE word for word and drafts nothing else. Have a lawyer review it.</p></div>
+    </div>
+  </section>
+
+  <section style="background: #1F6F4A; color: #fff; padding-top: clamp(56px, 10vw, 112px); padding-bottom: clamp(56px, 10vw, 112px); text-align: center">
+    <div class="wrap">
+      <h2 class="h2" style="font-size: clamp(30px, 6vw, 52px)">Every paper, one folder.</h2>
+      <p class="lead" style="color: #D6EBDD; margin: 18px auto 0 auto; max-width: 560px">We learned it the hard way. You don't have to.</p>
+      <div style="margin-top: 32px">
+        <a href="#download" class="btn" data-umami-event="close-download" style="background: #fff; color: #16543A">Download Capfolder</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; line-height: 1.55; color: #5B606B">
+    <span style="flex: 1 1 360px; max-width: 62ch">Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px 18px; flex: 1 1 360px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="/help/">Help</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="/#thanks">Acknowledgements</a><a href="/#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
+  </footer>
+</div>
+
+<script>
+// Hero video: paused under reduced motion; the button pauses and plays it (WCAG 2.2.2).
+(function () {
+  var video = document.getElementById("demo");
+  var btn = document.getElementById("pause-motion");
+  function set(paused) {
+    if (paused) video.pause(); else video.play().catch(function () {});
+    document.documentElement.classList.toggle("motion-paused", paused);
+    btn.setAttribute("aria-pressed", String(paused));
+    btn.textContent = paused ? "Play video" : "Pause video";
+  }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); set(true); }
+  btn.addEventListener("click", function () { set(btn.getAttribute("aria-pressed") !== "true"); });
+  var sources = video.querySelectorAll("source"), failed = 0;
+  sources.forEach(function (s) { s.addEventListener("error", function () { if (++failed === sources.length) btn.hidden = true; }); });
+})();
+
+// Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
+// Links point at the latest published GitHub release (until one is published, the releases page).
+var params = new URLSearchParams(location.search);
+function showDownloads() {
+  document.getElementById("gate").hidden = true;
+  document.getElementById("dlthanks").hidden = false;
+}
+document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
+document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") })); // Pro waitlist (integrations/tally.md)
+document.getElementById("skipdl").addEventListener("click", showDownloads); // Show HN: no signup required to try
+// Tally is loaded only when someone asks for the download (no third-party request before that)
+function openForm(id, opts) {
+  const popup = () =>
+    window.Tally.openPopup(id, {
+      layout: "modal",
+      hideTitle: true,
+      hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
+      ...opts,
+    });
+  if (window.Tally) return popup();
+  const s = document.createElement("script");
+  s.src = "https://tally.so/widgets/embed.js";
+  s.onload = popup;
+  s.onerror = () => {
+    location.href = `https://tally.so/r/${id}?${params.toString()}`;
+  };
+  document.head.appendChild(s);
+}
+fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
+  .then((r) => r.ok ? r.json() : null)
+  .then((rel) => {
+    if (!rel) return;
+    var find = (re) => { var a = (rel.assets || []).find((x) => re.test(x.name)); return a && a.browser_download_url; };
+    var set = (id, url) => { if (url) document.getElementById(id).href = url; };
+    set("dl-mac", find(/aarch64\.dmg$/));
+    set("dl-mac-intel", find(/x64\.dmg$/));
+    set("dl-win", find(/x64-setup\.exe$/) || find(/\.msi$/));
+    set("dl-linux", find(/\.AppImage$/) || find(/\.deb$/));
+  })
+  .catch(() => {});
+</script>
+<script src="/capfolder-paperwork.js" defer></script>
+</body>
+</html>

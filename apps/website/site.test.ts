@@ -480,7 +480,10 @@ const allPages = () =>
 test("every page: a title, a description, a canonical URL, alt text on every image, and JSON-LD that parses", () => {
   for (const p of allPages()) {
     const page = read(p);
-    const url = `https://capfolder.com/${p.replace(/index\.html$/, "")}`;
+    // test variants of the homepage point search engines at the homepage itself
+    const url = p.startsWith("testing-landing-page/")
+      ? "https://capfolder.com/"
+      : `https://capfolder.com/${p.replace(/index\.html$/, "")}`;
     expect([p, /<title>[^<]{10,}<\/title>/.test(page)]).toEqual([p, true]);
     expect([p, /<meta name="description" content="[^"]{50,170}">/.test(page)]).toEqual([p, true]);
     expect([p, page.includes(`<link rel="canonical" href="${url}">`)]).toEqual([p, true]);
@@ -579,4 +582,12 @@ test("blog posts: ≤60-char title, ≤155-char description, OG image, BlogPosti
   }
   expect(read("package.json")).toMatch(/cp -r [^"]*\bblog\b/);
   expect(html).toContain('href="/blog/"');
+});
+
+test("homepage test variants: /testing-landing-page/a-d are built, noindex and kept out of the sitemap", async () => {
+  for (const v of ["a", "b", "c", "d"])
+    expect(read(`testing-landing-page/${v}/index.html`)).toContain('<meta name="robots" content="noindex">');
+  expect(read("package.json")).toMatch(/cp -r [^"]* testing-landing-page /);
+  const { sitemap } = await import("./sitemap.mjs");
+  expect(sitemap(["index.html", "testing-landing-page/c/index.html"])).not.toContain("testing-landing-page");
 });

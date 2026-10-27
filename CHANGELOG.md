@@ -4,6 +4,9 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 ### Added
+- **Website: four homepage versions to compare** at /testing-landing-page/a/ (live), /b/, /c/ and /d/, with the new
+  product video (a first SAFE, from the cap table to signed). Not indexed, not in the sitemap; the homepage is
+  unchanged.
 - **Import: compare with Pulley, Carta or Cake.** Check and save shows each total next to a box for the old tool's
   number (fully diluted required; each class, options outstanding, pool available, SAFE total and stakeholders
   optional), checked to the share. Vested-so-far in the file is checked against the schedule (one share of rounding);

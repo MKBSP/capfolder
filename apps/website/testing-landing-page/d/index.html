@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1F6F4A">
+<title>Capfolder — Your first cheques, done right</title>
+<meta name="description" content="Free guides and a free, open-source app for your first raise: split the equity, set the cap, issue the YC SAFE and get it signed. Bring your own AI.">
+<link rel="canonical" href="https://capfolder.com/">
+<!-- docs/11: cookieless visits, referrers and button clicks (data-umami-event), no banner. Umami Cloud site for capfolder.com. -->
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<!-- fonts are served from this site (no Google Fonts request); SIL OFL, fonts/OFL.txt -->
+<style>
+@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:700;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
+</style>
+<style>
+body{margin:0;background:#FAFAF8;color:#111311;font-family:'IBM Plex Sans',system-ui,sans-serif;overflow-x:hidden}
+a{color:#1F6F4A}a:hover{color:#16543A}
+:root{--ease-out:cubic-bezier(0.23,1,0.32,1)}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+.h2{font-weight:600;font-size:clamp(30px,5.4vw,46px);line-height:1.1;letter-spacing:-0.03em;margin:0;max-width:20em;text-wrap:balance}
+.lead{font-size:18px;line-height:1.6;margin:0;color:#3A3E46}
+.sec{padding-top:64px;padding-bottom:64px}
+@media (min-width:700px){.sec{padding-top:104px;padding-bottom:104px}}
+.band{background:#fff}
+main p{max-width:65ch}
+img,video{display:block;max-width:100%;height:auto}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;padding:15px 22px;border-radius:10px;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform 160ms var(--ease-out),background-color 200ms ease}
+.btn:active{transform:scale(0.97)}
+.btn-p{background:#1F6F4A;color:#fff}
+.btn-s{background:#fff;color:#111311;border-color:#D9DAD6}
+.btn:focus-visible,.linkbtn:focus-visible,#pause-motion:focus-visible{outline:2px solid #1F6F4A;outline-offset:2px}
+@media (hover:hover) and (pointer:fine){
+  .btn-p:hover{background:#18603F;color:#fff}
+  .btn-s:hover{background:#F3F4F1;color:#111311}
+  .navlink:hover{color:#111311}
+  .guide:hover{background:#E8F3EC;color:#16543A}
+}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
+.navlink{color:#3A3E46;text-decoration:none}
+@media (max-width:640px){.navlink.gh{display:none}}
+
+/* hero */
+h1{font-weight:600;font-size:clamp(36px,8.4vw,76px);line-height:1.04;letter-spacing:-0.04em;margin:0 auto;max-width:12em;text-wrap:balance}
+.hero-sub{margin:24px auto 0 auto;max-width:34em;font-size:20px;line-height:1.55;color:#3A3E46;text-wrap:pretty}
+
+/* steps */
+.steps{list-style:none;margin:48px 0 0 0;padding:0;display:grid;gap:clamp(40px,6vw,72px)}
+.step{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,4vw,56px);align-items:center}
+.step h3{font-size:24px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;margin:0}
+.step p{margin:12px 0 0 0;font-size:18px;line-height:1.6;color:#3A3E46}
+.step .app{margin-top:14px;padding-left:14px;border-left:2px solid #1F6F4A;color:#111311}
+.shot{position:relative;margin:0;background:#FAF9F6;border:8px solid #ECEEEA;border-radius:18px;overflow:hidden;aspect-ratio:3/2}
+.shot img{position:absolute;left:0;top:0;width:var(--w,100%);max-width:none;transform:translate(var(--x,0),var(--y,0))}
+@media (max-width:700px){.step{grid-template-columns:minmax(0,1fr)}}
+
+/* video */
+.player{position:relative;margin-top:36px}
+.player{background:#ECEEEA;border-radius:20px;padding:clamp(6px,1vw,12px)}
+.player video{width:100%;border-radius:12px}
+#pause-motion{position:absolute;right:clamp(16px,2vw,28px);bottom:clamp(16px,2vw,28px);font:inherit;font-size:15px;font-weight:500;padding:9px 14px;border-radius:999px;border:0;background:rgba(17,19,17,.78);color:#fff;cursor:pointer}
+#pause-motion[hidden]{display:none}
+
+/* story */
+.story{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,64px);align-items:center}
+.story p{margin:0 0 16px 0;font-size:18px;line-height:1.65;color:#2B2E33}
+@media (max-width:820px){.story{grid-template-columns:minmax(0,1fr)}}
+
+/* ai */
+.ai{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,64px);align-items:center}
+.prompt{position:relative;margin:0;background:#F0F1EE;border-radius:16px;padding:28px}
+.prompt blockquote{margin:0;font-size:clamp(20px,2.4vw,24px);line-height:1.4;font-weight:500;letter-spacing:-0.01em}
+.prompt figcaption{margin-top:16px;font-size:14px;color:#5B606B}
+.soon{display:inline-block;margin-bottom:14px;font-size:14px;padding:2px 10px;border-radius:999px;background:#F3F1F9;color:#5B3FA6}
+@media (max-width:820px){.ai{grid-template-columns:minmax(0,1fr)}}
+
+/* why */
+.why{list-style:none;margin:36px 0 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px 48px}
+.why li{font-size:18px;line-height:1.6;color:#3A3E46}
+.why b{display:block;font-weight:600;color:#111311;font-size:18px;margin-bottom:4px}
+
+/* guides */
+.guides{list-style:none;margin:36px 0 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:12px}
+.guide{display:block;height:100%;box-sizing:border-box;background:#fff;border-radius:12px;padding:16px 18px;text-decoration:none;color:#111311;font-weight:600;font-size:16px;line-height:1.4;transition:background-color 200ms ease}
+.guide span{display:block;font-weight:400;font-size:14px;color:#5B606B;margin-top:4px}
+
+/* faq */
+.faq{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:32px 56px;margin-top:32px}
+.faq h3{font-weight:600;font-size:18px;margin:0 0 8px 0}
+.faq p{margin:0;font-size:16px;line-height:1.6;color:#3A3E46}
+
+/* motion: one hero entrance, only when the visitor allows motion */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  header h1,header .hero-sub,header #download{animation:fadeup 600ms var(--ease-out) both}
+  header .hero-sub{animation-delay:80ms}header #download{animation-delay:160ms}
+  .rv{opacity:0;transform:translateY(16px);transition:opacity 600ms var(--ease-out),transform 600ms var(--ease-out)}
+  .rv.in{opacity:1;transform:none}
+}
+.motion-paused *,/* motion: one hero entrance, only when the visitor allows motion */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  header h1,header .hero-sub,header #download{animation:fadeup 600ms var(--ease-out) both}
+  header .hero-sub{animation-delay:80ms}header #download{animation-delay:160ms}
+  .rv{opacity:0;transform:translateY(16px);transition:opacity 600ms var(--ease-out),transform 600ms var(--ease-out)}
+  .rv.in{opacity:1;transform:none}
+}
+.motion-paused *::before,/* motion: one hero entrance, only when the visitor allows motion */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  header h1,header .hero-sub,header #download{animation:fadeup 600ms var(--ease-out) both}
+  header .hero-sub{animation-delay:80ms}header #download{animation-delay:160ms}
+  .rv{opacity:0;transform:translateY(16px);transition:opacity 600ms var(--ease-out),transform 600ms var(--ease-out)}
+  .rv.in{opacity:1;transform:none}
+}
+.motion-paused *::after{animation-play-state:paused!important}
+@media (max-width:640px){
+  .hero-sub{font-size:18px}
+  #pause-motion{padding:8px 12px;right:14px;bottom:14px;font-size:14px}
+}
+</style>
+</head>
+<body>
+
+  <nav aria-label="Main" class="wrap" style="display: flex; align-items: center; gap: 20px; padding-top: 20px; padding-bottom: 20px">
+    <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111311; font-weight: 600; font-size: 18px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>
+      Capfolder
+    </a>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 22px; font-size: 15px">
+      <a href="/learn/" class="navlink">Learn</a>
+      <a href="/blog/" class="navlink">Blog</a>
+      <a href="https://github.com/MKBSP/capfolder" class="navlink gh">GitHub</a>
+      <a href="#download" class="btn btn-p" data-umami-event="nav-download" style="font-size: 14px; padding: 10px 16px">Download</a>
+    </div>
+  </nav>
+
+  <main id="top">
+  <header class="wrap" style="padding-top: clamp(48px, 9vw, 96px); padding-bottom: clamp(48px, 8vw, 80px); text-align: center">
+    <h1>Your first cheques, done right.</h1>
+    <p class="hero-sub">Free guides and a free app for your first raise: the SAFE, the cap table and the signatures. Your AI can help.</p>
+    <div id="download" style="max-width: 600px; margin: 34px auto 0 auto">
+      <div id="gate">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px">
+          <button type="button" class="btn btn-p" id="getdl" data-umami-event="get-download">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+            Get the download
+          </button>
+          <a href="/learn/" class="btn btn-s" data-umami-event="hero-guide">Read the first-raise guide</a>
+        </div>
+        <p style="font-size: 14px; line-height: 1.5; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · leave your email to hear about new versions, or <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">just download</button></p>
+        <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
+      </div>
+      <div id="dlthanks" hidden aria-live="polite">
+        <div style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left">
+          <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Your download is ready
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
+            <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
+            <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
+            <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
+          </div>
+          <div style="font-size: 14px; color: #5B606B; margin-top: 10px">
+            <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
+          </div>
+          <p style="font-size: 14px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECECE8">
+            <span style="flex: 1 1 240px; font-size: 15px; line-height: 1.5; color: #3A3E46">Capfolder is free. If it saves you a headache, <b style="font-weight: 600; color: #111311">pay what you want.</b></span>
+            <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Buy me a coffee</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="steps" class="band sec" aria-labelledby="steps-h">
+    <div class="wrap">
+      <h2 class="h2" id="steps-h">Your first raise, in five steps.</h2>
+      <p class="lead" style="margin-top: 16px; max-width: 36em">Finding investors is your job. The paperwork is ours.</p>
+      <ol class="steps">
+        <li class="step">
+          <div>
+            <h3>Split the equity with your cofounders</h3>
+            <p>Vest it, usually four years with a one-year cliff, so a cofounder who leaves early doesn't keep it all. <a href="/learn/vesting/">Vesting, explained</a></p>
+            <p class="app">Pick the schedule. Capfolder gives you the 83(b) deadline.</p>
+          </div>
+          <figure class="shot"><img src="/img/home/step-split.jpg" width="1280" height="800" loading="lazy" decoding="async" style="--w: 162%" alt="Founder setup in Capfolder: Tim Apple with 4,000,000 shares on 4-year vesting with a 1-year cliff, and a reminder to file the 83(b) within 30 days"></figure>
+        </li>
+        <li class="step">
+          <div>
+            <h3>Decide the cap</h3>
+            <p>The cap sets the price the SAFE converts at. Lower cap, more of the company for the investor. <a href="/learn/valuation-cap-discount/">Cap and discount, explained</a></p>
+            <p class="app">See the investor's share before you send.</p>
+          </div>
+          <figure class="shot"><img src="/img/home/step-safe.jpg" width="1280" height="800" loading="lazy" decoding="async" style="--w: 235%; --x: -1.5%; --y: -35.5%" alt="Capfolder's New SAFE form: Bill Gates invests $250,000 at an $8,000,000 cap, which shows as 3.13% as-converted on the cap table"></figure>
+        </li>
+        <li class="step">
+          <div>
+            <h3>Issue the SAFE from the YC template</h3>
+            <p>Use the standard post-money SAFE. Investors know it. <a href="/learn/safe/">What a SAFE is</a></p>
+            <p class="app">Capfolder fills in YC's SAFE word for word. Only the blanks change.</p>
+          </div>
+          <figure class="shot"><img src="/img/home/step-safe.jpg" width="1280" height="800" loading="lazy" decoding="async" style="--w: 182%; --x: -43%; --y: -1%" alt="The YC post-money SAFE preview, filled in for Bill Gates, $250,000 and Acme Inc., with an $8,000,000 cap"></figure>
+        </li>
+        <li class="step">
+          <div>
+            <h3>Get it signed from a link</h3>
+            <p>Never let a SAFE sit unsigned.</p>
+            <p class="app">Investors sign in the browser, no account. The signed copy lands in your folder.</p>
+          </div>
+          <figure class="shot"><img src="/img/home/step-sign.jpg" width="1280" height="800" loading="lazy" decoding="async" style="--w: 108%; --x: -3%; --y: 2%" alt="Capfolder's Signatures screen: Bill Gates has signed the SAFE, and it's the founder's turn to sign"></figure>
+        </li>
+        <li class="step">
+          <div>
+            <h3>Keep the paper trail</h3>
+            <p>Next round, lawyers ask for every signed document.</p>
+            <p class="app">Capfolder lists what's missing.</p>
+          </div>
+          <figure class="shot"><img src="/img/home/step-83b.jpg" width="1280" height="800" loading="lazy" decoding="async" style="--w: 215%; --x: -56%; --y: -1%" alt="Capfolder's What's missing list: no signed document for Tim Apple's shares, and Tim Apple's 83(b) to file"></figure>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="video" class="wrap sec" aria-labelledby="video-h">
+    <h2 class="h2" id="video-h">A first SAFE, from cap table to signed.</h2>
+    <div class="player">
+      <video id="demo" autoplay muted loop playsinline preload="metadata" poster="/img/home/demo-poster.jpg" width="1440" height="900" aria-label="Capfolder: a first SAFE, from the cap table to signed">
+        <source src="/img/home/demo.webm" type="video/webm">
+        <source src="/img/home/demo.mp4" type="video/mp4">
+      </video>
+      <button type="button" id="pause-motion" aria-pressed="false">Pause video</button>
+    </div>
+  </section>
+
+  <section id="ai" class="band sec" aria-labelledby="ai-h">
+    <div class="wrap ai">
+      <div>
+        <h2 class="h2" id="ai-h">Ask your cap table anything.</h2>
+        <p class="lead" style="margin-top: 16px">"What's missing before our seed?" "Draft Bill's SAFE: $50k at an $8M cap." Your AI answers from your own folder and drafts the changes. Nothing is saved until you click yes.</p>
+        <p class="lead" style="margin-top: 16px">Use Claude, ChatGPT, or a model on your computer, so nothing leaves it. Claude Code can work in the folder too.</p>
+      </div>
+      <figure class="prompt">
+        <span class="soon">Coming</span>
+        <blockquote>Make SAFEs for these 5 angels, send them, and chase anyone who hasn't signed in 3 days.</blockquote>
+        <figcaption>Next: your AI sends and chases the signatures. Not available yet.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="story" class="sec" aria-labelledby="story-h">
+    <div class="wrap story">
+      <div>
+        <h2 class="h2" id="story-h">We lost our cap table paperwork.</h2>
+        <div style="margin-top: 22px">
+          <p>We raised our seed on SAFEs from 28 investors. Some signed in one tool. Some sent their own paperwork. Some signed by email.</p>
+          <p>When we needed the documents, they were gone. We're still asking investors to sign again.</p>
+          <p style="margin-bottom: 0">So we wrote the guides we wish we'd had, and built an app that keeps every paper in a folder you own.</p>
+        </div>
+      </div>
+      <figure class="shot" style="aspect-ratio: 16/10"><img src="/img/home/step-folder.jpg" width="1280" height="800" loading="lazy" decoding="async" alt="The Acme Inc. folder Capfolder creates: README.txt, AGENTS.md, events.jsonl, captable.csv and a docs folder"></figure>
+    </div>
+  </section>
+
+  <section id="why" class="band sec" aria-labelledby="why-h">
+    <div class="wrap">
+    <h2 class="h2" id="why-h">Why Capfolder.</h2>
+    <ul class="why">
+      <li><b>Like Carta, but free.</b>Unlimited cap table, people and documents.</li>
+      <li><b>Your files, 24/7.</b>Plain files on your computer. No login in the way.</li>
+      <li><b>Open source.</b>AGPL-3.0. Self-host the signing relay if you like.</li>
+      <li><b>Signing included.</b>Investors sign from a link, with no account.</li>
+    </ul>
+    </div>
+  </section>
+
+  <section id="guides" class="wrap sec" aria-labelledby="guides-h">
+      <h2 class="h2" id="guides-h">The guides.</h2>
+      <p class="lead" style="margin-top: 16px">Free, with examples. <a href="/learn/">All guides</a></p>
+      <ul class="guides">
+        <li><a class="guide" href="/learn/safe/">What is a SAFE?</a></li>
+        <li><a class="guide" href="/learn/valuation-cap-discount/">Valuation cap and discount</a></li>
+        <li><a class="guide" href="/learn/vesting/">Vesting and cliffs</a></li>
+        <li><a class="guide" href="/learn/83b-election/">The 83(b) election</a></li>
+        <li><a class="guide" href="/learn/cap-table/">What is a cap table?</a></li>
+        <li><a class="guide" href="/learn/pre-money-post-money/">Pre-money vs post-money</a></li>
+        <li><a class="guide" href="/learn/dilution/">Dilution</a></li>
+        <li><a class="guide" href="/learn/option-pool/">The option pool</a></li>
+        <li><a class="guide" href="/learn/fully-diluted/">Fully diluted shares</a></li>
+        <li><a class="guide" href="/learn/iso-vs-nso/">ISO vs NSO</a></li>
+        <li><a class="guide" href="/learn/409a-valuation/">409A valuation</a></li>
+        <li><a class="guide" href="/learn/liquidation-preference/">Liquidation preference</a></li>
+      </ul>
+  </section>
+
+  <section id="pricing" class="wrap" style="padding-top: clamp(48px, 8vw, 80px)" aria-label="Price">
+    <p class="lead" style="font-size: 20px; color: #111311"><b style="font-weight: 600">Price:</b> free, with 5 signature requests a month. Free to self-host. Pro (sync and backup) is coming at $50/month.</p>
+  </section>
+
+  <section id="faq" class="wrap sec" aria-labelledby="faq-h">
+    <h2 class="h2" id="faq-h">Questions</h2>
+    <div class="faq">
+      <div><h3>Will Capfolder find me investors?</h3><p>No. Finding them is on you, and the guides help you know what to ask for. Capfolder does the paperwork once someone says yes.</p></div>
+      <div><h3>What does "bring your own AI" mean?</h3><p>Connect Claude, ChatGPT, Gemini, or a model on your computer (Ollama or LM Studio). It answers from your folder and drafts changes. Every company folder also has an AGENTS.md, so Claude Code can work in it. Nothing is saved without your click.</p></div>
+      <div><h3>Who can see my data?</h3><p>Your cap table and documents stay on your computer. A document you send for signature waits on the relay until it's signed, then the relay deletes it. Self-host the relay if that matters to you.</p></div>
+      <div><h3>Is this legal advice?</h3><p>No. Capfolder fills in YC's standard SAFE word for word and drafts nothing else. Have a lawyer review your documents.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" style="background: #1F6F4A; color: #fff; text-align: center">
+    <div class="wrap">
+      <h2 class="h2" style="margin: 0 auto; font-size: clamp(30px, 6vw, 52px)">Get the paperwork right from cheque one.</h2>
+      <p class="lead" style="color: #D6EBDD; margin: 18px auto 0 auto; max-width: 520px">Free, open source, on your computer.</p>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px">
+        <a href="#download" class="btn" data-umami-event="close-download" style="background: #fff; color: #16543A">Download Capfolder</a>
+        <a href="/learn/" class="btn" style="border-color: rgba(255,255,255,.55); color: #fff">Read the guides</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; line-height: 1.55; color: #5B606B">
+    <span style="flex: 1 1 360px; max-width: 65ch">Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px 18px; flex: 1 1 360px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="/help/">Help</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="/#thanks">Acknowledgements</a><a href="/#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact</a></span>
+  </footer>
+
+<script>
+// Video: paused under reduced motion; the button pauses and plays it (WCAG 2.2.2).
+(function () {
+  var video = document.getElementById("demo");
+  var btn = document.getElementById("pause-motion");
+  function set(paused) {
+    if (paused) video.pause(); else video.play().catch(function () {});
+    document.documentElement.classList.toggle("motion-paused", paused);
+    btn.setAttribute("aria-pressed", String(paused));
+    btn.textContent = paused ? "Play video" : "Pause video";
+  }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); set(true); }
+  btn.addEventListener("click", function () { set(btn.getAttribute("aria-pressed") !== "true"); });
+  var sources = video.querySelectorAll("source"), failed = 0;
+  sources.forEach(function (s) { s.addEventListener("error", function () { if (++failed === sources.length) btn.hidden = true; }); });
+})();
+
+// Sections rise in as they arrive. Only with motion allowed; without JS or IntersectionObserver nothing is hidden.
+if (matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) {
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -10% 0px" });
+  document.querySelectorAll(".step, .why li, .guides li, .faq > div, .prompt, .story > *, .player").forEach(function (el) {
+    if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("rv"); io.observe(el); }
+  });
+}
+
+// Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
+var params = new URLSearchParams(location.search);
+function showDownloads() {
+  document.getElementById("gate").hidden = true;
+  document.getElementById("dlthanks").hidden = false;
+}
+document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
+document.getElementById("skipdl").addEventListener("click", showDownloads);
+// Tally is loaded only when someone asks for the download (no third-party request before that)
+function openForm(id, opts) {
+  const popup = () =>
+    window.Tally.openPopup(id, {
+      layout: "modal",
+      hideTitle: true,
+      hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
+      ...opts,
+    });
+  if (window.Tally) return popup();
+  const s = document.createElement("script");
+  s.src = "https://tally.so/widgets/embed.js";
+  s.onload = popup;
+  s.onerror = () => {
+    location.href = `https://tally.so/r/${id}?${params.toString()}`;
+  };
+  document.head.appendChild(s);
+}
+fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
+  .then((r) => r.ok ? r.json() : null)
+  .then((rel) => {
+    if (!rel) return;
+    var find = (re) => { var a = (rel.assets || []).find((x) => re.test(x.name)); return a && a.browser_download_url; };
+    var set = (id, url) => { if (url) document.getElementById(id).href = url; };
+    set("dl-mac", find(/aarch64\.dmg$/));
+    set("dl-mac-intel", find(/x64\.dmg$/));
+    set("dl-win", find(/x64-setup\.exe$/) || find(/\.msi$/));
+    set("dl-linux", find(/\.AppImage$/) || find(/\.deb$/));
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#FCFCFB">
+<title>Capfolder — The free cap table app for your first raise</title>
+<meta name="description" content="Split the company with your cofounders, issue your first SAFE, get it signed, and keep every paper in one folder on your laptop. Free and open source.">
+<link rel="canonical" href="https://capfolder.com/">
+<!-- docs/11: cookieless visits, referrers and button clicks (data-umami-event), no banner. Umami Cloud site for capfolder.com. -->
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js");</script>
+<!-- Geist is served from this site (no Google Fonts request); SIL OFL, fonts/Geist-OFL.txt -->
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Geist';font-weight:100 900;font-display:swap;src:url(/fonts/Geist-Variable.woff2) format('woff2')}
+:root{
+  --ground:#FCFCFB;--ink:#111311;--grey:#6B7079;--line:#E6E7E3;--tone:#F1F2EE;
+  --green:#1F6F4A;--green-dark:#18603F;--field:#EEF5F0;--field-grey:#52675A;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --gutter:clamp(16px,4vw,40px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:'Geist',system-ui,sans-serif;font-size:17px;line-height:1.55;font-feature-settings:"ss01" off;-webkit-font-smoothing:antialiased}
+::selection{background:#CFE5D8;color:var(--ink)}
+a{color:var(--ink);text-decoration-color:#B9BDB6;text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-color:currentColor}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:4px}
+img,video{display:block;max-width:100%;height:auto}
+h1,h2,h3{margin:0;font-weight:600;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding:0 var(--gutter)}
+.sec{padding-top:clamp(72px,9vw,128px)}
+.h2{font-size:clamp(30px,4.2vw,48px);line-height:1.08;letter-spacing:-0.03em}
+.two{font-size:clamp(22px,2.2vw,30px);line-height:1.35;letter-spacing:-0.015em;color:var(--grey);font-weight:450}
+.two b{color:var(--ink);font-weight:550}
+.small{font-size:15px;color:var(--grey)}
+.num{font-variant-numeric:tabular-nums}
+
+/* buttons: one shape, flat */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-size:16px;font-weight:550;line-height:1;padding:14px 22px;border-radius:999px;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:background-color 160ms ease,transform 160ms var(--ease)}
+.btn:active{transform:scale(0.97)}
+.btn-p{background:var(--green);color:#fff}
+.btn-p:hover{background:var(--green-dark);color:#fff}
+.btn-s{background:var(--tone);color:var(--ink)}
+.btn-s:hover{background:#E6E8E2}
+.textlink{font-weight:550;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.textlink svg{transition:transform 200ms var(--ease)}
+.textlink:hover svg{transform:translateX(3px)}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-decoration-color:#B9BDB6;text-underline-offset:3px;cursor:pointer}
+.linkbtn:hover{text-decoration-color:currentColor}
+
+/* nav */
+nav[aria-label="Main"]{display:flex;align-items:center;gap:20px;padding-top:18px;padding-bottom:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:20px;letter-spacing:-0.01em}
+.links{margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:24px;font-size:15px}
+.navlink{color:#3D4148;text-decoration:none}
+.navlink:hover{color:var(--ink)}
+.links .btn{font-size:15px;padding:10px 16px}
+@media (max-width:640px){nav[aria-label="Main"] .navlink:not([href="/learn/"]){display:none}}
+
+/* floating bar: after the hero on desktop, from the start on a phone */
+.float{position:fixed;top:12px;left:50%;z-index:50;width:min(440px,calc(100% - 24px));transform:translate(-50%,-140%);opacity:0;visibility:hidden;transition:transform 380ms var(--ease),opacity 240ms ease,visibility 0s 380ms}
+.float.show{transform:translate(-50%,0);opacity:1;visibility:visible;transition:transform 380ms var(--ease),opacity 240ms ease}
+.float .bar{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;background:#fff;border-radius:999px;box-shadow:0 10px 30px -12px rgba(17,19,17,.28),0 2px 6px -2px rgba(17,19,17,.08)}
+.float .brand{font-size:17px;margin-right:auto}
+.float .btn{font-size:15px;padding:10px 16px}
+.burger{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;border:0;background:var(--tone);color:var(--ink);cursor:pointer}
+.burger:hover{background:#E6E8E2}
+.burger .x{display:none}.burger[aria-expanded="true"] .x{display:block}.burger[aria-expanded="true"] .b{display:none}
+#menu{margin-top:8px;background:#fff;border-radius:20px;padding:10px;box-shadow:0 18px 40px -16px rgba(17,19,17,.3),0 2px 6px -2px rgba(17,19,17,.08)}
+#menu ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+#menu a{display:block;padding:12px 14px;border-radius:12px;text-decoration:none;font-size:17px}
+#menu a:hover{background:var(--tone)}
+.float{display:none}.js .float{display:block}
+@media (max-width:640px){
+  .js nav[aria-label="Main"]{display:none}
+  .js .float{transform:translate(-50%,0);opacity:1;visibility:visible;transition:none}
+  .float .bar{padding-left:14px}
+  .js body{padding-top:68px}
+}
+
+/* hero: the founder's paperwork, faint, at the edges */
+.top{position:relative;overflow:clip}
+.hero,.stage{position:relative;z-index:1}
+.papers{position:absolute;inset:0;z-index:0;pointer-events:none}
+.paper{position:absolute;padding:22px 24px;background:#F3F4F0;border-radius:6px;color:#9DA29A;font-size:15px;line-height:1.5;transform:translate3d(var(--px,0),var(--py,0),0) rotate(var(--r));will-change:transform}
+.paper b{display:block;color:#8F948C;font-weight:600}
+.paper .t{font-size:20px;letter-spacing:.02em;text-align:center}
+.paper .c{text-align:center}
+.paper i{display:block;height:6px;border-radius:3px;background:#E5E7E1;margin-top:12px}
+.paper i.s{width:62%}.paper i.m{width:84%}
+.paper .rows{display:grid;grid-template-columns:1fr auto auto;gap:6px 18px;margin-top:12px;font-variant-numeric:tabular-nums}
+.paper .rows span:nth-child(3n+2),.paper .rows span:nth-child(3n){text-align:right}
+.paper .line{height:2px;background:#D9DCD5;margin:34px 0 8px}
+.p-safe{top:20px;right:-70px;width:380px;--r:7deg}
+.p-cap{top:300px;right:150px;width:320px;--r:-5deg}
+.p-83b{top:590px;left:56px;width:340px;--r:-4deg}
+.p-sign{top:560px;right:-50px;width:330px;--r:3deg}
+@media (max-width:1180px){.p-cap,.p-83b{display:none}.p-safe{right:-60px;top:-6px;width:300px;padding-right:96px;--r:4deg}.p-sign{right:-60px;padding-right:96px;width:300px}}
+@media (max-width:640px){.papers{display:none}}
+.hero{padding-top:clamp(48px,7vw,96px)}
+.hero h1{font-size:clamp(30px,6.4vw,76px);line-height:1.02;letter-spacing:-0.04em;max-width:15ch}
+.hero .lede{margin-top:28px;max-width:34em;font-size:20px;line-height:1.5;color:#2E3236}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:36px}
+.gate-note{margin-top:14px;font-size:15px;color:var(--grey)}
+.facts{margin-top:10px;font-size:15px;color:var(--grey)}
+.ready{max-width:560px;background:var(--tone);border-radius:12px;padding:22px}
+.ready h2{font-size:17px;display:flex;align-items:center;gap:8px;color:var(--green)}
+.ready .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.ready .btn{font-size:15px;padding:12px 18px}
+.ready .btn-s{background:#fff}
+.ready p{font-size:15px;line-height:1.55;margin-top:12px;color:#3D4148}
+.screen{background:var(--tone);border-radius:14px;padding:clamp(6px,1vw,12px)}
+.screen img,.screen video{border-radius:8px;width:100%}
+.stage{margin-top:clamp(40px,5vw,64px)}
+.stage::before{content:"";position:absolute;left:0;right:0;top:42%;bottom:0;background:var(--field)}
+.demo{position:relative}
+#pause-motion{position:absolute;right:clamp(16px,2vw,28px);bottom:clamp(16px,2vw,28px);display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:15px;font-weight:550;padding:9px 14px;border-radius:999px;border:0;background:rgba(17,19,17,.78);color:#fff;cursor:pointer}
+#pause-motion:hover{background:var(--ink)}
+#pause-motion[hidden]{display:none}
+
+/* the founder's questions, thrown on the green field */
+.field{background:var(--field);margin-top:clamp(72px,9vw,128px);padding:clamp(72px,9vw,128px) 0}
+.qs{margin-top:0}
+.qs .h2{max-width:17em;font-size:clamp(26px,4.2vw,48px)}
+.qs .sub{margin-top:16px;font-size:20px;color:var(--field-grey);max-width:34em}
+.desk{list-style:none;margin:clamp(40px,5vw,64px) 0 0;padding:0;position:relative;height:480px}
+.desk li{position:absolute;left:var(--x);top:var(--y);width:var(--w);transform:translate3d(0,0,0) rotate(var(--r));transition:transform 1400ms var(--ease)}
+.q{display:flex;flex-direction:column;justify-content:space-between;gap:14px;min-height:118px;padding:22px 24px;background:#fff;border-radius:10px;font-size:20px;line-height:1.3;font-weight:500;letter-spacing:-0.01em;color:var(--ink);text-decoration:none}
+.q .g{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:550;letter-spacing:0;color:var(--green)}
+.q .g svg{transition:transform 200ms var(--ease)}
+a.q:hover .g svg{transform:translateX(4px)}
+a.q:focus-visible{outline-offset:4px}
+.desk li:nth-child(1){--x:0%;--y:22px;--w:31%;--r:-5deg;--sx:-60px;--sy:30px;--sr:-11deg}
+.desk li:nth-child(2){--x:29%;--y:0px;--w:36%;--r:3deg;--sx:20px;--sy:40px;--sr:9deg}
+.desk li:nth-child(3){--x:66%;--y:36px;--w:32%;--r:-2.5deg;--sx:70px;--sy:24px;--sr:-8deg}
+.desk li:nth-child(4){--x:3%;--y:178px;--w:34%;--r:3.5deg;--sx:-80px;--sy:10px;--sr:10deg}
+.desk li:nth-child(5){--x:35%;--y:164px;--w:30%;--r:-4deg;--sx:-10px;--sy:30px;--sr:-11deg}
+.desk li:nth-child(6){--x:63%;--y:198px;--w:34%;--r:5deg;--sx:80px;--sy:20px;--sr:11deg}
+.desk li:nth-child(7){--x:10%;--y:330px;--w:36%;--r:-2deg;--sx:-50px;--sy:60px;--sr:-9deg}
+.desk li:nth-child(8){--x:46%;--y:322px;--w:33%;--r:2.5deg;--sx:60px;--sy:50px;--sr:8deg}
+@media (prefers-reduced-motion:no-preference){
+  .js .desk:not(.in) li{transform:translate3d(var(--sx),var(--sy),0) rotate(var(--sr))}
+}
+@media (max-width:640px){
+  .desk{height:auto;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .desk li{position:static;width:auto;transform:rotate(calc(var(--r) * .4))}
+  .js .desk:not(.in) li{transform:rotate(calc(var(--sr) * .4))}
+  .q{min-height:132px;padding:16px;font-size:17px}
+}
+
+/* story */
+.story{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px clamp(40px,6vw,96px);align-items:start}
+.story .prose{display:grid;gap:20px;font-size:20px;line-height:1.6;max-width:36em}
+.story .prose p:first-child{color:var(--ink)}
+.story .sign{font-size:15px;color:var(--grey)}
+
+/* how: list left, screen right */
+.how{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:40px clamp(40px,5vw,80px);margin-top:clamp(40px,5vw,64px);align-items:start}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.steps button{all:unset;box-sizing:border-box;display:block;width:100%;padding:16px 18px;border-radius:12px;cursor:pointer;color:var(--grey);transition:background-color 200ms ease,color 200ms ease}
+.steps button:hover{color:var(--ink)}
+.steps button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.steps b{display:block;font-size:20px;font-weight:550;letter-spacing:-0.01em;color:inherit}
+.steps span{display:block;margin-top:4px;font-size:17px;line-height:1.5}
+.steps button[aria-current="true"]{background:var(--tone);color:var(--ink)}
+.steps button[aria-current="true"] span{color:#3D4148}
+.shots{display:grid;gap:24px}
+.shots figure{margin:0}
+.shots figcaption{margin-top:10px;font-size:15px;color:var(--grey)}
+.js .shots{gap:0}
+.js .shots figure{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity 260ms ease,visibility 0s 260ms}
+.js .shots figure.on{opacity:1;visibility:visible;transition:opacity 260ms ease}
+.js .shots figcaption{display:none}
+
+/* price */
+.price{margin-top:clamp(40px,5vw,64px);overflow-x:auto}
+.price table{width:100%;border-collapse:collapse;font-size:17px;min-width:0}
+.price th,.price td{text-align:left;vertical-align:top;padding:16px 20px 16px 0;border-bottom:1px solid var(--line)}
+.price thead th{border-bottom:1px solid var(--ink);padding-bottom:24px;vertical-align:top}
+.price thead .plan{display:block;font-size:20px;font-weight:600}
+.price thead .amount{display:block;margin-top:6px;font-size:clamp(30px,4.2vw,48px);font-weight:600;letter-spacing:-0.03em}
+.price thead .per{font-size:17px;font-weight:450;color:var(--grey);letter-spacing:0}
+.coming{display:inline-block;margin-left:8px;font-size:15px;font-weight:550;letter-spacing:0;vertical-align:middle;padding:4px 10px;border-radius:999px;background:var(--tone);color:#3D4148}
+.price thead .btn{margin-top:18px;font-size:15px;padding:12px 18px}
+.price tbody th{font-weight:450;color:var(--grey);width:28%}
+.price td{width:36%}
+.price .no{color:var(--grey)}
+.price .offer{margin-top:10px;font-size:15px;font-weight:450;color:var(--grey);max-width:24em}
+.price .offer b{color:var(--ink);font-weight:550}
+.after{margin-top:24px;font-size:17px;color:var(--grey)}
+@media (max-width:700px){
+  .price thead th:first-child{display:none}
+  .price tr{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+  .price tbody th{grid-column:1/-1;width:auto;padding:16px 0 2px;border:0;font-size:15px}
+  .price td{width:auto;padding:0 0 16px}
+  .price thead th{padding-right:0}
+}
+
+/* learn, on a quiet tone step */
+#learn.toned{max-width:none;padding:clamp(72px,9vw,128px) 0;margin-top:clamp(72px,9vw,128px);background:var(--tone)}
+.learn{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px clamp(40px,6vw,96px);align-items:start}
+.guides{list-style:none;margin:0;padding:0}
+.guides li+li{margin-top:4px}
+.guides a{display:block;padding:20px 0;text-decoration:none}
+.guides b{display:inline-flex;align-items:center;gap:10px;font-size:clamp(22px,2.2vw,30px);font-weight:550;letter-spacing:-0.02em}
+.guides b svg{transition:transform 200ms var(--ease);color:var(--grey)}
+.guides a:hover b svg{transform:translateX(4px);color:var(--ink)}
+.guides span{display:block;margin-top:4px;color:var(--grey)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* faq */
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px clamp(40px,6vw,96px);margin-top:clamp(40px,5vw,56px)}
+.faq h3{font-size:20px;font-weight:550;letter-spacing:-0.01em}
+.faq p{margin-top:8px;color:#3D4148;max-width:34em}
+
+/* close */
+.field .close{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px}
+
+/* quiet back matter */
+.back{background:var(--tone);padding-bottom:8px}
+.quiet{padding-top:clamp(56px,7vw,96px)}
+.back a{text-decoration-color:#A9AEA6}
+.quiet h2{font-size:20px;letter-spacing:-0.01em}
+.quiet .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px clamp(32px,5vw,72px);margin-top:20px;font-size:16px;line-height:1.6;color:#3D4148}
+.quiet .cols p{max-width:65ch}
+.quiet .cols p+p{margin-top:12px}
+.thanks{margin-top:20px;overflow-x:auto}
+.thanks table{width:100%;border-collapse:collapse;font-size:16px}
+.thanks th,.thanks td{text-align:left;padding:11px 16px 11px 0;border-bottom:1px solid #DCDED8;font-weight:450}
+.thanks thead th{font-size:15px;color:var(--grey)}
+.thanks td{color:#3D4148}
+footer{padding-top:clamp(56px,7vw,96px);padding-bottom:48px;background:var(--tone)}
+footer .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px clamp(32px,5vw,72px);font-size:15px;color:#4A4F57}
+footer .fl{display:flex;flex-wrap:wrap;gap:10px 20px}
+footer .fl a{color:#3D4148}
+
+/* motion: small, once, from a visible page */
+@media (prefers-reduced-motion:no-preference){
+  .hero .rise{animation:rise 700ms var(--ease) both}
+  .hero .rise:nth-child(2){animation-delay:60ms}.hero .rise:nth-child(3){animation-delay:120ms}.hero .rise:nth-child(4){animation-delay:180ms}
+  .demo.rise{animation:rise 900ms var(--ease) 260ms both}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}}
+  .js [data-rise]{opacity:0;transform:translateY(22px);transition:opacity 700ms var(--ease),transform 700ms var(--ease)}
+  .js [data-rise].in{opacity:1;transform:none}
+}
+.motion-paused *,.motion-paused *::before,.motion-paused *::after{animation-play-state:paused!important}
+
+@media (max-width:900px){
+  .story,.how,.learn,.faq,.quiet .cols,footer .wrap{grid-template-columns:minmax(0,1fr)}
+  .how .shots{order:-1}
+}
+@media (max-width:960px){
+  .links{flex-wrap:nowrap;gap:15px}
+  .navlink{font-size:15px;white-space:nowrap}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .links{gap:16px}
+  #pause-motion{padding:7px 12px;right:14px;bottom:14px}
+  .coming{display:table;margin:8px 0 0}
+  .price thead .btn{padding:11px 14px}
+  .thanks tr{display:grid;grid-template-columns:1fr auto;column-gap:16px;border-bottom:1px solid #DCDED8;padding:10px 0}
+  .thanks th,.thanks td{border:0;padding:0}
+  .thanks tbody td:first-of-type{grid-column:1/-1;grid-row:2}
+  .thanks tbody td:last-child{grid-column:2;grid-row:1;text-align:right;color:var(--grey)}
+  .thanks thead{display:none}
+  .actions{flex-direction:column;align-items:flex-start}
+  .steps button{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<nav aria-label="Main" class="wrap">
+  <a href="#top" class="brand" id="top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>
+    Capfolder
+  </a>
+  <div class="links">
+    <a href="/features/" class="navlink">Features</a>
+    <a href="/compare/" class="navlink">Compare</a>
+    <a href="/roadmap/" class="navlink">Roadmap</a>
+    <a href="/help/" class="navlink">Help</a>
+    <a href="/learn/" class="navlink">Learn</a>
+    <a href="/blog/" class="navlink">Blog</a>
+    <a href="https://github.com/MKBSP/capfolder" class="navlink">GitHub</a>
+    <a href="#download" class="btn btn-p" data-umami-event="nav-download">Download</a>
+  </div>
+</nav>
+
+<div class="float" id="floatbar">
+  <div class="bar">
+    <a href="#top" class="brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>Capfolder</a>
+    <a href="#download" class="btn btn-p" data-umami-event="float-download">Download</a>
+    <button type="button" class="burger" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+      <svg class="b" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="x" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <nav id="menu" aria-label="Menu" hidden>
+    <ul>
+      <li><a href="/features/">Features</a></li>
+      <li><a href="/compare/">Compare</a></li>
+      <li><a href="/roadmap/">Roadmap</a></li>
+      <li><a href="/help/">Help</a></li>
+      <li><a href="/learn/">Learn</a></li>
+      <li><a href="/blog/">Blog</a></li>
+      <li><a href="https://github.com/MKBSP/capfolder">GitHub</a></li>
+    </ul>
+  </nav>
+</div>
+
+<main>
+  <div class="top">
+  <div class="papers" aria-hidden="true">
+    <div class="paper p-safe" data-d="0.9"><b class="t">SAFE</b><span class="c">(Simple Agreement for Future Equity)</span><i></i><i class="m"></i><i></i><i class="s"></i></div>
+    <div class="paper p-cap" data-d="0.5"><b>Acme Inc. · Cap table</b><div class="rows"><span>Tim Apple</span><span>4,000,000</span><span>50.00%</span><span>Steve Jobs</span><span>3,000,000</span><span>37.50%</span><span>Option pool</span><span>920,000</span><span>11.50%</span></div></div>
+    <div class="paper p-83b" data-d="0.7"><b>Section 83(b) Election</b><span>Internal Revenue Code</span><i class="m"></i><i></i><i class="s"></i></div>
+    <div class="paper p-sign" data-d="1.2"><span>Investor:</span><div class="line"></div><b>Bill Gates</b></div>
+  </div>
+  <header class="wrap hero">
+    <h1>The free cap table app for your first raise.</h1>
+    <p class="lede rise">Split the company with your cofounders, issue your first SAFE, get it signed, and keep every paper in one folder on your laptop.</p>
+    <div id="download" class="rise">
+      <div id="gate">
+        <div class="actions">
+          <button type="button" class="btn btn-p" id="getdl" data-umami-event="get-download">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+            Download Capfolder
+          </button>
+          <a href="#how" class="textlink">See how it works <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+        </div>
+        <p class="gate-note">Leave your email to hear about new versions, or <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">No thanks, just download</button></p>
+        <noscript><p class="gate-note"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
+      </div>
+      <div id="dlthanks" hidden aria-live="polite">
+        <div class="ready" style="margin-top:36px">
+          <h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Your download is ready</h2>
+          <div class="row">
+            <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p">macOS</a>
+            <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s">Windows</a>
+            <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s">Linux</a>
+          </div>
+          <p><a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a></p>
+          <p><b>Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b>macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b>Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
+        </div>
+      </div>
+    </div>
+    <p class="facts rise">macOS, Windows, Linux · No account · Free and open source</p>
+  </header>
+
+  <div class="stage">
+  <div class="wrap">
+    <div class="demo rise">
+      <div class="screen">
+        <video id="demo" autoplay muted loop playsinline preload="metadata" poster="/img/home/demo-poster.jpg" width="1440" height="900" aria-label="Capfolder: a first SAFE, from the cap table to signed">
+          <source src="/img/home/demo.webm" type="video/webm">
+          <source src="/img/home/demo.mp4" type="video/mp4">
+          <img src="/blog/img/v013-sample.jpg" width="1480" height="812" alt="Capfolder's sample company: the cap table with Tim Apple, Steve Jobs, Steve Wozniak and Bill Gates, and the What's missing list">
+        </video>
+      </div>
+      <button type="button" id="pause-motion" aria-pressed="false">Pause video</button>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <section class="field qs" aria-labelledby="qs-h">
+    <div class="wrap">
+      <h2 class="h2" id="qs-h" data-rise>Every first-time founder has the same questions.</h2>
+      <p class="sub" data-rise>Capfolder answers the paperwork ones, and the guides cover the rest.</p>
+      <ul class="desk" data-rise-desk>
+        <li><p class="q">How much should we raise?</p></li>
+        <li><a class="q" href="/learn/valuation-cap-discount/">What valuation cap do I put on the SAFE?<span class="g">Guide <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span></a></li>
+        <li><a class="q" href="/learn/vesting/">How do we split equity between cofounders?<span class="g">Guide <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span></a></li>
+        <li><a class="q" href="/learn/option-pool/">Do we need an option pool (ESOP) already?<span class="g">Guide <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span></a></li>
+        <li><p class="q">How do I get my first cheque?</p></li>
+        <li><a class="q" href="/learn/83b-election/">Did anyone file the 83(b)?<span class="g">Guide <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span></a></li>
+        <li><a class="q" href="/learn/safe/">Where's the signed SAFE?<span class="g">Guide <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span></a></li>
+        <li><a class="q" href="/learn/pre-money-post-money/">What do I own after the SAFE converts?<span class="g">Guide <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="story" class="wrap sec">
+    <div class="story">
+      <h2 class="h2" data-rise>We lost our cap table paperwork.</h2>
+      <div class="prose" data-rise>
+        <p>We raised our seed on SAFEs from 28 investors. Some signed in one tool. Some sent their own paperwork. Some signed by email.</p>
+        <p>When we needed the documents, the data was gone. We're now digging through old inboxes and asking investors to sign again.</p>
+        <p>A cap table is the most important record a company has. It shouldn't depend on a vendor, a subscription or a login. So we built one that lives in a folder you own, and open-sourced it so it's always yours.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="wrap sec">
+    <h2 class="h2" data-rise>Your company's first papers, in order.</h2>
+    <div class="how">
+      <ol class="steps" data-rise>
+        <li><button type="button" aria-controls="shot-1" aria-current="true"><b>Split it with your cofounders.</b><span>Shares and vesting, written down, with the math shown for every number.</span></button></li>
+        <li><button type="button" aria-controls="shot-2" aria-current="false"><b>File your 83(b) in time.</b><span>Capfolder flags it until the filed copy is in your folder.</span></button></li>
+        <li><button type="button" aria-controls="shot-3" aria-current="false"><b>Issue your first SAFE.</b><span>The YC post-money SAFE, filled in for you.</span></button></li>
+        <li><button type="button" aria-controls="shot-4" aria-current="false"><b>Get it signed.</b><span>Your investor signs from a link in any browser, with nothing to install.</span></button></li>
+        <li><button type="button" aria-controls="shot-5" aria-current="false"><b>Keep it in one folder.</b><span>Plain files on your laptop that open without us. With hosted tools, you lose access when their servers are down.</span></button></li>
+      </ol>
+      <div class="shots" data-rise>
+        <figure id="shot-1" class="on"><div class="screen"><img src="/img/home/step-split.jpg" width="1280" height="800" decoding="async" alt="Capfolder's founder setup: Tim Apple with 4,000,000 shares and Steve Jobs with 3,000,000, each on 4-year vesting with a 1-year cliff, and the live cap table beside them"></div><figcaption>Split it with your cofounders.</figcaption></figure>
+        <figure id="shot-2"><div class="screen"><img src="/img/home/step-83b.jpg" width="1280" height="800" decoding="async" alt="Capfolder's What's missing list: file Tim Apple's and Steve Jobs's 83(b) elections by the deadline, next to the cap table"></div><figcaption>File your 83(b) in time.</figcaption></figure>
+        <figure id="shot-3"><div class="screen"><img src="/img/home/step-safe.jpg" width="1280" height="800" decoding="async" alt="Capfolder's New SAFE form: Bill Gates invests $250,000 at an $8,000,000 cap, with the YC post-money SAFE preview filled in beside it"></div><figcaption>Issue your first SAFE.</figcaption></figure>
+        <figure id="shot-4"><div class="screen"><img src="/img/home/step-sign.jpg" width="1280" height="800" decoding="async" alt="Capfolder's Signatures screen: Bill Gates has signed the SAFE, and it's the founder's turn to sign"></div><figcaption>Get it signed.</figcaption></figure>
+        <figure id="shot-5"><div class="screen"><img src="/img/home/step-folder.jpg" width="1280" height="800" decoding="async" alt="Capfolder's new company screen: the Acme Inc. folder it creates, with README.txt, events.jsonl, captable.csv and a docs folder"></div><figcaption>Keep it in one folder.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="wrap sec">
+    <h2 class="h2" data-rise>Free. Pro is coming.</h2>
+    <div class="price" data-rise>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"><span class="vh">Plan</span></th>
+            <th scope="col"><span class="plan">Free forever</span><span class="amount num">$0</span><a href="#download" class="btn btn-p">Download</a></th>
+            <th scope="col" id="pro"><span class="plan">Pro</span><span class="amount num">$50<span class="per"> a month</span><span class="coming">Coming</span></span><button type="button" id="prowait" data-umami-event="pro-waitlist" class="btn btn-s">I want Pro: tell me when it's ready</button><p class="offer">Join the list and get <b>25% off the first year</b>. The free app stays free.</p></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Cap table, people and documents</th><td>Unlimited</td><td>Unlimited</td></tr>
+          <tr><th scope="row">YC SAFE and pro rata side letter</th><td>Filled in for you</td><td>Filled in for you</td></tr>
+          <tr><th scope="row">E-signatures</th><td>5 signing requests a month</td><td>No limit</td></tr>
+          <tr><th scope="row">AI</th><td>Bring your own AI, running on your computer</td><td>Bring your own AI</td></tr>
+          <tr><th scope="row">Sync across computers</th><td class="no">Not included</td><td>Included</td></tr>
+          <tr><th scope="row">Backup</th><td class="no">No online backup: your folder, your backups</td><td>Encrypted online backup</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="after">Want full control? Run the signing relay yourself. <a href="https://github.com/MKBSP/capfolder/tree/main/apps/relay#readme" data-umami-event="relay-setup">Self-hosted relay setup</a></p>
+  </section>
+
+  <section id="learn" class="toned">
+    <div class="wrap learn">
+      <h2 class="h2" data-rise>Read these before your first raise.</h2>
+      <ul class="guides" data-rise>
+        <li><a href="/learn/safe/"><b>What is a SAFE? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></b><span>How you raise money now and issue the shares later.</span></a></li>
+        <li><a href="/learn/valuation-cap-discount/"><b>Valuation cap and discount <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></b><span>How they decide your investor's shares, worked through.</span></a></li>
+        <li><a href="/learn/vesting/"><b>Vesting and the cliff <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></b><span>Four years with a one-year cliff, month by month.</span></a></li>
+        <li><a href="/learn/83b-election/"><b>The 83(b) election <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></b><span>Who should file, and the 30-day deadline.</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="faq" class="wrap sec">
+    <h2 class="h2" data-rise>Questions</h2>
+    <div class="faq" data-rise>
+      <div><h3>Is it really free?</h3><p>Yes. Your cap table, people and documents have no limit. Signing through our relay is free for 5 requests a month. Pro, when it comes, adds sync and backup.</p></div>
+      <div><h3>Is this legal advice?</h3><p>No. Capfolder records what you and your lawyer decided. It fills in YC's standard SAFE and side letter word for word, and drafts nothing else. Have a lawyer review them.</p></div>
+      <div><h3>Where is my data?</h3><p>In a folder on your computer. A document you send for signature sits on the relay until it's signed, and whoever runs the relay could read it. The app sends an anonymous install count; turn it off in Settings.</p></div>
+      <div><h3>Can my investor sign without installing anything?</h3><p>Yes. They get an email with a link and sign in any browser. No account.</p></div>
+      <div><h3>Do I need a server?</h3><p>No setup needed. Download it, open it, pick a folder. Signing goes through our hosted relay; running your own is optional.</p></div>
+      <div><h3>Mac, Windows or Linux?</h3><p>All three. The builds aren't code-signed yet, so your computer asks you to confirm once.</p></div>
+    </div>
+  </section>
+
+  <section class="field" aria-label="Download">
+    <div class="wrap close" data-rise>
+      <h2 class="h2">Set up your cap table tonight.</h2>
+      <a href="#download" class="btn btn-p">Download Capfolder</a>
+    </div>
+  </section>
+
+  <div class="back">
+  <section id="privacy" class="wrap quiet">
+    <h2>Privacy</h2>
+    <div class="cols">
+      <div>
+        <p><b>This page.</b> Fonts, images and video come from this site. Visits, where they came from, and clicks on buttons are counted with <a href="https://umami.is/privacy">Umami</a>: no cookies, no personal data, your IP isn't stored. The download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
+        <p><b>The download form.</b> When you click "Download Capfolder", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
+        <p><b>The Pro list.</b> "I want Pro" opens a second <a href="https://tally.so/help/privacy-policy">Tally</a> form: your email, and optionally your company and what you'd want from Pro. We use it only to tell you when Pro is ready and give you the 25% discount.</p>
+      </div>
+      <div>
+        <p><b>The app.</b> Your cap table and documents stay in your folder. Documents you send for signature pass through the signing relay until everyone has signed, then the relay deletes them (within 7 days, or 30 if never signed). The app sends an anonymous install ping (a random install id, the app version, your operating system, and yes/no for "imported", "has documents", "sent for signature") once on first run and then weekly, only after you accept the terms. The relay keeps the day, not the time or your IP address. Turn it off in Settings → Privacy. The code that sends and stores it is public in the repo.</p>
+        <p><b>Questions about your data.</b> Write to <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="thanks" class="wrap quiet">
+    <h2>Open source we use, with thanks</h2>
+    <div class="thanks">
+      <table>
+        <thead><tr><th scope="col">Project</th><th scope="col">What we use it for</th><th scope="col">License</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><a href="https://github.com/tauri-apps/tauri">Tauri</a></th><td>The desktop app</td><td>MIT / Apache-2.0</td></tr>
+          <tr><th scope="row"><a href="https://github.com/Open-Cap-Table-Coalition/Open-Cap-Format-OCF">Open Cap Format</a></th><td>The data model and export</td><td>OCF Schema and Documentation License</td></tr>
+          <tr><th scope="row"><a href="https://github.com/documenso/documenso">Documenso</a></th><td>The signing relay</td><td>AGPL-3.0</td></tr>
+          <tr><th scope="row"><a href="https://github.com/mozilla/pdf.js" data-npm="pdfjs-dist">PDF.js</a></th><td>Reading PDFs and checking signed copies</td><td>Apache-2.0</td></tr>
+          <tr><th scope="row"><a href="https://github.com/Hopding/pdf-lib" data-npm="pdf-lib">pdf-lib</a></th><td>Signature pages and PDF exports</td><td>MIT</td></tr>
+          <tr><th scope="row"><a href="https://github.com/naptha/tesseract.js" data-npm="tesseract.js">tesseract.js</a></th><td>Reading scans, offline</td><td>Apache-2.0</td></tr>
+          <tr><th scope="row"><a href="https://github.com/ollama/ollama">Ollama</a></th><td>Running local AI models (optional)</td><td>MIT</td></tr>
+          <tr><th scope="row"><a href="https://github.com/facebook/react" data-npm="react">React</a></th><td>The app's screens</td><td>MIT</td></tr>
+          <tr><th scope="row"><a href="https://github.com/mholt/PapaParse" data-npm="papaparse">Papa Parse</a></th><td>Reading CSV exports</td><td>MIT</td></tr>
+          <tr><th scope="row"><a href="https://github.com/101arrowz/fflate" data-npm="fflate">fflate</a></th><td>Excel files and zips</td><td>MIT</td></tr>
+          <tr><th scope="row"><a href="https://github.com/ajv-validator/ajv" data-npm="ajv">Ajv</a></th><td>Checking every record against OCF</td><td>MIT</td></tr>
+          <tr><th scope="row"><a href="https://github.com/honojs/hono" data-npm="hono">Hono</a></th><td>The relay's API</td><td>MIT</td></tr>
+          <tr><th scope="row"><a href="https://github.com/paulmillr/noble-ed25519" data-npm="@noble/ed25519">noble-ed25519</a></th><td>Checking the signed rules pack</td><td>MIT</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small" style="margin-top:14px">Every package with its license: <a href="https://github.com/MKBSP/capfolder/blob/main/THIRD_PARTY_LICENSES.md">THIRD_PARTY_LICENSES.md</a>.</p>
+  </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a href="#top" class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path></svg>Capfolder</a>
+      <p style="margin-top:14px">Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</p>
+    </div>
+    <div class="fl"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="https://github.com/MKBSP/capfolder/fork">Fork it</a><a href="#pricing">Pricing</a><a href="/help/">Help</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="#thanks">Acknowledgements</a><a href="#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a><a href="mailto:privacy@capfolder.com">Privacy contact</a></div>
+  </div>
+</footer>
+
+<script>
+// Hero video: paused under reduced motion; the button pauses and plays it (WCAG 2.2.2).
+(function () {
+  var video = document.getElementById("demo");
+  var btn = document.getElementById("pause-motion");
+  function set(paused) {
+    if (paused) video.pause(); else video.play().catch(function () {});
+    document.documentElement.classList.toggle("motion-paused", paused);
+    btn.setAttribute("aria-pressed", String(paused));
+    btn.textContent = paused ? "Play video" : "Pause video";
+  }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); set(true); }
+  btn.addEventListener("click", function () { set(btn.getAttribute("aria-pressed") !== "true"); });
+  // no video file yet (only the poster): nothing to pause
+  var sources = video.querySelectorAll("source"), failed = 0;
+  sources.forEach(function (s) { s.addEventListener("error", function () { if (++failed === sources.length) btn.hidden = true; }); });
+})();
+
+// How it works: pick a step, see its screen. Without JS every screen shows, stacked.
+(function () {
+  var buttons = document.querySelectorAll(".steps button");
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      buttons.forEach(function (x) {
+        var on = x === b;
+        x.setAttribute("aria-current", String(on));
+        document.getElementById(x.getAttribute("aria-controls")).classList.toggle("on", on);
+      });
+    });
+  });
+})();
+
+// The founder's questions settle from scattered to a tidier spread as they arrive.
+(function () {
+  var desk = document.querySelector("[data-rise-desk]");
+  if (!desk || !("IntersectionObserver" in window)) return desk && desk.classList.add("in");
+  var o = new IntersectionObserver(function (es) {
+    if (es[0].isIntersecting) { desk.classList.add("in"); o.disconnect(); }
+  }, { threshold: 0.25 });
+  o.observe(desk);
+})();
+
+// Hero papers drift a few px with scroll and pointer (transform only; off under reduced motion).
+(function () {
+  if (!matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+  var papers = [].slice.call(document.querySelectorAll(".paper"));
+  var mx = 0, my = 0, queued = false;
+  function draw() {
+    queued = false;
+    var y = Math.min(window.scrollY, 900);
+    papers.forEach(function (p) {
+      var d = parseFloat(p.dataset.d);
+      p.style.setProperty("--px", (mx * 10 * d).toFixed(1) + "px");
+      p.style.setProperty("--py", (my * 8 * d - y * 0.08 * d).toFixed(1) + "px");
+    });
+  }
+  function ask() { if (!queued) { queued = true; requestAnimationFrame(draw); } }
+  addEventListener("scroll", ask, { passive: true });
+  addEventListener("pointermove", function (e) {
+    mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; ask();
+  }, { passive: true });
+})();
+
+// Floating bar: shows once the hero is passed (always on a phone); the burger opens the links.
+(function () {
+  var bar = document.getElementById("floatbar");
+  var burger = bar.querySelector(".burger");
+  var menu = document.getElementById("menu");
+  var phone = matchMedia("(max-width: 640px)");
+  function open(on, focusBurger) {
+    burger.setAttribute("aria-expanded", String(on));
+    menu.hidden = !on;
+    if (on) menu.querySelector("a").focus();
+    else if (focusBurger) burger.focus();
+  }
+  function show(on) {
+    on = on || phone.matches;
+    bar.classList.toggle("show", on);
+    bar.inert = !on;
+    if (!on) open(false);
+  }
+  burger.addEventListener("click", function () { open(burger.getAttribute("aria-expanded") !== "true"); });
+  bar.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) { open(false, true); } });
+  document.addEventListener("click", function (e) { if (!menu.hidden && !bar.contains(e.target)) open(false); });
+  bar.addEventListener("focusout", function (e) { if (!menu.hidden && e.relatedTarget && !bar.contains(e.relatedTarget)) open(false); });
+  menu.addEventListener("click", function (e) { if (e.target.closest("a")) open(false); });
+  var hero = document.querySelector(".hero");
+  var passed = false;
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) { passed = !es[0].isIntersecting; show(passed); }).observe(hero);
+  }
+  phone.addEventListener("change", function () { show(passed); });
+  show(passed);
+})();
+
+// Sections rise in once as they arrive; content is visible without JS.
+if ("IntersectionObserver" in window) {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll("[data-rise]").forEach(function (el) { io.observe(el); });
+}
+
+// Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
+// Links point at the latest published GitHub release (until one is published, the releases page).
+var params = new URLSearchParams(location.search);
+function showDownloads() {
+  document.getElementById("gate").hidden = true;
+  document.getElementById("dlthanks").hidden = false;
+}
+document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
+document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") })); // Pro waitlist (integrations/tally.md)
+document.getElementById("skipdl").addEventListener("click", showDownloads); // Show HN: no signup required to try
+// Tally is loaded only when someone asks for the download (no third-party request before that)
+// download form: autoClose closes Tally's own thank-you and the page shows the download links
+function openForm(id, opts) {
+  const popup = () =>
+    window.Tally.openPopup(id, {
+      layout: "modal",
+      hideTitle: true,
+      hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
+      ...opts,
+    });
+  if (window.Tally) return popup();
+  const s = document.createElement("script");
+  s.src = "https://tally.so/widgets/embed.js";
+  s.onload = popup;
+  s.onerror = () => {
+    location.href = `https://tally.so/r/${id}?${params.toString()}`;
+  };
+  document.head.appendChild(s);
+}
+fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
+  .then((r) => r.ok ? r.json() : null)
+  .then((rel) => {
+    if (!rel) return;
+    var find = (re) => { var a = (rel.assets || []).find((x) => re.test(x.name)); return a && a.browser_download_url; };
+    var set = (id, url) => { if (url) document.getElementById(id).href = url; };
+    set("dl-mac", find(/aarch64\.dmg$/));
+    set("dl-mac-intel", find(/x64\.dmg$/));
+    set("dl-win", find(/x64-setup\.exe$/) || find(/\.msi$/));
+    set("dl-linux", find(/\.AppImage$/) || find(/\.deb$/));
+  })
+  .catch(() => {});
+</script>
+<script src="/roadmap.js" defer></script>
+</body>
+</html>

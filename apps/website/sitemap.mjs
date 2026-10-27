@@ -4,7 +4,9 @@ import { fileURLToPath } from "node:url";
 
 export const sitemap = (files) =>
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${files
-    .filter((f) => f === "index.html" || f.endsWith("/index.html"))
+    .filter(
+      (f) => (f === "index.html" || f.endsWith("/index.html")) && !f.startsWith("testing-landing-page/"),
+    )
     .map((f) => `https://capfolder.com/${f.replace(/index\.html$/, "")}`)
     .sort()
     .map((u) => `  <url><loc>${u}</loc></url>\n`)
