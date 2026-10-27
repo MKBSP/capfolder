@@ -98,7 +98,9 @@ function Panel({ onClose }: { onClose(): void }) {
     app.route.name === "person" ? app.latest?.stakeholders.get(app.route.id)?.name?.legal_name : null;
   const looking = person ? String(person) : (LOOKING[app.route.name] ?? "Capfolder");
   const add = (m: ChatMsg) => app.setChat((all) => ({ ...all, [root]: [...(all[root] ?? []), m] }));
-  useEffect(() => end.current?.scrollIntoView?.({ block: "end" }), [thread.length, busy]);
+  useEffect(() => {
+    end.current?.scrollIntoView?.({ block: "end" });
+  }, [thread.length, busy]);
 
   async function send(text: string) {
     const question = text.trim();

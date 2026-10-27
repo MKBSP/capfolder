@@ -27,6 +27,8 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 ### Fixed
 - **As of follows the calendar** while the app stays open, so a SAFE signed today no longer hides behind yesterday's
   date. Picking a date yourself still holds it.
+- **Ask AI no longer crashes** in newer Chrome-based engines (Windows' WebView2), where scrolling to the latest answer
+  returned something React mistook for a cleanup.
 ### Website
 - **Website: four homepage versions to compare** at /testing-landing-page/a/ (live), /b/, /c/ and /d/, with the new
   product video (a first SAFE, from the cap table to signed). Not indexed, not in the sitemap; the homepage is

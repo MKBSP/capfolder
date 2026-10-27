@@ -174,3 +174,16 @@ test("'What needs my attention?' works without an AI; Take me there opens the sc
   await userEvent.click(within(panel).getAllByRole("button", { name: /Take me there/ })[2]!);
   expect(await within(panel).findByText(/Looking at: Tim Apple/)).toBeInTheDocument();
 });
+
+test("newer browsers' scrollIntoView returns a Promise: the panel doesn't treat it as an effect cleanup and crash", async () => {
+  const orig = Element.prototype.scrollIntoView;
+  Object.assign(Element.prototype, { scrollIntoView: () => Promise.resolve() });
+  try {
+    render(<App platform={acmePlatform().platform} />);
+    await userEvent.click(await screen.findByRole("button", { name: /Ask AI/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Close Ask AI" }));
+    expect(screen.queryByRole("complementary", { name: "Ask AI" })).toBeNull();
+  } finally {
+    Element.prototype.scrollIntoView = orig;
+  }
+});
