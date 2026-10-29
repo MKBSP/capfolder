@@ -52,3 +52,33 @@ test("the sample company is never registered", async () => {
   await screen.findByText("Fully diluted");
   expect(fp.fs.existsSync("/home/me/.capfolder/companies.json")).toBe(false);
 });
+
+test("openCompany lists a normal vault, and still opens when registerCompany rejects", async () => {
+  const { createVault } = await import("@capfolder/vault");
+  const { builders } = await import("@capfolder/core");
+  const { openCompany } = await import("./state");
+  const ctx = { now: () => new Date(), newId: () => builders.newId("evt"), deviceId: "dev_t" };
+  for (const fail of [false, true]) {
+    mocks.fail = fail;
+    const fp = fakePlatform();
+    const v = await createVault(fp.fs, ctx, {
+      parent: "/home/me/Documents",
+      company: { name: "Open Co", formationDate: "2026-01-02", country: "US", subdivision: "DE" },
+    } as never);
+    const opened: unknown[] = [];
+    const app = {
+      platform: fp.platform,
+      ctx,
+      setSettings: async () => {},
+      setVault: (x: unknown) => opened.push(x),
+      go: () => {},
+    };
+    await openCompany(app as never, v.root);
+    expect(opened).toHaveLength(1);
+    if (!fail)
+      await vi.waitFor(() => {
+        const r = JSON.parse(fp.fs.readSync("/home/me/.capfolder/companies.json"));
+        expect(r.companies).toEqual([{ name: expect.any(String), root: v.root }]);
+      });
+  }
+});
