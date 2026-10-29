@@ -13,6 +13,10 @@ const learnPages = () =>
   readdirSync(new URL("./learn", import.meta.url), { withFileTypes: true })
     .filter((d) => d.isDirectory())
     .map((d) => `learn/${d.name}/index.html`);
+const guidePages = () =>
+  readdirSync(new URL("./guides", import.meta.url), { withFileTypes: true })
+    .filter((d) => d.isDirectory() && d.name !== "img")
+    .map((d) => `guides/${d.name}/index.html`);
 const blogPosts = () =>
   readdirSync(new URL("./blog", import.meta.url), { withFileTypes: true })
     .filter((d) => d.isDirectory() && d.name !== "img")
@@ -252,6 +256,7 @@ test("every sub-page has the same navbar, with its section marked", () => {
     ...comparePages().map((c) => [c, "/compare/"]),
     ["learn/index.html", "/learn/"],
     ...learnPages().map((l) => [l, "/learn/"]),
+    ...guidePages().map((g) => [g, "/learn/"]),
     ["help/import/index.html", "/help/"],
     ["features/index.html", "/features/"],
     ["features/import/index.html", "/features/"],
@@ -582,6 +587,36 @@ test("blog posts: ≤60-char title, ≤155-char description, OG image, BlogPosti
   }
   expect(read("package.json")).toMatch(/cp -r [^"]*\bblog\b/);
   expect(html).toContain('href="/blog/"');
+});
+
+test("founder guides: SEO basics, PNG share image, Article markup, illustrations with alt text, not-advice note; listed on /learn/ and in the build", () => {
+  const index = read("learn/index.html");
+  expect(guidePages().length).toBeGreaterThan(0);
+  for (const p of guidePages()) {
+    const page = read(p);
+    const slug = p.split("/")[1];
+    expect([slug, (page.match(/<title>([^<]*)<\/title>/)?.[1] ?? "").length <= 60]).toEqual([slug, true]);
+    expect([slug, /<meta name="description" content="[^"]{70,155}">/.test(page)]).toEqual([slug, true]);
+    expect([slug, page.includes(`<link rel="canonical" href="https://capfolder.com/guides/${slug}/">`)]).toEqual([
+      slug,
+      true,
+    ]);
+    const og = page.match(/<meta property="og:image" content="https:\/\/capfolder\.com(\/guides\/img\/[\w-]+\.png)">/)?.[1];
+    expect([slug, !!og && existsSync(new URL(`.${og}`, import.meta.url))]).toEqual([slug, true]);
+    const ld = [...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) =>
+      JSON.parse(m[1]!),
+    );
+    expect([slug, ld.some((j) => j["@type"] === "Article" && j.datePublished)]).toEqual([slug, true]);
+    // illustrations need alt text; the small validation icons sit next to their label and stay alt=""
+    for (const [, src, alt] of page.matchAll(/<img (?:class="gill" )?src="(\/guides\/img\/[^"?]+)" width="400"[^>]*alt="([^"]*)"/g)) {
+      expect([src, existsSync(new URL(`.${src}`, import.meta.url))]).toEqual([src, true]);
+      expect([src, alt.length > 20]).toEqual([src, true]);
+    }
+    expect([slug, page.includes("isn't legal, tax or financial advice")]).toEqual([slug, true]);
+    for (const bad of ["Hippo", "days left"]) expect([slug, bad, page.includes(bad)]).toEqual([slug, bad, false]);
+    expect([slug, index.includes(`href="/guides/${slug}/"`)]).toEqual([slug, true]);
+  }
+  expect(read("package.json")).toMatch(/cp -r [^"]*\bguides\b/);
 });
 
 test("homepage test variants: /testing-landing-page/a-e are built, noindex and kept out of the sitemap", async () => {

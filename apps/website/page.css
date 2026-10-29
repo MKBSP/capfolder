@@ -593,6 +593,25 @@ ol.steps li {
   text-decoration: none;
 }
 
+/* /guides: inline illustrations and the five-validation icon list */
+.gill {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  margin: 8px auto;
+}
+.vals {
+  padding: 0;
+  list-style: none;
+}
+.vals li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  font-weight: 600;
+}
 /* /learn hero band with the brand illustration, and the index cards */
 .lhero {
   background: #f3f8f4;
