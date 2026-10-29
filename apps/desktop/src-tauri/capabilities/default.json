@@ -39,6 +39,9 @@
         },
         {
           "path": "$DOCUMENT/**"
+        },
+        {
+          "path": "**/.capfolder.lock"
         }
       ]
     },

@@ -81,3 +81,18 @@ test("MemoryFs: createExclusive, remove, mtime", async () => {
   await fs.remove("/l");
   expect(await fs.exists("/l")).toBe(false);
 });
+
+test("a stale lock that can't be removed still gives up after waitMs", async () => {
+  class StuckFs extends MemoryFs {
+    async remove(): Promise<void> {
+      throw new Error("locked");
+    }
+  }
+  const fs = new StuckFs();
+  await fs.createExclusive("/v/.capfolder.lock", "dead");
+  let t = Date.now() + 60_000; // the lock is 60 s old; each clock read moves time on
+  const now = () => (t += 10);
+  await expect(withFileLock(fs, "/v", async () => 1, { waitMs: 100, now })).rejects.toThrow(
+    "Another Capfolder window is saving. Try again.",
+  );
+});

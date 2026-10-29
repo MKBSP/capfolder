@@ -278,9 +278,11 @@ export async function withFileLock<T>(
       return work();
     }
     if (got) break;
+    if (now() - started > waitMs) throw new Error("Another Capfolder window is saving. Try again.");
     const m = await fs.mtime(path).catch(() => null);
-    if (m !== null && now() - m > staleMs) await fs.remove(path).catch(() => {});
-    else if (now() - started > waitMs) throw new Error("Another Capfolder window is saving. Try again.");
+    // re-read right before removing: only a lock that is still the same stale one, not a fresh one that replaced it
+    if (m !== null && now() - m > staleMs && (await fs.mtime(path).catch(() => null)) === m)
+      await fs.remove(path).catch(() => {});
     else await new Promise((r) => setTimeout(r, 50));
   }
   try {
