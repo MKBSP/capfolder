@@ -1,9 +1,9 @@
 // docs/18: the Ask AI loop. Provider HTTP is mocked; tools run over the acme fixture.
 import { builders } from "@capfolder/core";
+import { openVault } from "@capfolder/vault";
 import { describe, expect, test } from "vitest";
 import { askChat, type ChatDeps } from "./chat";
 import { acmePlatform } from "./test/acme";
-import { openVault } from "./vault";
 
 const ctx = {
   now: () => new Date("2026-10-16T10:00:00Z"),

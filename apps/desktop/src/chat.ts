@@ -14,16 +14,15 @@ import {
   reduce,
   type State,
 } from "@capfolder/core";
+import { baseName, isPlainDocPath, isSafeDocPath, join, type Vault } from "@capfolder/vault";
 import { CLOUD, cloudEndpoint, isCloud, PROVIDERS, providerLabel } from "./ai";
 import { readText } from "./docread";
 import { money, shares } from "./fmt";
-import { baseName, join } from "./fs/types";
 import type { Platform } from "./platform";
 import type { AiProvider } from "./settings";
 import { envelopes } from "./signing";
 import type { Route } from "./state";
 import { TEMPLATE_LINKS, YC_FORMS, ycSafeFor } from "./templates";
-import { isPlainDocPath, isSafeDocPath, type Vault } from "./vault";
 
 export { CLOUD, isCloud, providerLabel };
 

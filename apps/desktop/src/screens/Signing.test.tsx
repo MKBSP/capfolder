@@ -225,7 +225,7 @@ describe("M5 review", () => {
     const id = [...fp.relay.doc.envelopes.keys()][0]!;
     const sent = events(fp).find((e) => e.type === "envelope_sent")!;
     // simulate the half-finished filing: the SAFE drafts are in the record, the envelope isn't closed
-    const { appendToVault, openVault } = await import("../vault");
+    const { appendToVault, openVault } = await import("@capfolder/vault");
     const ctx = {
       now: () => new Date(),
       newId: () => `evt_X${Math.random().toString(36).slice(2, 10)}`,

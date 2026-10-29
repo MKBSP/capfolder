@@ -1,14 +1,13 @@
+import { baseName, createVault, join } from "@capfolder/vault";
 import { useEffect, useState } from "react";
 import { type BackupStatus, backupStatus, suggestedFolders } from "../backup";
 import { DateInput } from "../components/DateInput";
 import { CompanyPlace } from "../components/RegionFields";
 import { ErrorList, Stepper } from "../components/ui";
 import { todayIso } from "../fmt";
-import { baseName, join } from "../fs/types";
 import { regionOf } from "../regions";
 import { addRecent } from "../settings";
 import { useApp } from "../state";
-import { createVault } from "../vault";
 
 /** CreateCompany.html (F-05). */
 export function CreateCompany() {

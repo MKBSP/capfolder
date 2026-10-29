@@ -1,4 +1,5 @@
 import { builders } from "@capfolder/core";
+import { createVault } from "@capfolder/vault";
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
@@ -6,7 +7,6 @@ import { App } from "./App";
 import { TERMS_VERSION } from "./copy";
 import { acmePlatform } from "./test/acme";
 import { fakePlatform } from "./test/fakePlatform";
-import { createVault } from "./vault";
 
 test("first run with no vault starts at Welcome", async () => {
   render(<App platform={fakePlatform().platform} />);

@@ -1,7 +1,7 @@
+import { baseName } from "@capfolder/vault";
 import { type ReactNode, useEffect, useState } from "react";
 import { type BackupStatus, backupStatus } from "../backup";
 import { progress } from "../docsort";
-import { baseName } from "../fs/types";
 import { openCompany, type Route, useApp } from "../state";
 import { AskAiButton } from "./AskAi";
 import { Chip, Logo, Menu } from "./ui";

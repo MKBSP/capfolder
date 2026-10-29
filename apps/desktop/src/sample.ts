@@ -1,11 +1,11 @@
 // docs/19: the sample company. Built from the golden fixture at first open (bundled as text, so no extra files ship),
 // into the app-data folder. capfolder.json says "sample": vault.ts refuses every save to it.
+
+import { join, openVault, parentOf } from "@capfolder/vault";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import metaText from "../../../fixtures/acme-vault/capfolder.json?raw";
 import eventsText from "../../../fixtures/acme-vault/events.jsonl?raw";
-import { join, parentOf } from "./fs/types";
 import { type App, openCompany } from "./state";
-import { openVault } from "./vault";
 
 export async function openSample(app: App) {
   const { fs } = app.platform;

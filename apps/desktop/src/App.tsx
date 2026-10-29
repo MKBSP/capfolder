@@ -1,3 +1,4 @@
+import { openVault, type Vault } from "@capfolder/vault";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatShell } from "./components/AskAi";
 import { Background } from "./components/Background";
@@ -8,7 +9,6 @@ import { Screen } from "./screens";
 import { Unlock } from "./screens/Unlock";
 import { loadSettings, type Settings, saveSettings } from "./settings";
 import { AppProvider, type Route, useApp } from "./state";
-import { openVault, type Vault } from "./vault";
 
 type Boot = { vault: Vault | null; route: Route; dataDir: string };
 

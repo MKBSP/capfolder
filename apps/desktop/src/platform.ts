@@ -1,4 +1,6 @@
 // Everything that needs the Tauri runtime, behind one object, so screens can be tested with a fake.
+
+import type { Fs } from "@capfolder/vault";
 import { getVersion } from "@tauri-apps/api/app";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -9,7 +11,6 @@ import { relaunch } from "@tauri-apps/plugin-process";
 import { check } from "@tauri-apps/plugin-updater";
 import { browserOcr, type Ocr } from "./docread";
 import { tauriFs } from "./fs/tauri";
-import type { Fs } from "./fs/types";
 
 export interface Platform {
   fs: Fs;

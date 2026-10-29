@@ -1,8 +1,8 @@
 import { capTableRows, type LawyerScope } from "@capfolder/core";
+import { lawyerZip } from "@capfolder/vault";
 import { useState } from "react";
 import { day } from "../fmt";
 import { useApp } from "../state";
-import { lawyerZip } from "../vault";
 import { ErrorList, Field, Modal } from "./ui";
 
 /** F-30: build the lawyer zip (everything, or one person's papers). Nothing is uploaded. */

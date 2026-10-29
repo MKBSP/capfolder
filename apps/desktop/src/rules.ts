@@ -1,9 +1,9 @@
 // The rules pack (docs/07 §2): export guides and document-sorting phrases that can change without a release.
 // A copy ships in the app; newer packs are fetched daily, used only if signed with our key, and swapped in live.
 import { type DocRule, SORT_TYPES } from "@capfolder/core";
+import { join } from "@capfolder/vault";
 import * as ed from "@noble/ed25519";
 import bundled from "../../../rules/rules.json";
-import { join } from "./fs/types";
 import type { Platform } from "./platform";
 
 export interface RulesPack {

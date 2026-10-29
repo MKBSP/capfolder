@@ -12,12 +12,11 @@ import {
   sortText,
   termCounts,
 } from "@capfolder/core";
+import { attachDocument, type Fs, join, sha256Bytes, type Vault } from "@capfolder/vault";
 import { aiLabel, aiSort, docAi } from "./ai";
 import { isReadable, readText } from "./docread";
-import { type Fs, join } from "./fs/types";
 import type { Platform } from "./platform";
 import type { Settings } from "./settings";
-import { attachDocument, sha256Bytes, type Vault } from "./vault";
 
 export interface SortItem {
   path: string;

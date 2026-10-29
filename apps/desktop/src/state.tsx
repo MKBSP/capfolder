@@ -1,15 +1,14 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
+import { appendToVault, baseName, openVault, type Vault } from "@capfolder/vault";
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ChatMsg } from "./chat";
 import type { SortItem } from "./docsort";
 import { configureFormat, todayIso } from "./fmt";
-import { baseName } from "./fs/types";
 import type { AppUpdate, Platform } from "./platform";
 import { regionOf } from "./regions";
 import { BUNDLED_RULES, type RulesPack } from "./rules";
 import { addRecent, type Settings } from "./settings";
-import { appendToVault, openVault, type Vault } from "./vault";
 
 export type Route =
   | { name: "welcome" | "email" | "create" | "start" | "wizard" | "people" | "vesting" | "import" }

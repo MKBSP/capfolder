@@ -1,6 +1,6 @@
+import { type ExportFormat, exportFile } from "@capfolder/vault";
 import { useState } from "react";
 import { useApp } from "../state";
-import { type ExportFormat, exportFile } from "../vault";
 import { DateInput } from "./DateInput";
 import { ErrorList, Field, Modal } from "./ui";
 

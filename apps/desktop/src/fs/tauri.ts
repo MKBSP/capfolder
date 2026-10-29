@@ -1,5 +1,5 @@
+import type { Fs } from "@capfolder/vault";
 import * as tfs from "@tauri-apps/plugin-fs";
-import type { Fs } from "./types";
 
 /** Real file access through @tauri-apps/plugin-fs (scoped in src-tauri/capabilities). */
 export const tauriFs: Fs = {

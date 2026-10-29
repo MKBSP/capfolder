@@ -1,16 +1,24 @@
 // Regression tests for the M3 final-review findings.
 import { builders as b, unzip, verifyChain } from "@capfolder/core";
+import {
+  appendToVault,
+  attachDocument,
+  baseName,
+  createVault,
+  lawyerZip,
+  MemoryFs,
+  openVault,
+  parentOf,
+  removeDocument,
+} from "@capfolder/vault";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Profiler } from "react";
 import { describe, expect, test, vi } from "vitest";
 import { App } from "./App";
 import { backupStatus } from "./backup";
-import { MemoryFs } from "./fs/memory";
-import { baseName, parentOf } from "./fs/types";
 import { acmePlatform } from "./test/acme";
 import { fakePlatform } from "./test/fakePlatform";
-import { appendToVault, attachDocument, createVault, lawyerZip, openVault, removeDocument } from "./vault";
 
 let i = 0;
 const ctx = {

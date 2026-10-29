@@ -1,4 +1,5 @@
 import { computeGaps } from "@capfolder/core";
+import { removeDocument, renameDocument, replaceDocument } from "@capfolder/vault";
 import { useState } from "react";
 import { type CheckItem, checklist } from "../checklist";
 import { AttachModal } from "../components/AttachModal";
@@ -8,7 +9,6 @@ import { SendDialog } from "../components/SendDialog";
 import { ErrorList, Field, Modal } from "../components/ui";
 import { useApp } from "../state";
 import { SERIES_SEED, TEMPLATE_LINKS } from "../templates";
-import { removeDocument, renameDocument, replaceDocument } from "../vault";
 
 /** Documents.html (F-26, F-27): the due-diligence checklist, attach and remove. */
 export function Documents() {

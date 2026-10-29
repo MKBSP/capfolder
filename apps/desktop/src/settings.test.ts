@@ -1,6 +1,6 @@
+import { MemoryFs } from "@capfolder/vault";
 import { expect, test } from "vitest";
 import { backupStatus, suggestedFolders } from "./backup";
-import { MemoryFs } from "./fs/memory";
 import { addRecent, aiFor, loadSettings, saveSettings } from "./settings";
 
 test("defaults, then round trip", async () => {

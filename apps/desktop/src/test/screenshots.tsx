@@ -5,10 +5,10 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "../styles/tokens.css";
 import "../styles/app.css";
+import { createVault } from "@capfolder/vault";
 import { createRoot } from "react-dom/client";
 import importCsv from "../../../../fixtures/import/acme-generic.csv?raw";
 import { App } from "../App";
-import { createVault } from "../vault";
 import { fakePlatform } from "./fakePlatform";
 
 // The real app on memory files and fake dialogs: help-page screenshots without Tauri (scripts/shots.mjs).

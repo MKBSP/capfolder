@@ -25,9 +25,7 @@ import {
   zip,
 } from "@capfolder/core";
 import { agentsMd } from "./agents-md";
-import { day } from "./fmt";
 import { baseName, type Fs, join } from "./fs/types";
-import type { Envelope, RelayClient } from "./signing";
 
 export interface Vault {
   root: string;
@@ -757,7 +755,9 @@ export async function fileSigned(
   ctx: AppendCtx,
   env: Envelope,
   signed: Uint8Array,
-  receipt?: string, // the relay's proof of who signed, for sending wire instructions later
+  receipt: string | undefined, // the relay's proof of who signed, for sending wire instructions later
+  // The app's pdf.js check (pdfverify.verifySigned), passed in so the vault doesn't depend on pdf.js.
+  verify: VerifySigned,
 ): Promise<{ ok: true; vault: Vault; warning?: string } | { ok: false; errors: string[] }> {
   if (!isOutbox(env.outbox) || !(await isPlainDocPath(fs, v.root, env.outbox)))
     return {
@@ -770,8 +770,7 @@ export async function fileSigned(
       ok: false,
       errors: ["The copy you sent is missing from docs/_outbox, so the signed one can't be checked."],
     };
-  const { verifySigned } = await import("./pdfverify");
-  const check = await verifySigned(sent, signed, env.originalPages);
+  const check = await verify(sent, signed, env.originalPages);
   if (!check.ok)
     return {
       ok: false,
@@ -850,3 +849,46 @@ export async function voidEnvelope(
       .catch(() => {});
   return r;
 }
+
+// Moved from the desktop's signing.ts and fmt.ts so the vault doesn't depend on app code.
+// The desktop's relayClient() and envelopes() satisfy / produce these.
+export type RelayClient = {
+  send(
+    pdf: Uint8Array,
+    meta: { title: string; signers: { name: string; email: string }[]; fields: unknown[] },
+  ): Promise<{ id: string }>;
+  remove(id: string): Promise<unknown>;
+};
+
+/** One envelope, from its envelope_sent event and whatever closed it. */
+export interface Envelope {
+  id: string;
+  relay: string;
+  title: string;
+  docType: string;
+  target?: string;
+  person: string;
+  signers: { name: string; email: string }[];
+  sentAt: string;
+  outbox: string;
+  originalPages: number;
+  onSigned: EventDraft[];
+  state: "open" | "signed" | "voided";
+  closedAt?: string;
+  docId?: string;
+  receipt?: string;
+  wireSentAt?: string;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const day = (iso: string) => {
+  if (!iso) return "—";
+  const [y, m, d] = iso.split("-").map(Number) as [number, number, number];
+  return `${d} ${MONTHS[m - 1]} ${y}`;
+};
+
+export type VerifySigned = (
+  sent: Uint8Array,
+  signed: Uint8Array,
+  originalPages: number,
+) => Promise<{ ok: true } | { ok: false; reason: string }>;

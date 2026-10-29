@@ -1,8 +1,8 @@
 import type { EventDraft, SignField, SignSpot } from "@capfolder/core";
+import { DOC_FOLDER, sendForSignature } from "@capfolder/vault";
 import { useState } from "react";
 import { relayClient } from "../signing";
 import { useApp } from "../state";
-import { DOC_FOLDER, sendForSignature } from "../vault";
 import { EmailVerify } from "./EmailVerify";
 import { ErrorList, Field, Modal } from "./ui";
 

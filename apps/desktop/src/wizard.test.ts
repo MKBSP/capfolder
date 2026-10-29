@@ -1,7 +1,6 @@
 import { appendEvents, capTableRows, reduce } from "@capfolder/core";
+import { createVault, MemoryFs } from "@capfolder/vault";
 import { expect, test } from "vitest";
-import { MemoryFs } from "./fs/memory";
-import { createVault } from "./vault";
 import { type WizardInput, wizardDrafts } from "./wizard";
 
 const ctx = {

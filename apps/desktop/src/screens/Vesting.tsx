@@ -12,6 +12,7 @@ import {
   securityVested,
   vestingSchedule,
 } from "@capfolder/core";
+import { isSafeDocPath, join } from "@capfolder/vault";
 import { useMemo, useState } from "react";
 import { DOC_TYPES } from "../components/AttachModal";
 import { DateInput } from "../components/DateInput";
@@ -19,9 +20,7 @@ import { MainHeader } from "../components/Header";
 import { Chip, ErrorList, Field, Modal, VestingBar } from "../components/ui";
 import { VestingGraph } from "../components/VestingGraph";
 import { day, money, num, plusDays, shares, todayIso, withCurrency } from "../fmt";
-import { join } from "../fs/types";
 import { useApp } from "../state";
-import { isSafeDocPath } from "../vault";
 import { scheduleText } from "../views";
 
 /** Everyone's options from the pool: how much has vested, what's next, and what it's worth at the 409A price. */

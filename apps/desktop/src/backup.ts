@@ -1,5 +1,5 @@
 // F-05: is the vault folder inside something that's backed up? Path heuristics; no network calls.
-import { join, parentOf } from "./fs/types";
+import { join, parentOf } from "@capfolder/vault";
 
 export type BackupBy = "iCloud Drive" | "Dropbox" | "Google Drive" | "OneDrive" | "git";
 export type BackupStatus = { backedUp: true; by: BackupBy } | { backedUp: false };

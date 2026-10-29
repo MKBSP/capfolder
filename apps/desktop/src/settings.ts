@@ -1,6 +1,6 @@
 // App settings live in the OS app-data folder, never in the vault (docs/01).
 import { builders } from "@capfolder/core";
-import { type Fs, join } from "./fs/types";
+import { type Fs, join } from "@capfolder/vault";
 import type { Answers } from "./onboarding";
 import { guessRegion } from "./regions";
 

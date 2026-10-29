@@ -9,6 +9,7 @@ import {
   SORT_TYPES,
   type SortType,
 } from "@capfolder/core";
+import { baseName } from "@capfolder/vault";
 import { useEffect, useRef, useState } from "react";
 import { aiLabel, aiSummary, docAi, isCloud } from "../ai";
 import { DOC_TYPES, docTargets } from "../components/AttachModal";
@@ -26,7 +27,6 @@ import {
   walk,
 } from "../docsort";
 import { money, shares } from "../fmt";
-import { baseName } from "../fs/types";
 import { type App, useApp } from "../state";
 
 const TYPE_LABEL: Record<string, string> = {

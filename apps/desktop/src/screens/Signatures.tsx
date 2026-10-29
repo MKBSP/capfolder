@@ -1,3 +1,4 @@
+import { DOC_FOLDER, fileSigned, voidEnvelope } from "@capfolder/vault";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MainHeader } from "../components/Header";
 import { ErrorList, Modal } from "../components/ui";
@@ -5,7 +6,6 @@ import { uploadWire, wireDoc } from "../components/WireInstructions";
 import { day } from "../fmt";
 import { type Envelope, type EnvelopeStatus, envelopes, RelayError, relayClient, relayFor } from "../signing";
 import { useApp } from "../state";
-import { DOC_FOLDER, fileSigned, voidEnvelope } from "../vault";
 
 const ago = (ts: string) => {
   const days = Math.floor((Date.now() - Date.parse(ts)) / 864e5);
@@ -79,7 +79,9 @@ export function Signatures(p: { sent?: { titles: string[]; emails: string[]; war
       filing.current.add(env.id);
       try {
         const signed = await client.signedPdf(env.id);
-        const r = await fileSigned(app.platform.fs, vault, app.ctx, env, signed, s.receipt);
+        const r = await fileSigned(app.platform.fs, vault, app.ctx, env, signed, s.receipt, async (...a) =>
+          (await import("../pdfverify")).verifySigned(...a),
+        );
         if (!r.ok) {
           setNotes((x) => ({ ...x, [env.id]: { ok: false, text: r.errors.join(" ") } }));
           continue;

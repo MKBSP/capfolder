@@ -1,13 +1,13 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { captableCsv, toOcfExport, zip } from "@capfolder/core";
+import { appendToVault, createVault, importIntoVault, openVault } from "@capfolder/vault";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
 import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
-import { appendToVault, createVault, importIntoVault, openVault } from "../vault";
 
 const FIX = resolve(process.cwd(), "../../fixtures");
 const acmeEvents = () =>
@@ -117,7 +117,7 @@ test("a company folder that already has a cap table is refused", async () => {
 });
 
 test("M2 review: a folder with only a share class or pool is not 'new'; odd file names are kept safely", async () => {
-  const { MemoryFs } = await import("../fs/memory");
+  const { MemoryFs } = await import("@capfolder/vault");
   const { builders: bl } = await import("@capfolder/core");
   const fs = new MemoryFs();
   const v = await createVault(fs, ctx, {

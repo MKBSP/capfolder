@@ -1,10 +1,10 @@
 import { builders } from "@capfolder/core";
+import { appendToVault, openVault } from "@capfolder/vault";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
 import { fakePlatform } from "../test/fakePlatform";
-import { appendToVault, openVault } from "../vault";
 
 const ctx = { now: () => new Date(), newId: () => builders.newId("evt"), deviceId: "dev_t" };
 

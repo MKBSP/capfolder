@@ -1,7 +1,7 @@
+import { attachDocument } from "@capfolder/vault";
 import { useState } from "react";
 import { todayIso } from "../fmt";
 import { type App, useApp } from "../state";
-import { attachDocument } from "../vault";
 import { ErrorList } from "./ui";
 
 /** The company's current wire instructions: the newest wire_instructions document still in the folder. */

@@ -1,10 +1,10 @@
 import { builders } from "@capfolder/core";
+import { createVault } from "@capfolder/vault";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
 import { fakePlatform } from "../test/fakePlatform";
-import { createVault } from "../vault";
 
 /** A new, empty company that has just been created: boots into Home. */
 async function newCo() {

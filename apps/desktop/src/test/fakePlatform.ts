@@ -1,4 +1,4 @@
-import { MemoryFs } from "../fs/memory";
+import { MemoryFs } from "@capfolder/vault";
 import type { Platform } from "../platform";
 
 /** A Platform for UI tests: memory files, a fake keychain, scripted dialogs. */

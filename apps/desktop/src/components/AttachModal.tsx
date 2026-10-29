@@ -1,8 +1,8 @@
 import type { State } from "@capfolder/core";
+import { attachDocument } from "@capfolder/vault";
 import { useEffect, useState } from "react";
 import { todayIso } from "../fmt";
 import { useApp } from "../state";
-import { attachDocument } from "../vault";
 import { DateInput } from "./DateInput";
 import { ErrorList, Field, Modal } from "./ui";
 

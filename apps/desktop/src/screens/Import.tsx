@@ -11,6 +11,7 @@ import {
   type Row,
   reconcile,
 } from "@capfolder/core";
+import { importIntoVault } from "@capfolder/vault";
 import { useMemo, useState } from "react";
 import { DateInput } from "../components/DateInput";
 import { CrumbHeader } from "../components/Header";
@@ -18,7 +19,6 @@ import { ErrorList, Field, StatCard } from "../components/ui";
 import { formatConfig, money, shares, todayIso } from "../fmt";
 import { MOVES, SOURCES, type SourceId } from "../importRules";
 import { useApp } from "../state";
-import { importIntoVault } from "../vault";
 
 type Sheets = { name: string; rows: string[][]; date1904?: boolean }[];
 type Loaded = { fileName: string; bytes: Uint8Array };

@@ -1,8 +1,9 @@
 // docs/11: the anonymous install ping. Off in Settings → nothing is sent. Never names, numbers, files or emails.
+
+import type { Vault } from "@capfolder/vault";
 import { TERMS_VERSION } from "./copy";
 import type { Platform } from "./platform";
 import type { Settings } from "./settings";
-import type { Vault } from "./vault";
 
 const WEEK = 7 * 864e5;
 

@@ -1,4 +1,5 @@
 import { builders as b } from "@capfolder/core";
+import { setCompanyCurrency } from "@capfolder/vault";
 import { useEffect, useState } from "react";
 import { aiLabel, CLOUD, detect, isCloud, PROVIDERS, type ProviderId } from "../ai";
 import { EmailVerify } from "../components/EmailVerify";
@@ -9,7 +10,6 @@ import { WireInstructionsField } from "../components/WireInstructions";
 import { type AiAction, type AiPick, type AiProvider, aiFor, type Settings as S } from "../settings";
 import { relayClient } from "../signing";
 import { useApp } from "../state";
-import { setCompanyCurrency } from "../vault";
 
 export function Settings() {
   const app = useApp();

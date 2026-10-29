@@ -1,5 +1,6 @@
 // The desktop side of signing (docs/05): a small relay client and the envelopes as the record tells them.
 import type { EventDraft, VaultEvent } from "@capfolder/core";
+import type { Envelope } from "@capfolder/vault";
 import type { Platform } from "./platform";
 
 export const OFFLINE = "Can't reach the signing relay. Everything else works; try again when you're online.";
@@ -106,25 +107,7 @@ export function relayClient(platform: Platform, s: { relayUrl: string; relayToke
 }
 export type RelayClient = ReturnType<typeof relayClient>;
 
-/** One envelope, from its envelope_sent event and whatever closed it. */
-export interface Envelope {
-  id: string;
-  relay: string;
-  title: string;
-  docType: string;
-  target?: string;
-  person: string;
-  signers: { name: string; email: string }[];
-  sentAt: string;
-  outbox: string;
-  originalPages: number;
-  onSigned: EventDraft[];
-  state: "open" | "signed" | "voided";
-  closedAt?: string;
-  docId?: string;
-  receipt?: string;
-  wireSentAt?: string;
-}
+export type { Envelope } from "@capfolder/vault";
 
 export function envelopes(events: VaultEvent[]): Envelope[] {
   const out = new Map<string, Envelope>();

@@ -32,6 +32,9 @@ importers:
       '@capfolder/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@capfolder/vault':
+        specifier: workspace:*
+        version: link:../../packages/vault
       '@fontsource/ibm-plex-mono':
         specifier: 5.3.0
         version: 5.3.0
@@ -173,6 +176,12 @@ importers:
       fast-check:
         specifier: 4.10.2
         version: 4.10.2
+
+  packages/vault:
+    dependencies:
+      '@capfolder/core':
+        specifier: workspace:*
+        version: link:../core
 
 packages:
 
