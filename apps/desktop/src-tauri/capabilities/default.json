@@ -41,6 +41,12 @@
           "path": "$DOCUMENT/**"
         },
         {
+          "path": "$HOME/.capfolder"
+        },
+        {
+          "path": "$HOME/.capfolder/**"
+        },
+        {
           "path": "**/.capfolder.lock"
         }
       ]

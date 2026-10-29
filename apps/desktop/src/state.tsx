@@ -1,6 +1,6 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
-import { appendToVault, baseName, openVault, type Vault } from "@capfolder/vault";
+import { appendToVault, baseName, openVault, registerCompany, type Vault } from "@capfolder/vault";
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ChatMsg } from "./chat";
 import type { SortItem } from "./docsort";
@@ -176,10 +176,20 @@ export function AppProvider(p: {
 /** Opens a company folder, puts it first in the recent list, then shows its cap table. Throws a plain-language error. */
 export async function openCompany(app: App, root: string) {
   const v = await openVault(app.platform.fs, root, app.ctx);
+  let name = baseName(v.root);
   await app.setSettings((s) => {
-    const name = s.recentVaults.find((r) => r.root === v.root)?.name ?? baseName(v.root);
+    name = s.recentVaults.find((r) => r.root === v.root)?.name ?? baseName(v.root);
     return { ...s, recentVaults: addRecent(s.recentVaults, { name, root: v.root }) };
   });
+  registerForAgent(app, name, v);
   app.setVault(v);
   app.go({ name: "home" });
+}
+
+/** Lists the company in ~/.capfolder/companies.json for the agent. Fire and forget: never blocks or fails opening. The sample is never listed. */
+export function registerForAgent(app: App, name: string, v: Vault) {
+  if (v.meta.sample) return;
+  Promise.resolve()
+    .then(async () => registerCompany(app.platform.fs, await app.platform.homeDir(), { name, root: v.root }))
+    .catch(() => {});
 }

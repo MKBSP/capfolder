@@ -7,7 +7,7 @@ import { ErrorList, Stepper } from "../components/ui";
 import { todayIso } from "../fmt";
 import { regionOf } from "../regions";
 import { addRecent } from "../settings";
-import { useApp } from "../state";
+import { registerForAgent, useApp } from "../state";
 
 /** CreateCompany.html (F-05). */
 export function CreateCompany() {
@@ -52,6 +52,7 @@ export function CreateCompany() {
         ...app.settings,
         recentVaults: addRecent(app.settings.recentVaults, { name: name.trim(), root: v.root }),
       });
+      registerForAgent(app, name.trim(), v);
       app.setVault(v);
       app.go({ name: "start" });
     } catch (e) {
