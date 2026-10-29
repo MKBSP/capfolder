@@ -4,6 +4,7 @@ import { type Fs, parentOf } from "./types";
 export class MemoryFs implements Fs {
   private files = new Map<string, string | Uint8Array>();
   private dirs = new Set<string>(["/"]);
+  private mtimes = new Map<string, number>();
   private links = new Map<string, string>(); // path → target; reads follow them, like a real fs
 
   mkdirSync(path: string): void {
@@ -12,6 +13,7 @@ export class MemoryFs implements Fs {
   writeSync(path: string, data: string | Uint8Array): void {
     this.mkdirSync(parentOf(path));
     this.files.set(path, data);
+    this.mtimes.set(path, Date.now());
   }
   readSync(path: string): string {
     const f = this.files.get(path);
@@ -30,6 +32,18 @@ export class MemoryFs implements Fs {
   }
   deleteSync(path: string): void {
     this.files.delete(path);
+  }
+
+  async createExclusive(path: string, text: string) {
+    if (this.existsSync(path)) return false;
+    this.writeSync(path, text);
+    return true;
+  }
+  async remove(path: string) {
+    this.deleteSync(path);
+  }
+  async mtime(path: string) {
+    return this.files.has(path) ? (this.mtimes.get(path) ?? null) : null;
   }
 
   async readText(path: string) {

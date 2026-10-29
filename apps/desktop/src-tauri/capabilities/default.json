@@ -51,6 +51,7 @@
     "fs:allow-read-dir",
     "fs:allow-rename",
     "fs:allow-lstat",
+    "fs:allow-remove",
     {
       "identifier": "opener:allow-open-url",
       "allow": [

@@ -10,6 +10,9 @@ export interface Fs {
   list(path: string): Promise<string[]>; // child names
   rename(from: string, to: string): Promise<void>;
   isSymlink(path: string): Promise<boolean>; // false when the path doesn't exist
+  createExclusive(path: string, text: string): Promise<boolean>; // false if the file already exists
+  remove(path: string): Promise<void>;
+  mtime(path: string): Promise<number | null>; // ms since epoch; null when the path doesn't exist
 }
 
 /** Joins with "/". Tauri accepts forward slashes on every desktop OS. */

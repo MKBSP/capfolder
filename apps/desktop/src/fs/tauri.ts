@@ -18,4 +18,23 @@ export const tauriFs: Fs = {
       (s) => s.isSymlink,
       () => false,
     ),
+  // createNew: fails if the path exists in any form. The plugin's error text isn't a stable API, so
+  // existence is checked first (false) and any later throw is a real failure the caller falls back on.
+  createExclusive: async (p, t) => {
+    if (await tfs.exists(p)) return false;
+    try {
+      await tfs.writeTextFile(p, t, { createNew: true });
+      return true;
+    } catch (e) {
+      if (await tfs.exists(p)) return false; // lost a race to another writer
+      throw e;
+    }
+  },
+  remove: (p) => tfs.remove(p),
+  // lstat (already permitted), not stat; a missing path is null
+  mtime: (p) =>
+    tfs.lstat(p).then(
+      (s) => s.mtime?.getTime() ?? null,
+      () => null,
+    ),
 };

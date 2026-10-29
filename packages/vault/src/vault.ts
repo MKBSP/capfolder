@@ -246,11 +246,55 @@ export async function openVault(fs: Fs, root: string, ctx: AppendCtx): Promise<V
   return { root, meta: derived.meta, log, events, csvEdited, missingDocs, derivedError: derived.error };
 }
 
+const LOCK_FILE = ".capfolder.lock";
+let lockWarned = false;
+
+/**
+ * Cross-process lock: a ".capfolder.lock" file in the vault root, so the app and an agent can't both append to
+ * events.jsonl at once and fork the chain. Created with "fail if it exists"; a lock older than staleMs is a dead
+ * writer's and is taken over. If the lock can't be created for any other reason (read-only disk, no permission),
+ * the work runs under the in-process lock only: saving is never blocked by the lock itself.
+ * ponytail: stale takeover is remove-then-create; two waiters racing on one stale lock is rare, and the
+ * freshness check in writeBlocked still refuses a write on a changed log.
+ */
+export async function withFileLock<T>(
+  fs: Fs,
+  root: string,
+  work: () => Promise<T>,
+  opts: { staleMs?: number; waitMs?: number; now?: () => number } = {},
+): Promise<T> {
+  const { staleMs = 30_000, waitMs = 35_000, now = Date.now } = opts;
+  const path = join(root, LOCK_FILE);
+  const started = now();
+  for (;;) {
+    let got: boolean;
+    try {
+      got = await fs.createExclusive(path, String(started));
+    } catch (e) {
+      if (!lockWarned) {
+        lockWarned = true;
+        console.warn(`Couldn't create ${path}; saving without the cross-process lock.`, e);
+      }
+      return work();
+    }
+    if (got) break;
+    const m = await fs.mtime(path).catch(() => null);
+    if (m !== null && now() - m > staleMs) await fs.remove(path).catch(() => {});
+    else if (now() - started > waitMs) throw new Error("Another Capfolder window is saving. Try again.");
+    else await new Promise((r) => setTimeout(r, 50));
+  }
+  try {
+    return await work();
+  } finally {
+    await fs.remove(path).catch(() => {});
+  }
+}
+
 /** One write at a time per vault folder: two saves racing would both pass the freshness check and fork the chain. */
 const locks = new Map<string, Promise<unknown>>();
-function exclusive<T>(root: string, work: () => Promise<T>): Promise<T> {
+function exclusive<T>(fs: Fs, root: string, work: () => Promise<T>): Promise<T> {
   const prev = locks.get(root) ?? Promise.resolve();
-  const next = prev.catch(() => {}).then(work);
+  const next = prev.catch(() => {}).then(() => withFileLock(fs, root, work));
   locks.set(root, next);
   return next;
 }
@@ -281,7 +325,7 @@ async function appendUnlocked(fs: Fs, v: Vault, drafts: EventDraft[], ctx: Appen
 
 /** The only write path for events: all drafts or none, then the derived files are refreshed. */
 export const appendToVault = (fs: Fs, v: Vault, drafts: EventDraft[], ctx: AppendCtx): Promise<Result> =>
-  exclusive(v.root, () => appendUnlocked(fs, v, drafts, ctx));
+  exclusive(fs, v.root, () => appendUnlocked(fs, v, drafts, ctx));
 
 async function freePath(fs: Fs, dir: string, name: string): Promise<string> {
   const dot = name.lastIndexOf(".");
@@ -315,7 +359,7 @@ export function attachDocument(
     extra?: EventDraft[]; // recorded in the same write, e.g. a stakeholder_alias the founder asked to remember
   },
 ): Promise<Result | { ok: "duplicate"; docId: string }> {
-  return exclusive(v.root, async () => {
+  return exclusive(fs, v.root, async () => {
     const blocked = await writeBlocked(fs, v); // checked before any file is written
     if (blocked) return { ok: false, errors: blocked };
     const sha256 = await sha256Bytes(p.bytes);
@@ -360,7 +404,7 @@ export function attachDocument(
 
 /** F-27. Never deletes: a doc_removed event is written first, then the file moves to docs/_removed/. */
 export function removeDocument(fs: Fs, v: Vault, ctx: AppendCtx, docId: string): Promise<Result> {
-  return exclusive(v.root, async () => {
+  return exclusive(fs, v.root, async () => {
     const doc = reduce(v.events, MAX_DATE).docs.get(docId);
     if (!doc || doc.removed) return { ok: false, errors: ["That document isn't in the folder."] };
     if (!(await isPlainDocPath(fs, v.root, doc.data.path)))
@@ -397,7 +441,7 @@ export function renameDocument(
   docId: string,
   name: string,
 ): Promise<Result> {
-  return exclusive(v.root, async () => {
+  return exclusive(fs, v.root, async () => {
     const blocked = await writeBlocked(fs, v);
     if (blocked) return { ok: false, errors: blocked };
     const doc = reduce(v.events, MAX_DATE).docs.get(docId);
@@ -441,7 +485,7 @@ export function replaceDocument(
   docId: string,
   p: { originalName: string; bytes: Uint8Array; draft?: boolean },
 ): Promise<Result> {
-  return exclusive(v.root, async () => {
+  return exclusive(fs, v.root, async () => {
     const blocked = await writeBlocked(fs, v);
     if (blocked) return { ok: false, errors: blocked };
     const s = reduce(v.events, MAX_DATE);
@@ -776,7 +820,7 @@ export async function fileSigned(
       ok: false,
       errors: [`Signed copy doesn't match what you sent. ${check.reason} It wasn't filed.`],
     };
-  return exclusive(v.root, async () => {
+  return exclusive(fs, v.root, async () => {
     const blocked = await writeBlocked(fs, v);
     if (blocked) return { ok: false as const, errors: blocked };
     const fit = fitOnSigned(v, env.onSigned, env.target);
