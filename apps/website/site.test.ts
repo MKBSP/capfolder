@@ -597,23 +597,28 @@ test("founder guides: SEO basics, PNG share image, Article markup, illustrations
     const slug = p.split("/")[1];
     expect([slug, (page.match(/<title>([^<]*)<\/title>/)?.[1] ?? "").length <= 60]).toEqual([slug, true]);
     expect([slug, /<meta name="description" content="[^"]{70,155}">/.test(page)]).toEqual([slug, true]);
-    expect([slug, page.includes(`<link rel="canonical" href="https://capfolder.com/guides/${slug}/">`)]).toEqual([
+    expect([
       slug,
-      true,
-    ]);
-    const og = page.match(/<meta property="og:image" content="https:\/\/capfolder\.com(\/guides\/img\/[\w-]+\.png)">/)?.[1];
+      page.includes(`<link rel="canonical" href="https://capfolder.com/guides/${slug}/">`),
+    ]).toEqual([slug, true]);
+    const og = page.match(
+      /<meta property="og:image" content="https:\/\/capfolder\.com(\/guides\/img\/[\w-]+\.png)">/,
+    )?.[1];
     expect([slug, !!og && existsSync(new URL(`.${og}`, import.meta.url))]).toEqual([slug, true]);
     const ld = [...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) =>
       JSON.parse(m[1]!),
     );
     expect([slug, ld.some((j) => j["@type"] === "Article" && j.datePublished)]).toEqual([slug, true]);
     // illustrations need alt text; the small validation icons sit next to their label and stay alt=""
-    for (const [, src, alt] of page.matchAll(/<img (?:class="gill" )?src="(\/guides\/img\/[^"?]+)" width="400"[^>]*alt="([^"]*)"/g)) {
+    for (const [, src, alt] of page.matchAll(
+      /<img (?:class="gill" )?src="(\/guides\/img\/[^"?]+)" width="400"[^>]*alt="([^"]*)"/g,
+    )) {
       expect([src, existsSync(new URL(`.${src}`, import.meta.url))]).toEqual([src, true]);
       expect([src, alt.length > 20]).toEqual([src, true]);
     }
     expect([slug, page.includes("isn't legal, tax or financial advice")]).toEqual([slug, true]);
-    for (const bad of ["Hippo", "days left"]) expect([slug, bad, page.includes(bad)]).toEqual([slug, bad, false]);
+    for (const bad of ["Hippo", "days left"])
+      expect([slug, bad, page.includes(bad)]).toEqual([slug, bad, false]);
     expect([slug, index.includes(`href="/guides/${slug}/"`)]).toEqual([slug, true]);
   }
   expect(read("package.json")).toMatch(/cp -r [^"]*\bguides\b/);
