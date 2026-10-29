@@ -877,47 +877,31 @@ fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
     set("dl-linux", find(/\.AppImage$/) || find(/\.deb$/));
   })
   .catch(() => {});
-// Hero: a slot-machine reel. Each spin passes every logo, eases out over about 3s and lands on the next name:
-// Claude, ChatGPT, Gemini, Ollama, Grok, your own AI, and round again. It holds 3s on each.
+// Hero: cycles through the names one at a time, 2.5s each, with a short slide up to the next.
 // Hover or the demo's Pause button holds it (WCAG 2.2.2); with reduced motion it stays on Claude.
 (() => {
   const reel = document.getElementById("rot");
-  const names = [...reel.children].map((el) => el.textContent.trim());
-  const n = names.length;
+  const n = reel.children.length;
   if (!matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
-  reel.innerHTML = reel.innerHTML.repeat(3); // three copies, so a spin always has a full lap to run
-  const stops = ["ChatGPT", "Gemini", "Ollama", "Grok", "your own AI", "Claude"].map((x) => names.indexOf(x));
+  reel.append(reel.children[0].cloneNode(true)); // a copy of the first, so the last slides into it and wraps
   const pauseBtn = document.getElementById("pause-motion");
   const h1 = reel.closest("h1");
   let hover = false;
   h1.addEventListener("mouseenter", () => { hover = true; });
   h1.addEventListener("mouseleave", () => { hover = false; });
   const held = () => hover || pauseBtn.getAttribute("aria-pressed") === "true";
-  const wait = (ms) => new Promise((done) => {
-    let left = ms;
-    const t = setInterval(() => {
-      if (held()) return;
-      left -= 50;
-      if (left <= 0) { clearInterval(t); done(); }
-    }, 50);
-  });
-  const SPIN = 2900;
   const place = (pos, ms) => {
-    reel.style.transition = ms ? `transform ${ms}ms cubic-bezier(.2,.65,.15,1)` : "none";
+    reel.style.transition = ms ? `transform ${ms}ms cubic-bezier(.3,.7,.2,1)` : "none";
     reel.style.transform = `translateY(${-pos * 1.15}em)`;
   };
   let pos = 0;
-  (async () => {
-    for (let k = 0; ; k = (k + 1) % stops.length) {
-      await wait(3000);
-      pos += n + ((stops[k] - pos + n) % n);
-      place(pos, SPIN);
-      await new Promise((done) => setTimeout(done, SPIN + 50));
-      pos %= n;
-      place(pos, 0);
-      void reel.offsetHeight;
-    }
-  })();
+  let left = 2500;
+  setInterval(() => {
+    if (held() || (left -= 50) > 0) return;
+    left = 2500;
+    place(++pos, 450);
+    if (pos === n) setTimeout(() => { pos = 0; place(0, 0); }, 500);
+  }, 50);
 })();
 </script>
 <script src="/capfolder-paperwork.js" defer></script>
