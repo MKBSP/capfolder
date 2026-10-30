@@ -25,15 +25,17 @@ jobs:
       - run: pnpm i --frozen-lockfile
       - run: pnpm --filter capfolder test
       - run: pnpm --filter capfolder build
+      # build the .mcpb first: a failed bundle must stop before the irreversible npm publish
+      - run: pnpm --filter capfolder build:mcpb
       - run: npm publish --provenance --access public
         working-directory: packages/capfolder
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm --filter capfolder build:mcpb
       - name: Attach capfolder.mcpb to the release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref_name }}
+        # --latest=false: the desktop updater and every Download button follow releases/latest; this release has no app
         run: |
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "capfolder npm package and the Claude Desktop extension (capfolder.mcpb)."
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --latest=false --title "$TAG" --notes "capfolder npm package and the Claude Desktop extension (capfolder.mcpb)."
           gh release upload "$TAG" packages/capfolder/capfolder.mcpb --clobber
