@@ -32,6 +32,7 @@ describe("manifests", () => {
       args: ["${__dirname}/dist/cli.js", "mcp"],
     });
     expect(json("plugin/.claude-plugin/plugin.json").name).toBe("capfolder");
+    expect(json("plugin/.claude-plugin/plugin.json").version).toBe(version);
   });
 
   test("marketplace points at the plugin", () => {
@@ -47,6 +48,7 @@ describe("skill", () => {
     const parts = [
       "Do you already have a company?",
       "Where should the folder live?",
+      "call `create_company` with the name",
       "Pro is coming. You're on Free, which has everything here.",
       "set_setup_answers",
       "Do you have documents already?",
