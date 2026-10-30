@@ -19,13 +19,13 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@capfolder/core": "workspace:*",
-    "@capfolder/vault": "workspace:*",
     "@modelcontextprotocol/sdk": "1.32.2",
     "pdfjs-dist": "6.3.289",
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@capfolder/core": "workspace:*",
+    "@capfolder/vault": "workspace:*",
     "esbuild": "0.28.2",
     "pdf-lib": "1.17.1"
   }

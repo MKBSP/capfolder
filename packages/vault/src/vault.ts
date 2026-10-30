@@ -246,6 +246,40 @@ export async function openVault(fs: Fs, root: string, ctx: AppendCtx): Promise<V
   return { root, meta: derived.meta, log, events, csvEdited, missingDocs, derivedError: derived.error };
 }
 
+/**
+ * openVault without the writes: for the agent, which reads while the app may be writing. Derived files are left
+ * alone (the app refreshes them), so csvEdited is always false here. Broken chain: the readable prefix, as openVault.
+ */
+export async function readVault(fs: Fs, root: string): Promise<Vault> {
+  if (!(await fs.exists(join(root, "capfolder.json"))) || !(await fs.exists(join(root, "events.jsonl"))))
+    throw new Error("This folder isn't a Capfolder vault (no capfolder.json).");
+  const meta = JSON.parse(await fs.readText(join(root, "capfolder.json")));
+  const log = await fs.readText(join(root, "events.jsonl"));
+  const chain = await verifyChain(log);
+  if (!chain.ok) {
+    const prefix = await verifyChain(
+      log
+        .split("\n")
+        .slice(0, chain.line - 1)
+        .join("\n"),
+    );
+    return {
+      root,
+      meta,
+      log,
+      events: prefix.ok ? prefix.events : [],
+      broken: { line: chain.line, reason: chain.reason },
+      csvEdited: false,
+      missingDocs: [],
+    };
+  }
+  const missingDocs: string[] = [];
+  for (const [id, d] of reduce(chain.events, MAX_DATE).docs)
+    if (!d.removed && (!isSafeDocPath(d.data.path) || !(await fs.exists(join(root, d.data.path)))))
+      missingDocs.push(id);
+  return { root, meta, log, events: chain.events, csvEdited: false, missingDocs };
+}
+
 const LOCK_FILE = ".capfolder.lock";
 let lockWarned = false;
 

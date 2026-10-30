@@ -1,4 +1,4 @@
-import { cp, mkdir, mkdtemp, readFile, symlink, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readdir, readFile, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { computeGaps, reduce, verifyChain } from "@capfolder/core";
@@ -53,8 +53,49 @@ test("every tool has a title and is read-only", async () => {
   );
   for (const t of tools) {
     expect(t.title).toBeTruthy();
-    expect(t.annotations?.readOnlyHint).toBe(true);
+    expect(t.annotations?.readOnlyHint).toBe(t.name !== "switch_company");
   }
+  // switch_company writes ~/.capfolder/companies.json, never the record
+  expect(tools.find((t) => t.name === "switch_company")?.annotations).toMatchObject({
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: true,
+  });
+});
+
+test("as_of must be a real date", async () => {
+  await registerCompany(fs, home, { name: "Acme Inc.", root });
+  const c = await connect();
+  const r = (await c.callTool({ name: "get_cap_table", arguments: { as_of: "2026-13-45" } })) as R & {
+    isError?: boolean;
+  };
+  expect(r.isError).toBe(true);
+  expect(text(r)).not.toContain("Tim Apple");
+});
+
+test("read tools write nothing to the folder, even with a stale captable.csv", async () => {
+  await registerCompany(fs, home, { name: "Acme Inc.", root });
+  await writeFile(join(root, "captable.csv"), "stale\n");
+  const before = async () => ({
+    csv: await readFile(join(root, "captable.csv"), "utf8"),
+    json: await readFile(join(root, "capfolder.json"), "utf8"),
+    files: (await readdir(root)).sort(),
+  });
+  const snap = await before();
+  const c = await connect();
+  for (const name of ["get_cap_table", "list_people", "get_gaps", "list_documents"]) await call(c, name);
+  await call(c, "get_vesting", { id: "sh_tim" });
+  await call(c, "read_document", { path: "docs/safes/2022-01-10_y-combinator.pdf" });
+  expect(await before()).toEqual(snap);
+  expect(snap.files).not.toContain("ocf");
+  expect(snap.files).not.toContain("captable.edited.csv");
+});
+
+test("package.json: only external modules are dependencies, nothing from the workspace", async () => {
+  const pkg = JSON.parse(await readFile(join(import.meta.dirname, "../../package.json"), "utf8"));
+  for (const v of Object.values(pkg.dependencies)) expect(v).not.toMatch(/^workspace:/);
+  const externals = [...pkg.scripts.build.matchAll(/--external:(\S+)/g)].map((m) => m[1]).sort();
+  expect(externals).toEqual(Object.keys(pkg.dependencies).sort());
 });
 
 test("with an empty registry, the tools say there is no company yet", async () => {

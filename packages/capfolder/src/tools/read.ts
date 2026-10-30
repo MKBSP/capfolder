@@ -30,11 +30,7 @@ const str = (x: bigint | null | undefined) => (x === null || x === undefined ? n
 const todayOf = (o: ServerOpts) => o.ctx.now().toISOString().slice(0, 10);
 const nameOf = (s: State, id: string): string => s.stakeholders.get(id)?.name?.legal_name ?? id;
 const readOnly = (title: string) => ({ title, readOnlyHint: true, openWorldHint: false });
-const asOfSchema = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/)
-  .optional()
-  .describe("Date as YYYY-MM-DD. Defaults to today.");
+const asOfSchema = z.iso.date().optional().describe("Date as YYYY-MM-DD. Defaults to today.");
 
 /** Runs a read against the current vault; adds the broken-record warning the app shows. */
 async function withVault(o: ServerOpts, f: (v: Vault) => Promise<Answer> | Answer) {
@@ -140,7 +136,13 @@ export function registerReadTools(server: McpServer, o: ServerOpts) {
       title: "Switch company",
       description: "Makes another company current, by its name or its folder (from list_companies).",
       inputSchema: { name_or_root: z.string().min(1) },
-      annotations: readOnly("Switch company"),
+      // writes ~/.capfolder/companies.json, never the record
+      annotations: {
+        title: "Switch company",
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+      },
     },
     async ({ name_or_root }) => {
       const r = await loadRegistry(o.fs, o.home);

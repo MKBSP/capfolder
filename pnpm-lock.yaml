@@ -145,12 +145,6 @@ importers:
 
   packages/capfolder:
     dependencies:
-      '@capfolder/core':
-        specifier: workspace:*
-        version: link:../core
-      '@capfolder/vault':
-        specifier: workspace:*
-        version: link:../vault
       '@modelcontextprotocol/sdk':
         specifier: 1.32.2
         version: 1.32.2(zod@4.6.7)
@@ -161,6 +155,12 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
+      '@capfolder/core':
+        specifier: workspace:*
+        version: link:../core
+      '@capfolder/vault':
+        specifier: workspace:*
+        version: link:../vault
       esbuild:
         specifier: 0.28.2
         version: 0.28.2

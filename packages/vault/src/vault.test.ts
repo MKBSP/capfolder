@@ -7,6 +7,7 @@ import {
   createVault,
   exportCsv,
   openVault,
+  readVault,
   removeDocument,
   renameDocument,
   replaceDocument,
@@ -178,6 +179,64 @@ describe("openVault (F-31)", () => {
     expect(o.events).toHaveLength(1);
     const r = await appendToVault(fs, o, [b.stakeholder({ name: "B", type: "INDIVIDUAL" })], ctx);
     expect(r.ok).toBe(false);
+  });
+});
+
+describe("readVault (the agent's read-only open)", () => {
+  const WRITES = [
+    "writeText",
+    "appendText",
+    "writeBytes",
+    "mkdir",
+    "rename",
+    "remove",
+    "createExclusive",
+  ] as const;
+  /** The same fs, but every write method records its call instead of quietly succeeding unseen. */
+  function spied() {
+    const calls: string[] = [];
+    const spy = Object.create(fs) as MemoryFs;
+    for (const m of WRITES)
+      (spy as unknown as Record<string, unknown>)[m] = (...a: unknown[]) => {
+        calls.push(`${m} ${a[0]}`);
+        return (fs[m] as (...x: unknown[]) => unknown)(...a);
+      };
+    return { spy, calls };
+  }
+
+  test("a good chain: no writes, same events/meta/missingDocs as openVault", async () => {
+    const v = await founded();
+    fs.writeSync(`${v.root}/captable.csv`, "stale\n");
+    const { spy, calls } = spied();
+    const r = await readVault(spy, v.root);
+    expect(calls).toEqual([]);
+    expect(r.csvEdited).toBe(false);
+    expect(r.derivedError).toBeUndefined();
+    expect(fs.existsSync(`${v.root}/captable.edited.csv`)).toBe(false);
+    const o = await openVault(fs, v.root, ctx);
+    expect(r.events).toEqual(o.events);
+    expect(r.meta).toEqual(o.meta);
+    expect(r.missingDocs).toEqual(o.missingDocs);
+    expect(r.broken).toBeUndefined();
+  });
+
+  test("a broken chain: no writes, the readable prefix and where it broke", async () => {
+    const v = await founded();
+    const lines = fs.readSync(`${v.root}/events.jsonl`).split("\n");
+    lines[1] = lines[1]!.replace("Test Co", "Evil Co");
+    fs.writeSync(`${v.root}/events.jsonl`, lines.join("\n"));
+    const { spy, calls } = spied();
+    const r = await readVault(spy, v.root);
+    expect(calls).toEqual([]);
+    const o = await openVault(fs, v.root, ctx);
+    expect(r.broken).toEqual(o.broken);
+    expect(r.events).toEqual(o.events);
+    expect(r.meta).toEqual(o.meta);
+    expect(r.missingDocs).toEqual(o.missingDocs);
+  });
+
+  test("not a vault", async () => {
+    await expect(readVault(fs, "/Users/me/Documents")).rejects.toThrow("isn't a Capfolder vault");
   });
 });
 
