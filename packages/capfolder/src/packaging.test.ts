@@ -57,7 +57,7 @@ describe("skill", () => {
       "https://capfolder.com/#download",
       "Do you want others to see their own documents or vesting?",
     ];
-    const at = parts.map((p) => skill.indexOf(p));
+    const at = parts.map((p) => skill.lastIndexOf(p));
     expect(at.map((i, k) => (i < 0 ? parts[k] : null)).filter(Boolean)).toEqual([]);
     expect(at).toEqual([...at].sort((a, b) => a - b));
     expect(skill).toContain(DISCLAIMER);
