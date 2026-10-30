@@ -36,21 +36,22 @@ const text = (r: R) => r.content.map((x) => x.text).join("\n");
 
 const NO_COMPANY = "No company yet. Say “Set up my cap table” to create one.";
 
-test("every tool has a title and is read-only", async () => {
-  const { tools } = await (await connect()).listTools();
-  expect(tools.map((t) => t.name).sort()).toEqual(
-    [
-      "get_cap_table",
-      "get_gaps",
-      "get_person",
-      "get_vesting",
-      "list_companies",
-      "list_documents",
-      "list_people",
-      "read_document",
-      "switch_company",
-    ].sort(),
-  );
+const READ_TOOLS = [
+  "get_cap_table",
+  "get_gaps",
+  "get_person",
+  "get_vesting",
+  "list_companies",
+  "list_documents",
+  "list_people",
+  "read_document",
+  "switch_company",
+];
+
+test("every read tool has a title and is read-only", async () => {
+  const all = (await (await connect()).listTools()).tools;
+  const tools = all.filter((t) => READ_TOOLS.includes(t.name));
+  expect(tools.map((t) => t.name).sort()).toEqual([...READ_TOOLS].sort()); // write tools: write.test.ts
   for (const t of tools) {
     expect(t.title).toBeTruthy();
     expect(t.annotations?.readOnlyHint).toBe(t.name !== "switch_company");

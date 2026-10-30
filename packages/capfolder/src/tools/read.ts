@@ -22,12 +22,12 @@ const MAX_TEXT = 200_000; // ponytail: long PDFs are cut here; page through them
 
 type Data = Record<string, unknown>;
 type Answer = { text: string; data?: Data };
-const reply = (text: string, data?: Data) => ({
+export const reply = (text: string, data?: Data) => ({
   content: [{ type: "text" as const, text }],
   ...(data ? { structuredContent: data } : {}),
 });
 const str = (x: bigint | null | undefined) => (x === null || x === undefined ? null : x.toString());
-const todayOf = (o: ServerOpts) => o.ctx.now().toISOString().slice(0, 10);
+export const todayOf = (o: ServerOpts) => o.ctx.now().toISOString().slice(0, 10);
 const nameOf = (s: State, id: string): string => s.stakeholders.get(id)?.name?.legal_name ?? id;
 const readOnly = (title: string) => ({ title, readOnlyHint: true, openWorldHint: false });
 const asOfSchema = z.iso.date().optional().describe("Date as YYYY-MM-DD. Defaults to today.");
