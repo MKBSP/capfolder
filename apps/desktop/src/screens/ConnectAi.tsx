@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useApp } from "../state";
 
 const RELEASES = "https://github.com/MKBSP/capfolder/releases";
 const TABS = [
@@ -14,11 +15,15 @@ const TABS = [
 
 export function ConnectAi() {
   const [i, setI] = useState(0);
-  const [copied, setCopied] = useState(false);
+  const app = useApp();
+  const [copied, setCopied] = useState<"ok" | "fail" | null>(null);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const tab = TABS[i] ?? { id: "", cmd: [] as string[] };
   const pick = (n: number) => {
-    setI((n + TABS.length) % TABS.length);
-    setCopied(false);
+    const k = (n + TABS.length) % TABS.length;
+    setI(k);
+    setCopied(null);
+    tabs.current[k]?.focus();
   };
   return (
     <section className="card stack" aria-label="Connect your AI">
@@ -38,9 +43,14 @@ export function ConnectAi() {
             tabIndex={n === i ? 0 : -1}
             className={`btn${n === i ? " primary" : ""}`}
             onClick={() => pick(n)}
+            ref={(el) => {
+              tabs.current[n] = el;
+            }}
             onKeyDown={(e) => {
-              if (e.key === "ArrowRight") pick(i + 1);
-              if (e.key === "ArrowLeft") pick(i - 1);
+              const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: TABS.length - 1 }[e.key];
+              if (to === undefined) return;
+              e.preventDefault();
+              pick(to);
             }}
           >
             {t.id}
@@ -59,20 +69,35 @@ export function ConnectAi() {
               <button
                 type="button"
                 className="btn"
-                onClick={() => {
-                  navigator.clipboard?.writeText(tab.cmd.join("\n"));
-                  setCopied(true);
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(tab.cmd.join("\n"));
+                    setCopied("ok");
+                  } catch {
+                    setCopied("fail");
+                  }
                 }}
               >
                 Copy
               </button>
-              {copied ? <span className="small muted"> Copied.</span> : null}
+              {copied ? (
+                <span className="small muted">
+                  {" "}
+                  {copied === "ok" ? "Copied." : "Copy failed — select the text above"}
+                </span>
+              ) : null}
             </div>
           </>
         ) : (
           <p style={{ margin: 0 }}>
             Download capfolder.mcpb from{" "}
-            <a href={RELEASES} target="_blank" rel="noreferrer">
+            <a
+              href={RELEASES}
+              onClick={(e) => {
+                e.preventDefault();
+                app.platform.openUrl(RELEASES);
+              }}
+            >
               GitHub Releases
             </a>{" "}
             and double-click it.
