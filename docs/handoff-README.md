@@ -41,6 +41,17 @@ fixtures/acme-vault/            golden test vault + expected cap table
 integrations/tally.md           website download form (Tally id rjxQjR)
 ```
 
+## Release checklist: AI install (only Mads can do these, in order)
+1. Claim the npm name `capfolder` early by publishing 0.1.0. It's unclaimed, and a pinned `npx -y capfolder@0.1.0` would run anyone's code who registers it first.
+2. Add the `NPM_TOKEN` repo secret.
+3. Push the tag `capfolder-v0.1.0` (`.github/workflows/publish-capfolder.yml` publishes with provenance and attaches `capfolder.mcpb`).
+4. Add the `gemini-cli-extension` topic to the GitHub repo (and tag a release) for the Gemini gallery.
+5. Run `npx @anthropic-ai/mcpb validate packages/capfolder/mcpb/manifest.json` [verify the package name and command on npm].
+6. Manual checks:
+   - One save in the desktop dev app creates and removes `.capfolder.lock`.
+   - Claude Code: `/plugin marketplace add MKBSP/capfolder`, `/plugin install capfolder@capfolder`, then "Set up my cap table" end to end.
+   - Settings → AI → Connect your AI: the copy button and the Releases link, in the packaged app.
+
 ## Urgent, outside the code
 - Get the former company's **Pulley exports + all signed PDFs before Dec 8, 2026**. They're the F-07 test data.
 - Apple Developer ID + Windows code-signing certificate (needed for M7).

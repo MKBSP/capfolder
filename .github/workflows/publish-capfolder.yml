@@ -1,0 +1,39 @@
+# Publishes the `capfolder` npm package (with provenance) and attaches capfolder.mcpb to the GitHub release.
+# Push a tag like capfolder-v0.1.0 (it must match packages/capfolder/package.json). Needs the NPM_TOKEN repo secret.
+name: publish-capfolder
+on:
+  push:
+    tags: ["capfolder-v*"]
+permissions:
+  id-token: write
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm, registry-url: "https://registry.npmjs.org" }
+      - name: Tag must match the package version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          want="${TAG#capfolder-v}"
+          have="$(node -p "require('./packages/capfolder/package.json').version")"
+          [ "$want" = "$have" ] || { echo "tag $TAG wants $want but packages/capfolder/package.json is $have"; exit 1; }
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm --filter capfolder test
+      - run: pnpm --filter capfolder build
+      - run: npm publish --provenance --access public
+        working-directory: packages/capfolder
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: pnpm --filter capfolder build:mcpb
+      - name: Attach capfolder.mcpb to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "capfolder npm package and the Claude Desktop extension (capfolder.mcpb)."
+          gh release upload "$TAG" packages/capfolder/capfolder.mcpb --clobber

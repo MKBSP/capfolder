@@ -3,6 +3,12 @@
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
 ## [Unreleased]
+### Added
+- **Use Capfolder from your AI** (Claude Code, Claude Desktop, Codex, Gemini CLI): it reads your cap table and shows a preview of every change, and nothing is written until you say yes.
+- **`npx capfolder install`** sets up whichever of those AIs it finds.
+- **Settings → AI → Connect your AI** has the setup for each AI, with a copy button.
+### Changed
+- **The app and your AI can't overwrite each other's saves:** a lock file in the folder makes one wait for the other.
 
 ## [0.1.4] — 2026-10-27
 ### Added

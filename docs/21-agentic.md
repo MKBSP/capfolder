@@ -2,6 +2,8 @@
 
 Status: **draft, nothing built.** Linear: CAP-46. Mads decides when to build, after the website and content work.
 
+Spec: [docs/superpowers/specs/2026-10-29-agentic-install-journey-design.md](superpowers/specs/2026-10-29-agentic-install-journey-design.md). Plan: [docs/superpowers/plans/2026-10-29-agentic-m1-founder-in-chat.md](superpowers/plans/2026-10-29-agentic-m1-founder-in-chat.md).
+
 ## The idea in one paragraph
 Capfolder with no app window. A founder installs the Capfolder plugin in Claude Code or Claude Desktop and types "set up my cap table". Claude installs the small Capfolder backend and walks them through it:
 - pick a folder and name the company;
@@ -28,14 +30,14 @@ Everything new lives in one sub-project, `agent/`. It reuses the engine instead 
 
 ```
 agent/
-  mcp/        @capfolder/mcp: Node MCP server (stdio), the "lightweight backend"
-  plugin/     Claude Code plugin: skill (SKILL.md) + .mcp.json pointing at npx @capfolder/mcp
+  mcp/        capfolder: Node MCP server (stdio), the "lightweight backend"
+  plugin/     Claude Code plugin: skill (SKILL.md) + .mcp.json pointing at `npx -y capfolder mcp`
   desktop/    Claude Desktop extension (.mcpb) built from mcp/
 ```
 
 - **Engine:** `packages/core` already runs in plain TypeScript (OCF, event log, vesting, gaps, CSV and OCF export, pdf-lib). It gets published to npm as `@capfolder/core` with a build step. Today it's private and ships as TS source.
 - **Vault and signing code:** the desktop app's `vault.ts`, `signing.ts`, `templates.ts` and `onboarding.ts` talk to the disk through a `Platform` interface (`apps/desktop/src/fs/`). Today there are two implementations: Tauri and in-memory. We add a third, **Node `fs`**, and move these files into a shared package. Then the agent and the app write the folder with the same code, which keeps the hash chain and the invariants identical.
-- **Install:** `npx -y @capfolder/mcp --vault <folder>`. "Claude installs the backend" means the plugin's `.mcp.json` runs that command, so there's nothing to set up by hand. Node 22+ is needed (Claude Code users have it; the Desktop extension bundles its own).
+- **Install:** `npx -y capfolder mcp --vault <folder>`. "Claude installs the backend" means the plugin's `.mcp.json` runs that command, so there's nothing to set up by hand. Node 22+ is needed (Claude Code users have it; the Desktop extension bundles its own).
 - **The rules file:** the vault already gets an `AGENTS.md`. The agent version reads it, and it stays the contract for any other AI.
 
 ## Tools (MCP)
@@ -69,7 +71,7 @@ agent/
   - prompt injection through documents.
 
 ## Phases
-1. **Founder, local only.** Node platform, `@capfolder/mcp` with the read tools and the write tools with previews, the plugin skill for setup. No network. The test: set up the golden `fixtures/acme-vault` entirely by chat and reproduce `captable.expected.csv` exactly.
+1. **Founder, local only.** Node platform, `capfolder` with the read tools and the write tools with previews, the plugin skill for setup. No network. The test: set up the golden `fixtures/acme-vault` entirely by chat and reproduce `captable.expected.csv` exactly.
 2. **Signing.** Relay login and send/collect from the agent, with the same relay, limits and verification as the app.
 3. **Stakeholder access** through the relay tunnel (free, laptop on).
 4. **Pro:** sync and the encrypted backup, which keeps stakeholder access working when the laptop is off.
@@ -83,6 +85,7 @@ agent/
 
 ## Questions for Mads
 1. Is phase 1 (local only, no relay) enough to announce, or do we wait for signing (phase 2)?
-2. Claude Code only at first, or Claude Desktop at the same time? Desktop reaches non-technical founders, but packaging the extension is extra work.
-3. The npm name `@capfolder/mcp`: OK, or is `capfolder` (one CLI with an `mcp` subcommand, as `docs/06` sketched) better?
+2. ~~Claude Code only at first, or Claude Desktop at the same time?~~ **Answered (Mads, 2026-10-29):** Claude Code, Codex, Gemini CLI and Claude Desktop, all in v1.
+3. ~~The npm name `@capfolder/mcp`, or `capfolder`?~~ **Answered by our call:** one npm package, `capfolder` (`npx -y capfolder mcp`).
 4. Stakeholder access needs the relay to become a tunnel. That makes the security review (CAP-37) a blocker for phase 3. OK?
+   **Answered (Mads, 2026-10-29):** yes, the security review (CAP-37) blocks stakeholder access (M3).
