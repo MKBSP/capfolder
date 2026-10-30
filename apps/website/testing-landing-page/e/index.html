@@ -896,7 +896,9 @@ fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
   let pos = 0;
   let left = 2500;
   setInterval(() => {
-    if (held() || (left -= 50) > 0) return;
+    if (held()) return;
+    left -= 50;
+    if (left > 0) return;
     left = 2500;
     place(++pos, 450);
     if (pos === n) setTimeout(() => { pos = 0; place(0, 0); }, 500);
