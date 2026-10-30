@@ -631,3 +631,20 @@ test("homepage test variants: /testing-landing-page/a-e are built, noindex and k
   const { sitemap } = await import("./sitemap.mjs");
   expect(sitemap(["index.html", "testing-landing-page/c/index.html"])).not.toContain("testing-landing-page");
 });
+
+test("page E install tabs match what ships", () => {
+  const e = read("testing-landing-page/e/index.html");
+  for (const c of [
+    "/plugin marketplace add MKBSP/capfolder",
+    "/plugin install capfolder@capfolder",
+    "codex mcp add capfolder -- npx -y capfolder mcp",
+    "gemini extensions install https://github.com/MKBSP/capfolder",
+    "npx capfolder install",
+    "capfolder.mcpb",
+  ])
+    expect([c, e.includes(c)]).toEqual([c, true]);
+  expect(e).not.toContain("npx skills add");
+  expect(e).not.toContain("@capfolder/mcp");
+  expect(e).not.toContain("Settings → Apps");
+  expect(e.match(/id="ip-gpt"[\s\S]*?<\/div>/)?.[0]).toContain("Coming");
+});
