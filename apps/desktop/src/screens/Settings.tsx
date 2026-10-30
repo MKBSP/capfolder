@@ -10,6 +10,7 @@ import { WireInstructionsField } from "../components/WireInstructions";
 import { type AiAction, type AiPick, type AiProvider, aiFor, type Settings as S } from "../settings";
 import { relayClient } from "../signing";
 import { useApp } from "../state";
+import { ConnectAi } from "./ConnectAi";
 
 export function Settings() {
   const app = useApp();
@@ -153,6 +154,7 @@ export function Settings() {
           </label>
         </section>
         <AiSection />
+        <ConnectAi />
         <SigningSection />
         <UpdatesSection />
       </main>

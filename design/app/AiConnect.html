@@ -51,6 +51,18 @@ a{color:#1F6F4A}a:hover{color:#16543A}
         <p style="margin: 0; font-size: 13px; color: #5B606B">Off: only local models see your documents. Every AI answer is checked against the cap table before anything is saved.</p>
       </div>
 
+      <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 600">Connect your AI</h2>
+        <p style="margin: 0; font-size: 13px; color: #5B606B">Run Capfolder from your own AI. Pick yours and paste the command.</p>
+        <div role="tablist" style="display: flex; gap: 6px; flex-wrap: wrap"><button class="btn" role="tab" aria-selected="true">Claude Code</button><button class="btn" role="tab" aria-selected="false">Claude Desktop</button><button class="btn" role="tab" aria-selected="false">Codex</button><button class="btn" role="tab" aria-selected="false">Gemini CLI</button><button class="btn" role="tab" aria-selected="false">Other</button></div>
+        <pre class="num" style="margin: 0; background: #16181D; color: #E8EAE6; border-radius: 6px; padding: 14px 16px; font-size: 13px; line-height: 1.6; overflow-x: auto">/plugin marketplace add MKBSP/capfolder
+/plugin install capfolder@capfolder</pre>
+        <div><button class="btn">Copy</button></div>
+        <p style="margin: 0; font-size: 13px; color: #5B606B">Claude Desktop: download capfolder.mcpb from GitHub Releases and double-click it. Codex: <span class="num">codex mcp add capfolder -- npx -y capfolder mcp</span>. Gemini CLI: <span class="num">gemini extensions install https://github.com/MKBSP/capfolder</span>. Other: <span class="num">npx capfolder install</span>. ChatGPT: <b>Coming</b>.</p>
+        <p style="margin: 0; font-size: 14px">Your AI opens this same folder.</p>
+        <p style="margin: 0; font-size: 13px; color: #5B606B">Then ask your AI: "What's on my cap table?"</p>
+      </div>
+
       <div class="card">
         <h2 style="margin: 0; font-size: 15px; font-weight: 600">Use Capfolder from Claude Desktop or ChatGPT</h2>
         <p style="margin: 6px 0 12px 0; font-size: 14px; color: #3A3E46; line-height: 1.5">Turn on the local MCP server and your AI app can read your vault. Read-only by default.</p>
