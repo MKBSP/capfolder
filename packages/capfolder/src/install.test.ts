@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { beforeEach, describe, expect, test } from "vitest";
@@ -108,5 +108,53 @@ describe("install", () => {
     expect(r?.status).toBe("not found");
     expect(r?.message).toContain("Couldn't read ~/.gemini/settings.json; add Capfolder by hand: ");
     expect(await read(".gemini/settings.json")).toBe("{ nope");
+  });
+
+  const codexCase = async (toml: string) => {
+    await mkdir(join(home, ".codex"));
+    await writeFile(join(home, ".codex/config.toml"), toml);
+    const [r] = await install({ home, which: ["codex"], run: none });
+    return { status: r?.status, after: await read(".codex/config.toml") };
+  };
+
+  test.each([
+    '[mcp_servers."capfolder"]\ncommand = "x"\n',
+    '[ mcp_servers . capfolder ]\ncommand = "x"\n',
+    '[mcp_servers.capfolder]   # mine\ncommand = "x"\n',
+    '[mcp_servers]\ncapfolder = { command = "x" }\n',
+    '[mcp_servers]\n"capfolder" = { command = "x" }\n',
+    '[mcp_servers.capfolder.env]\nA = "1"\n',
+    'mcp_servers.capfolder.command = "x"\n',
+  ])("Codex existing variant is left byte for byte: %s", async (toml) => {
+    expect(await codexCase(toml)).toEqual({ status: "already", after: toml });
+  });
+
+  test("Codex commented-out header does not count", async () => {
+    const r = await codexCase("# [mcp_servers.capfolder]\n");
+    expect(r.status).toBe("added");
+    expect(r.after).toContain("\n[mcp_servers.capfolder]\ncommand");
+  });
+
+  test.each(['{"mcpServers":"x"}', '{"mcpServers":[]}', '{"mcpServers":null}', '{"mcpServers":3}'])(
+    "non-object mcpServers is not overwritten: %s",
+    async (body) => {
+      await mkdir(join(home, ".cursor"));
+      await writeFile(join(home, ".cursor/mcp.json"), body);
+      const [r] = await install({ home, which: ["cursor"], run: none });
+      expect(r?.status).toBe("not found");
+      expect(r?.message).toContain("Couldn't read ~/.cursor/mcp.json; add Capfolder by hand: ");
+      expect(await read(".cursor/mcp.json")).toBe(body);
+    },
+  );
+
+  test("a write failure for one client does not stop the others", async () => {
+    await mkdir(join(home, ".gemini"), { mode: 0o500 });
+    await mkdir(join(home, ".cursor"));
+    const r = await install({ home, which: ["gemini", "cursor"], run: none });
+    await chmod(join(home, ".gemini"), 0o700);
+    if (process.getuid?.() === 0) return; // root ignores modes
+    expect(r[0]?.status).toBe("not found");
+    expect(r[0]?.message).toContain("add Capfolder by hand");
+    expect(r[1]?.status).toBe("added");
   });
 });

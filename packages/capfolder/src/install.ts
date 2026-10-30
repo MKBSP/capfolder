@@ -23,7 +23,35 @@ export const realRun: Run = (cmd, args) =>
     p.on("close", (code) => resolve(code ?? 1));
   });
 
-const read = (p: string) => readFile(p, "utf8").catch(() => undefined);
+/** File text, undefined if it doesn't exist; any other read error throws. */
+const read = (p: string) =>
+  readFile(p, "utf8").catch((e) => {
+    if (e?.code === "ENOENT") return undefined;
+    throw e;
+  });
+const unq = (k: string) => k.trim().replace(/^(["'])(.*)\1$/, "$2");
+/** True if the TOML already defines mcp_servers.capfolder (table, sub-table, or key). */
+export function tomlHasCapfolder(text: string): boolean {
+  let inServers = false;
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (line === "" || line.startsWith("#")) continue;
+    const h = line.match(/^\[([^[\]]*)\]\s*(#.*)?$/);
+    if (h) {
+      const parts = (h[1] ?? "").split(".").map(unq);
+      if (parts[0] === "mcp_servers" && parts[1] === "capfolder") return true;
+      inServers = parts.length === 1 && parts[0] === "mcp_servers";
+      continue;
+    }
+    if (line.startsWith("[")) {
+      inServers = false;
+      continue;
+    }
+    if (inServers && /^["']?capfolder["']?\s*[=.]/.test(line)) return true;
+    if (/^["']?mcp_servers["']?\s*\.\s*["']?capfolder["']?\s*[.=]/.test(line)) return true;
+  }
+  return false;
+}
 const write = async (p: string, s: string) => {
   await mkdir(dirname(p), { recursive: true });
   await writeFile(p, s);
@@ -38,20 +66,21 @@ async function mergeJson(home: string, client: string, dir: string, file: string
   if (!(await has(join(home, dir)))) return { client, status: "not found" };
   const path = join(home, dir, file);
   const shown = `~/${dir}/${file}`;
-  const text = await read(path);
+  const byHand = {
+    client,
+    status: "not found" as const,
+    message: `Couldn't read ${shown}; add Capfolder by hand: ${JSON.stringify({ mcpServers: { capfolder: ENTRY } })}`,
+  };
   let json: { mcpServers?: Record<string, unknown> } = {};
-  if (text !== undefined) {
-    try {
+  try {
+    const text = await read(path);
+    if (text !== undefined) {
       json = JSON.parse(text);
-      if (typeof json !== "object" || json === null || Array.isArray(json)) throw new Error();
-    } catch {
-      const snippet = JSON.stringify({ mcpServers: { capfolder: ENTRY } });
-      return {
-        client,
-        status: "not found",
-        message: `Couldn't read ${shown}; add Capfolder by hand: ${snippet}`,
-      };
+      const isObj = (v: unknown) => typeof v === "object" && v !== null && !Array.isArray(v);
+      if (!isObj(json) || ("mcpServers" in json && !isObj(json.mcpServers))) return byHand;
     }
+  } catch {
+    return byHand;
   }
   if (json.mcpServers?.capfolder) return { client, status: "already" };
   json.mcpServers = { ...json.mcpServers, capfolder: ENTRY };
@@ -59,6 +88,12 @@ async function mergeJson(home: string, client: string, dir: string, file: string
   return { client, status: "added" };
 }
 
+const NAMES: Record<string, string> = {
+  claude: "Claude Code",
+  codex: "Codex",
+  gemini: "Gemini CLI",
+  cursor: "Cursor",
+};
 const clients: Record<string, (home: string, run: Run) => Promise<InstallResult>> = {
   async claude(_home, run) {
     const client = "Claude Code";
@@ -78,8 +113,17 @@ const clients: Record<string, (home: string, run: Run) => Promise<InstallResult>
     if (!(await has(join(home, ".codex"))) && (await run("codex", ["--version"])) !== 0) {
       return { client, status: "not found" };
     }
-    const text = (await read(path)) ?? "";
-    if (/^\s*\[mcp_servers\.capfolder\]/m.test(text)) return { client, status: "already" };
+    let text: string;
+    try {
+      text = (await read(path)) ?? "";
+    } catch {
+      return {
+        client,
+        status: "not found",
+        message: `Couldn't read ~/.codex/config.toml; add Capfolder by hand:\n${TOML_BLOCK}`,
+      };
+    }
+    if (tomlHasCapfolder(text)) return { client, status: "already" };
     const sep = text === "" || text.endsWith("\n\n") ? "" : text.endsWith("\n") ? "\n" : "\n\n";
     await write(path, text + sep + TOML_BLOCK);
     return { client, status: "added" };
@@ -91,7 +135,17 @@ const clients: Record<string, (home: string, run: Run) => Promise<InstallResult>
 export async function install(opts: { home: string; which?: string[]; run: Run }): Promise<InstallResult[]> {
   const out: InstallResult[] = [];
   for (const [key, fn] of Object.entries(clients)) {
-    if (!opts.which || opts.which.includes(key)) out.push(await fn(opts.home, opts.run));
+    if (opts.which && !opts.which.includes(key)) continue;
+    try {
+      out.push(await fn(opts.home, opts.run));
+    } catch (e) {
+      const reason = e instanceof Error ? e.message : String(e);
+      out.push({
+        client: NAMES[key] ?? key,
+        status: "not found",
+        message: `Couldn't set up ${NAMES[key] ?? key} (${reason}); add Capfolder by hand.`,
+      });
+    }
   }
   return out;
 }
