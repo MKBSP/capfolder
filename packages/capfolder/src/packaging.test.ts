@@ -73,3 +73,34 @@ describe("skill", () => {
     expect(text("GEMINI.md")).toContain(skill.replace(/^---[\s\S]*?---\n/, "").trim());
   });
 });
+
+describe("publish workflow", () => {
+  const wf = text(".github/workflows/publish-capfolder.yml");
+  test("the capfolder release never becomes GitHub's Latest (the app updater and Download buttons use it)", () => {
+    const create = wf.split("\n").filter((l) => l.includes("gh release create"));
+    expect(create.length).toBeGreaterThan(0);
+    for (const l of create) expect(l).toContain("--latest=false");
+  });
+  test("the .mcpb is built before the irreversible npm publish", () => {
+    const mcpb = wf.indexOf("run: pnpm --filter capfolder build:mcpb");
+    const publish = wf.indexOf("run: npm publish");
+    expect(mcpb).toBeGreaterThan(-1);
+    expect(mcpb).toBeLessThan(publish);
+  });
+});
+
+describe("npm package files", () => {
+  const pkg = json("packages/capfolder/package.json");
+  test("ships README, LICENSE and third-party notices", () => {
+    for (const f of ["README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"]) {
+      expect(pkg.files).toContain(f);
+      expect(text(`packages/capfolder/${f}`).length).toBeGreaterThan(0);
+    }
+    expect(text("packages/capfolder/LICENSE")).toBe(text("LICENSE"));
+    const readme = text("packages/capfolder/README.md");
+    expect(readme).toContain("npx capfolder install");
+    expect(readme).toContain(DISCLAIMER);
+    for (const dep of ["pdf-lib", "papaparse", "ajv", "pako"])
+      expect(text("packages/capfolder/THIRD_PARTY_NOTICES.md")).toContain(`## ${dep} `);
+  });
+});
