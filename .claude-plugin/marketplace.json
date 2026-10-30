@@ -1,0 +1,14 @@
+{
+  "name": "capfolder",
+  "owner": {
+    "name": "Capfolder"
+  },
+  "plugins": [
+    {
+      "name": "capfolder",
+      "source": "./plugin",
+      "description": "Run your cap table from Claude Code: set it up, ask about it, change it with your yes."
+    }
+  ],
+  "description": "Capfolder: run your cap table from your AI."
+}

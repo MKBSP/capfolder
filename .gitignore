@@ -5,3 +5,5 @@ coverage/
 .superpowers/
 dist/
 .vercel
+capfolder.mcpb
+.mcpb-build/

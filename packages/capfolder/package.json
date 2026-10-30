@@ -16,7 +16,8 @@
   "scripts": {
     "build": "esbuild src/cli.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/cli.js --external:@modelcontextprotocol/sdk --external:zod --external:pdfjs-dist --banner:js=\"#!/usr/bin/env node\"",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "build:mcpb": "sh mcpb/build.sh"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.2",

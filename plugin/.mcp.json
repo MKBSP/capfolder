@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "capfolder": { "command": "npx", "args": ["-y", "capfolder@0.1.0", "mcp"] }
+  }
+}
