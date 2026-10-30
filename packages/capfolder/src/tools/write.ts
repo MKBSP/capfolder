@@ -2,7 +2,7 @@
 // returns a preview (nothing written); confirm:true + preview_id writes exactly those drafts, through the vault's
 // locked write path, if the log hasn't changed since. Never openVault here (it rewrites derived files unlocked).
 import { stat } from "node:fs/promises";
-import { resolve } from "node:path";
+import { isAbsolute, resolve } from "node:path";
 import {
   appendEvents,
   builders as b,
@@ -78,6 +78,20 @@ const vestingArg = z
 const plus30 = (d: string) => {
   const [y, m, dd] = d.split("-").map(Number) as [number, number, number];
   return new Date(Date.UTC(y, m - 1, dd + 30)).toISOString().slice(0, 10);
+};
+export const NO_FORMATION_DATE =
+  "Capfolder starts from the day your company is formed. Once it's incorporated, tell me the date and I'll set it up.";
+export const FULL_PATH = "Give the full path, e.g. ~/Documents/…";
+/** The MCP host's working folder is unknown (often /), so only ~ or absolute paths mean what the founder meant. */
+const fullPath = (p: string, home: string) =>
+  p === "~" || p.startsWith("~/") || isAbsolute(p) ? resolve(resolveFolder(p, home)) : null;
+/** Mirrors the desktop's discountFraction (wizard.ts): "20" → "0.2", "7.5" → "0.075"; not a percent → undefined. */
+export const discountFraction = (pct: string) => {
+  const v = pct.trim();
+  if (!/^\d+(\.\d+)?$/.test(v) || !/[1-9]/.test(v)) return undefined;
+  const [i, f = ""] = v.split(".");
+  const d = i!.padStart(3, "0");
+  return `${d.slice(0, -2).replace(/^0+(?=\d)/, "")}.${d.slice(-2)}${f}`.replace(/\.?0+$/, "");
 };
 const nameOf = (s: State, id: string): string => s.stakeholders.get(id)?.name?.legal_name ?? id;
 const n = (x: string) => fmtInt(BigInt(x));
@@ -263,13 +277,11 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         return confirm("create_company", a.preview_id, NEW_COMPANY, await sha256Hex(""), null);
       }
       const name = a.name.trim();
-      // ponytail: the record format (OCF) requires a formation date, so a company that isn't incorporated yet can't be created
-      if (!a.formation_date)
-        return reply(
-          "I need the date of incorporation (formation_date, YYYY-MM-DD) to create the company: the record requires it. Ask the founder; it's on the certificate of incorporation.",
-        );
+      // the record format (OCF Issuer) requires a formation date: never invent one
+      if (!a.formation_date) return reply(NO_FORMATION_DATE);
       if (a.formation_date > todayOf(o)) return reply("The incorporation date can't be in the future.");
-      const parent = resolve(resolveFolder(a.folder ?? "~/Documents/Capfolder", o.home));
+      const parent = fullPath(a.folder ?? "~/Documents/Capfolder", o.home);
+      if (!parent) return reply(FULL_PATH);
       const company = {
         name,
         formationDate: a.formation_date,
@@ -533,15 +545,13 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         .describe("Only for a new investor. Default: a company or fund."),
       amount: decimal,
       cap: decimal.optional().describe("Post-money valuation cap."),
-      discount: z
-        .string()
-        .regex(/^0?\.\d*[1-9]\d*$/, "A fraction, like 0.20 for 20%.")
-        .optional()
-        .describe("As a fraction, e.g. 0.20 for 20%. Recorded as written."),
+      discount: z.string().optional().describe("As a percent, e.g. 20 for 20%."),
       mfn: z.boolean().default(false).describe("Most favored nation."),
       date: date.optional().describe("YYYY-MM-DD. Default today."),
     },
     (a, c) => {
+      const discount = a.discount === undefined ? undefined : discountFraction(a.discount);
+      if (a.discount !== undefined && !discount) return "Give the discount as a percent, like 20 for 20%.";
       const who = personFor(
         c.s,
         a.investor,
@@ -555,13 +565,13 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         stakeholderId: who.id,
         amount: a.amount,
         cap: a.cap,
-        discount: a.discount,
+        discount,
         mfn: a.mfn,
         date: day,
       });
       const terms = [
         a.cap ? `post-money cap ${a.cap} ${c.currency}` : "no cap",
-        a.discount ? `discount ${a.discount}` : "",
+        a.discount ? `discount ${a.discount.trim()}%` : "",
         a.mfn ? "MFN" : "",
       ].filter(Boolean);
       return {
@@ -610,7 +620,8 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         .describe("The id of the holding (e.g. SAFE-1, CS-2, OPT-1), person or plan it proves."),
     },
     async (a, c) => {
-      const path = resolve(resolveFolder(a.source_path.trim(), o.home));
+      const path = fullPath(a.source_path.trim(), o.home);
+      if (!path) return FULL_PATH;
       const st = await stat(path).catch(() => null);
       if (!st) return `There's no file at ${path}.`;
       if (st.isDirectory()) return `${path} is a folder. Point to one file.`;

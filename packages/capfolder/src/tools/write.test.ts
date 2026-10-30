@@ -168,7 +168,9 @@ test("create_company: the app's name error, a missing formation date, and a real
     confirm: false,
   });
   expect(previewId(noDate)).toBeUndefined();
-  expect(text(noDate)).toMatch(/date of incorporation/);
+  expect(text(noDate)).toBe(
+    "Capfolder starts from the day your company is formed. Once it's incorporated, tell me the date and I'll set it up.",
+  );
   expect(await readdir(parent)).toEqual([]);
 
   const r = await write(c, "create_company", {
@@ -313,7 +315,7 @@ test("a whole cap table set up by tool calls, as the engine computes it", async 
     investor: "Angel A",
     amount: "150000",
     cap: "8000000",
-    discount: "0.20",
+    discount: "20",
     date: "2023-02-20",
   });
   await write(c, "create_option_pool", {
@@ -339,7 +341,7 @@ test("a whole cap table set up by tool calls, as the engine computes it", async 
   expect(csv).toContain("Steve Wozniak,option,Common,40000,");
   expect(csv).toContain("Option pool (available),pool,Common,960000,");
   expect(csv).toContain("Y Combinator,safe,,,,,,500000,10000000,,");
-  expect(csv).toContain("Angel A,safe,,,,,,150000,8000000,0.20,");
+  expect(csv).toContain("Angel A,safe,,,,,,150000,8000000,0.2,"); // the app's discountFraction("20")
   const v = await readVault(fs, join(parent, "Delta"));
   expect(v.events.find((e) => e.type === "VALUATION")?.data).toMatchObject({
     provider: "Acme Valuations LLC",
@@ -349,4 +351,49 @@ test("a whole cap table set up by tool calls, as the engine computes it", async 
       e.type === "STAKEHOLDER" && (e.data as { name: { legal_name: string } }).name.legal_name === "Angel A",
   );
   expect(angel).toHaveLength(1); // the SAFE reused the person, by name
+});
+
+const FULL_PATH = "Give the full path, e.g. ~/Documents/…";
+
+test("relative paths are refused: the server's working folder is unknown", async () => {
+  const c = await connect();
+  const before = await log();
+  const a = await call(c, "create_company", {
+    name: "Rel",
+    country: "US",
+    formation_date: "2024-01-02",
+    folder: "Documents/Capfolder",
+    confirm: false,
+  });
+  expect(text(a)).toBe(FULL_PATH);
+  const d = await call(c, "file_document", { source_path: "safe.pdf", kind: "safe", confirm: false });
+  expect(text(d)).toBe(FULL_PATH);
+  expect(previewId(a)).toBeUndefined();
+  expect(previewId(d)).toBeUndefined();
+  expect(await log()).toBe(before);
+});
+
+test("a SAFE discount is a percent, stored as the app stores it", async () => {
+  const c = await connect();
+  for (const [pct, stored] of [
+    ["20", "0.2"],
+    ["15", "0.15"],
+    ["7.5", "0.075"],
+  ]) {
+    const p = await call(c, "add_safe", {
+      investor: "Fund X",
+      amount: "1000",
+      discount: pct,
+      confirm: false,
+    });
+    const drafts = p.structuredContent?.events as { type: string; data: Record<string, unknown> }[];
+    expect(JSON.stringify(drafts.at(-1)?.data)).toContain(`"conversion_discount":"${stored}"`);
+  }
+  const bad = await call(c, "add_safe", {
+    investor: "Fund X",
+    amount: "1000",
+    discount: "0",
+    confirm: false,
+  });
+  expect(previewId(bad)).toBeUndefined();
 });
