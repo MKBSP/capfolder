@@ -257,6 +257,24 @@ describe("documents (F-26, F-27)", () => {
     expect(r.vault.events.slice(-2).map((e) => e.type)).toEqual(["doc_added", "doc_linked"]);
     expect(r.vault.events.at(-2)!.data.path).toBe("docs/founders/2026-01-02_steve_spa.pdf");
   });
+  test("a symlinked docs/<folder> refuses the attach and writes nothing outside the vault", async () => {
+    const v = await founded();
+    fs.linkSync(`${v.root}/docs/founders`, "/elsewhere");
+    const r = await attachDocument(fs, v, ctx, {
+      originalName: "spa.pdf",
+      bytes: pdf,
+      docType: "spa",
+      date: "2026-01-02",
+      person: "Steve",
+      target: "CS-1",
+    });
+    expect(r).toEqual({
+      ok: false,
+      errors: ["docs/founders in your company folder is a link to somewhere else. Capfolder only files documents inside the folder."],
+    });
+    expect(fs.existsSync("/elsewhere/2026-01-02_steve_spa.pdf")).toBe(false);
+    expect(fs.existsSync(`${v.root}/docs/founders/2026-01-02_steve_spa.pdf`)).toBe(false);
+  });
   test("same content twice is a duplicate, not a second copy", async () => {
     const v = await founded();
     const a = await attachDocument(fs, v, ctx, {

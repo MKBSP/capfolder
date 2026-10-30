@@ -281,13 +281,18 @@ export async function readVault(fs: Fs, root: string): Promise<Vault> {
 }
 
 const LOCK_FILE = ".capfolder.lock";
-let lockWarned = false;
+const warned = new Set<string>();
+function warnOnce(key: string, msg: string, e: unknown) {
+  if (warned.has(key)) return;
+  warned.add(key);
+  console.warn(msg, e);
+}
 
 /**
  * Cross-process lock: a ".capfolder.lock" file in the vault root, so the app and an agent can't both append to
  * events.jsonl at once and fork the chain. Created with "fail if it exists"; a lock older than staleMs is a dead
- * writer's and is taken over. If the lock can't be created for any other reason (read-only disk, no permission),
- * the work runs under the in-process lock only: saving is never blocked by the lock itself.
+ * writer's and is taken over. If the lock can't be created, or a stale one can't be removed (read-only disk, no
+ * permission), the work runs under the in-process lock only: saving is never blocked by the lock itself.
  * ponytail: stale takeover is remove-then-create; two waiters racing on one stale lock is rare, and the
  * freshness check in writeBlocked still refuses a write on a changed log.
  */
@@ -305,24 +310,27 @@ export async function withFileLock<T>(
     try {
       got = await fs.createExclusive(path, String(started));
     } catch (e) {
-      if (!lockWarned) {
-        lockWarned = true;
-        console.warn(`Couldn't create ${path}; saving without the cross-process lock.`, e);
-      }
+      warnOnce("create", `Couldn't create ${path}; saving without the cross-process lock.`, e);
       return work();
     }
     if (got) break;
     if (now() - started > waitMs) throw new Error("Another Capfolder window is saving. Try again.");
     const m = await fs.mtime(path).catch(() => null);
     // re-read right before removing: only a lock that is still the same stale one, not a fresh one that replaced it
-    if (m !== null && now() - m > staleMs && (await fs.mtime(path).catch(() => null)) === m)
-      await fs.remove(path).catch(() => {});
-    else await new Promise((r) => setTimeout(r, 50));
+    if (m !== null && now() - m > staleMs && (await fs.mtime(path).catch(() => null)) === m) {
+      try {
+        await fs.remove(path);
+      } catch (e) {
+        warnOnce("stale", `Couldn't remove the stale ${path}; saving without the cross-process lock.`, e);
+        return work();
+      }
+    }
+    await new Promise((r) => setTimeout(r, 50)); // never hot-loop, even when a takeover didn't take
   }
   try {
     return await work();
   } finally {
-    await fs.remove(path).catch(() => {});
+    await fs.remove(path).catch((e) => warnOnce("release", `Couldn't remove ${path} after saving.`, e));
   }
 }
 
@@ -398,11 +406,13 @@ export function attachDocument(
   return exclusive(fs, v.root, async () => {
     const blocked = await writeBlocked(fs, v); // checked before any file is written
     if (blocked) return { ok: false, errors: blocked };
+    const folder = DOC_FOLDER[p.docType] ?? "company";
+    const linked = await docFolderLinked(fs, v.root, folder);
+    if (linked) return { ok: false, errors: [linked] };
     const sha256 = await sha256Bytes(p.bytes);
     for (const [id, d] of reduce(v.events, MAX_DATE).docs)
       if (!d.removed && d.data.sha256 === sha256) return { ok: "duplicate", docId: id };
     const ext = /\.[a-z0-9]+$/i.exec(p.originalName)?.[0].toLowerCase() ?? ".pdf";
-    const folder = DOC_FOLDER[p.docType] ?? "company";
     const abs = await freePath(
       fs,
       join(v.root, "docs", folder),
@@ -660,6 +670,13 @@ export async function isPlainDocPath(fs: Fs, root: string, rel: string): Promise
   for (let i = 1; i <= parts.length; i++)
     if (await fs.isSymlink(join(root, ...parts.slice(0, i))).catch(() => true)) return false;
   return true;
+}
+
+/** docs/ or docs/<folder> being a symlink would let a crafted vault send a filed document anywhere: the reason, or null. */
+export async function docFolderLinked(fs: Fs, root: string, folder: string): Promise<string | null> {
+  return (await isPlainDocPath(fs, root, `docs/${folder}`))
+    ? null
+    : `docs/${folder} in your company folder is a link to somewhere else. Capfolder only files documents inside the folder.`;
 }
 
 /** Company currency for new records (capfolder.json). Records already made keep their own currency. */

@@ -162,6 +162,10 @@ test("the acme vault, rebuilt entirely by tool calls, matches captable.expected.
     const [g, w] = [gl[i]!.split(","), wl[i]!.split(",")];
     // the fixture writes the SAFE discount as "0.20", the tools store the app's normalised "0.2": same number
     const num = (c: string[]) => (c[col] ? Number(c[col]) : c[col]);
+    if (g[col] || w[col]) {
+      expect(Number.isFinite(num(g)), `row ${i} safe_discount ${g[col]}`).toBe(true);
+      expect(Number.isFinite(num(w)), `row ${i} safe_discount ${w[col]}`).toBe(true);
+    }
     expect(num(g), `row ${i} safe_discount`).toBe(num(w));
     g.splice(col, 1);
     w.splice(col, 1);

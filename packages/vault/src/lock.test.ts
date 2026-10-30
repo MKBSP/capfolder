@@ -82,17 +82,53 @@ test("MemoryFs: createExclusive, remove, mtime", async () => {
   expect(await fs.exists("/l")).toBe(false);
 });
 
-test("a stale lock that can't be removed still gives up after waitMs", async () => {
+test("a stale lock that can't be removed doesn't block saving: work runs under the in-process lock, warning once", async () => {
   class StuckFs extends MemoryFs {
+    removes = 0;
     async remove(): Promise<void> {
+      this.removes++;
       throw new Error("locked");
     }
   }
+  const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
   const fs = new StuckFs();
   await fs.createExclusive("/v/.capfolder.lock", "dead");
   let t = Date.now() + 60_000; // the lock is 60 s old; each clock read moves time on
   const now = () => (t += 10);
-  await expect(withFileLock(fs, "/v", async () => 1, { waitMs: 100, now })).rejects.toThrow(
+  expect(await withFileLock(fs, "/v", async () => 1, { waitMs: 100, now })).toBe(1);
+  expect(await withFileLock(fs, "/v", async () => 2, { waitMs: 100, now })).toBe(2);
+  expect(fs.removes).toBe(2); // one takeover attempt per save, no hot loop
+  expect(warn).toHaveBeenCalledTimes(1);
+  warn.mockRestore();
+});
+
+test("a lock that can't be released after the work doesn't throw out of withFileLock", async () => {
+  class NoRemoveFs extends MemoryFs {
+    async remove(): Promise<void> {
+      throw new Error("locked");
+    }
+  }
+  const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+  expect(await withFileLock(new NoRemoveFs(), "/v", async () => "done")).toBe("done");
+  expect(warn).toHaveBeenCalled();
+  warn.mockRestore();
+});
+
+test("a lock that stays held never hot-loops: it waits between tries", async () => {
+  class CountFs extends MemoryFs {
+    tries = 0;
+    async createExclusive(p: string, text: string): Promise<boolean> {
+      this.tries++;
+      return super.createExclusive(p, text);
+    }
+    async remove(): Promise<void> {} // "removes" but the stale lock stays
+  }
+  const fs = new CountFs();
+  await fs.createExclusive("/v/.capfolder.lock", "dead");
+  fs.tries = 0;
+  const now = () => Date.now() + 60_000; // the lock always looks 60 s old
+  await expect(withFileLock(fs, "/v", async () => 1, { waitMs: 200, now })).rejects.toThrow(
     "Another Capfolder window is saving. Try again.",
   );
+  expect(fs.tries).toBeLessThan(10);
 });

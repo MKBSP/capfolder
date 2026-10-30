@@ -1,4 +1,4 @@
-import { cp, mkdir, mkdtemp, readdir, readFile, truncate, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, symlink, truncate, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { builders as b } from "@capfolder/core";
@@ -189,6 +189,29 @@ test("create_company: the app's name error, a missing formation date, and a real
   expect(text(await call(c, "get_gaps"))).not.toContain("Tim");
 });
 
+test("create_company: a name starting with a dot gets the app's error; an emoji is fine", async () => {
+  const c = await connect();
+  const parent = await mkdtemp(join(tmpdir(), "capfolder-parent-"));
+  const dot = await call(c, "create_company", {
+    name: ".Acme",
+    country: "US",
+    formation_date: "2024-01-02",
+    folder: parent,
+    confirm: false,
+  });
+  expect(text(dot)).toBe("A company name can't contain / or \\ or start with a dot.");
+  expect(previewId(dot)).toBeUndefined();
+  const emoji = await call(c, "create_company", {
+    name: "Acme 🚀",
+    country: "US",
+    formation_date: "2024-01-02",
+    folder: parent,
+    confirm: false,
+  });
+  expect(previewId(emoji)).toBeTruthy();
+  expect(await readdir(parent)).toEqual([]);
+});
+
 test("create_company defaults to ~/Documents/Capfolder/<name>", async () => {
   const c = await connect();
   await write(c, "create_company", { name: "Gamma", country: "US", formation_date: "2024-01-02" });
@@ -199,17 +222,17 @@ test("file_document copies the file into docs/<folder>/ and never writes outside
   const c = await connect();
   const outside = await mkdtemp(join(tmpdir(), "capfolder-src-"));
   await mkdir(join(outside, "sub"));
-  await writeFile(join(outside, "escape"), "%PDF-1.4 fund x safe");
+  await writeFile(join(outside, "escape.pdf"), "%PDF-1.4 fund x safe");
   const snap = async () => (await readdir(outside, { recursive: true })).sort();
   const before = await snap();
   const r = await write(c, "file_document", {
-    source_path: join(outside, "sub", "..", "escape"),
+    source_path: join(outside, "sub", "..", "escape.pdf"),
     kind: "safe",
     proves: "SAFE-3",
   });
   expect(text(r)).toMatch(/^Recorded/);
   expect(await snap()).toEqual(before);
-  expect(await readFile(join(outside, "escape"), "utf8")).toBe("%PDF-1.4 fund x safe");
+  expect(await readFile(join(outside, "escape.pdf"), "utf8")).toBe("%PDF-1.4 fund x safe");
   const safes = await readdir(join(root, "docs", "safes"));
   expect(safes).toHaveLength(1);
   expect(await readFile(join(root, "docs", "safes", safes[0]!), "utf8")).toBe("%PDF-1.4 fund x safe");
@@ -235,6 +258,42 @@ test("file_document refuses directories, missing files and files over 25 MB", as
     expect(previewId(r)).toBeUndefined();
   }
   expect(await log()).toBe(before);
+});
+
+test("file_document only takes the document types the app takes: PDF, PNG, JPG", async () => {
+  const c = await connect();
+  const before = await log();
+  const dir = await mkdtemp(join(tmpdir(), "capfolder-src-"));
+  for (const name of ["notes.docx", "run.sh", "noext"]) {
+    await writeFile(join(dir, name), "x");
+    const r = await call(c, "file_document", { source_path: join(dir, name), kind: "other", confirm: false });
+    expect(text(r)).toBe(`${name} isn't a document Capfolder can file. Use a PDF, PNG or JPG.`);
+    expect(previewId(r)).toBeUndefined();
+  }
+  for (const name of ["a.PDF", "b.png", "c.jpg", "d.jpeg"]) {
+    await writeFile(join(dir, name), `%PDF-1.4 ${name}`);
+    const r = await call(c, "file_document", { source_path: join(dir, name), kind: "other", confirm: false });
+    expect(previewId(r)).toBeTruthy();
+  }
+  expect(await log()).toBe(before);
+});
+
+test("file_document refuses a vault whose docs/<folder> is a symlink, writing nothing outside it", async () => {
+  const c = await connect();
+  const src = await mkdtemp(join(tmpdir(), "capfolder-src-"));
+  await writeFile(join(src, "safe.pdf"), "%PDF-1.4 linked");
+  const elsewhere = await mkdtemp(join(tmpdir(), "capfolder-elsewhere-"));
+  for (const link of [join(root, "docs", "safes"), join(root, "docs")]) {
+    await rm(join(root, "docs"), { recursive: true, force: true });
+    if (link.endsWith("safes")) await mkdir(join(root, "docs"));
+    await symlink(elsewhere, link);
+    const before = await log();
+    const r = await write(c, "file_document", { source_path: join(src, "safe.pdf"), kind: "safe" });
+    expect(text(r)).toContain("is a link to somewhere else");
+    expect(await readdir(elsewhere)).toEqual([]);
+    expect(await log()).toBe(before);
+    await rm(link);
+  }
 });
 
 test("with elicitation, the server asks the founder first; decline writes nothing, accept writes", async () => {
