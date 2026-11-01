@@ -11,6 +11,8 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
     return { isSymlink: true, mtime: new Date(5000) };
   },
 }));
+const invoke = vi.fn(async (_cmd: string, _args: unknown) => undefined);
+vi.mock("@tauri-apps/api/core", () => ({ invoke: (cmd: string, args: unknown) => invoke(cmd, args) }));
 const { tauriFs } = await import("./tauri");
 
 test("isSymlink sees a dangling link; a missing path is false", async () => {
@@ -26,4 +28,16 @@ test("createExclusive is false when the file exists, true when created with crea
 test("mtime comes from lstat; a missing path is null", async () => {
   expect(await tauriFs.mtime("/v/.capfolder.lock")).toBe(5000);
   expect(await tauriFs.mtime("/v/missing")).toBeNull();
+});
+
+test("remove only releases the vault lock, through the release_vault_lock command", async () => {
+  await tauriFs.remove("/v/.capfolder.lock");
+  expect(invoke).toHaveBeenCalledWith("release_vault_lock", { root: "/v" });
+  // the message is read directly: under jsdom, rejects.toThrow(string) reads a cross-realm Error's message as ""
+  const e = await tauriFs.remove("/v/events.jsonl").then(
+    () => null,
+    (x: Error) => x.message,
+  );
+  expect(e).toBe("remove not supported");
+  expect(invoke).toHaveBeenCalledTimes(1);
 });

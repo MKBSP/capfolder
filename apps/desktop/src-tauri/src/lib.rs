@@ -1,6 +1,7 @@
 mod aikey;
 mod localai;
 mod lock;
+mod vaultlock;
 
 use tauri::Emitter;
 use tauri_plugin_fs::FsExt;
@@ -31,7 +32,7 @@ pub fn run() {
                 let _ = window.emit("files-dropped", &files);
             }
         })
-        .invoke_handler(tauri::generate_handler![lock::lock_set, lock::lock_verify, lock::lock_is_set, lock::lock_clear, localai::local_ai, aikey::ai_key_set, aikey::ai_key_get])
+        .invoke_handler(tauri::generate_handler![lock::lock_set, lock::lock_verify, lock::lock_is_set, lock::lock_clear, localai::local_ai, aikey::ai_key_set, aikey::ai_key_get, vaultlock::release_vault_lock])
         .run(tauri::generate_context!())
         .expect("error while running Capfolder");
 }

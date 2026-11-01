@@ -1,4 +1,5 @@
-import type { Fs } from "@capfolder/vault";
+import { baseName, type Fs, parentOf } from "@capfolder/vault";
+import { invoke } from "@tauri-apps/api/core";
 import * as tfs from "@tauri-apps/plugin-fs";
 
 /** Real file access through @tauri-apps/plugin-fs (scoped in src-tauri/capabilities). */
@@ -30,7 +31,12 @@ export const tauriFs: Fs = {
       throw e;
     }
   },
-  remove: (p) => tfs.remove(p),
+  // the vault's save lock is the only file the app removes: a Rust command deletes exactly <root>/.capfolder.lock,
+  // so the webview needs no fs:allow-remove (which would reach every folder in the fs scope, recursively)
+  remove: async (p) => {
+    if (baseName(p) !== ".capfolder.lock") throw new Error("remove not supported");
+    await invoke("release_vault_lock", { root: parentOf(p) });
+  },
   // lstat (already permitted), not stat; a missing path is null
   mtime: (p) =>
     tfs.lstat(p).then(
