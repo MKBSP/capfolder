@@ -73,7 +73,7 @@ Mads (2026-10-29): v1 is the command route only. ChatGPT and claude.ai wait for 
 
 ## Our calls (Mads can overrule)
 - **One npm package, `capfolder`.** `npx -y capfolder mcp` runs the server, and `npx capfolder install` sets up whichever AI it finds. The Codex command becomes `codex mcp add capfolder -- npx -y capfolder mcp`. This replaces `@capfolder/mcp` in docs/21 and on page E.
-- **Website tabs:** Claude Code, Claude Desktop, Codex, Gemini CLI, Desktop app; ChatGPT shown as "Coming". The skills.sh and `npx capfolder install` tabs are kept.
+- **Website tabs:** Claude Code, Claude Desktop, Codex, Gemini CLI, Desktop app; ChatGPT shown as "Coming". The `npx capfolder install` tab is kept; the skills.sh tab is removed until the skill can install the engine itself.
 - **No company yet:** we stop and point to the founder guide; no folder is created (step 3.1).
 - **Folder default:** `~/Documents/Capfolder/<Company>`.
 - **Claude Desktop:** we ship the `.mcpb` from GitHub Releases. Directory listing comes later.

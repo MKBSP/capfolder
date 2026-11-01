@@ -58,3 +58,15 @@ test("arrow keys move focus with the selected tab", async () => {
   expect(next).toHaveAttribute("aria-selected", "true");
   expect(next).toHaveFocus();
 });
+
+test("a failed link open is handled, not left as an unhandled rejection", async () => {
+  const fp = acmePlatform();
+  const openUrl = vi.fn(() => Promise.reject(new Error("no opener")));
+  fp.platform.openUrl = openUrl;
+  render(<App platform={fp.platform} />);
+  await userEvent.click(await screen.findByRole("button", { name: "Settings" }));
+  await userEvent.click(screen.getByRole("tab", { name: "Claude Desktop" }));
+  await userEvent.click(screen.getByRole("link", { name: "GitHub Releases" }));
+  await new Promise((r) => setTimeout(r, 50)); // an unhandled rejection would be reported by vitest as an error
+  expect(openUrl).toHaveBeenCalledWith("https://github.com/MKBSP/capfolder/releases");
+});

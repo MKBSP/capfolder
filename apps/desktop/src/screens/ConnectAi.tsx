@@ -95,7 +95,7 @@ export function ConnectAi() {
               href={RELEASES}
               onClick={(e) => {
                 e.preventDefault();
-                app.platform.openUrl(RELEASES);
+                app.platform.openUrl(RELEASES).catch(() => {});
               }}
             >
               GitHub Releases
