@@ -627,7 +627,8 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
       if (!st) return `There's no file at ${path}.`;
       if (st.isDirectory()) return `${path} is a folder. Point to one file.`;
       if (!st.isFile()) return `${path} isn't a regular file.`;
-      if (!/\.(pdf|png|jpe?g)$/i.test(path)) // the app's Add documents filter
+      if (!/\.(pdf|png|jpe?g)$/i.test(path))
+        // the app's Add documents filter
         return `${baseName(path)} isn't a document Capfolder can file. Use a PDF, PNG or JPG.`;
       if (st.size > MAX_DOC_BYTES) return `${baseName(path)} is larger than 25 MB, too big to file.`;
       const sec = a.proves ? c.s.securities.get(a.proves) : undefined;

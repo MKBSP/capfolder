@@ -40,7 +40,9 @@ const out = `${lines.join("\n")}\n`;
 // the capfolder npm package bundles @capfolder/core and its deps into dist/cli.js: ship their license texts with it
 const NOTICES = "packages/capfolder/THIRD_PARTY_NOTICES.md";
 const core = JSON.parse(
-  execFileSync("pnpm", ["licenses", "list", "--prod", "--json", "--filter", "@capfolder/core"], { encoding: "utf8" }),
+  execFileSync("pnpm", ["licenses", "list", "--prod", "--json", "--filter", "@capfolder/core"], {
+    encoding: "utf8",
+  }),
 );
 const notices = [
   "# Third-party notices",
@@ -56,14 +58,22 @@ for (const p of Object.values(core)
     console.error(`${p.name} has no license file to copy into ${NOTICES}`);
     process.exit(1);
   }
-  notices.push("", `## ${p.name} ${p.versions.join(", ")} (${p.license})`, "", readFileSync(`${dir}/${file}`, "utf8").trim());
+  notices.push(
+    "",
+    `## ${p.name} ${p.versions.join(", ")} (${p.license})`,
+    "",
+    readFileSync(`${dir}/${file}`, "utf8").trim(),
+  );
 }
 const noticesOut = `${notices.join("\n")}\n`;
 
 if (process.argv.includes("--write")) {
   writeFileSync("THIRD_PARTY_LICENSES.md", out);
   writeFileSync(NOTICES, noticesOut);
-} else if (readFileSync("THIRD_PARTY_LICENSES.md", "utf8") !== out || readFileSync(NOTICES, "utf8") !== noticesOut) {
+} else if (
+  readFileSync("THIRD_PARTY_LICENSES.md", "utf8") !== out ||
+  readFileSync(NOTICES, "utf8") !== noticesOut
+) {
   console.error(`THIRD_PARTY_LICENSES.md or ${NOTICES} is stale. Run: pnpm licenses:gen`);
   process.exit(1);
 }

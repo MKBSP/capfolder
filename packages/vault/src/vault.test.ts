@@ -270,7 +270,9 @@ describe("documents (F-26, F-27)", () => {
     });
     expect(r).toEqual({
       ok: false,
-      errors: ["docs/founders in your company folder is a link to somewhere else. Capfolder only files documents inside the folder."],
+      errors: [
+        "docs/founders in your company folder is a link to somewhere else. Capfolder only files documents inside the folder.",
+      ],
     });
     expect(fs.existsSync("/elsewhere/2026-01-02_steve_spa.pdf")).toBe(false);
     expect(fs.existsSync(`${v.root}/docs/founders/2026-01-02_steve_spa.pdf`)).toBe(false);
