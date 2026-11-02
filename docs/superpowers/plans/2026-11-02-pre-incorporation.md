@@ -174,6 +174,7 @@
     - Fields: legal name (prefilled from `planned.name`), CompanyPlace (prefilled from `planned`), date (≤ today), authorized (10000000) and par value (0.00001).
     - Below the fields, a list of what each promise becomes (same lines as the AI summary).
     - The "Record incorporation" button runs `b.incorporation(...)`. Errors show in the existing ErrorList.
+  - **Export** with no issuer: only CSV is offered, labelled "Promised split (CSV)"; the as-of date is hidden. It saves the Task 2 promised-split CSV. Test: `export before incorporation offers the promised split`.
   - **getStarted** with no issuer returns only:
     - "Promise shares to founders" (done when `promises.size > 0`; → newShares)
     - "Record the incorporation" (done: never while no issuer; → home)
