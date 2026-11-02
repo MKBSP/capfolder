@@ -136,7 +136,8 @@ async function writeDerived(
   const next = { ...meta, captable_as_of: asOf };
   try {
     // AI instructions: written once; the founder's own edits win
-    const company = events.find((e) => e.type === "ISSUER")?.data.legal_name ?? baseName(root);
+    const issuer = events.find((e) => e.type === "ISSUER");
+    const company = issuer?.data.legal_name ?? baseName(root);
     for (const [name, text] of [
       ["AGENTS.md", agentsMd(company)],
       ["CLAUDE.md", "@AGENTS.md\n"],
@@ -145,9 +146,12 @@ async function writeDerived(
       // a (dangling) symlink would redirect the write outside the folder
       if (!(await fs.exists(p)) && !(await fs.isSymlink(p))) await fs.writeText(p, text);
     }
-    await fs.mkdir(join(root, "ocf"));
-    const files = toOcfExport(events, { asOf, generatedAt: ctx.now().toISOString() });
-    for (const [name, text] of Object.entries(files)) await fs.writeText(join(root, "ocf", name), text);
+    if (issuer) {
+      // OCF needs an issuer: not incorporated yet → no ocf/ (captable.csv stays header-only)
+      await fs.mkdir(join(root, "ocf"));
+      const files = toOcfExport(events, { asOf, generatedAt: ctx.now().toISOString() });
+      for (const [name, text] of Object.entries(files)) await fs.writeText(join(root, "ocf", name), text);
+    }
     await fs.writeText(join(root, "capfolder.json"), `${JSON.stringify(next, null, 2)}\n`);
   } catch (e) {
     return { meta: next, error: `The ocf/ files couldn't be updated: ${(e as Error).message ?? e}` };

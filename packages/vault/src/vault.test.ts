@@ -501,6 +501,23 @@ describe("before incorporation", () => {
     expect(exportFile(v, "2026-10-09", "xlsx", ctx)).toEqual({ error });
     expect(exportFile(v, "2026-10-09", "ocf", ctx)).toEqual({ error });
   });
+  test("no ocf/ while there's no ISSUER; captable.csv stays header-only", async () => {
+    const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company: planned });
+    const r = await appendToVault(
+      fs,
+      v,
+      [
+        b.stakeholder({ id: "sh_t", name: "Tim Apple", type: "INDIVIDUAL" }),
+        b.sharesPromised({ stakeholderId: "sh_t", quantity: "1000", vesting: "none" }),
+      ],
+      ctx,
+    );
+    if (!r.ok) throw new Error(r.errors.join("; "));
+    await openVault(fs, v.root, ctx);
+    expect(fs.existsSync(`${v.root}/ocf`)).toBe(false);
+    expect(fs.existsSync(`${v.root}/capfolder.json`)).toBe(true);
+    expect((await fs.readText(`${v.root}/captable.csv`)).trim().split("\n")).toHaveLength(1);
+  });
   test("createVault with a date is unchanged", async () => {
     const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });
     expect(v.events.map((e) => e.type)).toEqual(["vault_created", "ISSUER"]);

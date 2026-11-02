@@ -244,6 +244,14 @@ export function incorporation(p: {
   currency?: string;
   terms: { id: string; drafts: EventDraft[] } | null;
 }): EventDraft[] {
+  // no class can exist before incorporation (NOT_INCORPORATED), so Common is always new
+  const common = stockClass({
+    name: "Common",
+    authorized: p.authorized,
+    parValue: p.parValue,
+    currency: p.currency,
+  });
+  const classId = common.data.id as string;
   const out = [
     issuer({
       id: p.issuerId,
@@ -252,18 +260,8 @@ export function incorporation(p: {
       country: p.country,
       subdivision: p.subdivision,
     }),
+    common,
   ];
-  let classId = p.state.classes.keys().next().value;
-  if (!classId) {
-    const common = stockClass({
-      name: "Common",
-      authorized: p.authorized,
-      parValue: p.parValue,
-      currency: p.currency,
-    });
-    classId = common.data.id as string;
-    out.push(common);
-  }
   const promises = [...p.state.promises.values()];
   if (promises.some((x) => x.vesting !== "none")) {
     if (!p.terms) throw new Error("Vesting terms are needed for promises that vest.");
