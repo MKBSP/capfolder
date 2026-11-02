@@ -474,7 +474,7 @@ const PROMISED = "Promised — not legal until the company exists.";
 const MAX_STEPS = 6;
 
 function system(d: ChatDeps, s: State) {
-  return `You help a founder with their company's cap table in Capfolder. Company: ${String(s.issuer?.legal_name ?? "")}.
+  return `You help a founder with their company's cap table in Capfolder. Company: ${String(s.issuer?.legal_name ?? s.planned?.name ?? "")}.
 Today is ${d.ctx.now().toISOString().slice(0, 10)}; the founder is looking at: ${d.looking} (as of ${d.asOf}).
 Money is in ${d.currency}: write amounts in ${d.currency}, never another currency.
 Look things up with the tools; never guess a number. Answer in a few plain sentences.
