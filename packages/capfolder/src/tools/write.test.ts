@@ -545,6 +545,9 @@ test("record_incorporation turns promises into shares", async () => {
   await write(c, "promise_shares", { person: "Tim Apple", shares: "6000000", vesting_start: "2026-03-03" });
   await write(c, "promise_shares", { person: "Steve Wozniak", shares: "4000000", vesting: "none" });
   const p = await call(c, "record_incorporation", { date: "2026-10-01", confirm: false });
+  expect(text(p)).toContain(
+    "The promised shares are issued on 2026-10-01 at the par value, 0.00001 USD per share:",
+  );
   expect(text(p)).toContain("Tim Apple: 6,000,000 Common shares (CS-1), vesting from 2026-03-03.");
   expect(text(p)).toContain("Steve Wozniak: 4,000,000 Common shares (CS-2), no vesting.");
   expect(text(p)).toContain("File the 83(b) within 30 days of 2026-10-01: by 2026-10-31.");
@@ -566,14 +569,14 @@ test("record_incorporation turns promises into shares", async () => {
   expect(text(await call(c, "get_cap_table"))).toContain("Tim Apple,common,Common,6000000");
 });
 
-test("record_incorporation prices the shares at an existing class's par value", async () => {
+test("before incorporation, add_share_class surfaces the core guard", async () => {
   const c = await connect();
-  const r = await notIncorporated(c);
-  await write(c, "add_share_class", { name: "Common", authorized: "20000000", par_value: "0.0001" });
-  await write(c, "promise_shares", { person: "Tim Apple", shares: "1000", vesting: "none" });
-  await write(c, "record_incorporation", { date: "2026-03-03" });
-  const issued = (await ev(r)).find((e) => e.type === "TX_STOCK_ISSUANCE");
-  expect(issued?.data.share_price).toMatchObject({ amount: "0.0001" });
+  await notIncorporated(c);
+  const r = await call(c, "add_share_class", { name: "Common", authorized: "1000", confirm: false });
+  expect(text(r)).toBe(
+    "This can't be recorded: The company isn't incorporated yet. Record the incorporation first; until then shares can only be promised.",
+  );
+  expect(previewId(r)).toBeUndefined();
 });
 
 test("record_incorporation refuses when already incorporated", async () => {
@@ -602,6 +605,13 @@ test("record_incorporation refuses a future date and an issue date before it", a
     confirm: false,
   });
   expect(text(early)).toBe("Shares can't be issued before the company exists.");
+  const later = await call(c, "record_incorporation", {
+    date: "2026-03-03",
+    issue_date: "2026-10-08",
+    confirm: false,
+  });
+  expect(text(later)).toBe("The issue date can't be in the future.");
+  expect(previewId(later)).toBeUndefined();
   expect(previewId(future)).toBeUndefined();
   expect(previewId(early)).toBeUndefined();
 });

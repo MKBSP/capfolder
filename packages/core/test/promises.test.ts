@@ -74,27 +74,32 @@ test("promises before incorporation", async () => {
   ]);
 });
 
-test("no shares or pool before incorporation", async () => {
-  const log = await add(await planned([]), [
-    b.stockClass({ id: "sc_c", name: "Common", authorized: "1000" }),
-  ]);
-  const s = await state(log);
+test("no share class, shares or pool before incorporation", async () => {
+  const log = await planned([]);
+  const common = b.stockClass({ id: "sc_c", name: "Common", authorized: "1000" });
+  expect(await appendEvents(log, [common], ctx)).toEqual({ ok: false, errors: [NOT_INCORPORATED] });
   const issue = await appendEvents(
     log,
-    b.stockIssuance({
-      state: s,
-      stakeholderId: "sh_tim",
-      classId: "sc_c",
-      quantity: "10",
-      price: "0",
-      date: "2026-03-03",
-    }),
+    [
+      common,
+      ...b.stockIssuance({
+        state: await state(log),
+        stakeholderId: "sh_tim",
+        classId: "sc_c",
+        quantity: "10",
+        price: "0",
+        date: "2026-03-03",
+      }),
+    ],
     ctx,
   );
   expect(issue).toEqual({ ok: false, errors: [NOT_INCORPORATED] });
   const pool = await appendEvents(
     log,
-    [b.stockPlan({ name: "Plan", reserved: "100", boardApprovalDate: "2026-03-03", classId: "sc_c" })],
+    [
+      common,
+      b.stockPlan({ name: "Plan", reserved: "100", boardApprovalDate: "2026-03-03", classId: "sc_c" }),
+    ],
     ctx,
   );
   expect(pool).toEqual({ ok: false, errors: [NOT_INCORPORATED] });

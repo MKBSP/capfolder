@@ -689,14 +689,12 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
       if (c.s.issuer) return `${coName(c.s)} is already incorporated.`;
       if (a.date > c.today) return "The incorporation date can't be in the future.";
       if (a.issue_date && a.issue_date < a.date) return "Shares can't be issued before the company exists.";
+      if (a.issue_date && a.issue_date > c.today) return "The issue date can't be in the future.";
       const plan = c.s.planned;
       if (!plan) return "This folder has no planned company to incorporate. Restore it from your backup.";
       const name = a.legal_name?.trim() || plan.name;
       const country = a.country?.toUpperCase() ?? plan.country;
       const subdivision = a.subdivision?.trim().toUpperCase() ?? plan.subdivision;
-      const cls = classFor(c.s);
-      // a class set up before incorporation keeps its own par value: the shares are priced at it, as issue_shares does
-      const parValue = cls ? String(cls.data.par_value?.amount ?? "0") : a.par_value;
       const drafts = b.incorporation({
         state: c.s,
         issuerId: plan.issuer_id,
@@ -706,7 +704,7 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         date: a.date,
         issueDate: a.issue_date,
         authorized: a.authorized,
-        parValue,
+        parValue: a.par_value, // no class can exist before incorporation (core guard), so Common is new at this par
         currency: c.currency,
         terms: standardTerms(c.s), // only written if a promise vests
       });
@@ -714,18 +712,17 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
       const kept = new Map(
         drafts.filter((d) => d.type === "promise_kept").map((d) => [d.data.promise_id, d.data.security_id]),
       );
-      const cname = cls?.data.name ?? "Common";
       const lines = [...c.s.promises.values()].map(
         (x) =>
-          `${nameOf(c.s, x.stakeholderId)}: ${fmtInt(x.quantity)} ${cname} shares (${kept.get(x.id)}), ${x.vesting === "none" ? "no vesting" : `vesting from ${x.vestingStart ?? day}`}.`,
+          `${nameOf(c.s, x.stakeholderId)}: ${fmtInt(x.quantity)} Common shares (${kept.get(x.id)}), ${x.vesting === "none" ? "no vesting" : `vesting from ${x.vestingStart ?? day}`}.`,
       );
       const vests = [...c.s.promises.values()].some((x) => x.vesting !== "none");
       const where = [country, subdivision].filter(Boolean).join("-");
-      const head = `Records the incorporation of ${name} on ${a.date} (${where}). ${
-        cls
-          ? `Uses the existing ${cname} shares, par value ${parValue} ${c.currency}.`
-          : `Sets up Common shares: ${n(a.authorized)} authorized, par value ${parValue} ${c.currency}.`
-      } ${lines.length ? `The promised shares are issued on ${day} at par:` : "There are no promised shares to issue."}`;
+      const head = `Records the incorporation of ${name} on ${a.date} (${where}). Sets up Common shares: ${n(a.authorized)} authorized, par value ${a.par_value} ${c.currency}. ${
+        lines.length
+          ? `The promised shares are issued on ${day} at the par value, ${a.par_value} ${c.currency} per share:`
+          : "There are no promised shares to issue."
+      }`;
       const warn =
         vests && plus30(day) >= c.today ? `File the 83(b) within 30 days of ${day}: by ${plus30(day)}.` : "";
       return { summary: [head, ...lines, warn].filter(Boolean).join("\n"), drafts };

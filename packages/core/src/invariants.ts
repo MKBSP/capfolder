@@ -10,7 +10,7 @@ export function checkInvariants(s: State): string[] {
   // From the reducer: 3 (explicit vestings ≤ granted; vesting terms can't exceed by construction), 4 (exercise ≤ vested),
   // 5 (≤ balance), bad numbers, unknown or duplicate references.
   const out = [...s.violations];
-  if (!s.issuer && (s.securities.size || s.plans.size)) out.push(NOT_INCORPORATED);
+  if (!s.issuer && (s.classes.size || s.securities.size || s.plans.size)) out.push(NOT_INCORPORATED);
   for (const [id, c] of s.classes) {
     const issued = [...s.securities.values()]
       .filter((x) => x.kind === "stock" && x.classId === id)
