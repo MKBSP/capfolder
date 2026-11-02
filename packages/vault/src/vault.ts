@@ -5,6 +5,7 @@ import {
   appendEvents,
   builders as b,
   captableCsv,
+  csvCell,
   type Data,
   type EventDraft,
   fullCapTable,
@@ -621,9 +622,8 @@ export function exportFile(
         error:
           "Excel and OCF exports start once the company is incorporated. CSV exports the promised split.",
       };
-    const q = (x: string) => (/[",\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x);
     const rows = promisedTable(state).map((r) =>
-      [r.name, r.shares, r.percent, r.vesting].map((c) => q(String(c))).join(","),
+      [r.name, r.shares, r.percent, r.vesting].map((c) => csvCell(String(c))).join(","),
     );
     return {
       name: `${companySlug(v, state)}-promised-split-${today(ctx)}.csv`,

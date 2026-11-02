@@ -505,4 +505,22 @@ describe("before incorporation", () => {
     const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });
     expect(v.events.map((e) => e.type)).toEqual(["vault_created", "ISSUER"]);
   });
+  test("a formula-like name is neutralised and a fresh vault reopens clean", async () => {
+    const v0 = await createVault(fs, ctx, { parent: "/Users/me/Documents", company: planned });
+    const r = await appendToVault(
+      fs,
+      v0,
+      [
+        b.stakeholder({ id: "sh_x", name: "=1+1", type: "INDIVIDUAL" }),
+        b.sharesPromised({ stakeholderId: "sh_x", quantity: "1000", vesting: "none" }),
+      ],
+      ctx,
+    );
+    if (!r.ok) throw new Error(r.errors.join("; "));
+    const out = exportFile(r.vault, "2026-10-09", "csv", ctx);
+    expect("data" in out && out.data).toContain("\n'=1+1,1000,100.00,No vesting");
+    const re = await openVault(fs, v0.root, ctx);
+    expect(re.broken).toBeUndefined();
+    expect(re.csvEdited).toBe(false);
+  });
 });
