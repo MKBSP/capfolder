@@ -150,6 +150,34 @@ export function capTableRows(s: State): Row[] {
   return rows;
 }
 
+const VESTING_LABEL = { "4y_1y_cliff": "4 years, 1-year cliff", none: "No vesting" } as const;
+
+/** Open promises (not incorporated yet), each with its share of all promised shares. */
+export function promisedTable(s: State): {
+  promiseId: string;
+  eventId: string;
+  stakeholderId: string;
+  name: string;
+  shares: bigint;
+  percent: string;
+  vesting: string;
+}[] {
+  const promises = [...s.promises.values()];
+  const pct = largestRemainder(
+    promises.map((x) => x.quantity),
+    2,
+  );
+  return promises.map((x, i) => ({
+    promiseId: x.id,
+    eventId: x.eventId,
+    stakeholderId: x.stakeholderId,
+    name: s.stakeholders.get(x.stakeholderId)?.name?.legal_name ?? x.stakeholderId,
+    shares: x.quantity,
+    percent: pct[i]!,
+    vesting: VESTING_LABEL[x.vesting] ?? x.vesting,
+  }));
+}
+
 /** Founder = holder of common stock issued on the formation date or with vesting (ponytail: until roles exist). */
 export function isFounder(s: State, x: Security | undefined): boolean {
   if (x?.kind !== "stock") return false;

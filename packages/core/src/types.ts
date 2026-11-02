@@ -63,6 +63,16 @@ export interface Plan {
   returned: bigint;
 }
 
+/** A share promise made before the company exists (app event `shares_promised`, not OCF). */
+export interface Promised {
+  id: string; // promise_id
+  eventId: string;
+  stakeholderId: string;
+  quantity: bigint;
+  vesting: "4y_1y_cliff" | "none";
+  vestingStart?: string;
+}
+
 export interface Doc {
   data: Data;
   links: Set<string>;
@@ -72,6 +82,7 @@ export interface Doc {
 export interface State {
   asOf: string;
   issuer?: Data;
+  planned?: { name: string; country: string; subdivision: string; issuer_id: string }; // not incorporated yet
   stakeholders: Map<string, Data>;
   classes: Map<string, { data: Data; authorized: bigint }>;
   plans: Map<string, Plan>;
@@ -79,6 +90,7 @@ export interface State {
   valuations: Data[]; // OCF VALUATION objects in effect by asOf (409A share prices)
   securities: Map<string, Security>;
   docs: Map<string, Doc>;
+  promises: Map<string, Promised>; // open promises (not kept, not reversed), in (ts, id) order
   aliases: Map<string, string>; // normalized other name → stakeholder id (stakeholder_alias, F-09 "Remember")
   unknownEventTypes: string[];
   violations: string[]; // problems found while replaying (invariants 4, 5, bad references, bad numbers)

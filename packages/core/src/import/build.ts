@@ -1,6 +1,6 @@
 // Generic spreadsheet → OCF drafts (docs/04 §3–5): one position per row, people deduped, vesting built or marked unknown.
 import * as b from "../builders";
-import { checkInvariants } from "../invariants";
+import { checkInvariants, NOT_INCORPORATED } from "../invariants";
 import { fmtInt, parseLocalNumber, subDec, sumDec } from "../num";
 import { validateOcf } from "../ocf/validate";
 import { reduce } from "../reduce";
@@ -595,6 +595,9 @@ export function previewDrafts(drafts: EventDraft[], asOf: string, before: VaultE
       hash: "",
     })),
   ];
-  const rows = capTableRows(reduce(events, "9999-12-31"));
-  return { rows, totals: capTableTotals(rows), violations: checkInvariants(reduce(events, "9999-12-31")) };
+  const s = reduce(events, "9999-12-31");
+  const rows = capTableRows(s);
+  // Imported drafts carry no ISSUER (the vault has it); appendEvents still refuses a not-incorporated vault.
+  const violations = checkInvariants(s).filter((v) => !(v === NOT_INCORPORATED && !before.length));
+  return { rows, totals: capTableTotals(rows), violations };
 }

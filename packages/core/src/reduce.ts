@@ -5,7 +5,6 @@ import { normName } from "./text";
 import type { Data, Security, State, VaultEvent } from "./types";
 
 const APP_IGNORED = new Set([
-  "vault_created",
   "note",
   "rebaseline",
   "schema_migrated",
@@ -62,6 +61,7 @@ export function reduce(events: VaultEvent[], asOf: string): State {
     securities: new Map(),
     docs: new Map(),
     aliases: new Map(),
+    promises: new Map(),
     unknownEventTypes: [],
     violations: [],
     allSecurityIds: new Set(),
@@ -348,6 +348,31 @@ export function reduce(events: VaultEvent[], asOf: string): State {
         break;
       case "doc_renamed":
         if (doc && typeof d.path === "string") doc.data = { ...doc.data, path: d.path };
+        break;
+      case "vault_created":
+        if (typeof d.issuer_id === "string")
+          s.planned = {
+            name: d.name,
+            country: d.country,
+            subdivision: d.subdivision,
+            issuer_id: d.issuer_id,
+          };
+        break;
+      case "shares_promised": {
+        const q = qty(e, "quantity");
+        if (q === undefined) break;
+        s.promises.set(d.promise_id, {
+          id: d.promise_id,
+          eventId: e.id,
+          stakeholderId: d.stakeholder_id,
+          quantity: q,
+          vesting: d.vesting,
+          ...(d.vesting_start ? { vestingStart: d.vesting_start } : {}),
+        });
+        break;
+      }
+      case "promise_kept":
+        s.promises.delete(d.promise_id);
         break;
       case "stakeholder_alias":
         if (typeof d.alias === "string" && typeof d.stakeholder_id === "string")

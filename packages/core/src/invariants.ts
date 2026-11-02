@@ -2,11 +2,15 @@ import { fmtInt } from "./num";
 import { capTableRows } from "./rows";
 import type { State } from "./types";
 
+export const NOT_INCORPORATED =
+  "The company isn't incorporated yet. Record the incorporation first; until then shares can only be promised.";
+
 /** Plain-language list of everything that breaks docs/03 invariants 1–7. Empty means the state is consistent. */
 export function checkInvariants(s: State): string[] {
   // From the reducer: 3 (explicit vestings ≤ granted; vesting terms can't exceed by construction), 4 (exercise ≤ vested),
   // 5 (≤ balance), bad numbers, unknown or duplicate references.
   const out = [...s.violations];
+  if (!s.issuer && (s.securities.size || s.plans.size)) out.push(NOT_INCORPORATED);
   for (const [id, c] of s.classes) {
     const issued = [...s.securities.values()]
       .filter((x) => x.kind === "stock" && x.classId === id)

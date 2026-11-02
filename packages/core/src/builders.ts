@@ -35,13 +35,14 @@ export const nextSecurityId = (state: State, prefix: "CS" | "OPT" | "SAFE"): str
   `${prefix}-${nextSecurityIdNumber(state, prefix)}`;
 
 export function issuer(p: {
+  id?: string;
   name: string;
   formationDate: string;
   country?: string;
   subdivision?: string;
 }): EventDraft {
   return ocf("ISSUER", {
-    id: newId("iss"),
+    id: p.id ?? newId("iss"),
     legal_name: p.name,
     formation_date: p.formationDate,
     country_of_formation: p.country ?? "US",
@@ -208,6 +209,85 @@ export function stockIssuance(p: {
   });
   if (!p.vestingTermsId) return [issue];
   return [issue, vestingStartDraft(p.state, securityId, p.vestingTermsId, p.vestingStart ?? p.date)];
+}
+
+/** Before incorporation: shares promised to someone, converted into real shares by `incorporation`. */
+export function sharesPromised(p: {
+  stakeholderId: string;
+  quantity: string;
+  vesting: "4y_1y_cliff" | "none";
+  vestingStart?: string;
+}): EventDraft {
+  return app("shares_promised", {
+    promise_id: newId("prm"),
+    stakeholder_id: p.stakeholderId,
+    quantity: p.quantity,
+    vesting: p.vesting,
+    ...(p.vestingStart ? { vesting_start: p.vestingStart } : {}),
+  });
+}
+
+/**
+ * The company now exists: its ISSUER (with the id reserved at creation), a Common class if there is none, and each
+ * open promise issued as shares at par (in promise order), each followed by `promise_kept`. One batch, all or nothing.
+ */
+export function incorporation(p: {
+  state: State;
+  issuerId: string;
+  name: string;
+  country: string;
+  subdivision: string;
+  date: string;
+  issueDate?: string;
+  authorized: string;
+  parValue: string;
+  currency?: string;
+  terms: { id: string; drafts: EventDraft[] } | null;
+}): EventDraft[] {
+  const out = [
+    issuer({
+      id: p.issuerId,
+      name: p.name,
+      formationDate: p.date,
+      country: p.country,
+      subdivision: p.subdivision,
+    }),
+  ];
+  let classId = p.state.classes.keys().next().value;
+  if (!classId) {
+    const common = stockClass({
+      name: "Common",
+      authorized: p.authorized,
+      parValue: p.parValue,
+      currency: p.currency,
+    });
+    classId = common.data.id as string;
+    out.push(common);
+  }
+  const promises = [...p.state.promises.values()];
+  if (p.terms && promises.some((x) => x.vesting !== "none")) out.push(...p.terms.drafts);
+  const date = p.issueDate ?? p.date;
+  const n = nextSecurityIdNumber(p.state, "CS");
+  promises.forEach((x, i) => {
+    const securityId = `CS-${n + i}`;
+    out.push(
+      ...stockIssuance({
+        state: p.state,
+        stakeholderId: x.stakeholderId,
+        classId,
+        quantity: x.quantity.toString(),
+        price: p.parValue,
+        currency: p.currency,
+        date,
+        securityId,
+        ...(x.vesting !== "none" && p.terms
+          ? { vestingTermsId: p.terms.id, vestingStart: x.vestingStart ?? date }
+          : {}),
+      }),
+      app("promise_kept", { promise_id: x.id, security_id: securityId }),
+    );
+  });
+  return out;
 }
 
 export function stockPlan(p: {
