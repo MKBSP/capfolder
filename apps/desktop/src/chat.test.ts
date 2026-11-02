@@ -1,6 +1,6 @@
 // docs/18: the Ask AI loop. Provider HTTP is mocked; tools run over the acme fixture.
 import { builders } from "@capfolder/core";
-import { openVault } from "@capfolder/vault";
+import { appendToVault, createVault, openVault } from "@capfolder/vault";
 import { describe, expect, test } from "vitest";
 import { askChat, type ChatDeps } from "./chat";
 import { acmePlatform } from "./test/acme";
@@ -283,6 +283,54 @@ describe("OpenAI-style providers", () => {
     expect(body(calls[1]!).messages[0].content).toContain("Steve Wozniak");
     expect(m.text).toBe("You have 8 holders.");
     expect(m.note).toMatch(/bigger model/);
+  });
+});
+
+describe("before incorporation", () => {
+  /** Swaps the acme vault for a planned Acme with one promise to Tim Apple. */
+  async function planned(d: ChatDeps) {
+    const v = await createVault(d.platform.fs, ctx, {
+      parent: "/home/me/Documents",
+      company: { name: "Acme", country: "US", subdivision: "DE" },
+    });
+    const r = await appendToVault(
+      d.platform.fs,
+      v,
+      [
+        builders.stakeholder({ id: "sh_t", name: "Tim Apple", type: "INDIVIDUAL" }),
+        builders.sharesPromised({ stakeholderId: "sh_t", quantity: "6000000", vesting: "none" }),
+      ],
+      ctx,
+    );
+    if (!r.ok) throw new Error(r.errors.join("; "));
+    return { ...d, vault: r.vault };
+  }
+  const LABEL = "Promised — not legal until the company exists.";
+
+  test("cap_table returns the promised split", async () => {
+    const { d, calls } = await deps([
+      { stop_reason: "tool_use", content: [{ type: "tool_use", id: "t1", name: "cap_table", input: {} }] },
+      { stop_reason: "end_turn", content: [{ type: "text", text: "ok" }] },
+    ]);
+    await askChat(await planned(d), [], "Who owns what?");
+    const out = JSON.parse(body(calls[1]!).messages.at(-1).content[0].content);
+    expect(out).toMatchObject({
+      incorporated: false,
+      note: LABEL,
+      promised: [{ name: "Tim Apple", shares: "6000000", percent: "100.00", vesting: "No vesting" }],
+    });
+  });
+
+  test("the no-tools summary lists the promised split", async () => {
+    const { d, calls } = await deps(
+      [{ error: "does not support tools" }, { choices: [{ message: { content: "ok" } }] }],
+      { provider: "ollama", model: "gemma" },
+      [400, 200],
+    );
+    await askChat(await planned(d), [], "Who owns what?");
+    const sys = body(calls[1]!).messages[0].content;
+    expect(sys).toContain(LABEL);
+    expect(sys).toContain("Tim Apple | 6000000 | 100.00 | No vesting");
   });
 });
 

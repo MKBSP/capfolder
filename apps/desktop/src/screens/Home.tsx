@@ -18,7 +18,7 @@ import { MainHeader } from "../components/Header";
 import { IncorporateDialog } from "../components/IncorporateDialog";
 import { MoveChecklist } from "../components/MoveChecklist";
 import { startTour, TourOffer } from "../components/Tour";
-import { Chip, ErrorList, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
+import { Chip, ErrorList, Menu, Modal, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { docChip, isFounder, scheduleText, typeLabel, vestingCell } from "../views";
@@ -256,6 +256,7 @@ function Promised() {
   const [incorporating, setIncorporating] = useState(false);
   const asked = app.route.name === "home" && !!app.route.incorporate; // Get started → Record it
   const [errors, setErrors] = useState<string[] | null>(null);
+  const [removing, setRemoving] = useState<(typeof rows)[number] | null>(null);
   return (
     <main className="page">
       <section className="card stack" aria-label="Not incorporated yet">
@@ -280,15 +281,7 @@ function Promised() {
                   <td className="td num right">{r.percent}%</td>
                   <td className="td meta">{r.vesting}</td>
                   <td className="td right">
-                    <button
-                      type="button"
-                      className="btn link small"
-                      onClick={async () =>
-                        setErrors(
-                          await app.run([b.reversal({ target: r.eventId, reason: "Promise withdrawn" })]),
-                        )
-                      }
-                    >
+                    <button type="button" className="btn link small" onClick={() => setRemoving(r)}>
                       Remove
                     </button>
                   </td>
@@ -309,6 +302,33 @@ function Promised() {
           </button>
         </div>
       </section>
+      {removing ? (
+        // asks first, as Remove document does
+        <Modal open onClose={() => setRemoving(null)} title="Remove promise">
+          <div className="stack">
+            <p className="small">
+              {removing.name}: {shares(removing.shares)} shares, {removing.vesting.toLowerCase()}.
+            </p>
+            <p className="meta">It stays in the record (events.jsonl); nothing is deleted.</p>
+            <div className="row" style={{ justifyContent: "flex-end" }}>
+              <button type="button" className="btn" onClick={() => setRemoving(null)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn primary danger"
+                onClick={async () => {
+                  const target = removing.eventId;
+                  setRemoving(null);
+                  setErrors(await app.run([b.reversal({ target, reason: "Promise withdrawn" })]));
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </Modal>
+      ) : null}
       {incorporating || asked ? (
         <IncorporateDialog
           onClose={() => {

@@ -51,7 +51,11 @@ export function Import() {
     if (d.kind === "error") return setErrors([d.error]);
     setFile({ fileName: f.name, bytes });
     if (d.kind === "ocf") {
-      const r = ocfImportDrafts(d.files, app.latest?.issuer?.id);
+      const latest = app.latest;
+      // the import's ISSUER would hide the open promises: they're only listed while there's no issuer
+      if (latest && !latest.issuer && latest.promises.size > 0)
+        return setErrors(["Record the incorporation (or remove the promised shares) before importing."]);
+      const r = ocfImportDrafts(d.files, latest?.issuer?.id ?? latest?.planned?.issuer_id);
       if ("errors" in r) return setErrors(r.errors);
       setOcf(r.drafts);
       setStep("review");

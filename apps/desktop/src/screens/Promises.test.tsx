@@ -88,6 +88,11 @@ test("remove a promise", async () => {
   );
   const row = within(screen.getByRole("table")).getByText("Steve Jobs").closest("tr")!;
   await userEvent.click(within(row).getByRole("button", { name: "Remove" }));
+  const dialog = screen.getByRole("dialog"); // asks first, as removing a document does
+  await userEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+  expect(screen.getByText("Steve Jobs")).toBeInTheDocument();
+  await userEvent.click(within(row).getByRole("button", { name: "Remove" }));
+  await userEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Remove" }));
   expect(await screen.findByText("100.00%")).toBeInTheDocument();
   expect(screen.queryByText("Steve Jobs")).toBeNull();
 });
@@ -112,6 +117,19 @@ test("record the incorporation", async () => {
   expect(within(screen.getByRole("table")).getByText("Tim Apple")).toBeInTheDocument();
   expect(fs.readSync(`${root}/captable.csv`)).toContain("Tim Apple,common,Common,6000000,100.00,");
   expect(fs.readSync(`${root}/events.jsonl`)).toContain('"security_id":"CS-1"');
+});
+
+test("the incorporation dialog shows the 83(b) line when a promise vests", async () => {
+  await planned();
+  await promise("Tim Apple", "6000000", true);
+  await userEvent.click(screen.getByRole("button", { name: "We're incorporated" }));
+  const dialog = screen.getByRole("dialog");
+  const date = (v: string) =>
+    fireEvent.change(within(dialog).getByLabelText("Date of incorporation"), { target: { value: v } });
+  date(todayIso());
+  expect(await within(dialog).findByText(/^File the 83\(b\) within 30 days of /)).toBeInTheDocument();
+  date("2020-01-02"); // deadline passed: no line, as record_incorporation
+  expect(within(dialog).queryByText(/83\(b\)/)).toBeNull();
 });
 
 test("an incorporation date in the future is refused", async () => {

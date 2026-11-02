@@ -1,7 +1,7 @@
 import { builders as b, type EventDraft } from "@capfolder/core";
 import { setCompanyCurrency } from "@capfolder/vault";
 import { useMemo, useState } from "react";
-import { day, num, shares, todayIso, withCurrency } from "../fmt";
+import { day, num, plusDays, shares, todayIso, withCurrency } from "../fmt";
 import { useApp } from "../state";
 import { standardTerms } from "../terms";
 import { DateInput } from "./DateInput";
@@ -106,6 +106,14 @@ export function IncorporateDialog(p: { onClose(): void }) {
         ) : (
           <p className="meta">There are no promised shares to issue.</p>
         )}
+        {date &&
+        [...s.promises.values()].some((x) => x.vesting !== "none") &&
+        plusDays(date, 30) >= todayIso() ? (
+          // record_incorporation's 83(b) line (packages/capfolder tools/write.ts)
+          <div className="banner amber">
+            File the 83(b) within 30 days of {day(date)}: by {day(plusDays(date, 30))}.
+          </div>
+        ) : null}
         <ErrorList errors={errors} />
         <div className="row" style={{ justifyContent: "flex-end" }}>
           <button type="button" className="btn" onClick={p.onClose}>

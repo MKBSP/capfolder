@@ -1,13 +1,16 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { captableCsv, toOcfExport, zip } from "@capfolder/core";
+import { builders as b, captableCsv, toOcfExport, zip } from "@capfolder/core";
 import { appendToVault, createVault, importIntoVault, openVault } from "@capfolder/vault";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
+import { loadSettings } from "../settings";
+import { AppProvider } from "../state";
 import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
+import { Screen } from "./index";
 
 const FIX = resolve(process.cwd(), "../../fixtures");
 const acmeEvents = () =>
@@ -62,6 +65,76 @@ test("import an OCF export into a new company folder", async () => {
   const today = new Date().toISOString().slice(0, 10); // captable.csv is written as of today
   expect(strip(fp.fs.readSync(`${fp.root}/captable.csv`))).toBe(strip(captableCsv(acmeEvents(), today)));
   expect(await fp.fs.list(`${fp.root}/docs/_imports`)).toEqual([`${today}_acme-ocf.zip`]);
+});
+
+test("an OCF import is refused while promised shares wait for the incorporation", async () => {
+  const ocf = zip(toOcfExport(acmeEvents(), { asOf: "2026-10-07", generatedAt: "2026-10-10T00:00:00Z" }));
+  const fp = fakePlatform({ pickFile: { path: "/home/me/Downloads/acme-ocf.zip", name: "acme-ocf.zip" } });
+  fp.fs.writeSync("/home/me/Downloads/acme-ocf.zip", ocf);
+  const v0 = await createVault(fp.fs, ctx, {
+    parent: "/home/me/Documents",
+    company: { name: "Acme Inc.", country: "US", subdivision: "DE" },
+  });
+  const r = await appendToVault(
+    fp.fs,
+    v0,
+    [
+      b.stakeholder({ id: "sh_t", name: "Tim Apple", type: "INDIVIDUAL" }),
+      b.sharesPromised({ stakeholderId: "sh_t", quantity: "1000", vesting: "none" }),
+    ],
+    ctx,
+  );
+  if (!r.ok) throw new Error(r.errors.join("; "));
+  // Import isn't linked before incorporation, so open the screen directly
+  render(
+    <AppProvider
+      platform={fp.platform}
+      settings={await loadSettings(fp.fs, "/appdata")}
+      saveSettings={async () => {}}
+      initialVault={r.vault}
+      initialRoute={{ name: "import" }}
+    >
+      <Screen />
+    </AppProvider>,
+  );
+  await userEvent.click(screen.getByLabelText(/An OCF export/));
+  await userEvent.click(screen.getByRole("button", { name: "Choose file…" }));
+  expect(
+    await screen.findByText("Record the incorporation (or remove the promised shares) before importing."),
+  ).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Save to the cap table" })).toBeNull();
+});
+
+test("an OCF import into a not-incorporated folder takes the planned issuer id", async () => {
+  const ocf = zip(toOcfExport(acmeEvents(), { asOf: "2026-10-07", generatedAt: "2026-10-10T00:00:00Z" }));
+  const fp = fakePlatform({ pickFile: { path: "/home/me/Downloads/acme-ocf.zip", name: "acme-ocf.zip" } });
+  fp.fs.writeSync("/home/me/Downloads/acme-ocf.zip", ocf);
+  const v = await createVault(fp.fs, ctx, {
+    parent: "/home/me/Documents",
+    company: { name: "Acme Inc.", country: "US", subdivision: "DE" },
+  });
+  render(
+    <AppProvider
+      platform={fp.platform}
+      settings={await loadSettings(fp.fs, "/appdata")}
+      saveSettings={async () => {}}
+      initialVault={v}
+      initialRoute={{ name: "import" }}
+    >
+      <Screen />
+    </AppProvider>,
+  );
+  await userEvent.click(screen.getByLabelText(/An OCF export/));
+  await userEvent.click(screen.getByRole("button", { name: "Choose file…" }));
+  await userEvent.click(await screen.findByRole("button", { name: "Save to the cap table" }));
+  await screen.findByText(/Reports don't include signed documents/);
+  const issuer = fp.fs
+    .readSync(`${v.root}/events.jsonl`)
+    .trim()
+    .split("\n")
+    .map((l: string) => JSON.parse(l))
+    .find((e: { type: string }) => e.type === "ISSUER");
+  expect(issuer.data.id).toBe(v.meta.issuer_id);
 });
 
 test("import a spreadsheet: map columns, totals must match or be accepted with a note", async () => {

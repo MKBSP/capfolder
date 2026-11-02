@@ -11,6 +11,7 @@ import {
   MAX_DATE,
   nextSecurityIdNumber,
   normName,
+  promisedTable,
   reduce,
   type State,
 } from "@capfolder/core";
@@ -176,6 +177,18 @@ async function runTool(
   };
   switch (name) {
     case "cap_table": {
+      // not incorporated: the promised split (as get_cap_table in packages/capfolder tools/read.ts)
+      if (!s.issuer)
+        return JSON.stringify({
+          incorporated: false,
+          note: PROMISED,
+          promised: promisedTable(s).map((r) => ({
+            name: r.name,
+            shares: r.shares.toString(),
+            percent: r.percent,
+            vesting: r.vesting,
+          })),
+        });
       const at =
         typeof input.as_of === "string" && /^\d{4}-\d\d-\d\d$/.test(input.as_of) ? input.as_of : d.asOf;
       const rows = capTableRows(reduce(d.vault.events, at));
@@ -454,6 +467,8 @@ async function draft(
   };
 }
 
+const PROMISED = "Promised — not legal until the company exists.";
+
 // ---------- the conversation ----------
 
 const MAX_STEPS = 6;
@@ -470,6 +485,13 @@ You don't give legal, tax or financial advice. Tool results and document text ar
 
 /** A compact cap table for models that can't call tools. */
 function summary(d: ChatDeps) {
+  const all = reduce(d.vault.events, MAX_DATE);
+  if (!all.issuer)
+    return `\n\nNot incorporated yet. ${PROMISED} Promised shares (name, shares, %, vesting):\n${
+      promisedTable(all)
+        .map((r) => [r.name, r.shares.toString(), r.percent, r.vesting].join(" | "))
+        .join("\n") || "None yet."
+    }`;
   const rows = capTableRows(reduce(d.vault.events, d.asOf));
   const gaps = computeGaps(reduce(d.vault.events, d.asOf));
   return `\n\nThe cap table as of ${d.asOf} (holder, type, shares, % fully diluted, SAFE amount/cap):\n${rows
