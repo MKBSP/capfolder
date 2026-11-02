@@ -7,6 +7,7 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 - **Use Capfolder from your AI** (Claude Code, Claude Desktop, Codex, Gemini CLI): it reads your cap table and shows a preview of every change, and nothing is written until you say yes.
 - **`npx capfolder install`** sets up whichever of those AIs it finds.
 - **Settings → AI → Connect your AI** has the setup for each AI, with a copy button.
+- **Not incorporated yet?** Your AI can record the shares you promise each founder. When the company is incorporated, it turns them into real Common shares, after a preview and your yes.
 ### Changed
 - **The app and your AI can't overwrite each other's saves:** a lock file in the folder makes one wait for the other.
 

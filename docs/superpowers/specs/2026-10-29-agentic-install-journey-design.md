@@ -28,7 +28,7 @@ Mads (2026-10-29): v1 is the command route only. ChatGPT and claude.ai wait for 
 3. The founder types **"Set up my cap table."** The Capfolder skill takes over and asks, one question at a time:
    1. **"Do you already have a company?"**
       - **Yes:** company name, country/state, and incorporation date.
-      - **Not yet incorporated:** the AI explains that Capfolder starts from the day the company is formed, offers the founder guide https://capfolder.com/guides/before-you-found/ and stops. It never invents a date (the record requires a formation date). *(our call)*
+      - **Not yet incorporated:** the AI asks the name they plan to use and where they plan to incorporate, creates the folder without a date, and records each founder's shares as promises ("Promised — not legal until the company exists"). It offers the founder guide https://capfolder.com/guides/before-you-found/ as further reading and never invents a date. When the company is incorporated, `record_incorporation` turns the promises into Common shares after a preview and a yes (CAP-61). *(our call)*
    2. **"Where should the folder live?"** Default `~/Documents/Capfolder/<Company>`. The AI creates it: `capfolder.json`, `events.jsonl`, `AGENTS.md`, `docs/`.
    3. **"Do you have a Capfolder Pro account?"** In v1 this is one line: "Pro is coming. You're on Free, which has everything here." No login. *(Pro isn't built.)*
    4. **The three setup questions** from the app: SAFEs? Option pool? Priced round? They decide which steps follow.
@@ -74,7 +74,7 @@ Mads (2026-10-29): v1 is the command route only. ChatGPT and claude.ai wait for 
 ## Our calls (Mads can overrule)
 - **One npm package, `capfolder`.** `npx -y capfolder mcp` runs the server, and `npx capfolder install` sets up whichever AI it finds. The Codex command becomes `codex mcp add capfolder -- npx -y capfolder mcp`. This replaces `@capfolder/mcp` in docs/21 and on page E.
 - **Website tabs:** Claude Code, Claude Desktop, Codex, Gemini CLI, Desktop app; ChatGPT shown as "Coming". The `npx capfolder install` tab is kept; the skills.sh tab is removed until the skill can install the engine itself.
-- **No company yet:** we stop and point to the founder guide; no folder is created (step 3.1).
+- **No company yet:** the folder is created without a date and founders' shares are recorded as promises; incorporation turns them into shares after a preview and a yes (step 3.1, CAP-61). The founder guide is offered as further reading.
 - **Folder default:** `~/Documents/Capfolder/<Company>`.
 - **Claude Desktop:** we ship the `.mcpb` from GitHub Releases. Directory listing comes later.
 - **How the server finds the folder:** `~/.capfolder/companies.json` lists every company folder with a `current` entry. `create_company` adds to it. The app adds every folder it opens to the same list, so door 1 needs no path in its command. With more than one company, the AI asks which one at the start ("switch to Acme" changes `current`). A `--vault <folder>` flag still overrides this.
