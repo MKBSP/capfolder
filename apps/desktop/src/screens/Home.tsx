@@ -254,6 +254,7 @@ function Promised() {
   const app = useApp();
   const rows = useMemo(() => (app.latest ? promisedTable(app.latest) : []), [app.latest]);
   const [incorporating, setIncorporating] = useState(false);
+  const asked = app.route.name === "home" && !!app.route.incorporate; // Get started → Record it
   const [errors, setErrors] = useState<string[] | null>(null);
   return (
     <main className="page">
@@ -308,7 +309,14 @@ function Promised() {
           </button>
         </div>
       </section>
-      {incorporating ? <IncorporateDialog onClose={() => setIncorporating(false)} /> : null}
+      {incorporating || asked ? (
+        <IncorporateDialog
+          onClose={() => {
+            setIncorporating(false);
+            if (asked) app.go({ name: "home" });
+          }}
+        />
+      ) : null}
     </main>
   );
 }

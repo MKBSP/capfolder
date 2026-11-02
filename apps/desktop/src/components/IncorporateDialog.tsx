@@ -24,6 +24,7 @@ export function IncorporateDialog(p: { onClose(): void }) {
   const [par, setPar] = useState("0.00001");
   const [termsId] = useState(() => b.newId("vt"));
   const [errors, setErrors] = useState<string[] | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const drafts = useMemo<EventDraft[] | null>(() => {
     if (!plan || !date || !num(authorized) || !num(par)) return null;
@@ -53,7 +54,8 @@ export function IncorporateDialog(p: { onClose(): void }) {
     if (!date) return setErrors(["Enter the date of incorporation."]);
     if (date > todayIso()) return setErrors(["The incorporation date can't be in the future."]);
     if (!drafts) return setErrors(["Enter the authorized shares and the par value."]);
-    const errs = await app.run(drafts);
+    setBusy(true);
+    const errs = await app.run(drafts).finally(() => setBusy(false));
     if (errs) return setErrors(errs);
     p.onClose();
   }
@@ -109,7 +111,7 @@ export function IncorporateDialog(p: { onClose(): void }) {
           <button type="button" className="btn" onClick={p.onClose}>
             Cancel
           </button>
-          <button type="button" className="btn primary" onClick={record}>
+          <button type="button" className="btn primary" onClick={record} disabled={busy}>
             Record incorporation
           </button>
         </div>

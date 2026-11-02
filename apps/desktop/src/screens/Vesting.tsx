@@ -33,6 +33,7 @@ export function Vesting() {
   const fd = useMemo(() => (s ? capTableTotals(capTableRows(s)).fullyDiluted : 0n), [s]);
   if (!s) return null;
   const pool = poolOverview(s);
+  const incorporated = !!app.latest?.issuer; // CAP-61: core refuses pools and grants before incorporation
   const price = fmv(s);
   const grants = [...s.securities.values()].filter(
     (x) => x.planId && x.kind === "equity" && (former || !x.stoppedAt),
@@ -54,9 +55,11 @@ export function Vesting() {
         <button type="button" className="btn" onClick={() => setAdding409a(true)}>
           {price ? `409A ${money(price.amount, price.currency)}` : "Add 409A"}
         </button>
-        <button type="button" className="btn primary" onClick={() => app.go({ name: "newGrant" })}>
-          + New grant
-        </button>
+        {incorporated ? (
+          <button type="button" className="btn primary" onClick={() => app.go({ name: "newGrant" })}>
+            + New grant
+          </button>
+        ) : null}
       </MainHeader>
       <main className="page">
         <div className="row wrap" style={{ alignItems: "baseline", gap: 12, marginBottom: 16 }}>
@@ -70,10 +73,16 @@ export function Vesting() {
         </div>
         {!pool ? (
           <div className="card">
-            <p>No option pool yet. Create one to grant options and follow their vesting here.</p>
-            <button type="button" className="btn primary" onClick={() => app.go({ name: "pool" })}>
-              Create the pool
-            </button>
+            {incorporated ? (
+              <>
+                <p>No option pool yet. Create one to grant options and follow their vesting here.</p>
+                <button type="button" className="btn primary" onClick={() => app.go({ name: "pool" })}>
+                  Create the pool
+                </button>
+              </>
+            ) : (
+              <p>Option pools and grants start once the company is incorporated.</p>
+            )}
           </div>
         ) : (
           <>

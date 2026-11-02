@@ -32,7 +32,7 @@ export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
         help: "Once the company is incorporated, every promise becomes real shares in one step.",
         done: false,
         action: "Record it",
-        to: { name: "home" },
+        to: { name: "home", incorporate: true },
       },
     ];
   const sec = [...s.securities.values()];

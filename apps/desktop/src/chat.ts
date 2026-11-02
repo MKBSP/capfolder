@@ -255,6 +255,8 @@ async function runTool(
     case "propose_person":
     case "propose_vesting":
     case "propose_plan": {
+      if (!s.issuer && name !== "propose_person")
+        return "SAFEs, option pools and grants start once the company is incorporated. For now you can promise shares.";
       const r = await draft(d, s, name, input);
       if ("error" in r) return `Draft not shown: ${r.error}`;
       out.drafts.push(r);

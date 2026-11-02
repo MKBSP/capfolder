@@ -12,7 +12,7 @@ import { addRecent, type Settings } from "./settings";
 
 export type Route =
   | { name: "welcome" | "email" | "create" | "start" | "wizard" | "people" | "vesting" | "import" }
-  | { name: "home"; tour?: boolean } // tour: Settings → Take the tour
+  | { name: "home"; tour?: boolean; incorporate?: boolean } // tour: Settings → Take the tour; incorporate: opens the dialog (CAP-61)
   | { name: "documents"; imported?: boolean }
   // prefill: a draft from Ask AI (docs/18) opens the form filled in; the founder still saves it
   | {

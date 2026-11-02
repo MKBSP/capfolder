@@ -4,6 +4,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
+import { askChat } from "../chat";
 import { todayIso } from "../fmt";
 import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
@@ -11,8 +12,8 @@ import { fakePlatform } from "../test/fakePlatform";
 const LABEL = "Promised — not legal until the company exists.";
 
 /** Opens a company created without an incorporation date. */
-async function planned() {
-  const fp = fakePlatform();
+async function planned(opts: Parameters<typeof fakePlatform>[0] = {}) {
+  const fp = fakePlatform(opts);
   const ctx = { now: () => new Date(), newId: () => builders.newId("evt"), deviceId: "dev_t" };
   const v = await createVault(fp.fs, ctx, {
     parent: "/home/me/Documents/capfolder",
@@ -24,7 +25,7 @@ async function planned() {
   );
   render(<App platform={fp.platform} />);
   await screen.findByRole("heading", { name: "Not incorporated yet" });
-  return { ...fp, root: v.root };
+  return { ...fp, root: v.root, vault: v, ctx };
 }
 
 async function promise(name: string, qty: string, vests = false) {
@@ -147,4 +148,74 @@ test("an incorporated company shows no promise UI", async () => {
   expect(screen.queryByText("Not incorporated yet")).toBeNull();
   expect(screen.queryByText(LABEL)).toBeNull();
   expect(screen.queryByRole("button", { name: "We're incorporated" })).toBeNull();
+});
+
+test("the vesting page waits for the incorporation", async () => {
+  await planned();
+  await userEvent.click(screen.getByRole("button", { name: "Vesting" }));
+  expect(
+    await screen.findByText("Option pools and grants start once the company is incorporated."),
+  ).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "+ New grant" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Create the pool" })).toBeNull();
+});
+
+test("Ask AI doesn't open a SAFE form before incorporation", async () => {
+  const calls: RequestInit[] = []; // the provider's requests only (the open app pings the relay too)
+  const answers = [
+    {
+      stop_reason: "tool_use",
+      content: [
+        { type: "tool_use", id: "t1", name: "propose_safe", input: { investor: "Bill Gates", amount: 1 } },
+      ],
+    },
+    { stop_reason: "end_turn", content: [{ type: "text", text: "Not yet." }] },
+  ];
+  const fp = await planned({
+    relay: {
+      fetch: async (url: string, init?: RequestInit) => {
+        if (!url.startsWith("https://api.anthropic.com/")) return new Response("{}", { status: 404 });
+        calls.push(init ?? {});
+        return new Response(JSON.stringify(answers[calls.length - 1] ?? {}));
+      },
+    },
+  });
+  await fp.platform.aiKey.set("anthropic", "sk-test");
+  const m = await askChat(
+    {
+      platform: fp.platform,
+      vault: fp.vault,
+      asOf: todayIso(),
+      ctx: fp.ctx,
+      currency: "USD",
+      looking: "Cap table",
+      chat: { provider: "anthropic", model: "claude-sonnet-5-5", cloudDocs: false },
+    },
+    [],
+    "Add a SAFE from Bill Gates",
+  );
+  expect(m.drafts ?? []).toEqual([]);
+  expect(String(calls[1]!.body)).toContain(
+    "SAFEs, option pools and grants start once the company is incorporated. For now you can promise shares.",
+  );
+});
+
+test("Get started's Record it opens the incorporation", async () => {
+  await planned();
+  const card = screen.getByRole("group", { name: /Get started/ });
+  await userEvent.click(within(card).getByRole("button", { name: "Record it" }));
+  expect(await screen.findByRole("dialog", { name: "Record the incorporation" })).toBeInTheDocument();
+});
+
+test("Record incorporation can't be clicked twice while it saves", async () => {
+  await planned();
+  await userEvent.click(screen.getByRole("button", { name: "We're incorporated" }));
+  const dialog = screen.getByRole("dialog");
+  fireEvent.change(within(dialog).getByLabelText("Date of incorporation"), {
+    target: { value: "2026-03-03" },
+  });
+  const button = within(dialog).getByRole("button", { name: "Record incorporation" });
+  fireEvent.click(button);
+  expect(button).toBeDisabled();
+  expect(await screen.findByText("Fully diluted")).toBeInTheDocument();
 });
