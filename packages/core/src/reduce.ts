@@ -359,16 +359,21 @@ export function reduce(events: VaultEvent[], asOf: string): State {
           };
         break;
       case "shares_promised": {
-        const q = qty(e, "quantity");
-        if (q === undefined) break;
-        s.promises.set(d.promise_id, {
-          id: d.promise_id,
-          eventId: e.id,
-          stakeholderId: d.stakeholder_id,
-          quantity: q,
-          vesting: d.vesting,
-          ...(d.vesting_start ? { vestingStart: d.vesting_start } : {}),
-        });
+        const named = { ...e, data: { ...d, id: d.promise_id } }; // violations name the promise
+        const q = qty(named, "quantity");
+        if (!s.stakeholders.has(d.stakeholder_id))
+          s.violations.push(`${e.type} ${d.promise_id} refers to unknown stakeholder ${d.stakeholder_id}`);
+        else if (d.vesting !== "4y_1y_cliff" && d.vesting !== "none")
+          fail(named, "vesting must be 4y_1y_cliff or none");
+        else if (q !== undefined)
+          s.promises.set(d.promise_id, {
+            id: d.promise_id,
+            eventId: e.id,
+            stakeholderId: d.stakeholder_id,
+            quantity: q,
+            vesting: d.vesting,
+            ...(d.vesting_start ? { vestingStart: d.vesting_start } : {}),
+          });
         break;
       }
       case "promise_kept":

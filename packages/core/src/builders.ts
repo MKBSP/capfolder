@@ -265,7 +265,10 @@ export function incorporation(p: {
     out.push(common);
   }
   const promises = [...p.state.promises.values()];
-  if (p.terms && promises.some((x) => x.vesting !== "none")) out.push(...p.terms.drafts);
+  if (promises.some((x) => x.vesting !== "none")) {
+    if (!p.terms) throw new Error("Vesting terms are needed for promises that vest.");
+    out.push(...p.terms.drafts);
+  }
   const date = p.issueDate ?? p.date;
   const n = nextSecurityIdNumber(p.state, "CS");
   promises.forEach((x, i) => {
@@ -280,8 +283,8 @@ export function incorporation(p: {
         currency: p.currency,
         date,
         securityId,
-        ...(x.vesting !== "none" && p.terms
-          ? { vestingTermsId: p.terms.id, vestingStart: x.vestingStart ?? date }
+        ...(x.vesting !== "none"
+          ? { vestingTermsId: p.terms!.id, vestingStart: x.vestingStart ?? date }
           : {}),
       }),
       app("promise_kept", { promise_id: x.id, security_id: securityId }),

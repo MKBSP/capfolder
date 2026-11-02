@@ -363,7 +363,8 @@ function SheetReview(p: {
   onBack(): void;
 }) {
   const { busy, errors, save } = useSave(p.file);
-  const { currency } = useApp();
+  const { currency, latest } = useApp();
+  const incorporated = !!latest?.issuer;
   const [preferred, setPreferred] = useState<Record<string, boolean>>({});
   const [theirs, setTheirs] = useState<Record<string, string>>({});
   const [exportDate, setExportDate] = useState(todayIso());
@@ -385,8 +386,21 @@ function SheetReview(p: {
         date1904: p.date1904,
         currency,
         decimalMark: formatConfig().decimalMark,
+        incorporated,
       }),
-    [p.header, p.body, p.mapping, p.firstRow, exportDate, authorized, pool, preferred, p.date1904, currency],
+    [
+      p.header,
+      p.body,
+      p.mapping,
+      p.firstRow,
+      exportDate,
+      authorized,
+      pool,
+      preferred,
+      p.date1904,
+      currency,
+      incorporated,
+    ],
   );
   const move = MOVES[p.from];
   const tool = move?.tool ?? "your old tool";

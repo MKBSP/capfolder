@@ -3,6 +3,7 @@ import { type AppendCtx, appendEvents } from "../src/append";
 import * as b from "../src/builders";
 import { verifyChain } from "../src/chain";
 import { MAX_DATE } from "../src/dates";
+import { previewDrafts } from "../src/import/build";
 import { checkInvariants } from "../src/invariants";
 import { reduce } from "../src/reduce";
 import { promisedTable } from "../src/rows";
@@ -139,4 +140,64 @@ test("an incorporated vault is unchanged", () => {
   const s = reduce(acmeEvents(), MAX_DATE);
   expect(s.planned).toBeUndefined();
   expect(s.promises.size).toBe(0);
+});
+
+test("incorporation needs vesting terms when a promise vests", async () => {
+  const log = await planned(timAndSteve());
+  const s = await state(log);
+  const p = { state: s, issuerId: "iss_A", name: "Acme, Inc.", country: "US", subdivision: "DE" };
+  const base = { ...p, date: "2026-03-03", authorized: "10000000", parValue: "0.00001" };
+  expect(() => b.incorporation({ ...base, terms: null })).toThrow(
+    "Vesting terms are needed for promises that vest.",
+  );
+});
+
+test("a promise to an unknown person, or with an unknown vesting, is a violation", async () => {
+  const bad = [
+    b.sharesPromised({ stakeholderId: "sh_nobody", quantity: "10", vesting: "none" }),
+    b.sharesPromised({ stakeholderId: "sh_tim", quantity: "10", vesting: "none" }),
+    b.sharesPromised({ stakeholderId: "sh_tim", quantity: "x", vesting: "none" }),
+  ];
+  bad[1]!.data.vesting = "2y";
+  const [a, c, d] = bad.map((x) => x.data.promise_id);
+  const s = reduce(
+    [
+      ...(await events(await planned([]))),
+      ...bad.map((x, i) => ({
+        seq: 100 + i,
+        id: `evt_bad${i}`,
+        ts: "2026-10-10T00:00:00Z",
+        kind: "app" as const,
+        type: x.type,
+        data: x.data,
+        meta: { source: "test" },
+        prev: "",
+        hash: "",
+      })),
+    ],
+    MAX_DATE,
+  );
+  expect(s.promises.size).toBe(0);
+  expect(s.violations).toEqual([
+    `shares_promised ${a} refers to unknown stakeholder sh_nobody`,
+    `shares_promised ${c}: vesting must be 4y_1y_cliff or none`,
+    expect.stringMatching(new RegExp(`^shares_promised ${d}: `)),
+  ]);
+});
+
+test("an import preview into a not-incorporated vault reports it", () => {
+  const drafts = [
+    b.stakeholder({ id: "sh_tim", name: "Tim Apple", type: "INDIVIDUAL" }),
+    b.stockClass({ id: "sc_c", name: "Common", authorized: "1000" }),
+    ...b.stockIssuance({
+      state: reduce([], MAX_DATE),
+      stakeholderId: "sh_tim",
+      classId: "sc_c",
+      quantity: "10",
+      price: "0",
+      date: "2026-03-03",
+    }),
+  ];
+  expect(previewDrafts(drafts, "2026-03-03", [], false).violations).toEqual([NOT_INCORPORATED]);
+  expect(previewDrafts(drafts, "2026-03-03").violations).toEqual([]);
 });

@@ -25,6 +25,7 @@ export interface ImportInput {
   date1904?: boolean; // the workbook counts serial dates from 1904 (old Mac Excel)
   decimalMark?: "." | ","; // the founder's own, used when the file doesn't make it clear
   currency?: string; // the company currency for prices and SAFE amounts (default USD)
+  incorporated?: boolean; // the vault has an ISSUER (default true)
 }
 
 export interface ImportSummary {
@@ -475,7 +476,7 @@ export function buildImport(p: ImportInput): ImportResult {
   for (const d of [...classDrafts, ...planDrafts])
     for (const e of validateOcf(d.data)) issues.push(`${d.data.name ?? d.data.plan_name}: ${e}`);
 
-  const preview = previewDrafts(drafts, p.exportDate);
+  const preview = previewDrafts(drafts, p.exportDate, [], p.incorporated);
   for (const v of preview.violations) if (!issues.includes(v)) issues.push(v);
   const { rows, totals } = preview;
   return {
@@ -580,7 +581,12 @@ export function reconcile(
 }
 
 /** The cap table these drafts would give, and any invariant they'd break, without writing anything. */
-export function previewDrafts(drafts: EventDraft[], asOf: string, before: VaultEvent[] = []) {
+export function previewDrafts(
+  drafts: EventDraft[],
+  asOf: string,
+  before: VaultEvent[] = [],
+  incorporated = true, // the vault has an ISSUER that `before` doesn't carry
+) {
   const events: VaultEvent[] = [
     ...before,
     ...drafts.map((d, i) => ({
@@ -597,7 +603,7 @@ export function previewDrafts(drafts: EventDraft[], asOf: string, before: VaultE
   ];
   const s = reduce(events, "9999-12-31");
   const rows = capTableRows(s);
-  // Imported drafts carry no ISSUER (the vault has it); appendEvents still refuses a not-incorporated vault.
-  const violations = checkInvariants(s).filter((v) => !(v === NOT_INCORPORATED && !before.length));
+  // Imported drafts carry no ISSUER: when the vault has one, the guard doesn't apply.
+  const violations = checkInvariants(s).filter((v) => !(incorporated && v === NOT_INCORPORATED));
   return { rows, totals: capTableTotals(rows), violations };
 }
