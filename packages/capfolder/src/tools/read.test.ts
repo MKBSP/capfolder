@@ -181,6 +181,7 @@ test("read_document returns the PDF text, framed as data", async () => {
 test("read_document refuses paths outside docs/ and symlinks out of the vault", async () => {
   await registerCompany(fs, home, { name: "Acme Inc.", root });
   await writeFile(join(home, "secret.txt"), "secret");
+  await mkdir(join(root, "docs"), { recursive: true });
   await symlink(join(home, "secret.txt"), join(root, "docs/leak.pdf"));
   const c = await connect();
   for (const path of ["../events.jsonl", "/etc/hosts", "docs/../events.jsonl", "docs/leak.pdf"]) {
