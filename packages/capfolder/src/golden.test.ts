@@ -172,3 +172,39 @@ test("the acme vault, rebuilt entirely by tool calls, matches captable.expected.
     expect(g.join(","), `row ${i}`).toBe(w.join(","));
   }
 });
+
+test("scenario: promise then incorporate", async () => {
+  const fs = new NodeFs();
+  const home = await mkdtemp(join(tmpdir(), "capfolder-home-"));
+  const parent = await mkdtemp(join(tmpdir(), "capfolder-golden-"));
+  let n = 0;
+  const server = createServer({
+    fs,
+    home,
+    ctx: { now: () => new Date("2026-10-07T12:00:00Z"), newId: () => `evt_p${++n}`, deviceId: "test" },
+  });
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  const client = new Client({ name: "golden", version: "0" }, {});
+  await Promise.all([server.connect(a), client.connect(b)]);
+  const call = async (name: string, args: Args) =>
+    (await client.callTool({ name, arguments: args })) as unknown as R;
+  const write = async (name: string, args: Args) => {
+    const p = await call(name, { ...args, confirm: false });
+    const id = p.structuredContent?.preview_id as string;
+    if (!id) throw new Error(`no preview for ${name}: ${p.content[0]?.text}`);
+    const r = await call(name, { ...args, confirm: true, preview_id: id });
+    expect(r.content[0]?.text, name).toMatch(/^Recorded/);
+  };
+
+  await write("create_company", { name: "Acme", country: "US", subdivision: "DE", folder: parent });
+  await write("promise_shares", { person: "Tim Apple", shares: "6000000", vesting: "4y_1y_cliff" });
+  await write("promise_shares", { person: "Steve Wozniak", shares: "4000000", vesting: "none" });
+  await write("record_incorporation", { date: "2026-03-03" });
+  const t = await call("get_cap_table", { as_of: "2026-03-03" });
+  const rows = t.structuredContent?.rows as { group: number; stakeholder: string; fdPercent: string }[];
+  const stock = rows.filter((r) => r.group === 0).map((r) => [r.stakeholder, r.fdPercent]);
+  expect(stock.sort()).toEqual([
+    ["Steve Wozniak", "40.00"],
+    ["Tim Apple", "60.00"],
+  ]);
+});

@@ -1,8 +1,8 @@
 import { cp, mkdir, mkdtemp, readdir, readFile, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { computeGaps, reduce, verifyChain } from "@capfolder/core";
-import { registerCompany } from "@capfolder/vault";
+import { builders as b, computeGaps, reduce, verifyChain } from "@capfolder/core";
+import { appendToVault, createVault, registerCompany } from "@capfolder/vault";
 import { NodeFs } from "@capfolder/vault/src/fs/node";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
@@ -199,4 +199,37 @@ test("a broken record still answers, and says where it broke", async () => {
   const r = await call(await connect(), "list_people");
   expect(text(r)).toMatch(/The record is broken at line 10/);
   expect(text(r)).toContain("Tim Apple");
+});
+
+test("get_cap_table lists promised shares before incorporation", async () => {
+  const parent = await mkdtemp(join(tmpdir(), "capfolder-parent-"));
+  let n = 0;
+  const ids = { ...ctx, newId: () => `evt_p${++n}` }; // distinct event ids: the shared ctx reuses one
+  let v = await createVault(fs, ids, { parent, company: { name: "Acme", country: "US", subdivision: "DE" } });
+  const tim = b.stakeholder({ name: "Tim Apple", type: "INDIVIDUAL" });
+  const woz = b.stakeholder({ name: "Steve Wozniak", type: "INDIVIDUAL" });
+  const [t, w] = [tim, woz].map((x) => x.data.id as string);
+  const out = await appendToVault(
+    fs,
+    v,
+    [
+      tim,
+      woz,
+      b.sharesPromised({ stakeholderId: t!, quantity: "6000000", vesting: "4y_1y_cliff" }),
+      b.sharesPromised({ stakeholderId: w!, quantity: "4000000", vesting: "none" }),
+    ],
+    ids,
+  );
+  if (!out.ok) throw new Error(out.errors.join(" "));
+  v = out.vault;
+  const r = await call(await connect(v.root), "get_cap_table");
+  expect(text(r)).toBe(
+    "Acme isn't incorporated yet. Promised shares (Promised — not legal until the company exists):\n" +
+      "- Tim Apple: 6,000,000 shares, 60.00%, 4 years, 1-year cliff\n" +
+      "- Steve Wozniak: 4,000,000 shares, 40.00%, No vesting",
+  );
+  expect(r.structuredContent?.promised).toMatchObject([
+    { name: "Tim Apple", shares: "6000000", percent: "60.00", vesting: "4 years, 1-year cliff" },
+    { name: "Steve Wozniak", shares: "4000000", percent: "40.00", vesting: "No vesting" },
+  ]);
 });

@@ -61,7 +61,10 @@ const WRITE_TOOLS = [
   "create_option_pool",
   "file_document",
   "issue_shares",
+  "promise_shares",
+  "record_incorporation",
   "set_setup_answers",
+  "withdraw_promise",
 ];
 
 test("the write tools are listed with their annotations", async () => {
@@ -149,7 +152,7 @@ test("a preview id only confirms the tool that made it", async () => {
   expect(await log()).toBe(before);
 });
 
-test("create_company: the app's name error, a missing formation date, and a real company", async () => {
+test("create_company: the app's name error and a real company", async () => {
   const c = await connect();
   const parent = await mkdtemp(join(tmpdir(), "capfolder-parent-"));
   const bad = await call(c, "create_company", {
@@ -160,18 +163,6 @@ test("create_company: the app's name error, a missing formation date, and a real
     confirm: false,
   });
   expect(text(bad)).toBe("A company name can't contain / or \\ or start with a dot.");
-
-  const noDate = await call(c, "create_company", {
-    name: "Beta Inc",
-    country: "US",
-    folder: parent,
-    confirm: false,
-  });
-  expect(previewId(noDate)).toBeUndefined();
-  expect(text(noDate)).toBe(
-    "Capfolder starts from the day your company is formed. Once it's incorporated, tell me the date and I'll set it up.",
-  );
-  expect(await readdir(parent)).toEqual([]);
 
   const r = await write(c, "create_company", {
     name: "Beta Inc",
@@ -455,4 +446,162 @@ test("a SAFE discount is a percent, stored as the app stores it", async () => {
     confirm: false,
   });
   expect(previewId(bad)).toBeUndefined();
+});
+
+// ---------- before incorporation (CAP-61) ----------
+
+const PROMISED = "Promised — not legal until the company exists.";
+const ev = (r: string) => readVault(fs, r).then((v) => v.events);
+
+/** A company created without a date: not incorporated, and the current company. */
+async function notIncorporated(c: Client, name = "Acme") {
+  const parent = await mkdtemp(join(tmpdir(), "capfolder-parent-"));
+  const r = await write(c, "create_company", { name, country: "US", subdivision: "DE", folder: parent });
+  expect(text(r)).toMatch(/^Recorded/);
+  return join(parent, name);
+}
+
+test("create_company without a date creates a not-incorporated company", async () => {
+  const c = await connect();
+  const parent = await mkdtemp(join(tmpdir(), "capfolder-parent-"));
+  const p = await call(c, "create_company", {
+    name: "Acme",
+    country: "US",
+    subdivision: "DE",
+    folder: parent,
+    confirm: false,
+  });
+  expect(text(p)).toContain(
+    `Creates the company Acme (not incorporated yet, plans US-DE, currency USD) in a new folder ${join(parent, "Acme")}`,
+  );
+  await call(c, "create_company", { name: "Acme", country: "US", confirm: true, preview_id: previewId(p) });
+  expect((await ev(join(parent, "Acme"))).map((e) => e.type)).toEqual(["vault_created"]);
+  expect(text(await call(c, "get_cap_table"))).toMatch(/^Acme isn't incorporated yet\./);
+  const future = await call(c, "create_company", {
+    name: "Later",
+    country: "US",
+    formation_date: "2026-10-08",
+    folder: parent,
+    confirm: false,
+  });
+  expect(text(future)).toBe("The incorporation date can't be in the future.");
+});
+
+test("promise_shares previews, then records a promise", async () => {
+  const c = await connect();
+  const r = await notIncorporated(c);
+  const p = await call(c, "promise_shares", { person: "Tim Apple", shares: "6000000", confirm: false });
+  expect(text(p)).toContain("Promises 6,000,000 shares to Tim Apple");
+  expect(text(p)).toContain(`, vesting 4 years with a 1-year cliff, monthly. ${PROMISED}`);
+  expect((await ev(r)).map((e) => e.type)).toEqual(["vault_created"]);
+  const ok = await call(c, "promise_shares", {
+    person: "Tim Apple",
+    shares: "6000000",
+    confirm: true,
+    preview_id: previewId(p),
+  });
+  expect(text(ok)).toMatch(/^Recorded/);
+  const promise = (await ev(r)).at(-1)!;
+  expect(promise.type).toBe("shares_promised");
+  expect(promise.data).toMatchObject({ quantity: "6000000", vesting: "4y_1y_cliff" });
+  const none = await call(c, "promise_shares", {
+    person: "Steve Wozniak",
+    shares: "4000000",
+    vesting: "none",
+    confirm: false,
+  });
+  expect(text(none)).toContain(
+    `4,000,000 shares to Steve Wozniak (new on the cap table), with no vesting. ${PROMISED}`,
+  );
+});
+
+test("promise_shares refuses once incorporated", async () => {
+  const before = await log();
+  const r = await call(await connect(), "promise_shares", { person: "sh_tim", shares: "10", confirm: false });
+  expect(text(r)).toBe("Acme Inc. is incorporated: use issue_shares.");
+  expect(previewId(r)).toBeUndefined();
+  expect(await log()).toBe(before);
+});
+
+test("withdraw_promise reverses the open promise", async () => {
+  const c = await connect();
+  const r = await notIncorporated(c);
+  await write(c, "promise_shares", { person: "Tim Apple", shares: "6000000" });
+  const promise = (await ev(r)).at(-1)!;
+  const w = await write(c, "withdraw_promise", { person: "Tim Apple" });
+  expect(text(w)).toMatch(/^Recorded/);
+  const last = (await ev(r)).at(-1)!;
+  expect(last).toMatchObject({ type: "reversal", data: { target: promise.id } });
+  expect(text(await call(c, "get_cap_table"))).not.toContain("Tim Apple");
+  const again = await call(c, "withdraw_promise", { person: "Tim Apple", confirm: false });
+  expect(text(again)).toBe("Tim Apple has no open promise.");
+  const nobody = await call(c, "withdraw_promise", { person: "Bill Gates", confirm: false });
+  expect(text(nobody)).toBe("Bill Gates has no open promise.");
+});
+
+test("record_incorporation turns promises into shares", async () => {
+  const c = await connect();
+  const r = await notIncorporated(c);
+  await write(c, "promise_shares", { person: "Tim Apple", shares: "6000000", vesting_start: "2026-03-03" });
+  await write(c, "promise_shares", { person: "Steve Wozniak", shares: "4000000", vesting: "none" });
+  const p = await call(c, "record_incorporation", { date: "2026-10-01", confirm: false });
+  expect(text(p)).toContain("Tim Apple: 6,000,000 Common shares (CS-1), vesting from 2026-03-03.");
+  expect(text(p)).toContain("Steve Wozniak: 4,000,000 Common shares (CS-2), no vesting.");
+  expect(text(p)).toContain("File the 83(b) within 30 days of 2026-10-01: by 2026-10-31.");
+  await call(c, "record_incorporation", { date: "2026-10-01", confirm: true, preview_id: previewId(p) });
+  const events = await ev(r);
+  const meta = JSON.parse(await readFile(join(r, "capfolder.json"), "utf8"));
+  expect(events.find((e) => e.type === "ISSUER")?.data).toMatchObject({
+    id: meta.issuer_id,
+    legal_name: "Acme",
+    formation_date: "2026-10-01",
+    country_of_formation: "US",
+    country_subdivision_of_formation: "DE",
+  });
+  const issued = events.filter((e) => e.type === "TX_STOCK_ISSUANCE").map((e) => e.data);
+  expect(issued).toMatchObject([
+    { security_id: "CS-1", quantity: "6000000", share_price: { amount: "0.00001" } },
+    { security_id: "CS-2", quantity: "4000000" },
+  ]);
+  expect(text(await call(c, "get_cap_table"))).toContain("Tim Apple,common,Common,6000000");
+});
+
+test("record_incorporation prices the shares at an existing class's par value", async () => {
+  const c = await connect();
+  const r = await notIncorporated(c);
+  await write(c, "add_share_class", { name: "Common", authorized: "20000000", par_value: "0.0001" });
+  await write(c, "promise_shares", { person: "Tim Apple", shares: "1000", vesting: "none" });
+  await write(c, "record_incorporation", { date: "2026-03-03" });
+  const issued = (await ev(r)).find((e) => e.type === "TX_STOCK_ISSUANCE");
+  expect(issued?.data.share_price).toMatchObject({ amount: "0.0001" });
+});
+
+test("record_incorporation refuses when already incorporated", async () => {
+  const c = await connect();
+  const before = await log();
+  const r = await call(c, "record_incorporation", { date: "2026-03-03", confirm: false });
+  expect(text(r)).toBe("Acme Inc. is already incorporated.");
+  expect(await log()).toBe(before);
+  const mine = await notIncorporated(c);
+  await write(c, "record_incorporation", { date: "2026-03-03" });
+  const again = await call(c, "record_incorporation", { date: "2026-03-03", confirm: false });
+  expect(text(again)).toBe("Acme is already incorporated.");
+  expect((await ev(mine)).filter((e) => e.type === "ISSUER")).toHaveLength(1);
+  const w = await call(c, "withdraw_promise", { person: "Tim Apple", confirm: false });
+  expect(text(w)).toBe("Acme is incorporated: its promises are shares now.");
+});
+
+test("record_incorporation refuses a future date and an issue date before it", async () => {
+  const c = await connect();
+  await notIncorporated(c);
+  const future = await call(c, "record_incorporation", { date: "2026-10-08", confirm: false });
+  expect(text(future)).toBe("The incorporation date can't be in the future.");
+  const early = await call(c, "record_incorporation", {
+    date: "2026-03-03",
+    issue_date: "2026-03-02",
+    confirm: false,
+  });
+  expect(text(early)).toBe("Shares can't be issued before the company exists.");
+  expect(previewId(future)).toBeUndefined();
+  expect(previewId(early)).toBeUndefined();
 });

@@ -35,7 +35,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { currentVault, type ServerOpts } from "../context";
 import { PreviewStore } from "../preview";
-import { NO_COMPANY, reply, todayOf } from "./read";
+import { NO_COMPANY, PROMISED, reply, todayOf } from "./read";
 
 export const SHOW_FIRST =
   "Show the preview first: call this tool with confirm:false, show the founder the preview, and call it with confirm:true and the preview_id only after they say yes. Nothing was recorded.";
@@ -80,8 +80,6 @@ const plus30 = (d: string) => {
   const [y, m, dd] = d.split("-").map(Number) as [number, number, number];
   return new Date(Date.UTC(y, m - 1, dd + 30)).toISOString().slice(0, 10);
 };
-export const NO_FORMATION_DATE =
-  "Capfolder starts from the day your company is formed. Once it's incorporated, tell me the date and I'll set it up.";
 export const FULL_PATH = "Give the full path, e.g. ~/Documents/…";
 /** The MCP host's working folder is unknown (often /), so only ~ or absolute paths mean what the founder meant. */
 const fullPath = (p: string, home: string) =>
@@ -260,7 +258,11 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
           .string()
           .optional()
           .describe("State or region code, e.g. DE for Delaware. Leave out if none."),
-        formation_date: date.optional().describe("Date of incorporation, YYYY-MM-DD."),
+        formation_date: date
+          .optional()
+          .describe(
+            "Date of incorporation, YYYY-MM-DD. Leave out if the company isn't incorporated yet: shares can then be promised (promise_shares) until record_incorporation.",
+          ),
         folder: z
           .string()
           .optional()
@@ -278,9 +280,9 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         return confirm("create_company", a.preview_id, NEW_COMPANY, await sha256Hex(""), null);
       }
       const name = a.name.trim();
-      // the record format (OCF Issuer) requires a formation date: never invent one
-      if (!a.formation_date) return reply(NO_FORMATION_DATE);
-      if (a.formation_date > todayOf(o)) return reply("The incorporation date can't be in the future.");
+      // no date = not incorporated yet: no ISSUER (OCF requires its formation date), never an invented one
+      if (a.formation_date && a.formation_date > todayOf(o))
+        return reply("The incorporation date can't be in the future.");
       const parent = fullPath(a.folder ?? "~/Documents/Capfolder", o.home);
       if (!parent) return reply(FULL_PATH);
       const company = {
@@ -298,7 +300,10 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         return reply((e as Error).message);
       }
       const where = [company.country, company.subdivision].filter(Boolean).join("-");
-      const summary = `Creates the company ${name} (incorporated ${a.formation_date}, ${where}, currency ${company.currency ?? "USD"}) in a new folder ${join(parent, name)}, and makes it the current company.`;
+      const status = a.formation_date
+        ? `incorporated ${a.formation_date}, ${where}`
+        : `not incorporated yet, plans ${where}`;
+      const summary = `Creates the company ${name} (${status}, currency ${company.currency ?? "USD"}) in a new folder ${join(parent, name)}, and makes it the current company.`;
       return preview(
         "create_company",
         NEW_COMPANY,
@@ -605,6 +610,125 @@ export function registerWriteTools(server: McpServer, o: ServerOpts) {
         summary: `Records a 409A valuation of ${a.price} ${c.currency} per common share, effective ${day}${provider ? `, by ${provider}` : ""}.`,
         drafts: [b.valuation409a({ price: a.price, date: day, classId, provider, currency: c.currency })],
       };
+    },
+  );
+
+  // ---------- before incorporation (CAP-61): promises, then the incorporation ----------
+
+  const coName = (s: State) => String(s.issuer?.legal_name ?? s.planned?.name ?? "The company");
+
+  vaultTool(
+    "promise_shares",
+    "Promise shares",
+    `Before the company is incorporated: records shares promised to a founder or early team member. They become real shares with record_incorporation. ${PROMISED}`,
+    {
+      person: personArg,
+      email: z.string().optional().describe("Only for a new person."),
+      shares: count,
+      vesting: vestingArg,
+      vesting_start: date.optional().describe("Vesting start date. Default: the date the shares are issued."),
+    },
+    (a, c) => {
+      if (c.s.issuer) return `${coName(c.s)} is incorporated: use issue_shares.`;
+      const who = personFor(c.s, a.person, a.email, "INDIVIDUAL");
+      const vests = a.vesting === "none" ? "with no vesting" : "vesting 4 years with a 1-year cliff, monthly";
+      const from = a.vesting !== "none" && a.vesting_start ? `, from ${a.vesting_start}` : "";
+      return {
+        summary: `Promises ${n(a.shares)} shares to ${who.name}${who.note}, ${vests}${from}. ${PROMISED}`,
+        drafts: [
+          ...who.drafts,
+          b.sharesPromised({
+            stakeholderId: who.id,
+            quantity: a.shares,
+            vesting: a.vesting,
+            vestingStart: a.vesting === "none" ? undefined : a.vesting_start,
+          }),
+        ],
+      };
+    },
+  );
+
+  vaultTool(
+    "withdraw_promise",
+    "Withdraw promise",
+    "Before the company is incorporated: withdraws the shares promised to a person (all their open promises).",
+    { person: personArg },
+    (a, c) => {
+      if (c.s.issuer) return `${coName(c.s)} is incorporated: its promises are shares now.`;
+      const who = personFor(c.s, a.person, undefined, "INDIVIDUAL");
+      const open = who.drafts.length
+        ? []
+        : [...c.s.promises.values()].filter((x) => x.stakeholderId === who.id);
+      if (!open.length) return `${who.name} has no open promise.`;
+      const total = open.reduce((t, x) => t + x.quantity, 0n);
+      return {
+        summary: `Withdraws the ${fmtInt(total)} shares promised to ${who.name}. Nothing else changes.`,
+        drafts: open.map((x) => b.reversal({ target: x.eventId, reason: "Promise withdrawn" })),
+      };
+    },
+  );
+
+  vaultTool(
+    "record_incorporation",
+    "Record the incorporation",
+    "The company is now incorporated: records it, sets up Common shares if there are none, and turns every open promise into Common shares at par value, in one step.",
+    {
+      date: date.describe("Date of incorporation, YYYY-MM-DD (on the certificate of incorporation)."),
+      legal_name: z.string().optional().describe("The legal name, if it changed. Default: the planned name."),
+      country: z.string().length(2).optional().describe("ISO 3166-1 alpha-2. Default: the planned country."),
+      subdivision: z.string().optional().describe("State or region code. Default: the planned one."),
+      authorized: count.default("10000000").describe("Authorized Common shares. Default 10000000."),
+      par_value: decimal.default("0.00001").describe("Par value per share. Default 0.00001."),
+      issue_date: date
+        .optional()
+        .describe(
+          "When the promised shares are issued (the stock purchase agreement date). Default: the incorporation date.",
+        ),
+    },
+    (a, c) => {
+      if (c.s.issuer) return `${coName(c.s)} is already incorporated.`;
+      if (a.date > c.today) return "The incorporation date can't be in the future.";
+      if (a.issue_date && a.issue_date < a.date) return "Shares can't be issued before the company exists.";
+      const plan = c.s.planned;
+      if (!plan) return "This folder has no planned company to incorporate. Restore it from your backup.";
+      const name = a.legal_name?.trim() || plan.name;
+      const country = a.country?.toUpperCase() ?? plan.country;
+      const subdivision = a.subdivision?.trim().toUpperCase() ?? plan.subdivision;
+      const cls = classFor(c.s);
+      // a class set up before incorporation keeps its own par value: the shares are priced at it, as issue_shares does
+      const parValue = cls ? String(cls.data.par_value?.amount ?? "0") : a.par_value;
+      const drafts = b.incorporation({
+        state: c.s,
+        issuerId: plan.issuer_id,
+        name,
+        country,
+        subdivision,
+        date: a.date,
+        issueDate: a.issue_date,
+        authorized: a.authorized,
+        parValue,
+        currency: c.currency,
+        terms: standardTerms(c.s), // only written if a promise vests
+      });
+      const day = a.issue_date ?? a.date;
+      const kept = new Map(
+        drafts.filter((d) => d.type === "promise_kept").map((d) => [d.data.promise_id, d.data.security_id]),
+      );
+      const cname = cls?.data.name ?? "Common";
+      const lines = [...c.s.promises.values()].map(
+        (x) =>
+          `${nameOf(c.s, x.stakeholderId)}: ${fmtInt(x.quantity)} ${cname} shares (${kept.get(x.id)}), ${x.vesting === "none" ? "no vesting" : `vesting from ${x.vestingStart ?? day}`}.`,
+      );
+      const vests = [...c.s.promises.values()].some((x) => x.vesting !== "none");
+      const where = [country, subdivision].filter(Boolean).join("-");
+      const head = `Records the incorporation of ${name} on ${a.date} (${where}). ${
+        cls
+          ? `Uses the existing ${cname} shares, par value ${parValue} ${c.currency}.`
+          : `Sets up Common shares: ${n(a.authorized)} authorized, par value ${parValue} ${c.currency}.`
+      } ${lines.length ? `The promised shares are issued on ${day} at par:` : "There are no promised shares to issue."}`;
+      const warn =
+        vests && plus30(day) >= c.today ? `File the 83(b) within 30 days of ${day}: by ${plus30(day)}.` : "";
+      return { summary: [head, ...lines, warn].filter(Boolean).join("\n"), drafts };
     },
   );
 
