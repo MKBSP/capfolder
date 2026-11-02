@@ -158,3 +158,10 @@ test("OCF records the engine can't apply yet are refused up front, all listed, n
     ],
   });
 });
+
+test("ctx.source names who wrote the event; the app is the default", async () => {
+  const app = await appendEvent(log, stakeholder, ctx);
+  const agent = await appendEvent(log, stakeholder, { ...ctx, source: "agent" });
+  expect(app.ok && app.event.meta).toMatchObject({ source: "app", device_id: "dev_test" });
+  expect(agent.ok && agent.event.meta).toMatchObject({ source: "agent", device_id: "dev_test" });
+});

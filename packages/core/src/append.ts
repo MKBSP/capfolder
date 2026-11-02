@@ -11,6 +11,8 @@ export interface AppendCtx {
   now(): Date;
   newId(): string;
   deviceId: string;
+  /** Who writes: "app" (default) or "agent". */
+  source?: string;
 }
 export const defaultCtx = (deviceId: string): AppendCtx => ({
   now: () => new Date(),
@@ -40,7 +42,7 @@ export async function appendEvent(log: string, draft: EventDraft, ctx: AppendCtx
     kind: draft.kind,
     type: draft.type,
     data: draft.data,
-    meta: { source: "app", device_id: ctx.deviceId, ...draft.meta },
+    meta: { source: ctx.source ?? "app", device_id: ctx.deviceId, ...draft.meta },
     prev: last?.hash ?? GENESIS,
   };
   const event: VaultEvent = { ...base, hash: await hashEvent(base) };

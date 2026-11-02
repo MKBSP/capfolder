@@ -1,9 +1,10 @@
 import { homedir } from "node:os";
 import { resolve } from "node:path";
-import { defaultCtx } from "@capfolder/core";
+import { builders, defaultCtx } from "@capfolder/core";
 import { resolveFolder } from "@capfolder/vault";
 import { NodeFs } from "@capfolder/vault/src/fs/node";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { agentDeviceId } from "./context";
 import { install, realRun } from "./install";
 import { createServer, VERSION } from "./server";
 
@@ -31,7 +32,12 @@ else if (cmd === "install") {
     process.exit(1);
   }
   const vault = folder ? resolve(resolveFolder(folder, home)) : undefined;
-  const server = createServer({ fs: new NodeFs(), home, vault, ctx: defaultCtx("agent") });
+  const fs = new NodeFs();
+  const ctx = {
+    ...defaultCtx(await agentDeviceId(fs, home).catch(() => builders.newId("dev"))),
+    source: "agent",
+  };
+  const server = createServer({ fs, home, vault, ctx });
   await server.connect(new StdioServerTransport());
 } else {
   console.error(USAGE);
