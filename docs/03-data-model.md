@@ -34,7 +34,7 @@ Acme/                         # any folder name; usually inside iCloud/Dropbox/D
 
 | type | data | purpose |
 |---|---|---|
-| `vault_created` | name, created_by | first line |
+| `vault_created` | name, created_by (+ country, subdivision, issuer_id when created without a formation date) | first line |
 | `doc_added` | doc_id, path, sha256, doc_type, extracted fields, flags | a file is filed in `docs/` |
 | `doc_linked` / `doc_unlinked` | doc_id, target (stakeholder/security/transaction id) | proof for a holding |
 | `doc_removed` | doc_id, moved_to | moved to `_removed/` |
@@ -46,6 +46,8 @@ Acme/                         # any folder name; usually inside iCloud/Dropbox/D
 | `rebaseline` | from_seq, reason | F-31. Accepts outside edits as the new start |
 | `schema_migrated` | from, to | F-38 |
 | `note` | target, text | free notes |
+| `shares_promised` | promise_id, stakeholder_id, quantity, vesting (`4y_1y_cliff` or `none`), vesting_start? | before incorporation: shares promised to someone, not legal until the company exists |
+| `promise_kept` | promise_id, security_id | incorporation turned the promise into this security |
 
 ## OCF mapping for our stories (names verified against OCF 1.2.0, 2026-10-10)
 | Story | OCF objects / transactions |

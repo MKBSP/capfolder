@@ -6,6 +6,7 @@ import {
   attachDocument,
   createVault,
   exportCsv,
+  exportFile,
   openVault,
   readVault,
   removeDocument,
@@ -464,4 +465,44 @@ test("a locked captable.csv (open in Excel) doesn't fail the save: the event is 
   // and the next save still works
   const again = await appendToVault(fs, r.vault, [b.note({ text: "again" })], ctx);
   expect(again.ok).toBe(true);
+});
+
+describe("before incorporation", () => {
+  const planned = { name: "Acme", country: "US", subdivision: "DE" };
+  test("createVault without a date writes no ISSUER and reserves the issuer id", async () => {
+    const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company: planned });
+    expect(v.events.map((e) => e.type)).toEqual(["vault_created"]);
+    expect(v.meta.issuer_id).toBe(reduce(v.events, "9999-12-31").planned?.issuer_id);
+    expect(fs.existsSync(`${v.root}/docs/safes`)).toBe(true);
+  });
+  test("exportFile before incorporation", async () => {
+    let v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company: planned });
+    const drafts = [
+      b.stakeholder({ id: "sh_t", name: "Tim Apple", type: "INDIVIDUAL" }),
+      b.stakeholder({ id: "sh_w", name: "Steve Wozniak", type: "INDIVIDUAL" }),
+      b.sharesPromised({ stakeholderId: "sh_t", quantity: "6000000", vesting: "4y_1y_cliff" }),
+      b.sharesPromised({ stakeholderId: "sh_w", quantity: "4000000", vesting: "none" }),
+    ];
+    const r = await appendToVault(fs, v, drafts, ctx);
+    if (!r.ok) throw new Error(r.errors.join("; "));
+    v = r.vault;
+    expect(exportFile(v, "2026-10-09", "csv", ctx)).toEqual({
+      name: "acme-promised-split-2026-10-09.csv",
+      data: [
+        "# Promised shares, not legal until the company exists. Not legal advice.",
+        "Name,Shares,Percent,Vesting",
+        'Tim Apple,6000000,60.00,"4 years, 1-year cliff"',
+        "Steve Wozniak,4000000,40.00,No vesting",
+        "",
+      ].join("\n"),
+    });
+    const error =
+      "Excel and OCF exports start once the company is incorporated. CSV exports the promised split.";
+    expect(exportFile(v, "2026-10-09", "xlsx", ctx)).toEqual({ error });
+    expect(exportFile(v, "2026-10-09", "ocf", ctx)).toEqual({ error });
+  });
+  test("createVault with a date is unchanged", async () => {
+    const v = await createVault(fs, ctx, { parent: "/Users/me/Documents", company });
+    expect(v.events.map((e) => e.type)).toEqual(["vault_created", "ISSUER"]);
+  });
 });

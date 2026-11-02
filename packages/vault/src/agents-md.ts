@@ -26,7 +26,8 @@ This folder is the company's record. Capfolder (the desktop app) is the only thi
   Format 1.2.0 objects (STAKEHOLDER, STOCK_CLASS, STOCK_PLAN, VESTING_TERMS, TX_* transactions). \`kind: "app"\` lines
   are Capfolder's own: doc_added/doc_linked (which document proves which security), correction (a later fix to an
   earlier line's field), reversal (an earlier line no longer counts), envelope_* (signatures sent and received).
-  Always apply corrections and reversals before reading a value.
+  Always apply corrections and reversals before reading a value. A company that isn't incorporated yet has no
+  ISSUER line; \`shares_promised\` app lines are promises, not shares.
 - \`ocf/\`: the same record as a standard OCF export, for other tools.
 - \`docs/\`: the documents. company/ (charter, bylaws), founders/, employees/ (IP assignments), grants/ (option
   grants, the equity plan), safes/, consents/ (board consents), 83b/, _imports/ (old exports), _removed/ and

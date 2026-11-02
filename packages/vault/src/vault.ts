@@ -14,6 +14,7 @@ import {
   lawyerPackage,
   MAX_DATE,
   nextSecurityIdNumber,
+  promisedTable,
   reduce,
   type SignField,
   sha256Hex,
@@ -40,7 +41,7 @@ export interface Vault {
 export type Result = { ok: true; vault: Vault } | { ok: false; errors: string[] };
 export type CompanyInput = {
   name: string;
-  formationDate: string;
+  formationDate?: string; // none = not incorporated yet: no ISSUER, the issuer id is reserved
   type?: "DE_CCORP" | "OTHER"; // DE_CCORP = US + Delaware (older callers); otherwise country/subdivision
   country?: string; // ISO 3166-1 alpha-2
   subdivision?: string; // e.g. a US state code; "" for none
@@ -169,15 +170,23 @@ export async function createVault(
   if (!(await isEmptyDir(fs, root))) root = join(root, p.company.name);
   if (!(await isEmptyDir(fs, root))) throw new Error(`${root} already has files in it. Pick another folder.`);
 
-  const iss = b.issuer({
-    name: p.company.name,
-    formationDate: p.company.formationDate,
-    country: p.company.type === "DE_CCORP" ? "US" : (p.company.country ?? "US"),
-    subdivision: p.company.type === "DE_CCORP" ? "DE" : (p.company.subdivision ?? ""),
-  });
+  const country = p.company.type === "DE_CCORP" ? "US" : (p.company.country ?? "US");
+  const subdivision = p.company.type === "DE_CCORP" ? "DE" : (p.company.subdivision ?? "");
+  const iss = p.company.formationDate
+    ? b.issuer({ name: p.company.name, formationDate: p.company.formationDate, country, subdivision })
+    : null;
+  const issuerId = iss ? (iss.data.id as string) : b.newId("iss");
   const drafts: EventDraft[] = [
-    { kind: "app", type: "vault_created", data: { name: p.company.name, created_by: "founder" } },
-    iss,
+    {
+      kind: "app",
+      type: "vault_created",
+      data: {
+        name: p.company.name,
+        created_by: "founder",
+        ...(iss ? {} : { country, subdivision, issuer_id: issuerId }),
+      },
+    },
+    ...(iss ? [iss] : []),
   ];
   const r = await appendEvents("", drafts, ctx);
   if (!r.ok) throw new Error(r.errors.join("; "));
@@ -193,7 +202,7 @@ export async function createVault(
       vault_id: b.newId("vlt"),
       format_version: 1,
       created_at: ctx.now().toISOString(),
-      issuer_id: iss.data.id,
+      issuer_id: issuerId,
       ocf_version: "1.2.0",
       currency: p.company.currency ?? "USD",
     },
@@ -595,8 +604,8 @@ export const exportCsv = (v: Vault, asOf: string): string => holdingsCsv(v.event
 
 export type ExportFormat = "xlsx" | "csv" | "ocf";
 
-const companySlug = (v: Vault) =>
-  slug(String(reduce(v.events, MAX_DATE).issuer?.legal_name ?? baseName(v.root)));
+const companySlug = (v: Vault, s = reduce(v.events, MAX_DATE)) =>
+  slug(String(s.issuer?.legal_name ?? s.planned?.name ?? baseName(v.root)));
 
 /** F-29. The file to save for an as-of export, or why it can't be made. */
 export function exportFile(
@@ -605,7 +614,28 @@ export function exportFile(
   format: ExportFormat,
   ctx: AppendCtx,
 ): { name: string; data: Uint8Array | string } | { error: string } {
-  const formed = reduce(v.events, MAX_DATE).issuer?.formation_date;
+  const state = reduce(v.events, MAX_DATE);
+  if (!state.issuer) {
+    if (format !== "csv")
+      return {
+        error:
+          "Excel and OCF exports start once the company is incorporated. CSV exports the promised split.",
+      };
+    const q = (x: string) => (/[",\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x);
+    const rows = promisedTable(state).map((r) =>
+      [r.name, r.shares, r.percent, r.vesting].map((c) => q(String(c))).join(","),
+    );
+    return {
+      name: `${companySlug(v, state)}-promised-split-${today(ctx)}.csv`,
+      data: [
+        "# Promised shares, not legal until the company exists. Not legal advice.",
+        "Name,Shares,Percent,Vesting",
+        ...rows,
+        "",
+      ].join("\n"),
+    };
+  }
+  const formed = state.issuer.formation_date;
   if (formed && asOf < formed)
     return { error: `The company didn't exist yet on ${day(asOf)} (incorporated ${day(formed)}).` };
   const co = companySlug(v);
