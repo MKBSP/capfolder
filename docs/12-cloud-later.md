@@ -34,3 +34,4 @@
 ## Open questions for that phase
 - Does the AGPL hosted relay plus a paid cloud need a CLA from contributors, so we can offer commercial terms? Decide before accepting outside PRs, ideally at launch.
 - Data residency (EU vs US) for the cloud copy.
+- Merge must handle `promise_kept` and the incorporation (CAP-61): with two devices, a promise recorded on one while the other records the incorporation stays open but hidden after a merge, and two independent incorporations collide on the same CS-n ids.
