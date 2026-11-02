@@ -26,7 +26,7 @@
 4. **Incorporation asks for the date, the legal name, the place, authorized shares (default 10,000,000) and par value (default 0.00001).** The shares are issued on the incorporation date by default, at par, or on `issue_date` if given (the stock purchase agreement date). Cost if wrong: one more question at incorporation.
 5. **Before incorporation, core refuses new securities and option pools** (a new invariant). One guard covers the app, the AI and imports. Old vaults aren't affected, because only *new* violations block a write. Cost if wrong: a founder who wants to log a pre-incorporation SAFE can't (a SAFE needs a company to sign it).
 6. **Withdraw a promise = the existing `reversal` of its event.** No new event type. Cost if wrong: none.
-7. **Exports (CSV, Excel, OCF) are blocked before incorporation** with "Exports start once the company is incorporated." Cost if wrong: a founder can't print the promised split (the Home screen shows it).
+7. **Before incorporation, CSV exports the promised split; Excel and OCF wait** (Mads 2026-11-02: "there should be some type of export possible"). The CSV is `<company>-promised-split-<today>.csv`: first line `# Promised shares, not legal until the company exists. Not legal advice.`, then `Name,Shares,Percent,Vesting` rows from `promisedTable`. Excel and OCF return "Excel and OCF exports start once the company is incorporated. CSV exports the promised split." Cost if wrong: none; it adds one file shape.
 8. **Promises are only for not-yet-incorporated companies.** After incorporation the AI and app use issue_shares / New shares. Cost if wrong: none.
 
 ## Review Focus
@@ -86,11 +86,11 @@
 - Consumes: Task 1 `builders.issuer({ id })` and `State.planned`.
 - Produces:
   - `createVault` with no `formationDate`: no ISSUER event. `vault_created.data` = `{ name, created_by: "founder", country, subdivision, issuer_id }`, and `capfolder.json` `issuer_id` is that same reserved id. With a date: exactly today's events (unchanged).
-  - `exportFile` with no issuer returns `{ error: "Exports start once the company is incorporated." }`.
+  - `exportFile` with no issuer: `csv` returns the promised-split CSV (Our call 7, exact name, comment line and header); `xlsx` and `ocf` return `{ error: "Excel and OCF exports start once the company is incorporated. CSV exports the promised split." }`.
 
 - [ ] **Step 1: Failing tests:**
   - `createVault without a date writes no ISSUER and reserves the issuer id`: MemoryFs, company `{ name: "Acme", country: "US", subdivision: "DE" }`. Expect the events to be `[vault_created]`, `meta.issuer_id === reduce(...).planned.issuer_id`, and `docs/` folders exist.
-  - `exportFile refuses before incorporation`: the error string above, for csv, xlsx and ocf.
+  - `exportFile before incorporation`: csv for Tim Apple 6,000,000 and Steve Wozniak 4,000,000 gives the comment line, the header and rows `Tim Apple,6000000,60.00,4 years, 1-year cliff` style values (quote any field with a comma); xlsx and ocf give the error string above.
   - `createVault with a date is unchanged`: the event types are `["vault_created", "ISSUER"]`.
 - [ ] **Step 2: Run** `pnpm --filter @capfolder/vault test`. Expected: FAIL.
 - [ ] **Step 3: Implement.** agents-md: add "A company that isn't incorporated yet has no ISSUER line; `shares_promised` app lines are promises, not shares." docs/03: list `shares_promised` and `promise_kept` with their fields.
