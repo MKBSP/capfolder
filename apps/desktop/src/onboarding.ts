@@ -17,6 +17,24 @@ export interface Step {
 }
 
 export function getStarted(s: State, a: Answers, aiConnected: boolean): Step[] {
+  if (!s.issuer)
+    // not incorporated yet (CAP-61): classes, pools and SAFEs wait for the company to exist
+    return [
+      {
+        label: "Promise shares to founders",
+        help: "Who gets how many shares once the company exists. Promised — not legal until the company exists.",
+        done: s.promises.size > 0,
+        action: "Add a promise",
+        to: { name: "newShares" },
+      },
+      {
+        label: "Record the incorporation",
+        help: "Once the company is incorporated, every promise becomes real shares in one step.",
+        done: false,
+        action: "Record it",
+        to: { name: "home" },
+      },
+    ];
   const sec = [...s.securities.values()];
   const steps: (Step | false)[] = [
     {

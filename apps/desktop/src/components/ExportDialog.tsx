@@ -18,7 +18,18 @@ const FORMATS: { id: ExportFormat; label: string; note: string }[] = [
 export function ExportDialog(p: { open: boolean; onClose(): void; onSaved(path: string): void }) {
   const app = useApp();
   const [asOf, setAsOf] = useState(app.asOf);
-  const [format, setFormat] = useState<ExportFormat>("xlsx");
+  // Not incorporated yet (CAP-61): only the promised split, as CSV, as it stands today.
+  const promising = !app.latest?.issuer;
+  const formats = promising
+    ? [
+        {
+          id: "csv" as const,
+          label: "Promised split (CSV)",
+          note: "Promised — not legal until the company exists.",
+        },
+      ]
+    : FORMATS;
+  const [format, setFormat] = useState<ExportFormat>(promising ? "csv" : "xlsx");
   const [errors, setErrors] = useState<string[] | null>(null);
   if (!app.vault) return null;
   const vault = app.vault;
@@ -38,11 +49,13 @@ export function ExportDialog(p: { open: boolean; onClose(): void; onSaved(path: 
   return (
     <Modal open={p.open} onClose={p.onClose} title="Export">
       <div className="stack">
-        <Field label="As of">
-          <DateInput value={asOf} onChange={setAsOf} />
-        </Field>
+        {promising ? null : (
+          <Field label="As of">
+            <DateInput value={asOf} onChange={setAsOf} />
+          </Field>
+        )}
         <div className="stack" role="radiogroup" aria-label="Format">
-          {FORMATS.map((f) => (
+          {formats.map((f) => (
             <label key={f.id} className={`opt ${format === f.id ? "on" : ""}`}>
               <input type="radio" name="format" checked={format === f.id} onChange={() => setFormat(f.id)} />
               <span>

@@ -29,12 +29,13 @@ export function CompanyPlace(p: {
   country: string;
   subdivision: string;
   currency: string;
+  label?: string;
   onChange(v: { country: string; subdivision: string; currency: string }): void;
 }) {
   return (
     <div className="grid2">
       <label className="field" style={{ display: "block" }}>
-        <span className="lbl">Country of incorporation</span>
+        <span className="lbl">{p.label ?? "Country of incorporation"}</span>
         <select
           className="inp"
           value={p.country}

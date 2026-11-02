@@ -21,6 +21,7 @@ export function CreateCompany() {
     currency: home.currency,
   });
   const [date, setDate] = useState("");
+  const [planned, setPlanned] = useState(false); // not incorporated yet: no date, no ISSUER (CAP-61)
   const [parent, setParent] = useState<string | null>(null);
   const [backup, setBackup] = useState<BackupStatus | null>(null);
   const [synced, setSynced] = useState<{ name: string; path: string }[]>([]);
@@ -39,14 +40,19 @@ export function CreateCompany() {
   async function create() {
     const errs: string[] = [];
     if (!name.trim()) errs.push("Enter the company's legal name.");
-    if (!date) errs.push("Enter the date of incorporation.");
-    else if (date > todayIso()) errs.push("The incorporation date can't be in the future.");
+    if (!planned && !date) errs.push("Enter the date of incorporation.");
+    else if (!planned && date > todayIso()) errs.push("The incorporation date can't be in the future.");
     if (errs.length) return setErrors(errs);
     setBusy(true);
     try {
       const v = await createVault(platform.fs, app.ctx, {
         parent: parent!,
-        company: { name: name.trim(), formationDate: date, ...place, subdivision: place.subdivision.trim() },
+        company: {
+          name: name.trim(),
+          ...(planned ? {} : { formationDate: date }),
+          ...place,
+          subdivision: place.subdivision.trim(),
+        },
       });
       await app.setSettings({
         ...app.settings,
@@ -54,7 +60,7 @@ export function CreateCompany() {
       });
       registerForAgent(app, name.trim(), v);
       app.setVault(v);
-      app.go({ name: "start" });
+      app.go({ name: planned ? "home" : "start" }); // start → wizard sets up classes, which wait for incorporation
     } catch (e) {
       setErrors([(e as Error).message]);
     } finally {
@@ -82,11 +88,21 @@ export function CreateCompany() {
             placeholder="Acme Inc."
           />
         </label>
-        <label>
-          <span className="lbl">Incorporated</span>
-          <DateInput value={date} onChange={setDate} />
+        <label className="row small">
+          <input type="checkbox" checked={planned} onChange={(e) => setPlanned(e.target.checked)} />
+          Not incorporated yet
         </label>
-        <CompanyPlace {...place} onChange={setPlace} />
+        {planned ? null : (
+          <label>
+            <span className="lbl">Incorporated</span>
+            <DateInput value={date} onChange={setDate} />
+          </label>
+        )}
+        <CompanyPlace
+          {...place}
+          label={planned ? "Where you plan to incorporate" : undefined}
+          onChange={setPlace}
+        />
         {place.country !== "US" || place.subdivision !== "DE" ? (
           <div className="banner amber">
             Templates and checks are written for Delaware companies for now. You can still track your cap

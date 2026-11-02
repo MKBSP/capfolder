@@ -19,6 +19,7 @@ const plus30 = (d: string) => {
 export function NewShares() {
   const app = useApp();
   const latest = app.latest;
+  const promising = !!latest && !latest.issuer; // not incorporated yet: promise shares instead (CAP-61)
   const classes = latest ? [...latest.classes.entries()] : [];
   const [who, setWho] = useState<PersonChoice>(() => newPerson());
   const [classId, setClassId] = useState(classes[0]?.[0] ?? "");
@@ -26,13 +27,24 @@ export function NewShares() {
   const [price, setPrice] = useState("");
   const [date, setDate] = useState(todayIso());
   const [vesting, setVesting] = useState(false);
-  const [start, setStart] = useState(todayIso());
+  const [start, setStart] = useState(promising ? "" : todayIso()); // a promise vests from its issue date unless set
   const [termsId] = useState(() => b.newId("vt"));
   const [errors, setErrors] = useState<string[] | null>(null);
 
   const drafts = useMemo<EventDraft[] | null>(() => {
     const person = resolvePerson(who);
-    if (!latest || !person || !classId || !digits(quantity)) return null;
+    if (!latest || !person || !digits(quantity)) return null;
+    if (promising)
+      return [
+        ...person.drafts,
+        b.sharesPromised({
+          stakeholderId: person.id,
+          quantity: digits(quantity),
+          vesting: vesting ? "4y_1y_cliff" : "none",
+          vestingStart: vesting && start ? start : undefined,
+        }),
+      ];
+    if (!classId) return null;
     const terms = vesting ? standardTerms(latest, termsId) : null;
     return [
       ...person.drafts,
@@ -49,42 +61,50 @@ export function NewShares() {
         ...(terms ? { vestingTermsId: terms.id, vestingStart: start } : {}),
       }),
     ];
-  }, [latest, who, classId, quantity, price, date, vesting, start, termsId]);
+  }, [latest, promising, who, classId, quantity, price, date, vesting, start, termsId]);
   const dry = useDryRun(drafts);
 
   return (
     <>
-      <CrumbHeader title="New shares" />
+      <CrumbHeader title={promising ? "Promise shares" : "New shares"} />
       <main className="medium">
         <section className="card stack">
-          {!classes.length ? (
+          {promising ? (
+            <div className="meta">Promised — not legal until the company exists.</div>
+          ) : !classes.length ? (
             <div className="banner amber">Set up authorized shares first (Start from zero).</div>
           ) : null}
           <PersonPicker label="Holder" value={who} onChange={setWho} />
           <div className="grid2">
-            <Field label="Class">
-              <select className="inp" value={classId} onChange={(e) => setClassId(e.target.value)}>
-                {classes.map(([id, c]) => (
-                  <option key={id} value={id}>
-                    {c.data.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
+            {promising ? null : (
+              <Field label="Class">
+                <select className="inp" value={classId} onChange={(e) => setClassId(e.target.value)}>
+                  {classes.map(([id, c]) => (
+                    <option key={id} value={id}>
+                      {c.data.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            )}
             <Field label="Shares">
               <input className="inp num" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
             </Field>
-            <Field label={withCurrency("Price per share")}>
-              <input
-                className="inp num"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="0.00001"
-              />
-            </Field>
-            <Field label="Issued on">
-              <DateInput value={date} onChange={setDate} />
-            </Field>
+            {promising ? null : (
+              <>
+                <Field label={withCurrency("Price per share")}>
+                  <input
+                    className="inp num"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder="0.00001"
+                  />
+                </Field>
+                <Field label="Issued on">
+                  <DateInput value={date} onChange={setDate} />
+                </Field>
+              </>
+            )}
           </div>
           <div className="row wrap">
             <button
@@ -112,7 +132,7 @@ export function NewShares() {
               </>
             ) : null}
           </div>
-          {vesting && plus30(date) >= todayIso() ? (
+          {vesting && !promising && plus30(date) >= todayIso() ? (
             <div className="banner amber">
               File the 83(b) within 30 days of {day(date)}: by {day(plus30(date))}.
             </div>
@@ -129,7 +149,7 @@ export function NewShares() {
                 app.go({ name: "home" });
               }}
             >
-              Record shares
+              {promising ? "Promise shares" : "Record shares"}
             </button>
           </div>
         </section>

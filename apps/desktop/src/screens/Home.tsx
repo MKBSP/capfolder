@@ -1,10 +1,12 @@
 import {
+  builders as b,
   capTableRows,
   capTableTotals,
   checkInvariants,
   computeGaps,
   type Gap,
   nextVest,
+  promisedTable,
   type Row,
 } from "@capfolder/core";
 import { useEffect, useMemo, useState } from "react";
@@ -13,9 +15,10 @@ import { DateInput } from "../components/DateInput";
 import { ExportDialog } from "../components/ExportDialog";
 import { GetStarted } from "../components/GetStarted";
 import { MainHeader } from "../components/Header";
+import { IncorporateDialog } from "../components/IncorporateDialog";
 import { MoveChecklist } from "../components/MoveChecklist";
 import { startTour, TourOffer } from "../components/Tour";
-import { Chip, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
+import { Chip, ErrorList, Menu, ShowMath, StatCard, VestingBar } from "../components/ui";
 import { day, money, moneyShort, percent, shares, todayIso } from "../fmt";
 import { useApp } from "../state";
 import { docChip, isFounder, scheduleText, typeLabel, vestingCell } from "../views";
@@ -44,16 +47,18 @@ export function Home() {
     .map((r) => r.securityId);
   const totals = capTableTotals(rows, founderIds); // all numbers from core
   const fd = totals.fullyDiluted;
+  // Not incorporated yet (CAP-61): judged on the latest state, so an old As of never mixes promises and shares.
+  const promising = !app.latest?.issuer;
 
   const New = (
     <Menu
       primary
       label="+ New"
       items={[
-        { label: "SAFE", onClick: () => app.go({ name: "newSafe" }) },
-        { label: "Grant", onClick: () => app.go({ name: "newGrant" }) },
+        ...(promising ? [] : [{ label: "SAFE", onClick: () => app.go({ name: "newSafe" }) }]),
+        ...(promising ? [] : [{ label: "Grant", onClick: () => app.go({ name: "newGrant" }) }]),
         { label: "Shares", onClick: () => app.go({ name: "newShares" }) },
-        { label: "Option pool", onClick: () => app.go({ name: "pool" }) },
+        ...(promising ? [] : [{ label: "Option pool", onClick: () => app.go({ name: "pool" }) }]),
         { label: "Person", onClick: () => app.go({ name: "newPerson" }) },
       ]}
     />
@@ -69,15 +74,17 @@ export function Home() {
   return (
     <>
       <MainHeader>
-        <label className="row small muted" style={{ gap: 6 }}>
-          As of
-          <DateInput
-            style={{ width: 160, minHeight: 36 }}
-            value={asOf}
-            max="9999-12-31"
-            onChange={(v) => app.setAsOf(v || todayIso())}
-          />
-        </label>
+        {promising ? null : (
+          <label className="row small muted" style={{ gap: 6 }}>
+            As of
+            <DateInput
+              style={{ width: 160, minHeight: 36 }}
+              value={asOf}
+              max="9999-12-31"
+              onChange={(v) => app.setAsOf(v || todayIso())}
+            />
+          </label>
+        )}
         {Export}
         {New}
       </MainHeader>
@@ -100,125 +107,138 @@ export function Home() {
           Saved <span className="mono">{saved}</span>
         </div>
       ) : null}
-      <main className="page" style={{ display: "flex", gap: 24, alignItems: "flex-start", flexWrap: "wrap" }}>
-        <section style={{ flex: "999 1 640px", minWidth: 0 }}>
-          <div className="stats">
-            <StatCard label="Fully diluted" value={shares(fd)} />
-            <StatCard label="Founders" value={`${totals.selectedPercent}%`} />
-            <StatCard label="Pool available" value={shares(totals.poolAvailable)} />
-            <StatCard
-              label="SAFEs outstanding"
-              value={
-                safeCurrencies.length > 1 ? "Mixed currencies" : money(totals.safeAmount, safeCurrencies[0])
-              }
-            />
-          </div>
-          <div className="card" style={{ padding: 0, overflowX: "auto" }} data-tour="captable">
-            {rows.length === 0 ? (
-              <p className="muted" style={{ padding: 20 }}>
-                Nothing issued as of {day(asOf)}. Use + New to add shares, a pool, grants or SAFEs.
-                {app.latest && app.latest.securities.size === 0 && app.latest.stakeholders.size === 0 ? (
-                  <>
-                    {" "}
-                    Or bring your existing cap table:{" "}
-                    <button type="button" className="btn link" onClick={() => app.go({ name: "import" })}>
-                      Import a cap table
-                    </button>
-                  </>
-                ) : null}
-              </p>
-            ) : (
-              <table className="tbl" style={{ minWidth: 760 }}>
-                <thead>
-                  <tr>
-                    <th className="th">Name</th>
-                    <th className="th">Type</th>
-                    <th className="th right">Shares</th>
-                    <th className="th right">%</th>
-                    <th className="th">Vesting</th>
-                    <th className="th">Document</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fdRows.map((r) => (
-                    <CapRow
-                      key={r.securityId}
-                      r={r}
-                      gaps={gaps}
-                      open={open === r.securityId}
-                      toggle={() => setOpen(open === r.securityId ? null : r.securityId)}
-                    />
-                  ))}
-                  {safes.length ? (
+      {promising ? (
+        <Promised />
+      ) : (
+        <main
+          className="page"
+          style={{ display: "flex", gap: 24, alignItems: "flex-start", flexWrap: "wrap" }}
+        >
+          <section style={{ flex: "999 1 640px", minWidth: 0 }}>
+            <div className="stats">
+              <StatCard label="Fully diluted" value={shares(fd)} />
+              <StatCard label="Founders" value={`${totals.selectedPercent}%`} />
+              <StatCard label="Pool available" value={shares(totals.poolAvailable)} />
+              <StatCard
+                label="SAFEs outstanding"
+                value={
+                  safeCurrencies.length > 1 ? "Mixed currencies" : money(totals.safeAmount, safeCurrencies[0])
+                }
+              />
+            </div>
+            <div className="card" style={{ padding: 0, overflowX: "auto" }} data-tour="captable">
+              {rows.length === 0 ? (
+                <p className="muted" style={{ padding: 20 }}>
+                  Nothing issued as of {day(asOf)}. Use + New to add shares, a pool, grants or SAFEs.
+                  {app.latest && app.latest.securities.size === 0 && app.latest.stakeholders.size === 0 ? (
                     <>
-                      <tr>
-                        <td className="td meta" colSpan={6} style={{ background: "var(--soft)" }}>
-                          SAFEs · as-converted, not in fully diluted
-                        </td>
-                      </tr>
-                      {safes.map((r) => {
-                        const chip = docChip(state, r, gaps);
-                        return (
-                          <tr
-                            key={r.securityId}
-                            data-focus={r.securityId}
-                            className={chip?.tone === "red" ? "attn" : ""}
-                          >
-                            <td className="td">
-                              <button
-                                type="button"
-                                className="btn link"
-                                onClick={() => {
-                                  const x = state.securities.get(r.securityId);
-                                  if (x) app.go({ name: "person", id: x.stakeholderId });
-                                }}
-                              >
-                                {r.stakeholder}
-                              </button>
-                            </td>
-                            <td className="td muted">{typeLabel(state, r)}</td>
-                            <td className="td num right">{money(r.safeAmount, r.currency)}</td>
-                            <td className="td num right" title={r.math.as_converted}>
-                              {r.asConverted ? `≈${r.asConverted}%` : "—"}
-                            </td>
-                            <td className="td meta">
-                              {r.safeCap ? `Cap ${moneyShort(r.safeCap, r.currency)}` : "No cap"}
-                              {r.safeDiscount ? ` · ${percent(r.safeDiscount)}` : ""}
-                            </td>
-                            <td className="td">{chip ? <Chip tone={chip.tone}>{chip.text}</Chip> : null}</td>
-                          </tr>
-                        );
-                      })}
+                      {" "}
+                      Or bring your existing cap table:{" "}
+                      <button type="button" className="btn link" onClick={() => app.go({ name: "import" })}>
+                        Import a cap table
+                      </button>
                     </>
                   ) : null}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </section>
-        <aside style={{ flex: "1 1 300px", maxWidth: 360 }} className="stack">
-          <div className="card">
-            <div className="row spread">
-              <h2 style={{ margin: 0 }}>What's missing</h2>
-              {gaps.length ? <Chip tone="amber">{gaps.length} gaps</Chip> : <Chip tone="green">Nothing</Chip>}
+                </p>
+              ) : (
+                <table className="tbl" style={{ minWidth: 760 }}>
+                  <thead>
+                    <tr>
+                      <th className="th">Name</th>
+                      <th className="th">Type</th>
+                      <th className="th right">Shares</th>
+                      <th className="th right">%</th>
+                      <th className="th">Vesting</th>
+                      <th className="th">Document</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fdRows.map((r) => (
+                      <CapRow
+                        key={r.securityId}
+                        r={r}
+                        gaps={gaps}
+                        open={open === r.securityId}
+                        toggle={() => setOpen(open === r.securityId ? null : r.securityId)}
+                      />
+                    ))}
+                    {safes.length ? (
+                      <>
+                        <tr>
+                          <td className="td meta" colSpan={6} style={{ background: "var(--soft)" }}>
+                            SAFEs · as-converted, not in fully diluted
+                          </td>
+                        </tr>
+                        {safes.map((r) => {
+                          const chip = docChip(state, r, gaps);
+                          return (
+                            <tr
+                              key={r.securityId}
+                              data-focus={r.securityId}
+                              className={chip?.tone === "red" ? "attn" : ""}
+                            >
+                              <td className="td">
+                                <button
+                                  type="button"
+                                  className="btn link"
+                                  onClick={() => {
+                                    const x = state.securities.get(r.securityId);
+                                    if (x) app.go({ name: "person", id: x.stakeholderId });
+                                  }}
+                                >
+                                  {r.stakeholder}
+                                </button>
+                              </td>
+                              <td className="td muted">{typeLabel(state, r)}</td>
+                              <td className="td num right">{money(r.safeAmount, r.currency)}</td>
+                              <td className="td num right" title={r.math.as_converted}>
+                                {r.asConverted ? `≈${r.asConverted}%` : "—"}
+                              </td>
+                              <td className="td meta">
+                                {r.safeCap ? `Cap ${moneyShort(r.safeCap, r.currency)}` : "No cap"}
+                                {r.safeDiscount ? ` · ${percent(r.safeDiscount)}` : ""}
+                              </td>
+                              <td className="td">
+                                {chip ? <Chip tone={chip.tone}>{chip.text}</Chip> : null}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </>
+                    ) : null}
+                  </tbody>
+                </table>
+              )}
             </div>
-            <div className="stack" style={{ marginTop: 12 }}>
-              {gaps.map((g) => (
-                <GapLine
-                  key={`${g.kind}:${g.target}`}
-                  g={g}
-                  onAttach={(target, docType) => setAttach({ target, docType })}
-                />
-              ))}
+          </section>
+          <aside style={{ flex: "1 1 300px", maxWidth: 360 }} className="stack">
+            <div className="card">
+              <div className="row spread">
+                <h2 style={{ margin: 0 }}>What's missing</h2>
+                {gaps.length ? (
+                  <Chip tone="amber">{gaps.length} gaps</Chip>
+                ) : (
+                  <Chip tone="green">Nothing</Chip>
+                )}
+              </div>
+              <div className="stack" style={{ marginTop: 12 }}>
+                {gaps.map((g) => (
+                  <GapLine
+                    key={`${g.kind}:${g.target}`}
+                    g={g}
+                    onAttach={(target, docType) => setAttach({ target, docType })}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-          <div className={`banner ${problems.length ? "red" : "green"} small`}>
-            {problems.length
-              ? problems.join(" · ")
-              : `Vault verified · ${vault.events.length} events · totals add to ${fd > 0n ? "100.00%" : "0%"}`}
-          </div>
-        </aside>
-      </main>
+            <div className={`banner ${problems.length ? "red" : "green"} small`}>
+              {problems.length
+                ? problems.join(" · ")
+                : `Vault verified · ${vault.events.length} events · totals add to ${fd > 0n ? "100.00%" : "0%"}`}
+            </div>
+          </aside>
+        </main>
+      )}
       <AttachModal
         open={!!attach}
         target={attach?.target}
@@ -226,6 +246,70 @@ export function Home() {
         onClose={() => setAttach(null)}
       />
     </>
+  );
+}
+
+/** CAP-61: before incorporation, the promised split instead of the cap table. */
+function Promised() {
+  const app = useApp();
+  const rows = useMemo(() => (app.latest ? promisedTable(app.latest) : []), [app.latest]);
+  const [incorporating, setIncorporating] = useState(false);
+  const [errors, setErrors] = useState<string[] | null>(null);
+  return (
+    <main className="page">
+      <section className="card stack" aria-label="Not incorporated yet">
+        <h2 style={{ margin: 0 }}>Not incorporated yet</h2>
+        <div className="meta">Promised — not legal until the company exists.</div>
+        {rows.length ? (
+          <table className="tbl">
+            <thead>
+              <tr>
+                <th className="th">Name</th>
+                <th className="th right">Shares</th>
+                <th className="th right">%</th>
+                <th className="th">Vesting</th>
+                <th className="th" />
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.promiseId}>
+                  <td className="td">{r.name}</td>
+                  <td className="td num right">{shares(r.shares)}</td>
+                  <td className="td num right">{r.percent}%</td>
+                  <td className="td meta">{r.vesting}</td>
+                  <td className="td right">
+                    <button
+                      type="button"
+                      className="btn link small"
+                      onClick={async () =>
+                        setErrors(
+                          await app.run([b.reversal({ target: r.eventId, reason: "Promise withdrawn" })]),
+                        )
+                      }
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="muted">No shares promised yet.</p>
+        )}
+        <ErrorList errors={errors} />
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <button type="button" className="btn" onClick={() => app.go({ name: "newShares" })}>
+            Promise shares
+          </button>
+          <button type="button" className="btn primary" onClick={() => setIncorporating(true)}>
+            We're incorporated
+          </button>
+        </div>
+      </section>
+      {incorporating ? <IncorporateDialog onClose={() => setIncorporating(false)} /> : null}
+    </main>
   );
 }
 
