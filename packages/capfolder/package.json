@@ -3,6 +3,12 @@
   "version": "0.1.2",
   "description": "Run your Capfolder cap table from Claude and other AI assistants.",
   "license": "AGPL-3.0-only",
+  "homepage": "https://capfolder.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MKBSP/capfolder.git",
+    "directory": "packages/capfolder"
+  },
   "type": "module",
   "bin": {
     "capfolder": "dist/cli.js"
