@@ -1,9 +1,9 @@
 {
   "name": "capfolder",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Run your cap table from Gemini CLI.",
   "contextFileName": "GEMINI.md",
   "mcpServers": {
-    "capfolder": { "command": "npx", "args": ["-y", "capfolder@0.1.0", "mcp"] }
+    "capfolder": { "command": "npx", "args": ["-y", "capfolder@0.1.1", "mcp"] }
   }
 }

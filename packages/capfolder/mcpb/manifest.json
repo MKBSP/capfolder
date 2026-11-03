@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "capfolder",
   "display_name": "Capfolder",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Run your cap table from Claude: set it up, ask about it, change it with your yes.",
   "author": { "name": "Capfolder", "url": "https://capfolder.com" },
   "homepage": "https://capfolder.com",
