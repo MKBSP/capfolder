@@ -1,5 +1,5 @@
 # Publishes the `capfolder` npm package (with provenance) and attaches capfolder.mcpb to the GitHub release.
-# Push a tag like capfolder-v0.1.0 (it must match packages/capfolder/package.json). Needs the NPM_TOKEN repo secret.
+# Push a tag like capfolder-v0.1.0 (it must match packages/capfolder/package.json). Publishes through npm trusted publishing (no token).
 name: publish-capfolder
 on:
   push:
@@ -27,10 +27,11 @@ jobs:
       - run: pnpm --filter capfolder build
       # build the .mcpb first: a failed bundle must stop before the irreversible npm publish
       - run: pnpm --filter capfolder build:mcpb
+      # trusted publishing (npmjs.com → capfolder → Settings): OIDC, no token; npm tokens can no longer skip 2FA.
+      # Node 22 ships npm 10, trusted publishing needs 11.5.1+
+      - run: npm install -g npm@11
       - run: npm publish --provenance --access public
         working-directory: packages/capfolder
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Attach capfolder.mcpb to the release
         env:
           GH_TOKEN: ${{ github.token }}
