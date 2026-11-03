@@ -1,6 +1,6 @@
 {
   "name": "capfolder",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Run your cap table from Claude Code: set it up, ask about it, change it with your yes.",
   "license": "AGPL-3.0-only",
   "homepage": "https://capfolder.com",
