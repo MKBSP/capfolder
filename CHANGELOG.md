@@ -3,6 +3,8 @@
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
 ## [Unreleased]
+
+## [0.1.5] — 2026-11-03
 ### Added
 - **Use Capfolder from your AI** (Claude Code, Claude Desktop, Codex, Gemini CLI): it reads your cap table and shows a preview of every change, and nothing is written until you say yes.
 - **`npx capfolder install`** sets up whichever of those AIs it finds.
