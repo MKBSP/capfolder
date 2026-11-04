@@ -258,6 +258,8 @@ test("every sub-page has the same navbar, with its section marked", () => {
     ...learnPages().map((l) => [l, "/learn/"]),
     ...guidePages().map((g) => [g, "/learn/"]),
     ["help/import/index.html", "/help/"],
+    ["help/local-ai/index.html", "/help/"],
+    ["help/install-local-ai/index.html", "/help/"],
     ["features/index.html", "/features/"],
     ["features/import/index.html", "/features/"],
     ["migrate/from-pulley/index.html", "/features/"],
@@ -624,8 +626,8 @@ test("founder guides: SEO basics, PNG share image, Article markup, illustrations
   expect(read("package.json")).toMatch(/cp -r [^"]*\bguides\b/);
 });
 
-test("homepage test variants: /testing-landing-page/a-e are built, noindex and kept out of the sitemap", async () => {
-  for (const v of ["a", "b", "c", "d", "e"])
+test("homepage test variants: /testing-landing-page/a-f are built, noindex and kept out of the sitemap", async () => {
+  for (const v of ["a", "b", "c", "d", "e", "f"])
     expect(read(`testing-landing-page/${v}/index.html`)).toContain('<meta name="robots" content="noindex">');
   expect(read("package.json")).toMatch(/cp -r [^"]* testing-landing-page /);
   const { sitemap } = await import("./sitemap.mjs");

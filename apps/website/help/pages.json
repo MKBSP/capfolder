@@ -25,5 +25,19 @@
       "packages/core/src/import/build.ts",
       "apps/desktop/src/styles/app.css"
     ]
+  },
+  "local-ai": {
+    "checked": "v0.1.5",
+    "covers": [
+      "apps/desktop/src/screens/Settings.tsx",
+      "apps/desktop/src/ai.ts"
+    ]
+  },
+  "install-local-ai": {
+    "checked": "v0.1.5",
+    "covers": [
+      "apps/desktop/src/screens/Settings.tsx",
+      "apps/desktop/src/ai.ts"
+    ]
   }
 }

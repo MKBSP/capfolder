@@ -31,3 +31,10 @@
 - **Fields:** Email (required), Company (optional), "What stage is your company at?" (same 5 options as the download form, optional; added 2026-10-19), "What would make Pro worth it for you?" (optional), hidden `utm_source` / `ref`.
 - **Promise made on the site and in the form:** everyone on this list gets **25% off the first year** of Pro. Honour it when billing ships (docs/15 item 1).
 - **Site:** the Pro card's "I want Pro: tell me when it's ready" button (`#prowait`, Umami event `pro-waitlist`) opens it as a popup.
+
+# Tally: Talk to an expert
+
+- **Form:** "Talk to an expert", id **`8NqXQ5`**, published 2026-11-04. Edit: https://tally.so/forms/8NqXQ5/edit
+- **Fields:** Name (required), Email (required), Company (optional), "What stage is your company at?" (same 5 options, required), "What do you want help with?" (checkboxes, optional), "Anything else we should know?" (optional), hidden `utm_source` / `ref`.
+- **Promise made in the form:** a reply by email, usually within a day.
+- **Site:** every `[data-talk]` button on /testing-landing-page/f/ opens it as a popup (Umami events `talk-expert-*`).

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Connect Ollama or LM Studio · Capfolder help</title>
+<meta name="description" content="How to connect Ollama or LM Studio to Capfolder, so its AI runs free on your own computer.">
+<link rel="canonical" href="https://capfolder.com/help/local-ai/">
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<link rel="stylesheet" href="/page.css">
+<style>
+@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
+body{margin:0;background:#FAFAF8;color:#111311;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:17px;line-height:1.6}
+a{color:#1F6F4A}a:hover{color:#16543A}
+main{max-width:760px;margin:0 auto;padding:40px 16px 80px}
+.crumb{font-size:14px;color:#5B606B}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:12px 0 8px}
+h2{font-size:20px;margin:40px 0 8px}
+.lead{color:#3A3E46;margin:0}
+ol.steps{padding-left:22px}ol.steps li{margin:6px 0}
+figure{margin:16px 0 0}
+.shot img{display:block;width:100%;height:auto;border:1px solid #E4E4E0;border-radius:12px;background:#fff}
+.shot{position:relative;display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.shot:focus-visible{outline:3px solid #1F6F4A;outline-offset:3px;border-radius:12px}
+.hl{position:absolute;border:3px solid #E07B00;border-radius:10px;box-shadow:0 0 0 4px rgba(224,123,0,.25);pointer-events:none}
+#zoom{border:0;padding:0;background:none;max-width:96vw;max-height:96vh;overflow:auto}
+#zoom::backdrop{background:rgba(17,19,17,.75)}
+#zoom .shot{width:min(1480px,94vw);cursor:zoom-out}
+figcaption{font-size:14px;color:#5B606B;margin-top:6px}
+.tip{background:#E8F3EC;border-radius:10px;padding:14px 16px;font-size:15px;margin-top:16px}
+dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A3E46}
+.foot{margin-top:56px;font-size:14px;color:#5B606B}
+</style>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/features/">Features</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/" aria-current="true">Help</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<main>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/help/">Help</a> · AI</div>
+  <h1>Connect Ollama or LM Studio</h1>
+  <p class="lead">Capfolder's AI can run on a free model on your own computer. There's no bill, and nothing leaves your laptop.</p>
+  <div class="tip"><b>Don't have Ollama or LM Studio yet?</b> Start with <a href="/help/install-local-ai/">Install a local AI</a>. It takes about 10 minutes. Then come back here.</div>
+
+  <h2>1. Start your local AI</h2>
+  <ul>
+    <li><b>Ollama:</b> open the Ollama app. It keeps running in the background.</li>
+    <li><b>LM Studio:</b> open LM Studio, go to the <b>Developer</b> tab and switch the server on, so it says <b>Running</b>.</li>
+  </ul>
+  <p>You need at least one model downloaded. Not sure? See <a href="/help/install-local-ai/">Install a local AI</a>.</p>
+
+  <h2>2. Open Settings → AI in Capfolder</h2>
+  <p>Capfolder looks for Ollama and LM Studio on this computer when you open Settings. Under <b>AI in use</b>, each one shows what it found:</p>
+  <dl>
+    <dt>"3 models on this computer."</dt><dd>Ready. Go to step 3.</dd>
+    <dt>"running, but no model is downloaded yet."</dt><dd>Download a model first, then click <b>Look again</b>.</dd>
+    <dt>"Not running."</dt><dd>Start the app (step 1), then click <b>Look again</b>.</dd>
+  </dl>
+
+  <h2>3. Pick your model</h2>
+  <ol class="steps">
+    <li>In <b>AI in use</b>, choose your model. Local models end in <b>(this computer)</b>, for example <b>Ollama · llama3.1 (this computer)</b>.</li>
+    <li>Tick <b>Use AI when sorting documents</b> if you want it to read and sort the PDFs you drop in.</li>
+    <li>Open <b>✦ Ask AI</b> and ask "What needs my attention?".</li>
+  </ol>
+  <div class="tip">The AI only proposes. Every change it drafts opens for you to check, and nothing is saved until you click yes.</div>
+
+  <h2>Not working?</h2>
+  <dl>
+    <dt>Capfolder still says "Not running"</dt><dd>Capfolder looks on the usual ports: <b>11434</b> for Ollama and <b>1234</b> for LM Studio. If you changed the port, change it back.</dd>
+    <dt>Answers are slow</dt><dd>Pick a smaller model. A 3–8B model is enough for Capfolder.</dd>
+    <dt>I'd rather use Claude, OpenAI or Gemini</dt><dd>Pick it in <b>AI in use</b> and paste your own API key. It's kept in your computer's keychain. A cloud AI sees cap-table numbers and names, and reads documents only if you turn on <b>Let cloud AI read documents</b>.</dd>
+  </dl>
+
+  <p class="foot">Something unclear? Tell us on <a href="https://github.com/MKBSP/capfolder/issues">GitHub</a>. Capfolder isn't legal advice: check your documents with a lawyer.</p>
+</main>
+</body>
+</html>

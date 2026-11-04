@@ -8,7 +8,9 @@ web
 
 ## Users
 
-Pre-funding and bootstrapped founders, and no one else. The typical user has 2–3 cofounders and no lawyer on retainer. They are about to take, or have just taken, a first friends-and-family or angel cheque on a SAFE. Today their cap table is a spreadsheet plus PDFs scattered across email. Many are technical founders who are smart about product and new to equity.
+Early-stage founders, from pre-idea to seed, and no one else (Mads, 2026-11-04). That covers incorporated or not yet incorporated, raised or not raised yet: pre-idea, pre-market, pre-seed and seed. The typical user has 2–3 cofounders and no lawyer on retainer. Some are still validating the idea and splitting equity on a handshake; others are about to take, or have just taken, a first friends-and-family or angel cheque on a SAFE. Today their cap table is a spreadsheet plus PDFs scattered across email, or nothing at all. Many are technical founders who are smart about product and new to equity.
+
+Get them in early: the product and the content must work for a founder who has no company and no cap table yet.
 
 Their pains, in their own words (from founder feedback, 2026-10-23):
 - What valuation cap to put on a first SAFE
@@ -28,10 +30,22 @@ Your company's records live in a folder you own. There's no account, no subscrip
 
 Never frame this as "what happens if we shut down". Frame it as "your data, always".
 
-The homepage leads with these selling points (Mads, 2026-10-26):
+Homepage hero (Mads, 2026-11-04): "The free cap table app, from first idea to first raise." Main CTA: download, it's free. Secondary CTA: talk to the founder. "Like Carta, but free" and "free Carta alternative" belong in a section further down and on /compare, not in the hero.
+
+Homepage order (Mads, 2026-11-04): hero + CTAs → problem ("We lost our cap table paperwork") → features → "Like Carta, but free" → prices → Learn teaser → FAQ → get in touch.
+
+Features, in this order:
+1. Cap table management, free.
+2. Local AI inside the app: don't pay for tokens. Works with Ollama or LM Studio; link the setup guide (also linked from inside the app). Don't bundle a model.
+3. Works with your AI (Claude Code, Claude Desktop, Codex, Gemini CLI, ChatGPT): its own page.
+4. Bring your cap table (import from Excel, CSV, Pulley, Carta).
+5. Organise everything: every paper in one folder.
+6. Stakeholder access: web app (label "Coming") and AI via MCP.
+
+Earlier selling points that still hold (Mads, 2026-10-26):
 1. Like Carta, but free.
 2. Open source, so you can host it yourself.
-3. Bring your own AI. True today: Ask AI in the app with a local model or the founder's own Claude, ChatGPT or Gemini key, and every folder has an `AGENTS.md` so Claude Code or any agent can work in it. Sending and chasing signatures by AI is the agentic version: label it "Coming" until it ships.
+3. Bring your own AI. True today: Ask AI in the app with a local model or the founder's own Claude, ChatGPT or Gemini key; and since 0.1.5, Capfolder runs from Claude Code, Claude Desktop, Codex and Gemini CLI over MCP (`npx capfolder install`). In AI lists, put ChatGPT after those (ChatGPT itself isn't connected yet). Sending and chasing signatures by AI: label it "Coming" until it ships.
 4. You own your files. They're on your computer 24/7 and nobody can take them down.
 5. Signing is included: investors sign from a link, with no account.
 
@@ -41,16 +55,19 @@ The homepage leads with these selling points (Mads, 2026-10-26):
 - In the app: a sample company to try, three setup questions, and a Get started list.
 - Investors and employees sign from a link in any browser.
 - Optional AI (Ask AI): local (Ollama, LM Studio) or the founder's own Claude, ChatGPT or Gemini key.
-- Education is how founders find us: guides about the first raise, SAFEs, cofounder equity and the YC application (at /learn and /blog).
+- Education is how founders find us (at /learn and /blog), in tracks that follow the founder: validate the idea → split equity and incorporate → get into an accelerator (YC application) → fundraise (SAFEs, the first raise).
+- Site sections: Learn (about the app, fundraising, features), Compare (Carta, Pulley, others), How are we free?, Prices, Get in touch.
 - Moving from Pulley or Carta is supported (import plus help pages), but it is not the homepage pitch.
 
 ## Capabilities and Constraints
 
 - **Free:** unlimited cap table, people and documents; e-signatures through the hosted relay, 5 signature requests per month; bring your own AI.
+- **Not incorporated yet:** record the shares promised to each founder; on incorporation they become Common shares after a preview and a yes (0.1.5, from your AI; the app screen for it is still to come).
+- **Use Capfolder from your AI (0.1.5):** Claude Code, Claude Desktop, Codex, Gemini CLI over MCP. Reads the cap table and previews every change; nothing is written until the founder says yes.
 - **Ask AI (in the app today):** questions about the cap table, what's missing and the documents; drafts (a SAFE, a grant, a person, a pool) that open prefilled for the founder to check and save. Providers: Ollama, LM Studio, or the founder's own Anthropic, OpenAI or Gemini key. Document text goes to a cloud model only if the founder turns that on.
 - **Pro ($50/month):** sync across computers and an encrypted online backup. Not released yet; always label it "coming".
 - **Self-host:** anyone can run the relay themselves.
-- **Not built yet; never show as available:** the agentic or MCP version, the knowledge base inside the app, and connecting founders to lawyers.
+- **Not built yet; show only with a "Coming" label:** the stakeholder web app, AI sending and chasing signatures, ChatGPT connection, sync and backup (Pro). **Never show:** the knowledge base inside the app, connecting founders to lawyers.
 - Builds are not code-signed yet, so users confirm once on first open.
 - The website is plain static HTML on Cloudflare Pages, with tests in `site.test.ts`.
 
@@ -72,7 +89,7 @@ The homepage leads with these selling points (Mads, 2026-10-26):
 
 ## Product Principles
 
-- Only for the earliest founders: if a section talks to a Series A company, cut it.
+- Only for the earliest founders, pre-idea to seed: if a section talks to a Series A company, cut it.
 - Say less. Every section makes one claim and shows its proof.
 - Ownership as a calm benefit, never as a fear.
 - Teach before you sell: the guides earn the download.
