@@ -13,10 +13,24 @@ import { fakePlatform } from "./fakePlatform";
 
 // The real app on memory files and fake dialogs: help-page screenshots without Tauri (scripts/shots.mjs).
 // ?flow=import starts in an empty Acme Inc. folder, with the fixture export ready behind "Choose file…".
+// ?flow=ai: the same empty folder, with a fake Ollama/LM Studio whose state the script sets in window.__ai
+// ("off" refuses, "empty" answers with no models, "models" lists two Ollama models).
+const localAi = {
+  fetch: async (url: string) => {
+    const state = (window as unknown as { __ai?: string }).__ai ?? "off";
+    const port = new URL(url).port;
+    if (state === "off" || (port !== "11434" && port !== "1234")) throw new TypeError("connection refused");
+    if (port === "1234") throw new TypeError("connection refused"); // LM Studio stays off in the shots
+    const models = state === "models" ? [{ name: "gemma4:e2b" }, { name: "llama3.1" }] : [];
+    return new Response(JSON.stringify({ models }), { status: 200 });
+  },
+};
+
 async function platform() {
-  if (new URLSearchParams(location.search).get("flow") !== "import") return fakePlatform().platform;
+  const flow = new URLSearchParams(location.search).get("flow");
+  if (flow !== "import" && flow !== "ai") return fakePlatform().platform;
   const file = "/home/me/Downloads/acme-cap-table.csv";
-  const fp = fakePlatform({ pickFile: { path: file, name: "acme-cap-table.csv" } });
+  const fp = fakePlatform(flow === "ai" ? { relay: localAi } : { pickFile: { path: file, name: "acme-cap-table.csv" } });
   fp.fs.writeSync(file, importCsv);
   const v = await createVault(
     fp.fs,

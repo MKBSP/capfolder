@@ -7,7 +7,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#1F6F4A">
 <title>Install a local AI · Capfolder help</title>
-<meta name="description" content="Install Ollama or LM Studio and download a free model, so Capfolder’s AI runs on your own computer.">
+<meta name="description" content="A beginner guide to installing Ollama or LM Studio and a free model, so Capfolder’s AI runs on your own computer.">
 <link rel="canonical" href="https://capfolder.com/help/install-local-ai/">
 <script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
 <script defer src="/track.js"></script>
@@ -42,34 +42,61 @@ dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A
 <main>
   <div class="crumb"><a href="/">Capfolder</a> · <a href="/help/">Help</a> · AI</div>
   <h1>Install a local AI</h1>
-  <p class="lead">A local AI is a free app that runs an AI model on your own computer. Capfolder can use it with no account, no bill, and nothing leaving your laptop. Pick one of the two below. Both are free.</p>
+  <p class="lead">A local AI is a free app that runs an AI on your own computer. Capfolder can use it to answer questions about your cap table, with no account, no bill and nothing leaving your laptop. Never done this before? That's fine: this guide assumes nothing.</p>
   <div class="tip"><b>Already have Ollama or LM Studio?</b> Skip to <a href="/help/local-ai/">Connect Ollama or LM Studio</a>.</div>
 
-  <h2>Which one?</h2>
+  <h2>What you need</h2>
+  <ul>
+    <li>A Mac or Windows computer from the last few years, with <b>8 GB of memory</b> or more (16 GB is comfortable).</li>
+    <li>About <b>10 GB free disk space</b> for the app and one model.</li>
+    <li>15 minutes and an internet connection for the download. After that it works offline.</li>
+  </ul>
+
+  <h2>Pick one</h2>
   <dl>
-    <dt>LM Studio</dt><dd>A normal app with buttons. Best if you've never used a terminal.</dd>
-    <dt>Ollama</dt><dd>Small, runs in the background, and you download models with one command. Best if you're happy in a terminal.</dd>
+    <dt>LM Studio: easiest if you've never used a terminal</dt><dd>A normal app with buttons. You search for a model and click download.</dd>
+    <dt>Ollama: smallest, if you're happy typing one command</dt><dd>Runs in the background. You download a model with one line.</dd>
   </dl>
-  <p>Any recent laptop works. 16 GB of memory is comfortable; 8 GB works with a small model.</p>
+  <p>Both are free. You only need one.</p>
 
   <h2>Option A: LM Studio</h2>
   <ol class="steps">
-    <li>Download LM Studio from <a href="https://lmstudio.ai">lmstudio.ai</a> and install it.</li>
-    <li>Open it, go to <b>Discover</b>, and download a small model (3–8B). LM Studio marks the ones that fit your computer.</li>
-    <li>Go to the <b>Developer</b> tab and switch the server on, so it says <b>Running</b>.</li>
+    <li>Go to <a href="https://lmstudio.ai">lmstudio.ai</a> and click the download button for your computer.</li>
+    <li>Install it. <b>Mac:</b> open the downloaded file and drag LM Studio into Applications. <b>Windows:</b> open the downloaded setup file and click through it.</li>
+    <li>Open LM Studio and go to the <b>Discover</b> tab (the magnifying glass, or <b>⌘2</b> on a Mac, <b>Ctrl+2</b> on Windows).</li>
+    <li>Search for <b>gemma</b> and download a small version. LM Studio shows which ones fit your computer. (<a href="https://lmstudio.ai/docs/app/basics/download-model">LM Studio's guide to downloading a model</a>)</li>
+    <li>When it's done, go to the <b>Developer</b> tab and switch the server on, so it says <b>Running</b>. (<a href="https://lmstudio.ai/docs/developer/core/server">LM Studio's server guide</a>)</li>
   </ol>
 
   <h2>Option B: Ollama</h2>
   <ol class="steps">
-    <li>Download Ollama from <a href="https://ollama.com">ollama.com</a> and install it. Open it once and it keeps running in the background.</li>
-    <li>Open a terminal (Mac: Terminal, Windows: PowerShell) and download a model. It's a few GB, once:
-      <pre style="background:#fff;border:1px solid #E4E4E0;border-radius:8px;padding:10px 12px;overflow-x:auto">ollama pull llama3.1</pre></li>
+    <li>Go to <a href="https://ollama.com/download">ollama.com/download</a> and download it for your computer.</li>
+    <li>Install it. <b>Mac:</b> open the downloaded file, drag Ollama into Applications and open it. <b>Windows:</b> open the setup file and click through it. Ollama then runs in the background.</li>
+    <li>Open a terminal. <b>Mac:</b> press <b>⌘ Space</b>, type <b>Terminal</b> and press Enter. <b>Windows:</b> open the Start menu, type <b>PowerShell</b> and press Enter.</li>
+    <li>Copy this line, paste it into the terminal and press Enter:
+      <pre style="background:#fff;border:1px solid #E4E4E0;border-radius:8px;padding:10px 12px;overflow-x:auto">ollama pull gemma4:e2b</pre>
+      It downloads the model once (about 7 GB). When it says <b>success</b>, you're done. (<a href="https://docs.ollama.com/quickstart">Ollama's quickstart</a>)</li>
   </ol>
 
   <h2>Then connect it to Capfolder</h2>
-  <p>Follow <a href="/help/local-ai/">Connect Ollama or LM Studio</a>. In short: open <b>Settings → AI</b>, click <b>Look again</b>, and pick your model in <b>AI in use</b>.</p>
+  <p>Follow <a href="/help/local-ai/">Connect Ollama or LM Studio</a>. In short: open <b>Settings</b>, find the <b>AI</b> box, click <b>Look again</b>, and pick your model in <b>AI in use</b>.</p>
 
-  <p class="foot">Something unclear? Tell us on <a href="https://github.com/MKBSP/capfolder/issues">GitHub</a>. Capfolder isn't legal advice: check your documents with a lawyer.</p>
+  <p class="foot">Stuck? <a href="https://tally.so/r/8NqXQ5">Book a call</a> or tell us on <a href="https://github.com/MKBSP/capfolder/issues">GitHub</a>. Capfolder isn't legal advice: check your documents with a lawyer.</p>
 </main>
+<dialog id="zoom" aria-label="Enlarged screenshot"></dialog>
+<script>
+// Click a screenshot to see it large (highlights included); click, Esc or the backdrop closes it.
+const zoom = document.getElementById("zoom");
+for (const shot of document.querySelectorAll("main .shot"))
+  shot.addEventListener("click", () => {
+    const big = shot.cloneNode(true);
+    big.setAttribute("aria-label", "Close");
+    zoom.replaceChildren(big);
+    zoom.showModal();
+    big.focus();
+  });
+zoom.addEventListener("click", () => zoom.close());
+zoom.addEventListener("close", () => zoom.replaceChildren());
+</script>
 </body>
 </html>

@@ -118,6 +118,46 @@ FLOWS.founders = {
   ],
 };
 
+// Settings → AI with a fake local AI (apps/desktop/src/test/screenshots.tsx): not running, no model, models found.
+const aiState = (p, state) => p.evaluate((st) => { window.__ai = st; }, state);
+const aiSection = (p) => p.getByRole("region", { name: "AI", exact: true });
+FLOWS["local-ai"] = {
+  url: `${BASE}?flow=ai`,
+  steps: [
+    { name: "open-settings", hl: (p) => [p.getByRole("button", { name: "Settings" }), p.getByRole("button", { name: "Set up AI" })] },
+    {
+      name: "not-running",
+      act: async (p) => {
+        await p.getByRole("button", { name: "Settings" }).click();
+        await aiSection(p).getByText(/Not running/).first().waitFor();
+      },
+      crop: aiSection,
+      hl: (p) => [aiSection(p).getByText(/^Ollama/).locator(".."), aiSection(p).getByRole("button", { name: "Look again" })],
+    },
+    {
+      name: "no-model",
+      act: async (p) => {
+        await aiState(p, "empty");
+        await aiSection(p).getByRole("button", { name: "Look again" }).click();
+        await aiSection(p).getByText(/no model is downloaded yet/).waitFor();
+      },
+      crop: aiSection,
+      hl: (p) => [aiSection(p).getByText(/no model is downloaded yet/)],
+    },
+    {
+      name: "pick-model",
+      act: async (p) => {
+        await aiState(p, "models");
+        await aiSection(p).getByRole("button", { name: "Look again" }).click();
+        await aiSection(p).getByText(/2 models on this computer/).waitFor();
+        await aiSection(p).getByLabel("AI in use").selectOption("ollama|gemma4:e2b");
+      },
+      crop: aiSection,
+      hl: (p) => [aiSection(p).getByLabel("AI in use"), aiSection(p).getByText(/2 models on this computer/)],
+    },
+  ],
+};
+
 const slug = process.argv[2];
 const flow = FLOWS[slug];
 if (!flow) {

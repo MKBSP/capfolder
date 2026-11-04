@@ -30,7 +30,7 @@ Your company's records live in a folder you own. There's no account, no subscrip
 
 Never frame this as "what happens if we shut down". Frame it as "your data, always".
 
-Homepage hero (Mads, 2026-11-04): "The free cap table app, from first idea to first raise." Main CTA: download, it's free. Secondary CTA: talk to the founder. "Like Carta, but free" and "free Carta alternative" belong in a section further down and on /compare, not in the hero.
+Homepage hero (Mads, 2026-11-04): "The free cap table app, from first idea to first raise." Main CTA: download, it's free. Secondary CTA: "Book a call" (Tally form 8NqXQ5). "Like Carta, but free" and "free Carta alternative" belong in a section further down and on /compare, not in the hero.
 
 Homepage order (Mads, 2026-11-04): hero + CTAs → problem ("We lost our cap table paperwork") → features → "Like Carta, but free" → prices → Learn teaser → FAQ → get in touch.
 

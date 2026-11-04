@@ -34,7 +34,7 @@
 
 # Tally: Talk to an expert
 
-- **Form:** "Talk to an expert", id **`8NqXQ5`**, published 2026-11-04. Edit: https://tally.so/forms/8NqXQ5/edit
+- **Form:** "Book a call" (was "Talk to an expert"), id **`8NqXQ5`**, published 2026-11-04. Edit: https://tally.so/forms/8NqXQ5/edit
 - **Fields:** Name (required), Email (required), Company (optional), "What stage is your company at?" (same 5 options, required), "What do you want help with?" (checkboxes, optional), "Anything else we should know?" (optional), hidden `utm_source` / `ref`.
 - **Promise made in the form:** a reply by email, usually within a day.
-- **Site:** every `[data-talk]` button on /testing-landing-page/f/ opens it as a popup (Umami events `talk-expert-*`).
+- **Site:** every `[data-talk]` button on /testing-landing-page/f/ opens it as a popup (Umami events `book-call-*`).

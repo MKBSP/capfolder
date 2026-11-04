@@ -388,7 +388,7 @@ function AiSection() {
         {(Object.keys(PROVIDERS) as ProviderId[]).map((id) => {
           const f = found?.find((x) => x.id === id);
           return (
-            <span key={id}>
+            <div key={id}>
               <b>{PROVIDERS[id].label}</b>:{" "}
               {!found
                 ? "looking…"
@@ -397,7 +397,7 @@ function AiSection() {
                   : !f?.models?.length
                     ? "running, but no model is downloaded yet."
                     : `${f.models.length} model${f.models.length === 1 ? "" : "s"} on this computer.`}
-            </span>
+            </div>
           );
         })}
       </div>

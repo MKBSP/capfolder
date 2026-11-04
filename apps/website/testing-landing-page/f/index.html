@@ -126,8 +126,8 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 /* ---- F v2: Probo/Cal-inspired layout ---- */
 :root{--ink:#0E120F;--muted:#5B606B;--line:#E6E7E3;--panel:#F2F3EF;--green:#1F6F4A;--green-d:#16543A;--mint:#EEF5F0}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:8px}
-.btn-d{background:var(--ink);color:#fff}
-@media (hover:hover) and (pointer:fine){.btn-d:hover{background:#252a26;color:#fff}}
+.btn-d{background:var(--green);color:#fff}
+@media (hover:hover) and (pointer:fine){.btn-d:hover{background:var(--green-d);color:#fff}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .pillnav{position:sticky;top:12px;z-index:20;margin:12px auto 0;max-width:1160px;padding:0 16px;box-sizing:border-box}
 .pillnav > div{display:flex;align-items:center;gap:18px;padding:8px 8px 8px 18px;border:1px solid var(--line);border-radius:16px;background:rgba(250,250,248,.9);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px)}
@@ -224,6 +224,53 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .cmp th,.cmp td{padding:12px 12px;font-size:14.5px}
   .wrap{padding:0 16px}
 }
+
+/* hero chips + growth story */
+.nw{white-space:nowrap}
+.hero-h1{font-weight:600;font-size:clamp(36px,6.4vw,68px);line-height:1.08;letter-spacing:-0.04em;margin:26px auto 0;max-width:940px;text-wrap:balance}
+.hchip{display:inline-flex;align-items:center;gap:6px;vertical-align:middle;margin:0 .18em 0 .28em;padding:.16em .42em .16em .2em;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 20px -12px rgba(14,18,15,.35);font-size:.3em;letter-spacing:0;line-height:1;transform:translateY(-.12em) rotate(-2deg);animation:chipIn .7s var(--ease-out) both .2s}
+.hchip-g{transform:translateY(-.12em) rotate(2deg);animation-delay:.45s;padding-left:.4em}
+.hchip b{font-weight:600}
+.hchip .av{display:inline-grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;background:var(--green);color:#fff;font-style:normal;font-weight:600;font-size:.9em}
+.hchip .av2{background:#4E9A72;margin-left:-.7em;border:2px solid #fff}
+.hchip svg{width:1.3em;height:1.3em;stroke:var(--green);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+@keyframes chipIn{from{opacity:0;transform:translateY(.3em) scale(.8)}}
+.grow{position:relative;padding:22px 24px 26px}
+.gsteps{list-style:none;margin:0;padding:0;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.gsteps button{font:inherit;font-size:13.5px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:background-color .25s,color .25s,border-color .25s}
+.gsteps button[aria-current="step"]{background:var(--green);border-color:var(--green);color:#fff}
+.gsteps button.done{color:var(--green);border-color:#C9DECF}
+.gbody{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:36px;align-items:center;margin-top:26px;min-height:300px}
+.gviz{position:relative;max-width:300px;width:100%;margin:0 auto;aspect-ratio:1}
+.donut,.uni{position:absolute;inset:0;width:100%;height:100%;transition:opacity .7s var(--ease-out),transform .9s var(--ease-out)}
+.donut .track{fill:none;stroke:#EEF0EC;stroke-width:26}
+.donut .seg{fill:none;stroke-width:26;transition:stroke-dasharray .9s var(--ease-out),stroke-dashoffset .9s var(--ease-out)}
+.uni{opacity:0;transform:scale(.6) rotate(-8deg)}
+.uni-body{fill:#EEF5F0;stroke:var(--green);stroke-width:2.2;stroke-linejoin:round}
+.uni-horn{fill:#E7C46A;stroke:#B8902F;stroke-width:1.6;stroke-linejoin:round}
+.uni-mane{fill:none;stroke:#4E9A72;stroke-width:3;stroke-linecap:round}
+.spark path{fill:#E7C46A}
+.grow.unicorn .donut{opacity:0;transform:scale(.4) rotate(90deg)}
+.grow.unicorn .uni{opacity:1;transform:scale(.84) translateY(-10%)}
+.grow.unicorn .spark{animation:twinkle 1.6s ease-in-out infinite}
+@keyframes twinkle{50%{opacity:.35}}
+.gval{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;transition:opacity .4s}
+.gval b{font-size:clamp(22px,3.4vw,34px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.gval span{font-size:13px;color:var(--muted);margin-top:2px}
+.grow.unicorn .gval{inset:auto 0 -4% 0}
+.gcard{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 30px -20px rgba(14,18,15,.3);text-align:left;overflow:hidden}
+.gcard-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEEFEB;font-weight:600;font-size:16px}
+#grows{min-height:172px}
+.grow-row{display:grid;grid-template-columns:14px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:9px 16px;border-top:1px solid #F1F2EE;font-size:14.5px;animation:rowIn .5s var(--ease-out) both}
+.grow-row:first-child{border-top:0}
+.grow-row i{width:10px;height:10px;border-radius:3px}
+.grow-row .v{color:var(--muted);font-size:13px;white-space:nowrap}
+.grow-row .p{font-weight:600;font-variant-numeric:tabular-nums;min-width:52px;text-align:right}
+@keyframes rowIn{from{opacity:0;transform:translateY(6px)}}
+.gnote{margin:0;padding:12px 16px;background:#FAFAF8;border-top:1px solid #EEEFEB;font-size:14px;color:#3A3E46}
+.grow #pause-motion{right:14px;bottom:14px}
+@media (max-width:760px){.gbody{grid-template-columns:minmax(0,1fr);gap:18px}.gviz{max-width:220px}.gsteps button{font-size:12.5px;padding:6px 10px}.grow{padding:16px 12px 56px}}
+@media (prefers-reduced-motion:reduce){.hchip{animation:none}.donut .seg,.donut,.uni,.grow-row{transition:none;animation:none}}
 </style>
 </head>
 <body>
@@ -241,19 +288,19 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
       <a href="https://github.com/MKBSP/capfolder" class="navlink">GitHub</a>
     </div>
     <div class="right">
-      <button type="button" class="linkbtn navlink talk" data-talk data-umami-event="talk-expert-nav" style="text-decoration: none">Talk to an expert</button>
+      <button type="button" class="linkbtn navlink talk" data-talk data-umami-event="book-call-nav" style="text-decoration: none">Book a call</button>
       <a href="#download" class="btn btn-d" data-umami-event="nav-download" style="font-size: 14px; padding: 10px 16px">Download</a>
     </div>
   </div></nav>
 
   <header id="top" class="wrap center" style="padding-top: clamp(56px, 9vw, 104px); padding-bottom: 48px">
     <a class="announce" href="#ai" data-umami-event="announce-ai"><b>NEW</b><span>Works with Claude Code, Codex and Gemini CLI</span><span aria-hidden="true">→</span></a>
-    <h1 style="font-weight: 600; font-size: clamp(38px, 7.6vw, 80px); line-height: 1.02; letter-spacing: -0.045em; margin: 26px auto 0 auto; max-width: 960px; text-wrap: balance">The free cap table app, from first idea to first raise.</h1>
+    <h1 class="hero-h1">The free cap table app, from <span class="nw">first idea<span class="hchip" aria-hidden="true"><i class="av">T</i><i class="av av2">S</i><b>50/50</b></span></span> to <span class="nw">first raise<span class="hchip hchip-g" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><b>SAFE signed</b></span></span></h1>
     <p class="sub" style="font-size: 20px; max-width: 640px; margin-top: 22px">Split equity with your cofounders, issue your first SAFE and get it signed. Incorporated or not, raised or not.</p>
     <div id="download" style="max-width: 560px; margin: 34px auto 0 auto">
       <div id="gate">
         <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">
-          <button type="button" class="btn btn-s" data-talk data-umami-event="talk-expert-hero" style="font-size: 16px; padding: 14px 22px">Talk to an expert</button>
+          <button type="button" class="btn btn-s" data-talk data-umami-event="book-call-hero" style="font-size: 16px; padding: 14px 22px">Book a call</button>
           <button type="button" class="btn btn-d" id="getdl" data-umami-event="get-download" style="font-size: 16px; padding: 14px 22px">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
             Download, it's free
@@ -290,12 +337,46 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
     <div class="stage">
       <div class="win">
         <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span>Capfolder · Acme Inc.</span></div>
-        <div style="position: relative">
-          <video id="demo" autoplay muted loop playsinline preload="metadata" poster="/img/home/demo-poster.jpg" width="1440" height="900" aria-label="Capfolder: a first SAFE, from the cap table to signed">
-            <source src="/img/home/demo.webm" type="video/webm">
-            <source src="/img/home/demo.mp4" type="video/mp4">
-          </video>
-          <button type="button" id="pause-motion" aria-pressed="false">Pause video</button>
+        <div class="grow" id="grow" aria-roledescription="animation" aria-label="A cap table from first idea to unicorn">
+          <ol class="gsteps" aria-label="Stages">
+            <li><button type="button" data-s="0">Idea</button></li>
+            <li><button type="button" data-s="1">Incorporate</button></li>
+            <li><button type="button" data-s="2">First SAFE</button></li>
+            <li><button type="button" data-s="3">Option pool</button></li>
+            <li><button type="button" data-s="4">Seed</button></li>
+            <li><button type="button" data-s="5">Series A</button></li>
+            <li><button type="button" data-s="6">Unicorn</button></li>
+          </ol>
+          <div class="gbody">
+            <div class="gviz" aria-hidden="true">
+              <svg class="donut" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="70" class="track"/>
+                <g transform="rotate(-90 100 100)">
+                  <circle cx="100" cy="100" r="70" class="seg" data-k="tim" style="stroke:#1F6F4A"/>
+                  <circle cx="100" cy="100" r="70" class="seg" data-k="steve" style="stroke:#4E9A72"/>
+                  <circle cx="100" cy="100" r="70" class="seg" data-k="safe" style="stroke:#C08A2E"/>
+                  <circle cx="100" cy="100" r="70" class="seg" data-k="pool" style="stroke:#A9CDB8"/>
+                  <circle cx="100" cy="100" r="70" class="seg" data-k="seed" style="stroke:#6E7781"/>
+                  <circle cx="100" cy="100" r="70" class="seg" data-k="a" style="stroke:#2D3A33"/>
+                </g>
+              </svg>
+              <svg class="uni" viewBox="0 0 100 100">
+                <path class="uni-body" d="M70 30C60 26 48 28 40 36L22 52C16 58 18 66 26 66L40 64C44 70 46 80 44 92H78C80 72 82 50 70 30Z"/>
+                <path class="uni-body" d="M66 31 71 17 75 33Z"/>
+                <path class="uni-horn" d="M55 31 65 3 62 32Z"/>
+                <path class="uni-mane" d="M74 31C88 38 84 56 91 66C82 64 80 74 85 84C77 80 79 88 79 92"/>
+                <circle cx="47" cy="44" r="2.4" fill="#0E120F"/>
+                <g class="spark"><path d="M14 20l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path d="M86 10l1.5 3.5 3.5 1.5-3.5 1.5L86 20l-1.5-3.5L81 15l3.5-1.5z"/><path d="M90 46l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></g>
+              </svg>
+              <div class="gval"><b id="gval">Idea</b><span id="gvsub">no company yet</span></div>
+            </div>
+            <div class="gcard">
+              <div class="gcard-h"><span id="gtitle">Tim and Steve shake on it</span><span class="tag" id="gtag">Not incorporated</span></div>
+              <div id="grows"></div>
+              <p class="gnote" id="gnote">Write down who's in and what you promised.</p>
+            </div>
+          </div>
+          <button type="button" id="pause-motion" aria-pressed="false">Pause</button>
         </div>
       </div>
     </div>
@@ -532,7 +613,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
       <h2 class="h2" style="font-size: clamp(30px, 5.6vw, 52px)">Get in touch.</h2>
       <p class="sub">Questions about your split, your first SAFE or moving off a spreadsheet? Tell us where you are and we'll help.</p>
       <div style="margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">
-        <button type="button" class="btn btn-s" data-talk data-umami-event="talk-expert-close">Talk to an expert</button>
+        <button type="button" class="btn btn-s" data-talk data-umami-event="book-call-close">Book a call</button>
         <a href="#download" class="btn btn-d" data-umami-event="close-download">Download, it's free</a>
       </div>
     </div>
@@ -540,25 +621,63 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
   <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; line-height: 1.55; color: #5B606B">
     <span style="flex: 1 1 360px; max-width: 62ch">Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</span>
-    <span style="display: flex; flex-wrap: wrap; gap: 8px 18px; flex: 1 1 360px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="/help/">Help</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="/#thanks">Acknowledgements</a><a href="/#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><button type="button" class="linkbtn" data-talk data-umami-event="talk-expert-footer" style="color: #1F6F4A">Talk to an expert</button><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px 18px; flex: 1 1 360px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="/help/">Help</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="/#thanks">Acknowledgements</a><a href="/#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><button type="button" class="linkbtn" data-talk data-umami-event="book-call-footer" style="color: #1F6F4A">Book a call</button><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
   </footer>
 </div>
 
 <script>
-// Hero video: paused under reduced motion; the button pauses and plays it (WCAG 2.2.2).
+// Growth story (replaces the demo video): steps through 7 stages; pausable (WCAG 2.2.2), still under reduced motion.
 (function () {
-  var video = document.getElementById("demo");
+  var C = 2 * Math.PI * 70;
+  var K = ["tim", "steve", "safe", "pool", "seed", "a"];
+  var COL = { tim: "#1F6F4A", steve: "#4E9A72", safe: "#C08A2E", pool: "#A9CDB8", seed: "#6E7781", a: "#2D3A33" };
+  // ponytail: sample numbers for the story, each stage sums to 100%
+  var S = [
+    { val: "Idea", sub: "no company yet", title: "Tim and Steve shake on it", tag: "Not incorporated", note: "Write down who's in and what you promised.",
+      own: { tim: 50, steve: 50 }, rows: [["tim", "Tim Apple", "promised"], ["steve", "Steve Jobs", "promised"]] },
+    { val: "Acme Inc.", sub: "Delaware C-corp", title: "Incorporated", tag: "83(b) filed", note: "Promises become 4,000,000 Common shares each, vesting over 4 years.",
+      own: { tim: 50, steve: 50 }, rows: [["tim", "Tim Apple", "4,000,000 Common"], ["steve", "Steve Jobs", "4,000,000 Common"]] },
+    { val: "$8M cap", sub: "first SAFE", title: "Bill Gates invests $50k", tag: "Signed", note: "YC post-money SAFE, signed from a link. No account needed.",
+      own: { tim: 49.7, steve: 49.7, safe: 0.6 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["safe", "Bill Gates", "SAFE $50k"]] },
+    { val: "10% pool", sub: "first hires", title: "Option pool for the team", tag: "3 grants", note: "Grants with vesting and a cliff. The board consent is on file.",
+      own: { tim: 44.7, steve: 44.7, safe: 0.6, pool: 10 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["safe", "Bill Gates", "SAFE"], ["pool", "Option pool", "3 grants"]] },
+    { val: "$20M", sub: "seed round", title: "Six angels and a seed fund", tag: "7 investors", note: "Every SAFE converts, with the math shown.",
+      own: { tim: 35.8, steve: 35.8, pool: 8, seed: 20.4 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["pool", "Option pool", "12 grants"], ["seed", "Seed investors", "Preferred"]] },
+    { val: "$120M", sub: "Series A", title: "A lead investor joins", tag: "Diligence ready", note: "Every signed paper is in the folder before their lawyer asks.",
+      own: { tim: 28, steve: 28, pool: 12, seed: 16, a: 16 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["pool", "Option pool", "40 grants"], ["seed", "Seed investors", "Preferred"], ["a", "Series A", "Preferred"]] },
+    { val: "$1B", sub: "unicorn", title: "The day it all pays off", tag: "Liquidity", note: "Started free, with the records right from day one.",
+      own: { tim: 28, steve: 28, pool: 12, seed: 16, a: 16 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["pool", "Team", "options"], ["seed", "Seed investors", "Preferred"], ["a", "Series A", "Preferred"]] },
+  ];
+  var root = document.getElementById("grow");
+  var segs = {}; root.querySelectorAll(".seg").forEach(function (c) { segs[c.dataset.k] = c; });
+  var steps = root.querySelectorAll(".gsteps button");
   var btn = document.getElementById("pause-motion");
-  function set(paused) {
-    if (paused) video.pause(); else video.play().catch(function () {});
-    document.documentElement.classList.toggle("motion-paused", paused);
-    btn.setAttribute("aria-pressed", String(paused));
-    btn.textContent = paused ? "Play video" : "Pause video";
+  var $ = function (id) { return document.getElementById(id); };
+  var i = 0, timer = null, playing = true, visible = true;
+  function show(n) {
+    i = n; var st = S[n], off = 0;
+    K.forEach(function (k) {
+      var len = (st.own[k] || 0) / 100 * C;
+      segs[k].style.strokeDasharray = Math.max(len - (len ? 1.5 : 0), 0) + " " + C;
+      segs[k].style.strokeDashoffset = -off; off += len;
+    });
+    root.classList.toggle("unicorn", n === S.length - 1);
+    $("gval").textContent = st.val; $("gvsub").textContent = st.sub;
+    $("gtitle").textContent = st.title; $("gtag").textContent = st.tag; $("gnote").textContent = st.note;
+    $("grows").innerHTML = st.rows.map(function (r, j) {
+      return '<div class="grow-row" style="animation-delay:' + j * 60 + 'ms"><i style="background:' + COL[r[0]] + '"></i><span>' + r[1] + '</span><span class="v">' + r[2] + '</span><span class="p">' + (st.own[r[0]] || 0).toFixed(st.own[r[0]] % 1 ? 1 : 0) + '%</span></div>';
+    }).join("");
+    steps.forEach(function (b, j) { b.classList.toggle("done", j < n); if (j === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
   }
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); set(true); }
-  btn.addEventListener("click", function () { set(btn.getAttribute("aria-pressed") !== "true"); });
-  var sources = video.querySelectorAll("source"), failed = 0;
-  sources.forEach(function (s) { s.addEventListener("error", function () { if (++failed === sources.length) btn.hidden = true; }); });
+  function tick() { show((i + 1) % S.length); }
+  function run() { clearInterval(timer); timer = playing && visible ? setInterval(tick, i === S.length - 1 ? 4200 : 2600) : null; }
+  function setPlaying(p) { playing = p; btn.setAttribute("aria-pressed", String(!p)); btn.textContent = p ? "Pause" : "Play"; run(); }
+  steps.forEach(function (b) { b.addEventListener("click", function () { show(+b.dataset.s); setPlaying(false); }); });
+  btn.addEventListener("click", function () { setPlaying(!playing); });
+  // the unicorn stays on screen a little longer before the loop restarts
+  var _show = show; show = function (n) { _show(n); run(); };
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; run(); }).observe(root);
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { _show(2); setPlaying(false); } else { _show(0); run(); }
 })();
 
 // Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
@@ -571,8 +690,8 @@ function showDownloads() {
 document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
 document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") })); // Pro waitlist (integrations/tally.md)
 document.getElementById("skipdl").addEventListener("click", showDownloads);
-// "Talk to an expert" (Tally 8NqXQ5, integrations/tally.md)
-for (const b of document.querySelectorAll("[data-talk]")) b.addEventListener("click", () => openForm("8NqXQ5", { onSubmit: () => window.umami?.track("talk-expert-submitted") })); // Show HN: no signup required to try
+// "Book a call" (Tally 8NqXQ5, integrations/tally.md)
+for (const b of document.querySelectorAll("[data-talk]")) b.addEventListener("click", () => openForm("8NqXQ5", { onSubmit: () => window.umami?.track("book-call-submitted") })); // Show HN: no signup required to try
 // Tally is loaded only when someone asks for the download (no third-party request before that)
 function openForm(id, opts) {
   const popup = () =>
