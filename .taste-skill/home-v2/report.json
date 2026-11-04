@@ -1,0 +1,2582 @@
+{
+ "url": "http://localhost:8765/",
+ "at": "2026-10-26T10:28:24.920Z",
+ "allow": [
+  "contrast"
+ ],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 10,
+   "filled": [
+    0.46,
+    0.88,
+    0.67,
+    0.4,
+    0.09,
+    0.89,
+    0.34,
+    0.91,
+    0.59,
+    0.59
+   ],
+   "motion": {
+    "elements": 27,
+    "css": 4,
+    "transitions": 23,
+    "scripted": 0,
+    "videos": 1,
+    "playingVideos": 1
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 8105,
+     "screens": 9,
+     "words": 1133,
+     "img": 6,
+     "video": 1,
+     "canvas": 0,
+     "svg": 18,
+     "sections": 9,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 6,
+     "videoCount": 1,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "step-split.jpg",
+      "step-83b.jpg",
+      "step-safe.jpg",
+      "step-sign.jpg",
+      "step-folder.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "The free cap table app for your first raise.",
+     "words": 9,
+     "chars": 44,
+     "lines": 2,
+     "size": 76,
+     "vw": 5.3,
+     "font": "Geist",
+     "weight": 600,
+     "tracking": -0.04,
+     "leading": 1.02,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.54,
+     "top": 169,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "The free cap table app for your first raise.",
+     "words": 9,
+     "lines": 2,
+     "size": 76,
+     "font": "Geist"
+    },
+    "headings": [
+     {
+      "text": "The free cap table app for your first raise.",
+      "words": 9,
+      "chars": 44,
+      "lines": 2,
+      "size": 76,
+      "vw": 5.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.04,
+      "leading": 1.02,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.54,
+      "top": 169,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Every first-time founder has the same questions.",
+      "words": 7,
+      "chars": 48,
+      "lines": 2,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.57,
+      "top": 1468,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "We lost our cap table paperwork.",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 2418,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your company's first papers, in order.",
+      "words": 6,
+      "chars": 38,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.78,
+      "top": 2842,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Free. Pro is coming.",
+      "words": 4,
+      "chars": 20,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.78,
+      "top": 3726,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.27,
+      "top": 3894,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$50 a monthComing",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.27,
+      "top": 3894,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Read these before your first raise.",
+      "words": 6,
+      "chars": 35,
+      "lines": 2,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 4772,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What is a SAFE?",
+      "words": 4,
+      "chars": 15,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.17,
+      "top": 4792,
+      "tag": "b",
+      "kind": "statement"
+     },
+     {
+      "text": "Valuation cap and discount",
+      "words": 4,
+      "chars": 26,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.28,
+      "top": 4912,
+      "tag": "b",
+      "kind": "statement"
+     },
+     {
+      "text": "Vesting and the cliff",
+      "words": 4,
+      "chars": 21,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.21,
+      "top": 5033,
+      "tag": "b",
+      "kind": "statement"
+     },
+     {
+      "text": "The 83(b) election",
+      "words": 3,
+      "chars": 18,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.19,
+      "top": 5154,
+      "tag": "b",
+      "kind": "statement"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.78,
+      "top": 5507,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Set up your cap table tonight.",
+      "words": 6,
+      "chars": 30,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.45,
+      "top": 6305,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 14,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 4,
+     "centered": 0,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Geist",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      15,
+      16,
+      17,
+      20,
+      30,
+      48,
+      76
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Geist",
+      "size": 16,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 9.1
+     },
+     "measureChars": 66,
+     "max": {
+      "size": 76,
+      "vw": 5.3,
+      "font": "Geist",
+      "text": "The free cap table app for your first ra"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0.02,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fcfcfb",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.14,
+      "l": 0.99
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f1f2ee",
+       "top": 631,
+       "hsl": {
+        "h": 75,
+        "s": 0.13,
+        "l": 0.94
+       }
+      },
+      {
+       "color": "#eef5f0",
+       "top": 1340,
+       "hsl": {
+        "h": 137,
+        "s": 0.26,
+        "l": 0.95
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#3d4148",
+       "share": 0.44
+      },
+      {
+       "color": "#111311",
+       "share": 0.28
+      },
+      {
+       "color": "#6b7079",
+       "share": 0.16
+      },
+      {
+       "color": "#4a4f57",
+       "share": 0.04
+      },
+      {
+       "color": "#9da29a",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#1f6f4a",
+      "hsl": {
+       "h": 152,
+       "s": 0.56,
+       "l": 0.28
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "(Simple Agreement for Future Equity)",
+       "ratio": 2.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#9da29a",
+       "bg": "#f3f4f0"
+      },
+      {
+       "text": "Tim Apple",
+       "ratio": 2.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#9da29a",
+       "bg": "#f3f4f0"
+      },
+      {
+       "text": "4,000,000",
+       "ratio": 2.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#9da29a",
+       "bg": "#f3f4f0"
+      },
+      {
+       "text": "50.00%",
+       "ratio": 2.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#9da29a",
+       "bg": "#f3f4f0"
+      },
+      {
+       "text": "Steve Jobs",
+       "ratio": 2.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#9da29a",
+       "bg": "#f3f4f0"
+      },
+      {
+       "text": "3,000,000",
+       "ratio": 2.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#9da29a",
+       "bg": "#f3f4f0"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 41,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Download",
+      "Download",
+      "Download Capfolder"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 15,
+     "boxRadius": 10,
+     "squareMedia": 0,
+     "roundedMedia": 2,
+     "mediaRadius": 8,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "video",
+      "ratio": 0.22
+     }
+    ],
+    "nav": {
+     "links": 9,
+     "fixed": false,
+     "height": 73,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 8105,
+    "margins": {
+     "left": 160,
+     "right": 166
+    },
+    "sections": [
+     {
+      "sel": "div.top",
+      "tag": "div",
+      "top": 73,
+      "height": 1267,
+      "words": 94,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "The free cap table app for your first raise.",
+       "size": 76,
+       "tag": "h1"
+      },
+      "left": 77,
+      "right": 27,
+      "textLeft": 77,
+      "textRight": 27,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.field.qs",
+      "tag": "section",
+      "top": 1340,
+      "height": 951,
+      "words": 77,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Every first-time founder has the same questions.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 223,
+      "textLeft": 160,
+      "textRight": 223,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#story.wrap.sec",
+      "tag": "section",
+      "top": 2290,
+      "height": 424,
+      "words": 86,
+      "media": 0,
+      "middle": 143,
+      "heading": {
+       "text": "We lost our cap table paperwork.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 166,
+      "textLeft": 160,
+      "textRight": 166,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#how.wrap.sec",
+      "tag": "section",
+      "top": 2714,
+      "height": 883,
+      "words": 94,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Your company's first papers, in order.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 172,
+      "textLeft": 160,
+      "textRight": 481,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#pricing.wrap.sec",
+      "tag": "section",
+      "top": 3598,
+      "height": 918,
+      "words": 108,
+      "media": 0,
+      "middle": 55,
+      "heading": {
+       "text": "Free. Pro is coming.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 204,
+      "textLeft": 160,
+      "textRight": 204,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#learn.toned",
+      "tag": "section",
+      "top": 4644,
+      "height": 735,
+      "words": 56,
+      "media": 0,
+      "middle": 116,
+      "heading": {
+       "text": "Read these before your first raise.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 322,
+      "textLeft": 160,
+      "textRight": 322,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.wrap.sec",
+      "tag": "section",
+      "top": 5379,
+      "height": 670,
+      "words": 177,
+      "media": 0,
+      "middle": 87,
+      "heading": {
+       "text": "Questions",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 162,
+      "textLeft": 160,
+      "textRight": 162,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.field",
+      "tag": "section",
+      "top": 6177,
+      "height": 308,
+      "words": 8,
+      "media": 0,
+      "middle": 296,
+      "heading": {
+       "text": "Set up your cap table tonight.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 183,
+      "textLeft": 160,
+      "textRight": 183,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.back",
+      "tag": "div",
+      "top": 6485,
+      "height": 1338,
+      "words": 344,
+      "media": 0,
+      "middle": 76,
+      "heading": {
+       "text": "Privacy",
+       "size": 20,
+       "tag": "h2"
+      },
+      "left": 160,
+      "right": 163,
+      "textLeft": 160,
+      "textRight": 163,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 7823,
+      "height": 282,
+      "words": 68,
+      "media": 0,
+      "middle": 78,
+      "heading": null,
+      "left": 160,
+      "right": 176,
+      "textLeft": 160,
+      "textRight": 176,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 2116,
+      "height": 300
+     },
+     {
+      "top": 5228,
+      "height": 276
+     }
+    ],
+    "h1s": [
+     {
+      "text": "The free cap table app for your first raise.",
+      "size": 76,
+      "top": 169,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 160,
+      "n": 23
+     },
+     {
+      "x": 756,
+      "n": 7
+     },
+     {
+      "x": 677,
+      "n": 3
+     }
+    ],
+    "leftBlocks": 33,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.07,
+    "voidBox": {
+     "x": 960,
+     "y": 180,
+     "w": 480,
+     "h": 180
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 8,
+   "filled": [
+    0.68,
+    0.75,
+    0.56,
+    0.32,
+    0.71,
+    0.42,
+    0.8,
+    0.56
+   ],
+   "motion": {
+    "elements": 25,
+    "css": 4,
+    "transitions": 21,
+    "scripted": 0,
+    "videos": 1,
+    "playingVideos": 1
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 7997,
+     "screens": 7.8,
+     "words": 1110,
+     "img": 6,
+     "video": 1,
+     "canvas": 0,
+     "svg": 18,
+     "sections": 9,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 6,
+     "videoCount": 1,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "step-split.jpg",
+      "step-83b.jpg",
+      "step-safe.jpg",
+      "step-sign.jpg",
+      "step-folder.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "The free cap table app for your first raise.",
+     "words": 9,
+     "chars": 44,
+     "lines": 2,
+     "size": 49.2,
+     "vw": 6.4,
+     "font": "Geist",
+     "weight": 600,
+     "tracking": -0.04,
+     "leading": 1.02,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.66,
+     "top": 127,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "The free cap table app for your first raise.",
+     "words": 9,
+     "lines": 2,
+     "size": 49.2,
+     "font": "Geist"
+    },
+    "headings": [
+     {
+      "text": "The free cap table app for your first raise.",
+      "words": 9,
+      "chars": 44,
+      "lines": 2,
+      "size": 49.2,
+      "vw": 6.4,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.04,
+      "leading": 1.02,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.66,
+      "top": 127,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Every first-time founder has the same questions.",
+      "words": 7,
+      "chars": 48,
+      "lines": 2,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.71,
+      "top": 1029,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "We lost our cap table paperwork.",
+      "words": 6,
+      "chars": 32,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1810,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your company's first papers, in order.",
+      "words": 6,
+      "chars": 38,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 2220,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Free. Pro is coming.",
+      "words": 4,
+      "chars": 20,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3367,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.31,
+      "top": 3494,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$50 a monthComing",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.31,
+      "top": 3494,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Read these before your first raise.",
+      "words": 6,
+      "chars": 35,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 4405,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 5068,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Set up your cap table tonight.",
+      "words": 6,
+      "chars": 30,
+      "lines": 1,
+      "size": 32.3,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.56,
+      "top": 6095,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 10,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Geist",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      15,
+      16,
+      17,
+      20,
+      22,
+      32,
+      49
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Geist",
+      "size": 16,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 9.1
+     },
+     "measureChars": 87,
+     "max": {
+      "size": 49.2,
+      "vw": 6.4,
+      "font": "Geist",
+      "text": "The free cap table app for your first ra"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0.02,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fcfcfb",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.14,
+      "l": 0.99
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f1f2ee",
+       "top": 510,
+       "hsl": {
+        "h": 75,
+        "s": 0.13,
+        "l": 0.94
+       }
+      },
+      {
+       "color": "#eef5f0",
+       "top": 957,
+       "hsl": {
+        "h": 137,
+        "s": 0.26,
+        "l": 0.95
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#3d4148",
+       "share": 0.45
+      },
+      {
+       "color": "#111311",
+       "share": 0.29
+      },
+      {
+       "color": "#6b7079",
+       "share": 0.16
+      },
+      {
+       "color": "#4a4f57",
+       "share": 0.04
+      },
+      {
+       "color": "#2e3236",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#1f6f4a",
+      "hsl": {
+       "h": 152,
+       "s": 0.56,
+       "l": 0.28
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "(Simple Agreement for Future Equity)",
+       "ratio": 2.4,
+       "need": 4.5,
+       "size": 15,
+       "fg": "#9da29a",
+       "bg": "#f3f4f0"
+      },
+      {
+       "text": "SAFE",
+       "ratio": 2.8,
+       "need": 4.5,
+       "size": 20,
+       "fg": "#8f948c",
+       "bg": "#f3f4f0"
+      },
+      {
+       "text": "How you raise money now and issue the sh",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 17,
+       "fg": "#6b7079",
+       "bg": "#f1f2ee"
+      },
+      {
+       "text": "How they decide your investor's shares, ",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 17,
+       "fg": "#6b7079",
+       "bg": "#f1f2ee"
+      },
+      {
+       "text": "Four years with a one-year cliff, month ",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 17,
+       "fg": "#6b7079",
+       "bg": "#f1f2ee"
+      },
+      {
+       "text": "Who should file, and the 30-day deadline",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 17,
+       "fg": "#6b7079",
+       "bg": "#f1f2ee"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 4,
+     "radius": "pill",
+     "height": 37,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Download",
+      "Download",
+      "Download Capfolder",
+      "Pause video"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 13,
+     "boxRadius": 10,
+     "squareMedia": 0,
+     "roundedMedia": 2,
+     "mediaRadius": 8,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "video",
+      "ratio": 0.38
+     }
+    ],
+    "nav": {
+     "links": 9,
+     "fixed": false,
+     "height": 73,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 7997,
+    "margins": {
+     "left": 31,
+     "right": 31
+    },
+    "sections": [
+     {
+      "sel": "div.top",
+      "tag": "div",
+      "top": 73,
+      "height": 884,
+      "words": 71,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "The free cap table app for your first raise.",
+       "size": 49,
+       "tag": "h1"
+      },
+      "left": 31,
+      "right": 38,
+      "textLeft": 31,
+      "textRight": 58,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.field.qs",
+      "tag": "section",
+      "top": 957,
+      "height": 781,
+      "words": 77,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Every first-time founder has the same questions.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 31,
+      "right": 89,
+      "textLeft": 31,
+      "textRight": 89,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#story.wrap.sec",
+      "tag": "section",
+      "top": 1738,
+      "height": 411,
+      "words": 86,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "We lost our cap table paperwork.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 31,
+      "right": 33,
+      "textLeft": 31,
+      "textRight": 33,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#how.wrap.sec",
+      "tag": "section",
+      "top": 2148,
+      "height": 1146,
+      "words": 94,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Your company's first papers, in order.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 31,
+      "right": 31,
+      "textLeft": 31,
+      "textRight": 79,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#pricing.wrap.sec",
+      "tag": "section",
+      "top": 3295,
+      "height": 967,
+      "words": 108,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Free. Pro is coming.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 31,
+      "right": 51,
+      "textLeft": 31,
+      "textRight": 60,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#learn.toned",
+      "tag": "section",
+      "top": 4333,
+      "height": 641,
+      "words": 56,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Read these before your first raise.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 31,
+      "right": 243,
+      "textLeft": 31,
+      "textRight": 243,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.wrap.sec",
+      "tag": "section",
+      "top": 4974,
+      "height": 950,
+      "words": 176,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Is it really free?",
+       "size": 20,
+       "tag": "h3"
+      },
+      "left": 31,
+      "right": 160,
+      "textLeft": 31,
+      "textRight": 160,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.field",
+      "tag": "section",
+      "top": 5995,
+      "height": 190,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.back",
+      "tag": "div",
+      "top": 6185,
+      "height": 1489,
+      "words": 344,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Privacy",
+       "size": 20,
+       "tag": "h2"
+      },
+      "left": 31,
+      "right": 43,
+      "textLeft": 31,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 7675,
+      "height": 323,
+      "words": 68,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 31,
+      "right": 52,
+      "textLeft": 31,
+      "textRight": 52,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 5924,
+      "height": 320
+     }
+    ],
+    "h1s": [
+     {
+      "text": "The free cap table app for your first raise.",
+      "size": 49,
+      "top": 127,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 31,
+      "n": 30
+     },
+     {
+      "x": 186,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 31,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    0.63,
+    1,
+    0.51,
+    0.67,
+    0.32,
+    0.63,
+    0.66,
+    0.6,
+    1,
+    0.85,
+    0.84,
+    0.91
+   ],
+   "motion": {
+    "elements": 26,
+    "css": 4,
+    "transitions": 22,
+    "scripted": 0,
+    "videos": 1,
+    "playingVideos": 1
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 9443,
+     "screens": 11.2,
+     "words": 1085,
+     "img": 6,
+     "video": 1,
+     "canvas": 0,
+     "svg": 18,
+     "sections": 9,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 6,
+     "videoCount": 1,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "step-split.jpg",
+      "step-83b.jpg",
+      "step-safe.jpg",
+      "step-sign.jpg",
+      "step-folder.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "The free cap table app for your first raise.",
+     "words": 9,
+     "chars": 44,
+     "lines": 2,
+     "size": 30,
+     "vw": 7.7,
+     "font": "Geist",
+     "weight": 600,
+     "tracking": -0.04,
+     "leading": 1.02,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.79,
+     "top": 116,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "The free cap table app for your first raise.",
+     "words": 9,
+     "lines": 2,
+     "size": 30,
+     "font": "Geist"
+    },
+    "headings": [
+     {
+      "text": "The free cap table app for your first raise.",
+      "words": 9,
+      "chars": 44,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.04,
+      "leading": 1.02,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.79,
+      "top": 116,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Every first-time founder has the same questions.",
+      "words": 7,
+      "chars": 48,
+      "lines": 2,
+      "size": 26,
+      "vw": 6.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 905,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "We lost our cap table paperwork.",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1793,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your company's first papers, in order.",
+      "words": 6,
+      "chars": 38,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 2458,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Free. Pro is coming.",
+      "words": 4,
+      "chars": 20,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3497,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.44,
+      "top": 3623,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$50 a month Coming",
+      "words": 4,
+      "chars": 18,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.44,
+      "top": 3623,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Read these before your first raise.",
+      "words": 6,
+      "chars": 35,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 4737,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What is a SAFE? How you raise money now and issue the shares later.",
+      "words": 14,
+      "chars": 67,
+      "lines": 3,
+      "size": 22,
+      "vw": 5.6,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 4834,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "Valuation cap and discount How they decide your investor's shares, worked through.",
+      "words": 12,
+      "chars": 82,
+      "lines": 3,
+      "size": 22,
+      "vw": 5.6,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 4966,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "Vesting and the cliff Four years with a one-year cliff, month by month.",
+      "words": 13,
+      "chars": 71,
+      "lines": 3,
+      "size": 22,
+      "vw": 5.6,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 5097,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "The 83(b) election Who should file, and the 30-day deadline.",
+      "words": 10,
+      "chars": 60,
+      "lines": 2,
+      "size": 22,
+      "vw": 5.6,
+      "font": "Geist",
+      "weight": 550,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 5229,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 5476,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Set up your cap table tonight.",
+      "words": 6,
+      "chars": 30,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 6653,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 14,
+     "maxLines": 3,
+     "over2Lines": 0,
+     "statements": 4,
+     "centered": 0,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Geist",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      15,
+      16,
+      17,
+      20,
+      22,
+      26,
+      30
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Geist",
+      "size": 16,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 10
+     },
+     "measureChars": 45,
+     "max": {
+      "size": 30,
+      "vw": 7.7,
+      "font": "Geist",
+      "text": "The free cap table app for your first ra"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0.01,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fcfcfb",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.14,
+      "l": 0.99
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#eef5f0",
+       "top": 833,
+       "hsl": {
+        "h": 137,
+        "s": 0.26,
+        "l": 0.95
+       }
+      },
+      {
+       "color": "#f1f2ee",
+       "top": 4665,
+       "hsl": {
+        "h": 75,
+        "s": 0.13,
+        "l": 0.94
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#3d4148",
+       "share": 0.44
+      },
+      {
+       "color": "#111311",
+       "share": 0.29
+      },
+      {
+       "color": "#6b7079",
+       "share": 0.18
+      },
+      {
+       "color": "#4a4f57",
+       "share": 0.04
+      },
+      {
+       "color": "#2e3236",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#1f6f4a",
+      "hsl": {
+       "h": 152,
+       "s": 0.56,
+       "l": 0.28
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "How you raise money now and issue the sh",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 16,
+       "fg": "#6b7079",
+       "bg": "#f1f2ee"
+      },
+      {
+       "text": "How they decide your investor's shares, ",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 16,
+       "fg": "#6b7079",
+       "bg": "#f1f2ee"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 6,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 37,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Download",
+      "Download Capfolder",
+      "Pause video"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 1,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 11,
+     "boxRadius": 10,
+     "squareMedia": 0,
+     "roundedMedia": 2,
+     "mediaRadius": 8,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "video",
+      "ratio": 0.23
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 0,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "geist"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 9443,
+    "margins": {
+     "left": 16,
+     "right": 16
+    },
+    "sections": [
+     {
+      "sel": "div.top",
+      "tag": "div",
+      "top": 68,
+      "height": 765,
+      "words": 62,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "The free cap table app for your first raise.",
+       "size": 30,
+       "tag": "h1"
+      },
+      "left": 16,
+      "right": 22,
+      "textLeft": 16,
+      "textRight": 27,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.field.qs",
+      "tag": "section",
+      "top": 833,
+      "height": 888,
+      "words": 77,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Every first-time founder has the same questions.",
+       "size": 26,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 45,
+      "textLeft": 16,
+      "textRight": 45,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#story.wrap.sec",
+      "tag": "section",
+      "top": 1721,
+      "height": 665,
+      "words": 86,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "We lost our cap table paperwork.",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#how.wrap.sec",
+      "tag": "section",
+      "top": 2386,
+      "height": 1039,
+      "words": 94,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Your company's first papers, in order.",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 31,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#pricing.wrap.sec",
+      "tag": "section",
+      "top": 3425,
+      "height": 1168,
+      "words": 108,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Free. Pro is coming.",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 21,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#learn.toned",
+      "tag": "section",
+      "top": 4665,
+      "height": 739,
+      "words": 56,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Read these before your first raise.",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 24,
+      "textLeft": 16,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.wrap.sec",
+      "tag": "section",
+      "top": 5404,
+      "height": 1105,
+      "words": 177,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Questions",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 17,
+      "textLeft": 16,
+      "textRight": 17,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.field",
+      "tag": "section",
+      "top": 6581,
+      "height": 283,
+      "words": 8,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Set up your cap table tonight.",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 161,
+      "textLeft": 16,
+      "textRight": 161,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#privacy.wrap.quiet",
+      "tag": "section",
+      "top": 6864,
+      "height": 978,
+      "words": 237,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Privacy",
+       "size": 20,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 18,
+      "textLeft": 16,
+      "textRight": 18,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#thanks.wrap.quiet",
+      "tag": "section",
+      "top": 7842,
+      "height": 1135,
+      "words": 100,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Open source we use, with thanks",
+       "size": 20,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 8985,
+      "height": 459,
+      "words": 68,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 25,
+      "textLeft": 16,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "The free cap table app for your first raise.",
+      "size": 30,
+      "top": 116,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 16,
+      "n": 33
+     }
+    ],
+    "leftBlocks": 33,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/desktop-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/desktop-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/desktop-page-02.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/desktop-page-03.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/tablet-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/tablet-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/mobile-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/mobile-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/home-v2/mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

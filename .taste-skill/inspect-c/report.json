@@ -1,0 +1,1991 @@
+{
+ "url": "design/preview/site-c/index.html",
+ "at": "2026-10-25T18:20:50.572Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 8,
+   "filled": [
+    0.82,
+    0.25,
+    0.36,
+    0.31,
+    0.21,
+    0.16,
+    0.74,
+    0.73
+   ],
+   "motion": {
+    "elements": 24,
+    "css": 4,
+    "transitions": 20,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 6716,
+     "screens": 7.5,
+     "words": 578,
+     "img": 5,
+     "video": 0,
+     "canvas": 0,
+     "svg": 0,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 10,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 4,
+     "pictureSamples": [
+      "v013-sample.jpg",
+      "v013-get-started.jpg",
+      "v013-tour.jpg",
+      "v013-questions.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Capfolder",
+     "words": 1,
+     "chars": 9,
+     "lines": 1,
+     "size": 306,
+     "vw": 21.3,
+     "font": "Erode",
+     "weight": 500,
+     "tracking": -0.05,
+     "leading": 0.8,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.96,
+     "top": 627,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Capfolder",
+     "words": 1,
+     "lines": 1,
+     "size": 306,
+     "font": "Erode"
+    },
+    "headings": [
+     {
+      "text": "Capfolder",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 306,
+      "vw": 21.3,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 0.8,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 627,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Your first-cheque checklist",
+      "words": 3,
+      "chars": 27,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.47,
+      "top": 1100,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your data, always",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.64,
+      "top": 2230,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your cap table and papers are plain files in a folder you own, on your laptop. They open without us.",
+      "words": 20,
+      "chars": 100,
+      "lines": 3,
+      "size": 36,
+      "vw": 2.5,
+      "font": "Erode",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.64,
+      "top": 2341,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "What it costs",
+      "words": 3,
+      "chars": 13,
+      "lines": 1,
+      "size": 64,
+      "vw": 4.4,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.31,
+      "top": 4142,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Plain answers",
+      "words": 2,
+      "chars": 13,
+      "lines": 1,
+      "size": 39,
+      "vw": 2.7,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.015,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 4631,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Is it really free?",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 39,
+      "vw": 2.7,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.015,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 4746,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Is it legal advice?",
+      "words": 4,
+      "chars": 19,
+      "lines": 1,
+      "size": 39,
+      "vw": 2.7,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.015,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 4890,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Where is my data?",
+      "words": 4,
+      "chars": 17,
+      "lines": 1,
+      "size": 39,
+      "vw": 2.7,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.015,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 5035,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Can my investor sign without installing anything?",
+      "words": 7,
+      "chars": 49,
+      "lines": 2,
+      "size": 39,
+      "vw": 2.7,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.015,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 5210,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Mac, Windows or Linux?",
+      "words": 4,
+      "chars": 22,
+      "lines": 1,
+      "size": 39,
+      "vw": 2.7,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.015,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 5368,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Start your folder",
+      "words": 3,
+      "chars": 17,
+      "lines": 2,
+      "size": 104,
+      "vw": 7.2,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.92,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.39,
+      "top": 5857,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 12,
+     "maxLines": 3,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 0,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Erode",
+       "share": 0.75,
+       "mono": false
+      },
+      {
+       "family": "-apple-system",
+       "share": 0.25,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      15,
+      19,
+      26,
+      36,
+      39,
+      64,
+      104,
+      306
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Erode",
+      "size": 19,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 15.1
+     },
+     "measureChars": 44,
+     "max": {
+      "size": 306,
+      "vw": 21.3,
+      "font": "Erode",
+      "text": "Capfolder"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#1c1c1c",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.11
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#262626",
+       "top": 60,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0.15
+       }
+      },
+      {
+       "color": "#c8c5ba",
+       "top": 5641,
+       "hsl": {
+        "h": 47,
+        "s": 0.11,
+        "l": 0.76
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#f1f1ef",
+       "share": 0.47
+      },
+      {
+       "color": "#b4b5b0",
+       "share": 0.22
+      },
+      {
+       "color": "#1c1d1f",
+       "share": 0.12
+      },
+      {
+       "color": "#5d5f63",
+       "share": 0.06
+      },
+      {
+       "color": "#1c1c1c",
+       "share": 0.05
+      }
+     ],
+     "button": {
+      "bg": "#8fa68e",
+      "hsl": {
+       "h": 118,
+       "s": 0.12,
+       "l": 0.6
+      },
+      "fg": "#1c1c1c"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 1,
+     "radius": 0,
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Download, free"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 5,
+     "boxRadius": 10,
+     "squareMedia": 4,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.48
+     }
+    ],
+    "nav": {
+     "links": 4,
+     "fixed": false,
+     "height": 900,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "erode"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 6716,
+    "margins": {
+     "left": 28,
+     "right": 28
+    },
+    "sections": [
+     {
+      "sel": "header.hero",
+      "tag": "header",
+      "top": 0,
+      "height": 900,
+      "words": 23,
+      "media": 2,
+      "middle": 603,
+      "heading": {
+       "text": "A free desktop app for your company's first cap ta",
+       "size": 26,
+       "tag": "p"
+      },
+      "left": 28,
+      "right": 28,
+      "textLeft": 28,
+      "textRight": 28,
+      "fullBleed": true,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#checklist.check.wrap",
+      "tag": "section",
+      "top": 900,
+      "height": 1130,
+      "words": 123,
+      "media": 0,
+      "middle": 95,
+      "heading": {
+       "text": "Your first-cheque checklist",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 78,
+      "right": 28,
+      "textLeft": 78,
+      "textRight": 28,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": true
+     },
+     {
+      "sel": "section#data.data.wrap",
+      "tag": "section",
+      "top": 2030,
+      "height": 1912,
+      "words": 83,
+      "media": 2,
+      "middle": 176,
+      "heading": {
+       "text": "Your data, always",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 28,
+      "right": 28,
+      "textLeft": 28,
+      "textRight": 213,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#price.price.wrap",
+      "tag": "section",
+      "top": 3942,
+      "height": 489,
+      "words": 59,
+      "media": 0,
+      "middle": 142,
+      "heading": {
+       "text": "What it costs",
+       "size": 64,
+       "tag": "h2"
+      },
+      "left": 28,
+      "right": 28,
+      "textLeft": 28,
+      "textRight": 28,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.faq.wrap",
+      "tag": "section",
+      "top": 4431,
+      "height": 1082,
+      "words": 111,
+      "media": 0,
+      "middle": 200,
+      "heading": {
+       "text": "Plain answers",
+       "size": 39,
+       "tag": "h2"
+      },
+      "left": 28,
+      "right": 175,
+      "textLeft": 28,
+      "textRight": 175,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.close.wrap",
+      "tag": "section",
+      "top": 5641,
+      "height": 823,
+      "words": 31,
+      "media": 1,
+      "middle": 306,
+      "heading": {
+       "text": "Start your folder",
+       "size": 104,
+       "tag": "h2"
+      },
+      "left": 28,
+      "right": 28,
+      "textLeft": 28,
+      "textRight": 364,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.foot",
+      "tag": "footer",
+      "top": 6464,
+      "height": 252,
+      "words": 11,
+      "media": 0,
+      "middle": 514,
+      "heading": null,
+      "left": 28,
+      "right": 28,
+      "textLeft": 28,
+      "textRight": 28,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 5440,
+      "height": 320
+     },
+     {
+      "top": 6340,
+      "height": 324
+     }
+    ],
+    "h1s": [
+     {
+      "text": "Capfolder",
+      "size": 306,
+      "top": 627,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 28,
+      "n": 12
+     },
+     {
+      "x": 849,
+      "n": 4
+     },
+     {
+      "x": 497,
+      "n": 2
+     },
+     {
+      "x": 732,
+      "n": 2
+     },
+     {
+      "x": 78,
+      "n": 1
+     },
+     {
+      "x": 224,
+      "n": 1
+     },
+     {
+      "x": 987,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 23,
+    "bodySize": 19,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.01,
+    "voidBox": {
+     "x": 1380,
+     "y": 600,
+     "w": 60,
+     "h": 300
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.71,
+    0.24,
+    0.4,
+    0.34,
+    0.57,
+    0.31,
+    0.13,
+    0.95,
+    0.69
+   ],
+   "motion": {
+    "elements": 23,
+    "css": 4,
+    "transitions": 19,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 8512,
+     "screens": 8.3,
+     "words": 626,
+     "img": 5,
+     "video": 0,
+     "canvas": 0,
+     "svg": 0,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 10,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 3,
+     "pictureSamples": [
+      "v013-sample.jpg",
+      "v013-get-started.jpg",
+      "v013-tour.jpg",
+      "v013-questions.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Capfolder",
+     "words": 1,
+     "chars": 9,
+     "lines": 1,
+     "size": 165.9,
+     "vw": 21.6,
+     "font": "Erode",
+     "weight": 500,
+     "tracking": -0.05,
+     "leading": 0.8,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.96,
+     "top": 627,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Capfolder",
+     "words": 1,
+     "lines": 1,
+     "size": 165.9,
+     "font": "Erode"
+    },
+    "headings": [
+     {
+      "text": "Capfolder",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 165.9,
+      "vw": 21.6,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 0.8,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 627,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Your first-cheque checklist",
+      "words": 3,
+      "chars": 27,
+      "lines": 1,
+      "size": 45.4,
+      "vw": 5.9,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 1144,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your data, always",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 45.4,
+      "vw": 5.9,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 4055,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your cap table and papers are plain files in a folder you own, on your laptop. They open without us.",
+      "words": 20,
+      "chars": 100,
+      "lines": 2,
+      "size": 26.8,
+      "vw": 3.5,
+      "font": "Erode",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 4123,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "What it costs",
+      "words": 3,
+      "chars": 13,
+      "lines": 1,
+      "size": 45.4,
+      "vw": 5.9,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 5575,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Start your folder",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 99.8,
+      "vw": 13,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.92,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 7210,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Erode",
+       "share": 0.77,
+       "mono": false
+      },
+      {
+       "family": "-apple-system",
+       "share": 0.23,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      14,
+      18,
+      23,
+      27,
+      45,
+      100,
+      166
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Erode",
+      "size": 18,
+      "leading": 1.35,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 15.1
+     },
+     "measureChars": 44,
+     "max": {
+      "size": 165.9,
+      "vw": 21.6,
+      "font": "Erode",
+      "text": "Capfolder"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#1c1c1c",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.11
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#262626",
+       "top": 91,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0.15
+       }
+      },
+      {
+       "color": "#c8c5ba",
+       "top": 7138,
+       "hsl": {
+        "h": 47,
+        "s": 0.11,
+        "l": 0.76
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#f1f1ef",
+       "share": 0.59
+      },
+      {
+       "color": "#b4b5b0",
+       "share": 0.13
+      },
+      {
+       "color": "#1c1d1f",
+       "share": 0.11
+      },
+      {
+       "color": "#5d5f63",
+       "share": 0.06
+      },
+      {
+       "color": "#1c1c1c",
+       "share": 0.05
+      }
+     ],
+     "button": {
+      "bg": "#8fa68e",
+      "hsl": {
+       "h": 118,
+       "s": 0.12,
+       "l": 0.6
+      },
+      "fg": "#1c1c1c"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 1,
+     "radius": 0,
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Download, free"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 5,
+     "boxRadius": 10,
+     "squareMedia": 4,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.5
+     }
+    ],
+    "nav": {
+     "links": 1,
+     "fixed": false,
+     "height": 1024,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "erode"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 8512,
+    "margins": {
+     "left": 16,
+     "right": 16
+    },
+    "sections": [
+     {
+      "sel": "header.hero",
+      "tag": "header",
+      "top": 0,
+      "height": 1024,
+      "words": 20,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": true,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#checklist.check.wrap",
+      "tag": "section",
+      "top": 1024,
+      "height": 2887,
+      "words": 312,
+      "media": 0,
+      "middle": 188,
+      "heading": {
+       "text": "Your first-cheque checklist",
+       "size": 45,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#data.data.wrap",
+      "tag": "section",
+      "top": 3911,
+      "height": 1545,
+      "words": 80,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Your cap table and papers are plain files",
+       "size": 27,
+       "tag": "span"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 30,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#price.price.wrap",
+      "tag": "section",
+      "top": 5455,
+      "height": 692,
+      "words": 59,
+      "media": 0,
+      "middle": 209,
+      "heading": {
+       "text": "What it costs",
+       "size": 45,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 192,
+      "textLeft": 16,
+      "textRight": 192,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.faq.wrap",
+      "tag": "section",
+      "top": 6148,
+      "height": 918,
+      "words": 111,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Plain answers",
+       "size": 23,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 288,
+      "textLeft": 16,
+      "textRight": 288,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.close.wrap",
+      "tag": "section",
+      "top": 7138,
+      "height": 1060,
+      "words": 31,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Start your folder",
+       "size": 100,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 120,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.foot",
+      "tag": "footer",
+      "top": 8198,
+      "height": 314,
+      "words": 11,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 615,
+      "textLeft": 16,
+      "textRight": 615,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Capfolder",
+      "size": 166,
+      "top": 627,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 16,
+      "n": 20
+     },
+     {
+      "x": 122,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 21,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 10,
+   "filled": [
+    0.67,
+    0.53,
+    0.55,
+    0.57,
+    0.55,
+    0.73,
+    0.46,
+    0.26,
+    0.72,
+    0.7
+   ],
+   "motion": {
+    "elements": 24,
+    "css": 4,
+    "transitions": 20,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 391,
+     "h": 847
+    },
+    "page": {
+     "height": 8341,
+     "screens": 9.8,
+     "words": 626,
+     "img": 5,
+     "video": 0,
+     "canvas": 0,
+     "svg": 0,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 10,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 5,
+     "pictureSamples": [
+      "v013-sample.jpg",
+      "v013-get-started.jpg",
+      "v013-tour.jpg",
+      "v013-questions.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Capfolder",
+     "words": 1,
+     "chars": 9,
+     "lines": 1,
+     "size": 84.2,
+     "vw": 21.5,
+     "font": "Erode",
+     "weight": 500,
+     "tracking": -0.05,
+     "leading": 0.8,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.92,
+     "top": 536,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Capfolder",
+     "words": 1,
+     "lines": 1,
+     "size": 84.2,
+     "font": "Erode"
+    },
+    "headings": [
+     {
+      "text": "Capfolder",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 84.2,
+      "vw": 21.5,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 0.8,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 536,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Your first-cheque checklist",
+      "words": 3,
+      "chars": 27,
+      "lines": 1,
+      "size": 33.3,
+      "vw": 8.5,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 964,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your data, always",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 33.3,
+      "vw": 8.5,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3975,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your cap table and papers are plain files in a folder you own, on your laptop. They open without us.",
+      "words": 20,
+      "chars": 100,
+      "lines": 3,
+      "size": 24,
+      "vw": 6.1,
+      "font": "Erode",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 1.25,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 4056,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "What it costs",
+      "words": 3,
+      "chars": 13,
+      "lines": 1,
+      "size": 33.3,
+      "vw": 8.5,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.98,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 5534,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Start your folder",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 50.7,
+      "vw": 13,
+      "font": "Erode",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 0.92,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 7128,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 6,
+     "maxLines": 3,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Erode",
+       "share": 0.77,
+       "mono": false
+      },
+      {
+       "family": "-apple-system",
+       "share": 0.23,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      14,
+      17,
+      18,
+      20,
+      24,
+      33,
+      51,
+      84
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Erode",
+      "size": 17,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 15.1
+     },
+     "measureChars": 37,
+     "max": {
+      "size": 84.2,
+      "vw": 21.5,
+      "font": "Erode",
+      "text": "Capfolder"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.01,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#1c1c1c",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.11
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#262626",
+       "top": 90,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0.15
+       }
+      },
+      {
+       "color": "#fafafa",
+       "top": 2271,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#c8c5ba",
+       "top": 7056,
+       "hsl": {
+        "h": 47,
+        "s": 0.11,
+        "l": 0.76
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#f1f1ef",
+       "share": 0.59
+      },
+      {
+       "color": "#b4b5b0",
+       "share": 0.13
+      },
+      {
+       "color": "#1c1d1f",
+       "share": 0.11
+      },
+      {
+       "color": "#5d5f63",
+       "share": 0.06
+      },
+      {
+       "color": "#1c1c1c",
+       "share": 0.05
+      }
+     ],
+     "button": {
+      "bg": "#8fa68e",
+      "hsl": {
+       "h": 118,
+       "s": 0.12,
+       "l": 0.6
+      },
+      "fg": "#1c1c1c"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 1,
+     "radius": 0,
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Download, free"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 5,
+     "boxRadius": 10,
+     "squareMedia": 2,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.5
+     }
+    ],
+    "nav": {
+     "links": 1,
+     "fixed": false,
+     "height": 844,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "erode"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 391,
+     "h": 847
+    },
+    "pageH": 8341,
+    "margins": {
+     "left": 16,
+     "right": 17
+    },
+    "sections": [
+     {
+      "sel": "header.hero",
+      "tag": "header",
+      "top": 0,
+      "height": 844,
+      "words": 20,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": true,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#checklist.check.wrap",
+      "tag": "section",
+      "top": 844,
+      "height": 3011,
+      "words": 312,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Your first-cheque checklist",
+       "size": 33,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 17,
+      "textLeft": 16,
+      "textRight": 17,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.left",
+      "tag": "div",
+      "top": 3975,
+      "height": 534,
+      "words": 66,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Your cap table and papers are plain files",
+       "size": 24,
+       "tag": "span"
+      },
+      "left": 16,
+      "right": 36,
+      "textLeft": 16,
+      "textRight": 36,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.pics",
+      "tag": "div",
+      "top": 4549,
+      "height": 865,
+      "words": 14,
+      "media": 2,
+      "middle": 10,
+      "heading": null,
+      "left": 16,
+      "right": 17,
+      "textLeft": 16,
+      "textRight": 50,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#price.price.wrap",
+      "tag": "section",
+      "top": 5414,
+      "height": 662,
+      "words": 59,
+      "media": 0,
+      "middle": 18,
+      "heading": {
+       "text": "What it costs",
+       "size": 33,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 17,
+      "textLeft": 16,
+      "textRight": 17,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.faq.wrap",
+      "tag": "section",
+      "top": 6075,
+      "height": 908,
+      "words": 111,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Plain answers",
+       "size": 20,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 19,
+      "textLeft": 16,
+      "textRight": 19,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.close.wrap",
+      "tag": "section",
+      "top": 7056,
+      "height": 1010,
+      "words": 31,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Start your folder",
+       "size": 51,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 17,
+      "textLeft": 16,
+      "textRight": 54,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer.foot",
+      "tag": "footer",
+      "top": 8065,
+      "height": 276,
+      "words": 11,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 241,
+      "textLeft": 16,
+      "textRight": 241,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Capfolder",
+      "size": 84,
+      "top": 536,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 16,
+      "n": 21
+     },
+     {
+      "x": 70,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 22,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/desktop-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/desktop-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/tablet-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/tablet-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/mobile-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/mobile-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-c/mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

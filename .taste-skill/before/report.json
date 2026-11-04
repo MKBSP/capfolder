@@ -1,0 +1,4261 @@
+{
+ "url": "http://localhost:8765/",
+ "at": "2026-10-25T17:59:50.092Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    0.6,
+    0.49,
+    0.68,
+    0.41,
+    0.67,
+    0.87,
+    0.68,
+    0.59,
+    0.51,
+    0.36,
+    0.59,
+    0.59
+   ],
+   "motion": {
+    "elements": 80,
+    "css": 80,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 11616,
+     "screens": 12.9,
+     "words": 2194,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 14,
+     "sections": 16,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [
+      "✦",
+      "✓",
+      "★",
+      "👍"
+     ],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Your cap table, in a folder you own.",
+     "words": 8,
+     "chars": 36,
+     "lines": 2,
+     "size": 80,
+     "vw": 5.6,
+     "font": "IBM Plex Sans",
+     "weight": 600,
+     "tracking": -0.04,
+     "leading": 1.02,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.65,
+     "top": 219,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Your cap table, in a folder you own.",
+     "words": 8,
+     "lines": 2,
+     "size": 80,
+     "font": "IBM Plex Sans"
+    },
+    "headings": [
+     {
+      "text": "Your cap table, in a folder you own.",
+      "words": 8,
+      "chars": 36,
+      "lines": 2,
+      "size": 80,
+      "vw": 5.6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.04,
+      "leading": 1.02,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.65,
+      "top": 219,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "We lost our cap table paperwork.",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.34,
+      "top": 1710,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Everything Pulley did that you actually used.",
+      "words": 7,
+      "chars": 45,
+      "lines": 2,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.44,
+      "top": 2416,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Rent your cap table, or own it.",
+      "words": 7,
+      "chars": 31,
+      "lines": 1,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 3277,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "The only thing in the cloud is the unsigned document.",
+      "words": 10,
+      "chars": 53,
+      "lines": 2,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 4591,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Plug in your local AI. Give your folder superpowers.",
+      "words": 9,
+      "chars": 52,
+      "lines": 3,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.33,
+      "top": 5439,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What happens if we shut down?",
+      "words": 6,
+      "chars": 29,
+      "lines": 1,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.5,
+      "top": 6062,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Every line is public. Fork it, audit it, run it yourself.",
+      "words": 11,
+      "chars": 57,
+      "lines": 2,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 6722,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Free forever. Your cap table never sits behind a paywall.",
+      "words": 10,
+      "chars": 57,
+      "lines": 2,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 7345,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 2.4,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.03,
+      "top": 7544,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 2.4,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.03,
+      "top": 7544,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$50",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 34,
+      "vw": 2.4,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.04,
+      "top": 7544,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "What we're building next",
+      "words": 4,
+      "chars": 24,
+      "lines": 1,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 8167,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Open source we use, with thanks.",
+      "words": 6,
+      "chars": 32,
+      "lines": 1,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.77,
+      "top": 9028,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 46,
+      "vw": 3.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.77,
+      "top": 9899,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Own your cap table.",
+      "words": 4,
+      "chars": 19,
+      "lines": 1,
+      "size": 60,
+      "vw": 4.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.77,
+      "top": 10548,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Privacy",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.77,
+      "top": 10864,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 17,
+     "maxLines": 3,
+     "over2Lines": 1,
+     "statements": 0,
+     "centered": 2,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "IBM Plex Sans",
+       "share": 0.94,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Mono",
+       "share": 0.06,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      22,
+      32,
+      34,
+      46,
+      60,
+      80
+     ],
+     "sizeCount": 14,
+     "notLoaded": [],
+     "body": {
+      "font": "IBM Plex Sans",
+      "size": 15,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 10.7
+     },
+     "measureChars": 101,
+     "max": {
+      "size": 80,
+      "vw": 5.6,
+      "font": "IBM Plex Sans",
+      "text": "Your"
+     },
+     "monoShare": 0.06,
+     "monoProseShare": 0.06,
+     "monoFamilies": [
+      "IBM Plex Mono"
+     ],
+     "monoSamples": [
+      "2",
+      "100% open source · AGPL-3.0 →",
+      "Reading 5 files…",
+      "5 sorted · 1 needs you",
+      "SAFE_YC_signed.pdf",
+      "$500,000"
+     ],
+     "microLabels": 11,
+     "microLabelShare": 0.011,
+     "microSamples": [
+      "Built on open source",
+      "Why we built this",
+      "What it does",
+      "Compare",
+      "Signatures",
+      "Bring your own AI"
+     ],
+     "upperShare": 0.02,
+     "centerShare": 0.08,
+     "smallText": 8
+    },
+    "eyebrows": [
+     {
+      "text": "100% open source · AGPL-3.0 →",
+      "above": "Your cap table, in a folder you own.",
+      "upper": false,
+      "tracked": false,
+      "mono": true,
+      "pill": true,
+      "size": 13,
+      "top": 160
+     },
+     {
+      "text": "Why we built this",
+      "above": "We lost our cap table paperwork.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 1679
+     },
+     {
+      "text": "What it does",
+      "above": "Everything Pulley did that you actually ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 2385
+     },
+     {
+      "text": "Compare",
+      "above": "Rent your cap table, or own it.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 3246
+     },
+     {
+      "text": "Signatures",
+      "above": "The only thing in the cloud is the unsig",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 4560
+     },
+     {
+      "text": "Bring your own AI",
+      "above": "Plug in your local AI. Give your folder ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 5408
+     },
+     {
+      "text": "Try it",
+      "above": "What happens if we shut down?",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 6031
+     },
+     {
+      "text": "Open source",
+      "above": "Every line is public. Fork it, audit it,",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 6691
+     },
+     {
+      "text": "Pricing",
+      "above": "Free forever. Your cap table never sits ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 7314
+     },
+     {
+      "text": "Roadmap",
+      "above": "What we're building next",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 8136
+     },
+     {
+      "text": "Standing on shoulders",
+      "above": "Open source we use, with thanks.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 8997
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fafaf8",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#fafaf8",
+       "top": 0,
+       "hsl": {
+        "h": 60,
+        "s": 0.17,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 1566,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#f3f1f9",
+       "top": 4448,
+       "hsl": {
+        "h": 255,
+        "s": 0.4,
+        "l": 0.96
+       }
+      },
+      {
+       "color": "#1f6f4a",
+       "top": 10428,
+       "hsl": {
+        "h": 152,
+        "s": 0.56,
+        "l": 0.28
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#3a3e46",
+       "share": 0.5
+      },
+      {
+       "color": "#111311",
+       "share": 0.21
+      },
+      {
+       "color": "#5b606b",
+       "share": 0.15
+      },
+      {
+       "color": "#1f6f4a",
+       "share": 0.05
+      },
+      {
+       "color": "#2b2e33",
+       "share": 0.04
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 13,
+     "inHero": 5,
+     "radius": 10,
+     "height": 45,
+     "withShadow": 5,
+     "withGradient": 0,
+     "mono": 1,
+     "upper": 0,
+     "heroLabels": [
+      "Star 2",
+      "Download",
+      "100% open source · AGPL-3.0 →",
+      "Get the download",
+      "Pause animations"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 9,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "a.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px ",
+      "button#getdl.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px ",
+      "div.demo → rgba(31, 111, 74, 0.35) 0px 50px 100px -50px",
+      "div.demo → rgba(31, 111, 74, 0.35) 0px 50px 100px -50px"
+     ],
+     "gradients": 1,
+     "scrims": 2,
+     "gradientSamples": [
+      "div.scan → linear-gradient(rgba(79, 191, 133, 0) 0%, rgba(79, 191, 133, 0.18) 50%, rgba(79, 191, 133, 0) 100%)"
+     ],
+     "gradientText": 0,
+     "hairlines": 14,
+     "hairlineSamples": [
+      "div 1110px",
+      "div.drow.r1 1110px",
+      "div.drow.r2 1110px",
+      "div.drow.r3 1110px",
+      "div.drow.r4 1110px"
+     ],
+     "outlinedBoxes": 24,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 27,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 6,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 2555
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 5070
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 6862
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 7484
+      },
+      {
+       "count": 4,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 8325
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 14,
+     "fixed": false,
+     "height": 80,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "ibm plex sans",
+     "ibm plex mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 11616,
+    "margins": {
+     "left": 164,
+     "right": 179
+    },
+    "sections": [
+     {
+      "sel": "header.wrap",
+      "tag": "header",
+      "top": 80,
+      "height": 654,
+      "words": 68,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Your",
+       "size": 80,
+       "tag": "h1"
+      },
+      "left": 399,
+      "right": 434,
+      "textLeft": 399,
+      "textRight": 434,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap.fade-in",
+      "tag": "section",
+      "top": 734,
+      "height": 455,
+      "words": 32,
+      "media": 0,
+      "middle": 120,
+      "heading": null,
+      "left": 213,
+      "right": 234,
+      "textLeft": 213,
+      "textRight": 234,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap.reveal",
+      "tag": "section",
+      "top": 1189,
+      "height": 208,
+      "words": 44,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Capfolder does what",
+       "size": 22,
+       "tag": "p"
+      },
+      "left": 354,
+      "right": 354,
+      "textLeft": 354,
+      "textRight": 354,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 1398,
+      "height": 168,
+      "words": 13,
+      "media": 0,
+      "middle": 128,
+      "heading": null,
+      "left": 0,
+      "right": 50,
+      "textLeft": 0,
+      "textRight": 50,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#story",
+      "tag": "section",
+      "top": 1566,
+      "height": 707,
+      "words": 93,
+      "media": 0,
+      "middle": 137,
+      "heading": {
+       "text": "We lost our cap table paperwork.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 518,
+      "textLeft": 164,
+      "textRight": 518,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap",
+      "tag": "section",
+      "top": 2273,
+      "height": 861,
+      "words": 143,
+      "media": 0,
+      "middle": 83,
+      "heading": {
+       "text": "Everything Pulley did that you actually used.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 201,
+      "textLeft": 164,
+      "textRight": 201,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#compare.wrap",
+      "tag": "section",
+      "top": 3134,
+      "height": 1314,
+      "words": 290,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Rent your cap table, or own it.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 169,
+      "textLeft": 164,
+      "textRight": 169,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#signing",
+      "tag": "section",
+      "top": 4448,
+      "height": 844,
+      "words": 103,
+      "media": 0,
+      "middle": 32,
+      "heading": {
+       "text": "The only thing in the cloud is the unsigned docume",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 205,
+      "textLeft": 164,
+      "textRight": 205,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#ai.wrap",
+      "tag": "section",
+      "top": 5291,
+      "height": 626,
+      "words": 118,
+      "media": 0,
+      "middle": 82,
+      "heading": {
+       "text": "Plug in your local AI. Give your folder superpower",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 203,
+      "textLeft": 164,
+      "textRight": 203,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 5918,
+      "height": 661,
+      "words": 56,
+      "media": 0,
+      "middle": 231,
+      "heading": {
+       "text": "What happens if we shut down?",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 179,
+      "textLeft": 164,
+      "textRight": 179,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#open.wrap",
+      "tag": "section",
+      "top": 6579,
+      "height": 622,
+      "words": 71,
+      "media": 0,
+      "middle": 72,
+      "heading": {
+       "text": "Every line is public. Fork it, audit it, run it yo",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 224,
+      "textLeft": 164,
+      "textRight": 224,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#pricing.wrap",
+      "tag": "section",
+      "top": 7202,
+      "height": 934,
+      "words": 168,
+      "media": 0,
+      "middle": 32,
+      "heading": {
+       "text": "Free forever. Your cap table never sits behind a p",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 202,
+      "textLeft": 164,
+      "textRight": 202,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roadmap.wrap",
+      "tag": "section",
+      "top": 8136,
+      "height": 861,
+      "words": 224,
+      "media": 0,
+      "middle": 57,
+      "heading": {
+       "text": "What we're building next",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 192,
+      "textLeft": 164,
+      "textRight": 192,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#thanks.wrap",
+      "tag": "section",
+      "top": 8997,
+      "height": 902,
+      "words": 110,
+      "media": 0,
+      "middle": 8,
+      "heading": {
+       "text": "Open source we use, with thanks.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 164,
+      "right": 316,
+      "textLeft": 164,
+      "textRight": 316,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.wrap",
+      "tag": "section",
+      "top": 9899,
+      "height": 530,
+      "words": 217,
+      "media": 0,
+      "middle": 63,
+      "heading": {
+       "text": "Who can see my data?",
+       "size": 17,
+       "tag": "h3"
+      },
+      "left": 164,
+      "right": 166,
+      "textLeft": 164,
+      "textRight": 166,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 10428,
+      "height": 436,
+      "words": 18,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Own your cap table.",
+       "size": 60,
+       "tag": "h2"
+      },
+      "left": 460,
+      "right": 460,
+      "textLeft": 460,
+      "textRight": 460,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#privacy.wrap",
+      "tag": "section",
+      "top": 10864,
+      "height": 592,
+      "words": 237,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 164,
+      "right": 516,
+      "textLeft": 164,
+      "textRight": 516,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.wrap",
+      "tag": "footer",
+      "top": 11456,
+      "height": 160,
+      "words": 66,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 164,
+      "right": 196,
+      "textLeft": 164,
+      "textRight": 196,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Your cap table, in a folder you own.",
+      "size": 80,
+      "top": 219,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 164,
+      "n": 28
+     },
+     {
+      "x": 943,
+      "n": 9
+     },
+     {
+      "x": 185,
+      "n": 5
+     },
+     {
+      "x": 568,
+      "n": 5
+     },
+     {
+      "x": 553,
+      "n": 3
+     },
+     {
+      "x": 467,
+      "n": 1
+     },
+     {
+      "x": 748,
+      "n": 1
+     },
+     {
+      "x": 1030,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 53,
+    "bodySize": 15,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.19,
+    "voidBox": {
+     "x": 1020,
+     "y": 120,
+     "w": 420,
+     "h": 600
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    0.58,
+    0.68,
+    0.86,
+    0.62,
+    0.87,
+    0.95,
+    0.65,
+    0.79,
+    0.56,
+    0.48,
+    0.47,
+    0.74
+   ],
+   "motion": {
+    "elements": 80,
+    "css": 80,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 14016,
+     "screens": 13.7,
+     "words": 2194,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 14,
+     "sections": 16,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [
+      "✦",
+      "✓",
+      "★",
+      "👍"
+     ],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Your cap table, in a folder you own.",
+     "words": 8,
+     "chars": 36,
+     "lines": 2,
+     "size": 80,
+     "vw": 10.4,
+     "font": "IBM Plex Sans",
+     "weight": 600,
+     "tracking": -0.04,
+     "leading": 1.02,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.94,
+     "top": 304,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Your cap table, in a folder you own.",
+     "words": 8,
+     "lines": 2,
+     "size": 80,
+     "font": "IBM Plex Sans"
+    },
+    "headings": [
+     {
+      "text": "Your cap table, in a folder you own.",
+      "words": 8,
+      "chars": 36,
+      "lines": 2,
+      "size": 80,
+      "vw": 10.4,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.04,
+      "leading": 1.02,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 304,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "We lost our cap table paperwork.",
+      "words": 6,
+      "chars": 32,
+      "lines": 1,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 1708,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Everything Pulley did that you actually used.",
+      "words": 7,
+      "chars": 45,
+      "lines": 2,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.83,
+      "top": 2755,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Rent your cap table, or own it.",
+      "words": 7,
+      "chars": 31,
+      "lines": 1,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 3820,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "The only thing in the cloud is the unsigned document.",
+      "words": 10,
+      "chars": 53,
+      "lines": 2,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 5265,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Plug in your local AI. Give your folder superpowers.",
+      "words": 9,
+      "chars": 52,
+      "lines": 2,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 6171,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What happens if we shut down?",
+      "words": 6,
+      "chars": 29,
+      "lines": 1,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 7073,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Every line is public. Fork it, audit it, run it yourself.",
+      "words": 11,
+      "chars": 57,
+      "lines": 2,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 7909,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Free forever. Your cap table never sits behind a paywall.",
+      "words": 10,
+      "chars": 57,
+      "lines": 2,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 8708,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.05,
+      "top": 8907,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.05,
+      "top": 8907,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$50",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.08,
+      "top": 9465,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "What we're building next",
+      "words": 4,
+      "chars": 24,
+      "lines": 1,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 9969,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Open source we use, with thanks.",
+      "words": 6,
+      "chars": 32,
+      "lines": 1,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 11243,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 46,
+      "vw": 6,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 12132,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Own your cap table.",
+      "words": 4,
+      "chars": 19,
+      "lines": 1,
+      "size": 60,
+      "vw": 7.8,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 12944,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Privacy",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 13232,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 17,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 2,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "IBM Plex Sans",
+       "share": 0.94,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Mono",
+       "share": 0.06,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      32,
+      34,
+      46,
+      60,
+      80
+     ],
+     "sizeCount": 13,
+     "notLoaded": [],
+     "body": {
+      "font": "IBM Plex Sans",
+      "size": 15,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 10.7
+     },
+     "measureChars": 96,
+     "max": {
+      "size": 80,
+      "vw": 10.4,
+      "font": "IBM Plex Sans",
+      "text": "Your"
+     },
+     "monoShare": 0.06,
+     "monoProseShare": 0.06,
+     "monoFamilies": [
+      "IBM Plex Mono"
+     ],
+     "monoSamples": [
+      "2",
+      "100% open source · AGPL-3.0 →",
+      "Reading 5 files…",
+      "5 sorted · 1 needs you",
+      "SAFE_YC_signed.pdf",
+      "$500,000"
+     ],
+     "microLabels": 11,
+     "microLabelShare": 0.011,
+     "microSamples": [
+      "Built on open source",
+      "Why we built this",
+      "What it does",
+      "Compare",
+      "Signatures",
+      "Bring your own AI"
+     ],
+     "upperShare": 0.02,
+     "centerShare": 0.08,
+     "smallText": 8
+    },
+    "eyebrows": [
+     {
+      "text": "100% open source · AGPL-3.0 →",
+      "above": "Your cap table, in a folder you own.",
+      "upper": false,
+      "tracked": false,
+      "mono": true,
+      "pill": true,
+      "size": 13,
+      "top": 245
+     },
+     {
+      "text": "Why we built this",
+      "above": "We lost our cap table paperwork.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 1677
+     },
+     {
+      "text": "What it does",
+      "above": "Everything Pulley did that you actually ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 2724
+     },
+     {
+      "text": "Compare",
+      "above": "Rent your cap table, or own it.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 3789
+     },
+     {
+      "text": "Signatures",
+      "above": "The only thing in the cloud is the unsig",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 5234
+     },
+     {
+      "text": "Bring your own AI",
+      "above": "Plug in your local AI. Give your folder ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 6140
+     },
+     {
+      "text": "Try it",
+      "above": "What happens if we shut down?",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 7042
+     },
+     {
+      "text": "Open source",
+      "above": "Every line is public. Fork it, audit it,",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 7878
+     },
+     {
+      "text": "Pricing",
+      "above": "Free forever. Your cap table never sits ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 8677
+     },
+     {
+      "text": "Roadmap",
+      "above": "What we're building next",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 9938
+     },
+     {
+      "text": "Standing on shoulders",
+      "above": "Open source we use, with thanks.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 11212
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fafaf8",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#fafaf8",
+       "top": 0,
+       "hsl": {
+        "h": 60,
+        "s": 0.17,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 1584,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#f3f1f9",
+       "top": 5141,
+       "hsl": {
+        "h": 255,
+        "s": 0.4,
+        "l": 0.96
+       }
+      },
+      {
+       "color": "#1f6f4a",
+       "top": 12852,
+       "hsl": {
+        "h": 152,
+        "s": 0.56,
+        "l": 0.28
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#3a3e46",
+       "share": 0.5
+      },
+      {
+       "color": "#111311",
+       "share": 0.21
+      },
+      {
+       "color": "#5b606b",
+       "share": 0.15
+      },
+      {
+       "color": "#1f6f4a",
+       "share": 0.05
+      },
+      {
+       "color": "#2b2e33",
+       "share": 0.04
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 13,
+     "inHero": 5,
+     "radius": 10,
+     "height": 45,
+     "withShadow": 5,
+     "withGradient": 0,
+     "mono": 1,
+     "upper": 0,
+     "heroLabels": [
+      "Star 2",
+      "Download",
+      "100% open source · AGPL-3.0 →",
+      "Get the download",
+      "Pause animations"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 9,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "a.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px ",
+      "button#getdl.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px ",
+      "div.demo → rgba(31, 111, 74, 0.35) 0px 50px 100px -50px",
+      "div.demo → rgba(31, 111, 74, 0.35) 0px 50px 100px -50px"
+     ],
+     "gradients": 1,
+     "scrims": 2,
+     "gradientSamples": [
+      "div.scan → linear-gradient(rgba(79, 191, 133, 0) 0%, rgba(79, 191, 133, 0.18) 50%, rgba(79, 191, 133, 0) 100%)"
+     ],
+     "gradientText": 0,
+     "hairlines": 14,
+     "hairlineSamples": [
+      "div 718px",
+      "div.drow.r1 718px",
+      "div.drow.r2 718px",
+      "div.drow.r3 718px",
+      "div.drow.r4 718px"
+     ],
+     "outlinedBoxes": 24,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 27,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 6,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 2894
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 8048
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 8847
+      },
+      {
+       "count": 4,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 10127
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 14,
+     "fixed": false,
+     "height": 165,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "ibm plex sans",
+     "ibm plex mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 14016,
+    "margins": {
+     "left": 24,
+     "right": 29
+    },
+    "sections": [
+     {
+      "sel": "nav.wrap",
+      "tag": "nav",
+      "top": 0,
+      "height": 165,
+      "words": 15,
+      "media": 0,
+      "middle": 22,
+      "heading": null,
+      "left": 24,
+      "right": 67,
+      "textLeft": 24,
+      "textRight": 67,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "header.wrap",
+      "tag": "header",
+      "top": 165,
+      "height": 654,
+      "words": 68,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Your",
+       "size": 80,
+       "tag": "h1"
+      },
+      "left": 63,
+      "right": 98,
+      "textLeft": 63,
+      "textRight": 98,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap.fade-in",
+      "tag": "section",
+      "top": 819,
+      "height": 451,
+      "words": 46,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 47,
+      "right": 56,
+      "textLeft": 47,
+      "textRight": 56,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap.reveal",
+      "tag": "section",
+      "top": 1270,
+      "height": 158,
+      "words": 44,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 33,
+      "right": 33,
+      "textLeft": 33,
+      "textRight": 33,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 1428,
+      "height": 156,
+      "words": 10,
+      "media": 0,
+      "middle": 128,
+      "heading": null,
+      "left": 23,
+      "right": 0,
+      "textLeft": 23,
+      "textRight": 0,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#story",
+      "tag": "section",
+      "top": 1584,
+      "height": 1048,
+      "words": 93,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "We lost our cap table paperwork.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 25,
+      "textLeft": 24,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap",
+      "tag": "section",
+      "top": 2632,
+      "height": 1065,
+      "words": 143,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Everything Pulley did that you actually used.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 68,
+      "textLeft": 24,
+      "textRight": 68,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#compare.wrap",
+      "tag": "section",
+      "top": 3697,
+      "height": 1445,
+      "words": 290,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Rent your cap table, or own it.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#signing",
+      "tag": "section",
+      "top": 5141,
+      "height": 907,
+      "words": 103,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "The only thing in the cloud is the unsigned docume",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 45,
+      "textLeft": 24,
+      "textRight": 45,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#ai.wrap",
+      "tag": "section",
+      "top": 6048,
+      "height": 901,
+      "words": 118,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Plug in your local AI. Give your folder superpower",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 57,
+      "textLeft": 24,
+      "textRight": 57,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 6949,
+      "height": 837,
+      "words": 56,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "What happens if we shut down?",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 39,
+      "textLeft": 24,
+      "textRight": 39,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#open.wrap",
+      "tag": "section",
+      "top": 7786,
+      "height": 799,
+      "words": 71,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Every line is public. Fork it, audit it, run it yo",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 51,
+      "textLeft": 24,
+      "textRight": 51,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#pricing.wrap",
+      "tag": "section",
+      "top": 8584,
+      "height": 1354,
+      "words": 168,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Free forever. Your cap table never sits behind a p",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 58,
+      "textLeft": 24,
+      "textRight": 58,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roadmap.wrap",
+      "tag": "section",
+      "top": 9938,
+      "height": 1274,
+      "words": 224,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "What we're building next",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 36,
+      "textLeft": 24,
+      "textRight": 36,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#thanks.wrap",
+      "tag": "section",
+      "top": 11212,
+      "height": 920,
+      "words": 110,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Open source we use, with thanks.",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 73,
+      "textLeft": 24,
+      "textRight": 73,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.wrap",
+      "tag": "section",
+      "top": 12132,
+      "height": 720,
+      "words": 217,
+      "media": 0,
+      "middle": 57,
+      "heading": {
+       "text": "Who can see my data?",
+       "size": 17,
+       "tag": "h3"
+      },
+      "left": 24,
+      "right": 30,
+      "textLeft": 24,
+      "textRight": 30,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 12852,
+      "height": 380,
+      "words": 18,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Own your cap table.",
+       "size": 60,
+       "tag": "h2"
+      },
+      "left": 124,
+      "right": 124,
+      "textLeft": 124,
+      "textRight": 124,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#privacy.wrap",
+      "tag": "section",
+      "top": 13232,
+      "height": 588,
+      "words": 237,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.wrap",
+      "tag": "footer",
+      "top": 13820,
+      "height": 196,
+      "words": 66,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 52,
+      "textLeft": 24,
+      "textRight": 52,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 2116,
+      "height": 608
+     }
+    ],
+    "h1s": [
+     {
+      "text": "Your cap table, in a folder you own.",
+      "size": 80,
+      "top": 304,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 24,
+      "n": 29
+     },
+     {
+      "x": 45,
+      "n": 11
+     },
+     {
+      "x": 412,
+      "n": 11
+     },
+     {
+      "x": 290,
+      "n": 1
+     },
+     {
+      "x": 534,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 53,
+    "bodySize": 15,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    0.6,
+    0.68,
+    1,
+    0.72,
+    0.74,
+    0.84,
+    0.86,
+    0.95,
+    0.72,
+    0.93,
+    0.75,
+    0.7
+   ],
+   "motion": {
+    "elements": 80,
+    "css": 80,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 16498,
+     "screens": 19.5,
+     "words": 2194,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 14,
+     "sections": 16,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 2,
+     "brokenImages": [],
+     "emoji": [
+      "✦",
+      "✓",
+      "★",
+      "👍"
+     ],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Your cap table, in a folder you own.",
+     "words": 8,
+     "chars": 36,
+     "lines": 2,
+     "size": 41,
+     "vw": 10.5,
+     "font": "IBM Plex Sans",
+     "weight": 600,
+     "tracking": -0.04,
+     "leading": 1.02,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.88,
+     "top": 345,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Your cap table, in a folder you own.",
+     "words": 8,
+     "lines": 2,
+     "size": 41,
+     "font": "IBM Plex Sans"
+    },
+    "headings": [
+     {
+      "text": "Your cap table, in a folder you own.",
+      "words": 8,
+      "chars": 36,
+      "lines": 2,
+      "size": 41,
+      "vw": 10.5,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.04,
+      "leading": 1.02,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 345,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "We lost our cap table paperwork.",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 1741,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Everything Pulley did that you actually used.",
+      "words": 7,
+      "chars": 45,
+      "lines": 2,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 2670,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Rent your cap table, or own it.",
+      "words": 7,
+      "chars": 31,
+      "lines": 2,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 4219,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "The only thing in the cloud is the unsigned document.",
+      "words": 10,
+      "chars": 53,
+      "lines": 3,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 5790,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Plug in your local AI. Give your folder superpowers.",
+      "words": 9,
+      "chars": 52,
+      "lines": 3,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 6788,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What happens if we shut down?",
+      "words": 6,
+      "chars": 29,
+      "lines": 2,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 7806,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Every line is public. Fork it, audit it, run it yourself.",
+      "words": 11,
+      "chars": 57,
+      "lines": 3,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 8618,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Free forever. Your cap table never sits behind a paywall.",
+      "words": 10,
+      "chars": 57,
+      "lines": 3,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 9564,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 9768,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 10326,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "$50",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "IBM Plex Mono",
+      "weight": 600,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.16,
+      "top": 10729,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "What we're building next",
+      "words": 4,
+      "chars": 24,
+      "lines": 2,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 11197,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Open source we use, with thanks.",
+      "words": 6,
+      "chars": 32,
+      "lines": 2,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 12782,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 13747,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Own your cap table.",
+      "words": 4,
+      "chars": 19,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 14885,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Privacy",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "IBM Plex Sans",
+      "weight": 600,
+      "tracking": -0.03,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 15204,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 17,
+     "maxLines": 3,
+     "over2Lines": 4,
+     "statements": 0,
+     "centered": 2,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "IBM Plex Sans",
+       "share": 0.94,
+       "mono": false
+      },
+      {
+       "family": "IBM Plex Mono",
+       "share": 0.06,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      32,
+      34,
+      36,
+      41
+     ],
+     "sizeCount": 12,
+     "notLoaded": [],
+     "body": {
+      "font": "IBM Plex Sans",
+      "size": 15,
+      "leading": 1.6,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 10.7
+     },
+     "measureChars": 46,
+     "max": {
+      "size": 41,
+      "vw": 10.5,
+      "font": "IBM Plex Sans",
+      "text": "Your"
+     },
+     "monoShare": 0.06,
+     "monoProseShare": 0.06,
+     "monoFamilies": [
+      "IBM Plex Mono"
+     ],
+     "monoSamples": [
+      "2",
+      "100% open source · AGPL-3.0 →",
+      "Reading 5 files…",
+      "5 sorted · 1 needs you",
+      "SAFE_YC_signed.pdf",
+      "$500,000"
+     ],
+     "microLabels": 11,
+     "microLabelShare": 0.011,
+     "microSamples": [
+      "Built on open source",
+      "Why we built this",
+      "What it does",
+      "Compare",
+      "Signatures",
+      "Bring your own AI"
+     ],
+     "upperShare": 0.02,
+     "centerShare": 0.08,
+     "smallText": 14
+    },
+    "eyebrows": [
+     {
+      "text": "100% open source · AGPL-3.0 →",
+      "above": "Your cap table, in a folder you own.",
+      "upper": false,
+      "tracked": false,
+      "mono": true,
+      "pill": true,
+      "size": 13,
+      "top": 286
+     },
+     {
+      "text": "Why we built this",
+      "above": "We lost our cap table paperwork.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 1710
+     },
+     {
+      "text": "What it does",
+      "above": "Everything Pulley did that you actually ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 2639
+     },
+     {
+      "text": "Compare",
+      "above": "Rent your cap table, or own it.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 4188
+     },
+     {
+      "text": "Signatures",
+      "above": "The only thing in the cloud is the unsig",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 5759
+     },
+     {
+      "text": "Bring your own AI",
+      "above": "Plug in your local AI. Give your folder ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 6757
+     },
+     {
+      "text": "Try it",
+      "above": "What happens if we shut down?",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 7775
+     },
+     {
+      "text": "Open source",
+      "above": "Every line is public. Fork it, audit it,",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 8587
+     },
+     {
+      "text": "Pricing",
+      "above": "Free forever. Your cap table never sits ",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 9533
+     },
+     {
+      "text": "Roadmap",
+      "above": "What we're building next",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 11166
+     },
+     {
+      "text": "Standing on shoulders",
+      "above": "Open source we use, with thanks.",
+      "upper": true,
+      "tracked": true,
+      "mono": true,
+      "pill": false,
+      "size": 13,
+      "top": 12751
+     },
+     {
+      "text": "Every package with its license: .",
+      "above": "Questions",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 13657
+     },
+     {
+      "text": "Star on GitHub",
+      "above": "Privacy",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 16,
+      "top": 15096
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#fafaf8",
+     "bodyBgHsl": {
+      "h": 60,
+      "s": 0.17,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#fafaf8",
+       "top": 0,
+       "hsl": {
+        "h": 60,
+        "s": 0.17,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 833,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#f3f1f9",
+       "top": 5703,
+       "hsl": {
+        "h": 255,
+        "s": 0.4,
+        "l": 0.96
+       }
+      },
+      {
+       "color": "#1f6f4a",
+       "top": 14829,
+       "hsl": {
+        "h": 152,
+        "s": 0.56,
+        "l": 0.28
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#3a3e46",
+       "share": 0.5
+      },
+      {
+       "color": "#111311",
+       "share": 0.21
+      },
+      {
+       "color": "#5b606b",
+       "share": 0.15
+      },
+      {
+       "color": "#1f6f4a",
+       "share": 0.05
+      },
+      {
+       "color": "#2b2e33",
+       "share": 0.04
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 13,
+     "inHero": 5,
+     "radius": 10,
+     "height": 45,
+     "withShadow": 5,
+     "withGradient": 0,
+     "mono": 1,
+     "upper": 0,
+     "heroLabels": [
+      "Star 2",
+      "Download",
+      "100% open source · AGPL-3.0 →",
+      "Get the download",
+      "Pause animations"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 9,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "a.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px ",
+      "button#getdl.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px ",
+      "div.demo → rgba(31, 111, 74, 0.35) 0px 50px 100px -50px",
+      "div.demo → rgba(31, 111, 74, 0.35) 0px 50px 100px -50px"
+     ],
+     "gradients": 1,
+     "scrims": 2,
+     "gradientSamples": [
+      "div.scan → linear-gradient(rgba(79, 191, 133, 0) 0%, rgba(79, 191, 133, 0.18) 50%, rgba(79, 191, 133, 0) 100%)"
+     ],
+     "gradientText": 0,
+     "hairlines": 14,
+     "hairlineSamples": [
+      "div 340px",
+      "div.drow.r1 340px",
+      "div.drow.r2 340px",
+      "div.drow.r3 340px",
+      "div.drow.r4 340px"
+     ],
+     "outlinedBoxes": 24,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 29,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 6,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 2779
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 8761
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 9708
+      },
+      {
+       "count": 4,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 11402
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 10,
+     "fixed": false,
+     "height": 206,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "ibm plex sans",
+     "ibm plex mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 16498,
+    "margins": {
+     "left": 24,
+     "right": 25
+    },
+    "sections": [
+     {
+      "sel": "nav.wrap",
+      "tag": "nav",
+      "top": 0,
+      "height": 206,
+      "words": 15,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 53,
+      "textLeft": 24,
+      "textRight": 53,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "header.wrap",
+      "tag": "header",
+      "top": 206,
+      "height": 627,
+      "words": 68,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Your",
+       "size": 41,
+       "tag": "h1"
+      },
+      "left": 25,
+      "right": 25,
+      "textLeft": 25,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap.fade-in",
+      "tag": "section",
+      "top": 833,
+      "height": 433,
+      "words": 73,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 39,
+      "right": 39,
+      "textLeft": 39,
+      "textRight": 39,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap.reveal",
+      "tag": "section",
+      "top": 1266,
+      "height": 267,
+      "words": 44,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 27,
+      "right": 27,
+      "textLeft": 27,
+      "textRight": 27,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 1533,
+      "height": 120,
+      "words": 6,
+      "media": 0,
+      "middle": 76,
+      "heading": null,
+      "left": 0,
+      "right": 109,
+      "textLeft": 0,
+      "textRight": 109,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#story",
+      "tag": "section",
+      "top": 1653,
+      "height": 931,
+      "words": 93,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "We lost our cap table paperwork.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.wrap",
+      "tag": "section",
+      "top": 2583,
+      "height": 1549,
+      "words": 143,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Everything Pulley did that you actually used.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 51,
+      "textLeft": 24,
+      "textRight": 51,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.reveal",
+      "tag": "div",
+      "top": 4188,
+      "height": 204,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Rent your cap table, or own it.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 38,
+      "textLeft": 24,
+      "textRight": 38,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.reveal2",
+      "tag": "div",
+      "top": 4429,
+      "height": 982,
+      "words": 82,
+      "media": 0,
+      "middle": 42,
+      "heading": null,
+      "left": 47,
+      "right": 24,
+      "textLeft": 47,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "p",
+      "tag": "p",
+      "top": 5425,
+      "height": 222,
+      "words": 89,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 32,
+      "textLeft": 24,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#signing",
+      "tag": "section",
+      "top": 5703,
+      "height": 999,
+      "words": 101,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "The only thing in the cloud is the unsigned docume",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#ai.wrap",
+      "tag": "section",
+      "top": 6701,
+      "height": 1017,
+      "words": 118,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Plug in your local AI. Give your folder superpower",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 31,
+      "textLeft": 24,
+      "textRight": 31,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 7718,
+      "height": 813,
+      "words": 56,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "What happens if we shut down?",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 39,
+      "textLeft": 24,
+      "textRight": 39,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#open.wrap",
+      "tag": "section",
+      "top": 8531,
+      "height": 947,
+      "words": 71,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Every line is public. Fork it, audit it, run it yo",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 30,
+      "textLeft": 24,
+      "textRight": 30,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.reveal",
+      "tag": "div",
+      "top": 9533,
+      "height": 135,
+      "words": 1,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 306,
+      "textLeft": 24,
+      "textRight": 306,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.lift.reveal",
+      "tag": "div",
+      "top": 9708,
+      "height": 540,
+      "words": 67,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "$0",
+       "size": 34,
+       "tag": "span"
+      },
+      "left": 51,
+      "right": 53,
+      "textLeft": 51,
+      "textRight": 53,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.lift.reveal2",
+      "tag": "div",
+      "top": 10266,
+      "height": 385,
+      "words": 36,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "$0",
+       "size": 34,
+       "tag": "span"
+      },
+      "left": 51,
+      "right": 62,
+      "textLeft": 51,
+      "textRight": 62,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.lift.reveal3",
+      "tag": "div",
+      "top": 10669,
+      "height": 441,
+      "words": 53,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "$50",
+       "size": 34,
+       "tag": "span"
+      },
+      "left": 51,
+      "right": 55,
+      "textLeft": 51,
+      "textRight": 55,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.reveal",
+      "tag": "div",
+      "top": 11166,
+      "height": 196,
+      "words": 22,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "What we're building next",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 37,
+      "textLeft": 24,
+      "textRight": 37,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.reveal2",
+      "tag": "div",
+      "top": 11402,
+      "height": 1293,
+      "words": 202,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Now",
+       "size": 16,
+       "tag": "h3"
+      },
+      "left": 24,
+      "right": 29,
+      "textLeft": 24,
+      "textRight": 29,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#thanks.wrap",
+      "tag": "section",
+      "top": 12751,
+      "height": 996,
+      "words": 90,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Open source we use, with thanks.",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 24,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.wrap",
+      "tag": "section",
+      "top": 13747,
+      "height": 1083,
+      "words": 217,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Who can see my data?",
+       "size": 17,
+       "tag": "h3"
+      },
+      "left": 24,
+      "right": 28,
+      "textLeft": 24,
+      "textRight": 28,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 14829,
+      "height": 374,
+      "words": 18,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Own your cap table.",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 32,
+      "textLeft": 32,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#privacy.wrap",
+      "tag": "section",
+      "top": 15204,
+      "height": 973,
+      "words": 237,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 26,
+      "textLeft": 24,
+      "textRight": 26,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.wrap",
+      "tag": "footer",
+      "top": 16176,
+      "height": 322,
+      "words": 66,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 24,
+      "right": 27,
+      "textLeft": 24,
+      "textRight": 27,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 2316,
+      "height": 320
+     }
+    ],
+    "h1s": [
+     {
+      "text": "Your cap table, in a folder you own.",
+      "size": 41,
+      "top": 345,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 24,
+      "n": 35
+     },
+     {
+      "x": 45,
+      "n": 18
+     }
+    ],
+    "leftBlocks": 53,
+    "bodySize": 15,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 1440,
+   "message": "1 headline(s) wrap past two lines at 1440px: \"Plug in your local AI. Give your folder superpow\" → 3 lines (9 words, 46px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 36px or less."
+  },
+  {
+   "level": "FAIL",
+   "id": "eyebrow",
+   "width": 1440,
+   "message": "11 eyebrow/kicker label(s) above headings: \"100% open source · AGPL-3.0 →\" (pill) above \"Your cap table, in a folder you own.\"; \"Why we built this\" above \"We lost our cap table paperwork.\"; \"What it does\" above \"Everything Pulley did that you actually \"; \"Compare\" above \"Rent your cap table, or own it.\"; \"Signatures\" above \"The only thing in the cloud is the unsig\"",
+   "fix": "Delete them. If the label carried real information, fold it into the headline or the supporting sentence.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "mono",
+   "width": 1440,
+   "message": "Monospace type outside code: IBM Plex Mono — e.g. \"2\", \"100% open source · AGPL-3.0 →\", \"Reading 5 files…\", \"5 sorted · 1 needs you\"",
+   "fix": "Set it in the text face. Monospace is for literal code inside <pre>/<code> only.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "micro-label",
+   "width": 1440,
+   "message": "11 tiny uppercase letter-spaced labels (e.g. \"Built on open source\", \"Why we built this\", \"What it does\", \"Compare\").",
+   "fix": "Use sentence-case text at a readable size, or delete the label.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "emoji",
+   "width": 1440,
+   "message": "Emoji in the page: ✦ ✓ ★ 👍",
+   "fix": "Remove. Use words or real imagery.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "gradient",
+   "width": 1440,
+   "message": "1 gradient fill(s): div.scan → linear-gradient(rgba(79, 191, 133, 0) 0%, rgba(79, 191, 133, 0.18) 50%, rgba(79, 191, 133, 0) 100%)",
+   "fix": "Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "shadow",
+   "width": 1440,
+   "message": "9 box-shadow(s) on elements at rest: a.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px  | button#getdl.btn.btn-p → rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(31, 111, 74, 0.6) 0px 8px  | div.demo → rgba(31, 111, 74, 0.35) 0px 50px 100px -50px",
+   "fix": "Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "button-fx",
+   "width": 1440,
+   "message": "Buttons with shadow/glow.",
+   "fix": "Flat fill, one colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "hairline",
+   "width": 1440,
+   "message": "14 thin rule(s)/divider line(s): div 1110px | div.drow.r1 1110px | div.drow.r2 1110px | div.drow.r3 1110px",
+   "fix": "Delete. Separate with space, a tone change, or scale. Lines are only for real tables and form fields.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "outlined-box",
+   "width": 1440,
+   "message": "24 boxes drawn with a 1px outline.",
+   "fix": "Define a surface by its fill (one tone step from the page) or leave the content unboxed.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "card-rows",
+   "width": 1440,
+   "message": "5 rows of identical boxed cards.",
+   "fix": "Vary the composition; not every section is a card grid.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "palette-cream",
+   "width": 1440,
+   "message": "Yellow-cream background (page background #fafaf8, section #fafaf8).",
+   "fix": "Use the drawn palette. If you want warmth, take a low-chroma stone or bone, not a yellow cream.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "size-count",
+   "width": 1440,
+   "message": "14 different font sizes (12, 13, 14, 15, 16, 17, 18, 20, 22, 32, 34, 46, 60, 80).",
+   "fix": "A page needs about five: display, heading, lead, body, small.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "body-size",
+   "width": 1440,
+   "message": "Body text is 15px.",
+   "fix": "Body copy 16–20px.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "measure",
+   "width": 1440,
+   "message": "Longest paragraph runs about 101 characters per line.",
+   "fix": "Cap paragraphs at 45–75 characters (max-width: 60ch).",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "small-text",
+   "width": 1440,
+   "message": "8 text blocks under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "untitled-section",
+   "width": 1440,
+   "message": "2 sections carry text but no heading: section.wrap.fade-in at 734px (32 words); section#privacy.wrap at 10864px (237 words)",
+   "fix": "Give each section a short heading that names what it holds (the menu, the rooms, how it works, the price), in the heading face at the section size.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "side-scroll",
+   "width": 768,
+   "message": "1 row(s) scroll sideways with content past their edge.",
+   "fix": "Jurors and most visitors read a row cut at the edge as clipped, not as scrollable. Wrap it onto more lines, or end it inside the grid.",
+   "alsoAt": [
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "blank-gap",
+   "width": 768,
+   "message": "A 608px stretch at 2116px holds nothing.",
+   "fix": "Check that it is a deliberate rest (once per page at most); otherwise close it to the normal section gap."
+  },
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 390,
+   "message": "4 headline(s) wrap past two lines at 390px: \"The only thing in the cloud is the unsigned docu\" → 3 lines (10 words, 32px); \"Plug in your local AI. Give your folder superpow\" → 3 lines (9 words, 32px); \"Every line is public. Fork it, audit it, run it \" → 3 lines (11 words, 32px); \"Free forever. Your cap table never sits behind a\" → 3 lines (10 words, 32px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 24px or less."
+  },
+  {
+   "level": "FAIL",
+   "id": "covered-text",
+   "width": 390,
+   "message": "Large text lies under another element at some scroll position: \"The only thing in the cloud is the unsigned docu\" (screen 7, 21% hidden)",
+   "fix": "Nothing may sit on top of a headline or statement. Move the picture, shorten the pinned run, or raise the text above it (z-index) and give it a ground."
+  },
+  {
+   "level": "FAIL",
+   "id": "reduced-hidden",
+   "width": 1440,
+   "message": "With reduced motion requested, 3 text block(s) on the first screen stay invisible: \"Reading 5 files…\", \"SAFE_YC_signed.pdf\", \"scan_0042.pdf\"",
+   "fix": "Put every hidden starting state inside @media (prefers-reduced-motion: no-preference); the reduced page is the finished page (references/motion.md §8)."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/desktop-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/desktop-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/desktop-page-02.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/desktop-page-03.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/tablet-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/tablet-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/mobile-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/mobile-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/before/mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

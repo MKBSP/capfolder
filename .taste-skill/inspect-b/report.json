@@ -1,0 +1,2487 @@
+{
+ "url": "design/preview/site-b/index.html",
+ "at": "2026-10-25T18:21:13.398Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.59,
+    1,
+    0.9,
+    0.93,
+    0.31,
+    0.68,
+    0.3,
+    0.55,
+    0.76
+   ],
+   "motion": {
+    "elements": 34,
+    "css": 4,
+    "transitions": 30,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 7415,
+     "screens": 8.2,
+     "words": 341,
+     "img": 4,
+     "video": 0,
+     "canvas": 0,
+     "svg": 1,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 2,
+     "uiAbuse": false,
+     "realPictures": 2,
+     "videoCount": 0,
+     "uiPictures": 2,
+     "pictureSamples": [
+      "v013-sample.jpg",
+      "v013-questions.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "CAP TABLE. DONE.",
+     "words": 3,
+     "chars": 16,
+     "lines": 2,
+     "size": 367.2,
+     "vw": 25.5,
+     "font": "Imbue",
+     "weight": 400,
+     "tracking": -0.015,
+     "leading": 0.82,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.94,
+     "top": 93,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "CAP TABLE. DONE.",
+     "words": 3,
+     "lines": 2,
+     "size": 367.2,
+     "font": "Imbue"
+    },
+    "headings": [
+     {
+      "text": "CAP TABLE. DONE.",
+      "words": 3,
+      "chars": 16,
+      "lines": 2,
+      "size": 367.2,
+      "vw": 25.5,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.015,
+      "leading": 0.82,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 93,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "ONE FOLDER. YOURS.",
+      "words": 3,
+      "chars": 18,
+      "lines": 2,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 1073,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "FUCK IT. WE KEPT IT SIMPLE.",
+      "words": 6,
+      "chars": 27,
+      "lines": 2,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 1946,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "WHO OWNS WHAT",
+      "words": 3,
+      "chars": 13,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2288,
+      "tag": "button",
+      "kind": "statement"
+     },
+     {
+      "text": "YOUR SAFE, SIGNED",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2469,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WHAT’S MISSING",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2600,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "LOGINS",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2831,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "SUBSCRIPTIONS",
+      "words": 1,
+      "chars": 13,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2961,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "ONBOARDING CALLS",
+      "words": 2,
+      "chars": 16,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 3092,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "OUR SERVER",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 3223,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WHAT WILL YOU OWN?",
+      "words": 4,
+      "chars": 18,
+      "lines": 2,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.38,
+      "top": 3699,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "86.95%",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 0.9,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.17,
+      "top": 4103,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 367.2,
+      "vw": 25.5,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.02,
+      "leading": 0.8,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.54,
+      "top": 4970,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "FREE. REALLY.",
+      "words": 2,
+      "chars": 13,
+      "lines": 1,
+      "size": 116.8,
+      "vw": 8.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 4970,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "DOWNLOAD",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 489.6,
+      "vw": 34,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.02,
+      "leading": 0.78,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 6911,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 15,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 9,
+     "centered": 0,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Albert Sans",
+       "share": 0.9,
+       "mono": false
+      },
+      {
+       "family": "Imbue",
+       "share": 0.1,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      14,
+      19,
+      26,
+      117,
+      184,
+      367,
+      490
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Albert Sans",
+      "size": 19,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 15.4
+     },
+     "measureChars": 50,
+     "max": {
+      "size": 489.6,
+      "vw": 34,
+      "font": "Imbue",
+      "text": "Download"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.1,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0c0a08",
+     "bodyBgHsl": {
+      "h": 30,
+      "s": 0.2,
+      "l": 0.04
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#181512",
+       "top": 900,
+       "hsl": {
+        "h": 30,
+        "s": 0.14,
+        "l": 0.08
+       }
+      },
+      {
+       "color": "#c9a45a",
+       "top": 1773,
+       "hsl": {
+        "h": 40,
+        "s": 0.51,
+        "l": 0.57
+       }
+      },
+      {
+       "color": "#e6e3dd",
+       "top": 4798,
+       "hsl": {
+        "h": 40,
+        "s": 0.15,
+        "l": 0.88
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.62
+      },
+      {
+       "color": "#0c0a08",
+       "share": 0.21
+      },
+      {
+       "color": "#8f8a84",
+       "share": 0.06
+      },
+      {
+       "color": "#1c1b19",
+       "share": 0.03
+      },
+      {
+       "color": "#1f6f4a",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#c9a45a",
+      "hsl": {
+       "h": 40,
+       "s": 0.51,
+       "l": 0.57
+      },
+      "fg": "#0c0a08"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 1,
+     "radius": 0,
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Download, free"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 2,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 4,
+     "fixed": false,
+     "height": 900,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "albert sans",
+     "imbue"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 7415,
+    "margins": {
+     "left": 43,
+     "right": 43
+    },
+    "sections": [
+     {
+      "sel": "header.hero.wrap",
+      "tag": "header",
+      "top": 0,
+      "height": 900,
+      "words": 26,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Cap table.",
+       "size": 367,
+       "tag": "h1"
+      },
+      "left": 43,
+      "right": 43,
+      "textLeft": 43,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.story.wrap",
+      "tag": "section",
+      "top": 900,
+      "height": 873,
+      "words": 40,
+      "media": 1,
+      "middle": 29,
+      "heading": {
+       "text": "One folder. Yours.",
+       "size": 117,
+       "tag": "h2"
+      },
+      "left": 43,
+      "right": 43,
+      "textLeft": 43,
+      "textRight": 633,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "h2#simple-h.is-in",
+      "tag": "h2",
+      "top": 1946,
+      "height": 210,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.menu.is-in",
+      "tag": "div",
+      "top": 2236,
+      "height": 1118,
+      "words": 30,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Who owns what",
+       "size": 117,
+       "tag": "button"
+      },
+      "left": 43,
+      "right": 43,
+      "textLeft": 50,
+      "textRight": 742,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#guides.own.wrap",
+      "tag": "section",
+      "top": 3527,
+      "height": 1271,
+      "words": 61,
+      "media": 0,
+      "middle": 206,
+      "heading": {
+       "text": "What will you own?",
+       "size": 117,
+       "tag": "h2"
+      },
+      "left": 43,
+      "right": 67,
+      "textLeft": 43,
+      "textRight": 67,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#price.price.wrap",
+      "tag": "section",
+      "top": 4798,
+      "height": 855,
+      "words": 38,
+      "media": 1,
+      "middle": 161,
+      "heading": {
+       "text": "Free. Really.",
+       "size": 117,
+       "tag": "h2"
+      },
+      "left": 43,
+      "right": 43,
+      "textLeft": 43,
+      "textRight": 79,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.faq.wrap",
+      "tag": "section",
+      "top": 5652,
+      "height": 1125,
+      "words": 106,
+      "media": 0,
+      "middle": 231,
+      "heading": {
+       "text": "Fair questions",
+       "size": 26,
+       "tag": "h2"
+      },
+      "left": 43,
+      "right": 125,
+      "textLeft": 43,
+      "textRight": 125,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "a.close",
+      "tag": "a",
+      "top": 6777,
+      "height": 540,
+      "words": 9,
+      "media": 0,
+      "middle": 783,
+      "heading": {
+       "text": "Takes a minute. Then type in your cap table.",
+       "size": 26,
+       "tag": "span"
+      },
+      "left": 43,
+      "right": 43,
+      "textLeft": 43,
+      "textRight": 874,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [
+     {
+      "top": 3364,
+      "height": 316
+     },
+     {
+      "top": 4616,
+      "height": 336
+     },
+     {
+      "top": 5468,
+      "height": 356
+     }
+    ],
+    "h1s": [
+     {
+      "text": "CAP TABLE. DONE.",
+      "size": 367,
+      "top": 93,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 43,
+      "n": 10
+     }
+    ],
+    "leftBlocks": 10,
+    "bodySize": 19,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.19,
+    "voidBox": {
+     "x": 0,
+     "y": 420,
+     "w": 840,
+     "h": 300
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 7,
+   "filled": [
+    0.47,
+    1,
+    0.68,
+    0.47,
+    0.8,
+    0.23,
+    0.58
+   ],
+   "motion": {
+    "elements": 35,
+    "css": 4,
+    "transitions": 31,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 6724,
+     "screens": 6.6,
+     "words": 339,
+     "img": 4,
+     "video": 0,
+     "canvas": 0,
+     "svg": 1,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 2,
+     "uiAbuse": false,
+     "realPictures": 2,
+     "videoCount": 0,
+     "uiPictures": 2,
+     "pictureSamples": [
+      "v013-sample.jpg",
+      "v013-questions.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "CAP TABLE. DONE.",
+     "words": 3,
+     "chars": 16,
+     "lines": 2,
+     "size": 195.8,
+     "vw": 25.5,
+     "font": "Imbue",
+     "weight": 400,
+     "tracking": -0.015,
+     "leading": 0.82,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.94,
+     "top": 234,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "CAP TABLE. DONE.",
+     "words": 3,
+     "lines": 2,
+     "size": 195.8,
+     "font": "Imbue"
+    },
+    "headings": [
+     {
+      "text": "CAP TABLE. DONE.",
+      "words": 3,
+      "chars": 16,
+      "lines": 2,
+      "size": 195.8,
+      "vw": 25.5,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.015,
+      "leading": 0.82,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 234,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "ONE FOLDER. YOURS.",
+      "words": 3,
+      "chars": 18,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 899,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "FUCK IT. WE KEPT IT SIMPLE.",
+      "words": 6,
+      "chars": 27,
+      "lines": 2,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 1817,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "WHO OWNS WHAT",
+      "words": 3,
+      "chars": 13,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2038,
+      "tag": "button",
+      "kind": "statement"
+     },
+     {
+      "text": "YOUR SAFE, SIGNED",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2164,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WHAT’S MISSING",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2242,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "LOGINS",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2416,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "SUBSCRIPTIONS",
+      "words": 1,
+      "chars": 13,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2494,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "ONBOARDING CALLS",
+      "words": 2,
+      "chars": 16,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2572,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "OUR SERVER",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2650,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WHAT WILL YOU OWN?",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2920,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "86.95%",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 0.9,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.19,
+      "top": 3736,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "FREE. REALLY.",
+      "words": 2,
+      "chars": 13,
+      "lines": 1,
+      "size": 69.8,
+      "vw": 9.1,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 4371,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 337.9,
+      "vw": 44,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.02,
+      "leading": 0.8,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 4528,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "DOWNLOAD",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 261.1,
+      "vw": 34,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.02,
+      "leading": 0.78,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 6399,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 15,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 9,
+     "centered": 0,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Albert Sans",
+       "share": 0.89,
+       "mono": false
+      },
+      {
+       "family": "Imbue",
+       "share": 0.11,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      14,
+      17,
+      18,
+      23,
+      70,
+      169,
+      196,
+      261,
+      338
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Albert Sans",
+      "size": 17.9,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 15.4
+     },
+     "measureChars": 38,
+     "max": {
+      "size": 337.9,
+      "vw": 44,
+      "font": "Imbue",
+      "text": "0"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.1,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0c0a08",
+     "bodyBgHsl": {
+      "h": 30,
+      "s": 0.2,
+      "l": 0.04
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#181512",
+       "top": 803,
+       "hsl": {
+        "h": 30,
+        "s": 0.14,
+        "l": 0.08
+       }
+      },
+      {
+       "color": "#c9a45a",
+       "top": 1721,
+       "hsl": {
+        "h": 40,
+        "s": 0.51,
+        "l": 0.57
+       }
+      },
+      {
+       "color": "#f4f4f2",
+       "top": 3352,
+       "hsl": {
+        "h": 60,
+        "s": 0.08,
+        "l": 0.95
+       }
+      },
+      {
+       "color": "#e6e3dd",
+       "top": 4275,
+       "hsl": {
+        "h": 40,
+        "s": 0.15,
+        "l": 0.88
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.62
+      },
+      {
+       "color": "#0c0a08",
+       "share": 0.22
+      },
+      {
+       "color": "#8f8a84",
+       "share": 0.06
+      },
+      {
+       "color": "#1c1b19",
+       "share": 0.04
+      },
+      {
+       "color": "#1f6f4a",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#0c0a08",
+      "hsl": {
+       "h": 30,
+       "s": 0.2,
+       "l": 0.04
+      },
+      "fg": "#0c0a08"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 1,
+     "radius": 0,
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": [
+      "Download, free"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 2,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": false,
+     "height": 803,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "albert sans",
+     "imbue"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 6724,
+    "margins": {
+     "left": 23,
+     "right": 23
+    },
+    "sections": [
+     {
+      "sel": "header.hero.wrap",
+      "tag": "header",
+      "top": 0,
+      "height": 803,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Cap table.",
+       "size": 196,
+       "tag": "h1"
+      },
+      "left": 23,
+      "right": 23,
+      "textLeft": 23,
+      "textRight": 23,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.story.wrap",
+      "tag": "section",
+      "top": 803,
+      "height": 918,
+      "words": 40,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "One folder. Yours.",
+       "size": 70,
+       "tag": "h2"
+      },
+      "left": 23,
+      "right": 316,
+      "textLeft": 23,
+      "textRight": 316,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.simple.wrap",
+      "tag": "section",
+      "top": 1721,
+      "height": 1103,
+      "words": 38,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Fuck it.",
+       "size": 70,
+       "tag": "h2"
+      },
+      "left": 23,
+      "right": 23,
+      "textLeft": 23,
+      "textRight": 126,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#guides.own.wrap",
+      "tag": "section",
+      "top": 2824,
+      "height": 1450,
+      "words": 67,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "What will you own?",
+       "size": 70,
+       "tag": "h2"
+      },
+      "left": 23,
+      "right": 47,
+      "textLeft": 23,
+      "textRight": 47,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#price.price.wrap",
+      "tag": "section",
+      "top": 4275,
+      "height": 830,
+      "words": 38,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Free. Really.",
+       "size": 70,
+       "tag": "h2"
+      },
+      "left": 23,
+      "right": 23,
+      "textLeft": 23,
+      "textRight": 45,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.faq.wrap",
+      "tag": "section",
+      "top": 5104,
+      "height": 1051,
+      "words": 106,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Fair questions",
+       "size": 23,
+       "tag": "h2"
+      },
+      "left": 23,
+      "right": 237,
+      "textLeft": 23,
+      "textRight": 237,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "a.close",
+      "tag": "a",
+      "top": 6155,
+      "height": 471,
+      "words": 9,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 23,
+      "right": 403,
+      "textLeft": 23,
+      "textRight": 403,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "CAP TABLE. DONE.",
+      "size": 196,
+      "top": 234,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 23,
+      "n": 11
+     }
+    ],
+    "leftBlocks": 11,
+    "bodySize": 18,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 7,
+   "filled": [
+    0.59,
+    0.97,
+    0.74,
+    0.48,
+    0.67,
+    0.41,
+    0.62
+   ],
+   "motion": {
+    "elements": 35,
+    "css": 4,
+    "transitions": 31,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 5895,
+     "screens": 7,
+     "words": 339,
+     "img": 4,
+     "video": 0,
+     "canvas": 0,
+     "svg": 1,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 2,
+     "uiAbuse": false,
+     "realPictures": 1,
+     "videoCount": 0,
+     "uiPictures": 2,
+     "pictureSamples": [
+      "v013-sample.jpg"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "CAP TABLE. DONE.",
+     "words": 3,
+     "chars": 16,
+     "lines": 2,
+     "size": 99.5,
+     "vw": 25.5,
+     "font": "Imbue",
+     "weight": 400,
+     "tracking": -0.015,
+     "leading": 0.82,
+     "upper": true,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.92,
+     "top": 202,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "CAP TABLE. DONE.",
+     "words": 3,
+     "lines": 2,
+     "size": 99.5,
+     "font": "Imbue"
+    },
+    "headings": [
+     {
+      "text": "CAP TABLE. DONE.",
+      "words": 3,
+      "chars": 16,
+      "lines": 2,
+      "size": 99.5,
+      "vw": 25.5,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.015,
+      "leading": 0.82,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 202,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "ONE FOLDER. YOURS.",
+      "words": 3,
+      "chars": 18,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 691,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "FUCK IT. WE KEPT IT SIMPLE.",
+      "words": 6,
+      "chars": 27,
+      "lines": 2,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1395,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "WHO OWNS WHAT",
+      "words": 3,
+      "chars": 13,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1573,
+      "tag": "button",
+      "kind": "statement"
+     },
+     {
+      "text": "YOUR SAFE, SIGNED",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1700,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WHAT’S MISSING",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1753,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "LOGINS",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1899,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "SUBSCRIPTIONS",
+      "words": 1,
+      "chars": 13,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1952,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "ONBOARDING CALLS",
+      "words": 2,
+      "chars": 16,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 2006,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "OUR SERVER",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 1,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 2060,
+      "tag": "li",
+      "kind": "statement"
+     },
+     {
+      "text": "WHAT WILL YOU OWN?",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 2306,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "86.95%",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": 0,
+      "leading": 0.9,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.26,
+      "top": 3117,
+      "tag": "span",
+      "kind": "statement"
+     },
+     {
+      "text": "FREE. REALLY.",
+      "words": 2,
+      "chars": 13,
+      "lines": 1,
+      "size": 48,
+      "vw": 12.3,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.01,
+      "leading": 0.9,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3708,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 171.6,
+      "vw": 44,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.02,
+      "leading": 0.8,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3838,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "DOWNLOAD",
+      "words": 1,
+      "chars": 8,
+      "lines": 1,
+      "size": 132.6,
+      "vw": 34,
+      "font": "Imbue",
+      "weight": 400,
+      "tracking": -0.02,
+      "leading": 0.78,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 5632,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 15,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 9,
+     "centered": 0,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Albert Sans",
+       "share": 0.89,
+       "mono": false
+      },
+      {
+       "family": "Imbue",
+       "share": 0.11,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      14,
+      17,
+      20,
+      48,
+      86,
+      100,
+      133,
+      172
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Albert Sans",
+      "size": 17,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 15.4
+     },
+     "measureChars": 35,
+     "max": {
+      "size": 171.6,
+      "vw": 44,
+      "font": "Imbue",
+      "text": "0"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.1,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0c0a08",
+     "bodyBgHsl": {
+      "h": 30,
+      "s": 0.2,
+      "l": 0.04
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#181512",
+       "top": 595,
+       "hsl": {
+        "h": 30,
+        "s": 0.14,
+        "l": 0.08
+       }
+      },
+      {
+       "color": "#c9a45a",
+       "top": 1299,
+       "hsl": {
+        "h": 40,
+        "s": 0.51,
+        "l": 0.57
+       }
+      },
+      {
+       "color": "#f4f4f2",
+       "top": 2707,
+       "hsl": {
+        "h": 60,
+        "s": 0.08,
+        "l": 0.95
+       }
+      },
+      {
+       "color": "#e6e3dd",
+       "top": 3612,
+       "hsl": {
+        "h": 40,
+        "s": 0.15,
+        "l": 0.88
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 0.62
+      },
+      {
+       "color": "#0c0a08",
+       "share": 0.22
+      },
+      {
+       "color": "#8f8a84",
+       "share": 0.06
+      },
+      {
+       "color": "#1c1b19",
+       "share": 0.04
+      },
+      {
+       "color": "#1f6f4a",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#0c0a08",
+      "hsl": {
+       "h": 30,
+       "s": 0.2,
+       "l": 0.04
+      },
+      "fg": "#0c0a08"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 3,
+     "inHero": 1,
+     "radius": 0,
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 1,
+     "heroLabels": [
+      "Download, free"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": false,
+     "height": 595,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "albert sans",
+     "imbue"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 5895,
+    "margins": {
+     "left": 16,
+     "right": 14
+    },
+    "sections": [
+     {
+      "sel": "header.hero.wrap",
+      "tag": "header",
+      "top": 0,
+      "height": 595,
+      "words": 24,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Cap table.",
+       "size": 99,
+       "tag": "h1"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.story.wrap",
+      "tag": "section",
+      "top": 595,
+      "height": 704,
+      "words": 40,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "One folder. Yours.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 21,
+      "textLeft": 16,
+      "textRight": 21,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.simple.wrap",
+      "tag": "section",
+      "top": 1299,
+      "height": 910,
+      "words": 38,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Fuck it.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 60,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.own-text",
+      "tag": "div",
+      "top": 2306,
+      "height": 353,
+      "words": 16,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 14,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.app.is-in",
+      "tag": "div",
+      "top": 2707,
+      "height": 362,
+      "words": 25,
+      "media": 0,
+      "middle": 20,
+      "heading": null,
+      "left": 40,
+      "right": 40,
+      "textLeft": 40,
+      "textRight": 40,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.guides",
+      "tag": "div",
+      "top": 3259,
+      "height": 258,
+      "words": 17,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Learn it before your first raise.",
+       "size": 20,
+       "tag": "h3"
+      },
+      "left": 16,
+      "right": 94,
+      "textLeft": 16,
+      "textRight": 94,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#price.price.wrap",
+      "tag": "section",
+      "top": 3612,
+      "height": 692,
+      "words": 38,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Free. Really.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 33,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.faq.wrap",
+      "tag": "section",
+      "top": 4304,
+      "height": 1067,
+      "words": 106,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Fair questions",
+       "size": 20,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 17,
+      "textLeft": 16,
+      "textRight": 17,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "a.close",
+      "tag": "a",
+      "top": 5371,
+      "height": 388,
+      "words": 9,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 113,
+      "textLeft": 16,
+      "textRight": 113,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 5759,
+      "height": 136,
+      "words": 10,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "CAP TABLE. DONE.",
+      "size": 99,
+      "top": 202,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 16,
+      "n": 11
+     }
+    ],
+    "leftBlocks": 11,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/desktop-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/desktop-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/desktop-page-02.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/desktop-page-03.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/tablet-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/tablet-page-01.jpg",
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/mobile-fold.jpg",
+   "pages": [
+    "/Users/MadsTrundte/Desktop/claude_code_projects/capfolder/.taste-skill/inspect-b/mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

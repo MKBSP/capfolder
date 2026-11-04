@@ -1,0 +1,5 @@
+Logos: Simple Icons (https://simpleicons.org), CC0-1.0. Trademarks belong to their owners; shown to say Capfolder works with these tools, not as endorsement.
+openai.svg: OpenAI/ChatGPT mark, Wikimedia Commons File:ChatGPT_logo.svg (public domain, trademark of OpenAI).
+carta.svg: Carta wordmark, Wikimedia Commons File:Carta-logo.svg (public domain, trademark of Carta, Inc.).
+pulley-mark.png: Pulley "P" mark, recoloured from the icon, from pulley.com (trademark of Pulley).
+cake-mark.png: Cake Equity wordmark, recoloured from the icon, from cakeequity.com (trademark of Cake Equity).

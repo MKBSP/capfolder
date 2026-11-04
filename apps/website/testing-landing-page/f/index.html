@@ -17,6 +17,7 @@
 <script defer src="/track.js"></script>
 <!-- fonts are served from this site (no Google Fonts request); SIL OFL, fonts/OFL.txt -->
 <style>
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(/fonts/instrument-serif-latin-400-italic.woff2) format('woff2')}
 @font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
 @font-face{font-family:'IBM Plex Sans';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2')}
 @font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
@@ -145,7 +146,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .strip{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 40px;margin-top:20px;font-weight:600;font-size:19px;color:#8A8F98;letter-spacing:-.01em}
 .cover{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:56px}
 .cover > div{display:flex;flex-direction:column;align-items:center;gap:12px;padding:30px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;font-size:15.5px;font-weight:500}
-.cover svg{width:34px;height:34px;stroke:var(--ink);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.cover img{width:40px;height:40px}
 .cover small{display:block;color:var(--muted);font-size:13px;font-weight:400;margin-top:3px}
 .center{text-align:center;margin-left:auto;margin-right:auto}
 .sub{font-size:18px;line-height:1.6;color:var(--muted);margin:14px auto 0;max-width:620px}
@@ -156,6 +157,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .stepn{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:15px;background:#fff}
 .stepn span{padding:5px 9px;color:var(--muted);border-right:1px solid var(--line);font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500}
 .stepn b{padding:5px 10px;font-weight:600}
+.step-ic{display:block;width:40px;height:40px;margin-bottom:14px}
 .steps p{margin:14px 0 0;font-size:16px;line-height:1.6;color:#2B2E33}
 .fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 24px;margin-top:52px}
 .feat .panel{height:236px;border-radius:16px;background:var(--panel);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
@@ -225,52 +227,110 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .wrap{padding:0 16px}
 }
 
-/* hero chips + growth story */
-.nw{white-space:nowrap}
-.hero-h1{font-weight:600;font-size:clamp(36px,6.4vw,68px);line-height:1.08;letter-spacing:-0.04em;margin:26px auto 0;max-width:940px;text-wrap:balance}
-.hchip{display:inline-flex;align-items:center;gap:6px;vertical-align:middle;margin:0 .18em 0 .28em;padding:.16em .42em .16em .2em;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 20px -12px rgba(14,18,15,.35);font-size:.3em;letter-spacing:0;line-height:1;transform:translateY(-.12em) rotate(-2deg);animation:chipIn .7s var(--ease-out) both .2s}
-.hchip-g{transform:translateY(-.12em) rotate(2deg);animation-delay:.45s;padding-left:.4em}
-.hchip b{font-weight:600}
-.hchip .av{display:inline-grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;background:var(--green);color:#fff;font-style:normal;font-weight:600;font-size:.9em}
-.hchip .av2{background:#4E9A72;margin-left:-.7em;border:2px solid #fff}
-.hchip svg{width:1.3em;height:1.3em;stroke:var(--green);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-@keyframes chipIn{from{opacity:0;transform:translateY(.3em) scale(.8)}}
-.grow{position:relative;padding:22px 24px 26px}
-.gsteps{list-style:none;margin:0;padding:0;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.gsteps button{font:inherit;font-size:13.5px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:background-color .25s,color .25s,border-color .25s}
-.gsteps button[aria-current="step"]{background:var(--green);border-color:var(--green);color:#fff}
-.gsteps button.done{color:var(--green);border-color:#C9DECF}
-.gbody{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:36px;align-items:center;margin-top:26px;min-height:300px}
-.gviz{position:relative;max-width:300px;width:100%;margin:0 auto;aspect-ratio:1}
-.donut,.uni{position:absolute;inset:0;width:100%;height:100%;transition:opacity .7s var(--ease-out),transform .9s var(--ease-out)}
-.donut .track{fill:none;stroke:#EEF0EC;stroke-width:26}
-.donut .seg{fill:none;stroke-width:26;transition:stroke-dasharray .9s var(--ease-out),stroke-dashoffset .9s var(--ease-out)}
-.uni{opacity:0;transform:scale(.6) rotate(-8deg)}
-.uni-body{fill:#EEF5F0;stroke:var(--green);stroke-width:2.2;stroke-linejoin:round}
-.uni-horn{fill:#E7C46A;stroke:#B8902F;stroke-width:1.6;stroke-linejoin:round}
-.uni-mane{fill:none;stroke:#4E9A72;stroke-width:3;stroke-linecap:round}
-.spark path{fill:#E7C46A}
-.grow.unicorn .donut{opacity:0;transform:scale(.4) rotate(90deg)}
-.grow.unicorn .uni{opacity:1;transform:scale(.84) translateY(-10%)}
-.grow.unicorn .spark{animation:twinkle 1.6s ease-in-out infinite}
-@keyframes twinkle{50%{opacity:.35}}
-.gval{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;transition:opacity .4s}
-.gval b{font-size:clamp(22px,3.4vw,34px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.gval span{font-size:13px;color:var(--muted);margin-top:2px}
-.grow.unicorn .gval{inset:auto 0 -4% 0}
-.gcard{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 30px -20px rgba(14,18,15,.3);text-align:left;overflow:hidden}
-.gcard-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEEFEB;font-weight:600;font-size:16px}
-#grows{min-height:172px}
-.grow-row{display:grid;grid-template-columns:14px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:9px 16px;border-top:1px solid #F1F2EE;font-size:14.5px;animation:rowIn .5s var(--ease-out) both}
+/* works-with logos, article cards */
+.works{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 40px;margin-top:56px}
+.works > div{text-align:center}
+.works p{margin:0 0 12px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.logos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.logos li{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:14.5px;font-weight:500;color:#2B2E33}
+.logos svg{width:18px;height:18px;fill:#3A3E46;flex:none}
+.logos svg[fill="none"]{fill:none;stroke:#3A3E46}
+.logos img{height:18px;width:auto;flex:none;filter:grayscale(1) brightness(.35);border-radius:4px}
+.logos .wordmark img{height:20px;border-radius:0}
+.logos img.wide,.logos .wordmark img.wide{height:15px}
+.arts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:44px}
+.art{display:flex;flex-direction:column;gap:8px;padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;color:var(--ink);transition:border-color .2s,transform .3s var(--ease-out),box-shadow .3s}
+a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30px -22px rgba(14,18,15,.3);color:var(--ink)}
+.art .kind{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);font-weight:600}
+.art b{font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.art .blurb{font-size:15px;line-height:1.55;color:var(--muted)}
+.art .more{margin-top:auto;padding-top:8px;font-size:14px;font-weight:600;color:var(--green)}
+.art.soon{background:#FBFBFA}
+@media (max-width:960px){.arts{grid-template-columns:repeat(2,minmax(0,1fr))}.works{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.arts{grid-template-columns:minmax(0,1fr)}}
+
+/* hero: two columns, the cap table card with the story floating around it */
+.hero2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(28px,5vw,64px);align-items:center;padding-top:clamp(40px,7vw,88px);padding-bottom:clamp(48px,8vw,88px)}
+.hero-h1{font-weight:600;font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-0.045em;margin:24px 0 0;text-wrap:balance}
+.hero-script{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(30px,4.2vw,50px);line-height:1.05;letter-spacing:-0.01em;color:var(--green);margin:8px 0 0}
+.hero-sub{margin:22px 0 0;max-width:520px;font-size:18px}
+.hero-dl{margin-top:30px;max-width:540px}
+.hero-dl #gate > p{text-align:left}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;list-style:none;margin:22px 0 0;padding:0;font-size:14px;color:#3A3E46}
+.trust li{display:flex;align-items:center;gap:7px}
+.trust svg{width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+.storyb{position:relative;padding:128px 4% 0;--ease-in:cubic-bezier(.55,0,.75,.2)}
+.tilt{perspective:1600px}
+.appcard{background:#fff;border:1px solid #E2E3DE;border-radius:18px;box-shadow:0 1px 0 #fff inset,0 40px 80px -40px rgba(14,18,15,.35),0 18px 30px -24px rgba(14,18,15,.25);transform:rotateX(7deg) rotateY(-11deg) rotateZ(1deg);transform-origin:50% 50%;overflow:hidden}
+.ac-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #EEEFEB}
+.ac-co{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.ac-co .tag{margin-left:4px}
+.ac-val{font-size:clamp(22px,2.6vw,30px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:opacity .4s}
+.ac-b{display:grid;grid-template-columns:132px minmax(0,1fr);gap:22px;align-items:center;padding:20px}
+.storyb .donut{width:132px;height:132px}
+.storyb .donut .track{fill:none;stroke:#EEF0EC;stroke-width:15}
+.storyb .donut .seg{fill:none;stroke-width:15;transition:stroke-dasharray 1.2s var(--ease-out),stroke-dashoffset 1.2s var(--ease-out)}
+#grows{min-height:226px;display:flex;flex-direction:column;justify-content:center}
+.grow-row{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 0;border-top:1px solid #F3F4F0;font-size:14px;animation:rowIn .6s var(--ease-out) both}
 .grow-row:first-child{border-top:0}
 .grow-row i{width:10px;height:10px;border-radius:3px}
-.grow-row .v{color:var(--muted);font-size:13px;white-space:nowrap}
-.grow-row .p{font-weight:600;font-variant-numeric:tabular-nums;min-width:52px;text-align:right}
+.grow-row .v{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.grow-row .p{font-weight:600;font-variant-numeric:tabular-nums;min-width:46px;text-align:right}
 @keyframes rowIn{from{opacity:0;transform:translateY(6px)}}
-.gnote{margin:0;padding:12px 16px;background:#FAFAF8;border-top:1px solid #EEEFEB;font-size:14px;color:#3A3E46}
-.grow #pause-motion{right:14px;bottom:14px}
-@media (max-width:760px){.gbody{grid-template-columns:minmax(0,1fr);gap:18px}.gviz{max-width:220px}.gsteps button{font-size:12.5px;padding:6px 10px}.grow{padding:16px 12px 56px}}
-@media (prefers-reduced-motion:reduce){.hchip{animation:none}.donut .seg,.donut,.uni,.grow-row{transition:none;animation:none}}
+.ac-f{display:flex;align-items:center;gap:8px;padding:11px 20px;background:#F3F8F4;color:var(--green-d);font-size:13px;border-top:1px solid #E3EEE6}
+
+.chip{position:absolute;left:var(--x);top:var(--y);z-index:2;display:flex;align-items:center;gap:10px;padding:9px 14px 9px 10px;background:rgba(255,255,255,.96);border:1px solid #E6E7E3;border-radius:14px;box-shadow:0 18px 36px -18px rgba(14,18,15,.35);white-space:nowrap;opacity:0;transform:translate(var(--fx),var(--fy)) scale(.92);transition:transform 1.4s var(--ease-out),opacity .9s ease,filter .9s ease}
+.chip img{width:34px;height:34px;flex:none}
+.chip b{display:block;font-size:14px;font-weight:600;line-height:1.25}
+.chip small{display:block;font-size:12.5px;color:var(--muted);line-height:1.3}
+.chip.now{opacity:1;transform:none;animation:drift 4s ease-in-out infinite .9s}
+.chip.past{opacity:.5;transform:scale(.94);filter:saturate(.6)}
+.chip.gone{opacity:0;transform:translate(0,-12px) scale(.94);transition:transform .9s var(--ease-in),opacity .8s ease}
+@keyframes drift{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.uni-sticker{position:absolute;left:40%;top:74px;width:min(124px,24%);aspect-ratio:1;z-index:3;opacity:0;transform:translateY(-30px) scale(.6) rotate(-10deg);transition:transform 1.4s cubic-bezier(.22,1.3,.36,1),opacity .8s ease;pointer-events:none}
+.uni-sticker .u{width:100%;height:100%;filter:drop-shadow(0 18px 18px rgba(14,18,15,.2))}
+.uni-sticker .s1,.uni-sticker .s2{position:absolute;width:34%}
+.uni-sticker .s1{left:-22%;top:6%}.uni-sticker .s2{right:-14%;bottom:4%;width:26%}
+.storyb.st-7 .uni-sticker{opacity:1;transform:none}
+.storyb.st-7 .uni-sticker .s1,.storyb.st-7 .uni-sticker .s2{animation:twinkle 1.8s ease-in-out infinite}
+@keyframes twinkle{50%{opacity:.35}}
+
+.chip-low{top:auto;bottom:54px}
+.story-nav{display:flex;align-items:center;gap:14px;margin-top:168px;padding:0 2%}
+.gsteps{display:flex;gap:5px;flex:1}
+.gsteps button{flex:1;height:14px;border:0;padding:5px 0;background:none;cursor:pointer}
+.gsteps i{display:block;height:4px;border-radius:99px;background:#DDDFD9;overflow:hidden;position:relative}
+.gsteps i::after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--green);border-radius:99px}
+.storyb #pause-motion{position:static;font-size:13px;padding:6px 11px}
+.paused .chip.now{animation-play-state:paused}
+.chip-r1{bottom:104px}
+.ac-f.warn{background:#FFF7E8;color:#7A4A06;border-top-color:#F3E2C2}
+.q409{position:relative;display:inline-flex;margin-left:2px}
+.q409[hidden]{display:none}
+.q409 button{width:20px;height:20px;border-radius:50%;border:1px solid #E2C48E;background:#fff;color:#7A4A06;font:600 12px/1 'IBM Plex Sans',system-ui,sans-serif;cursor:help;padding:0}
+.q409 [role="tooltip"]{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);width:240px;padding:10px 12px;border-radius:10px;background:var(--ink);color:#fff;font-size:12.5px;line-height:1.45;white-space:normal;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+.q409:hover [role="tooltip"],.q409 button:focus-visible + [role="tooltip"]{opacity:1}
+
+
+@media (max-width:900px){.hero2{grid-template-columns:minmax(0,1fr)}.storyb{max-width:620px;margin:0 auto}}
+@media (max-width:560px){
+  .storyb{padding:104px 0 0}
+  .uni-sticker{top:66px}
+  .appcard{transform:none}
+  .ac-b{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:14px}
+  .storyb .donut{width:88px;height:88px}
+  .chip{padding:7px 10px 7px 8px;gap:8px}.chip img{width:26px;height:26px}.chip b{font-size:12.5px}.chip small{display:none}
+  .chip[data-i="0"]{--x:0%!important}.chip[data-i="1"]{--x:auto!important;left:auto;right:0}
+  .chip[data-i="2"]{--x:0%!important;--y:52px!important}.chip[data-i="3"]{--y:46px!important;right:0}
+  .story-nav{margin-top:134px}
+  .chip-low{bottom:46px}
+  .chip-r1{bottom:92px}
+  .chip[data-i="5"]{--x:auto!important;left:auto;right:0}
+  .chip[data-i="7"]{--x:auto!important;left:auto;right:0}
+}
+@media (prefers-reduced-motion:reduce){.chip,.uni-sticker,.storyb .donut .seg,.grow-row{transition:none;animation:none}}
 </style>
 </head>
 <body>
@@ -293,21 +353,24 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
     </div>
   </div></nav>
 
-  <header id="top" class="wrap center" style="padding-top: clamp(56px, 9vw, 104px); padding-bottom: 48px">
-    <a class="announce" href="#ai" data-umami-event="announce-ai"><b>NEW</b><span>Works with Claude Code, Codex and Gemini CLI</span><span aria-hidden="true">→</span></a>
-    <h1 class="hero-h1">The free cap table app, from <span class="nw">first idea<span class="hchip" aria-hidden="true"><i class="av">T</i><i class="av av2">S</i><b>50/50</b></span></span> to <span class="nw">first raise<span class="hchip hchip-g" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><b>SAFE signed</b></span></span></h1>
-    <p class="sub" style="font-size: 20px; max-width: 640px; margin-top: 22px">Split equity with your cofounders, issue your first SAFE and get it signed. Incorporated or not, raised or not.</p>
-    <div id="download" style="max-width: 560px; margin: 34px auto 0 auto">
+  <header id="top" class="wrap hero2">
+    <div class="hero-l">
+      <a class="announce" href="#ai" data-umami-event="announce-ai"><b>NEW</b><span>Works with Claude Code, Codex and Gemini CLI</span><span aria-hidden="true">→</span></a>
+      <h1 class="hero-h1">The Free Cap Table App.</h1>
+      <p class="hero-script">from first idea to first raise</p>
+      <p class="sub hero-sub">For founders with an idea, a company or a first cheque. Split equity, issue your first SAFE and get it signed. Free, on your computer, no account.</p>
+      <div id="download" class="hero-dl">
       <div id="gate">
-        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">
-          <button type="button" class="btn btn-s" data-talk data-umami-event="book-call-hero" style="font-size: 16px; padding: 14px 22px">Book a call</button>
+        <div class="hero-btns">
           <button type="button" class="btn btn-d" id="getdl" data-umami-event="get-download" style="font-size: 16px; padding: 14px 22px">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
             Download, it's free
           </button>
+          <button type="button" class="btn btn-s" data-talk data-umami-event="book-call-hero" style="font-size: 16px; padding: 14px 22px">Book a call</button>
         </div>
-        <p style="font-size: 14px; line-height: 1.5; color: var(--muted); margin: 14px 0 0 0">macOS, Windows, Linux · open source · <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">skip the email, just download</button></p>
+        <p style="font-size: 14px; line-height: 1.5; color: var(--muted); margin: 14px 0 0 0">macOS, Windows, Linux · <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">skip the email, just download</button></p>
         <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
+        <ul class="trust"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Open source</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>YC's standard SAFE</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No account needed</li></ul>
       </div>
       <div id="dlthanks" hidden aria-live="polite">
         <div style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left">
@@ -331,68 +394,70 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
         </div>
       </div>
     </div>
-  </header>
-
-  <section class="wrap" aria-label="Product video">
-    <div class="stage">
-      <div class="win">
-        <div class="win-bar" aria-hidden="true"><i></i><i></i><i></i><span>Capfolder · Acme Inc.</span></div>
-        <div class="grow" id="grow" aria-roledescription="animation" aria-label="A cap table from first idea to unicorn">
-          <ol class="gsteps" aria-label="Stages">
-            <li><button type="button" data-s="0">Idea</button></li>
-            <li><button type="button" data-s="1">Incorporate</button></li>
-            <li><button type="button" data-s="2">First SAFE</button></li>
-            <li><button type="button" data-s="3">Option pool</button></li>
-            <li><button type="button" data-s="4">Seed</button></li>
-            <li><button type="button" data-s="5">Series A</button></li>
-            <li><button type="button" data-s="6">Unicorn</button></li>
-          </ol>
-          <div class="gbody">
-            <div class="gviz" aria-hidden="true">
-              <svg class="donut" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="70" class="track"/>
-                <g transform="rotate(-90 100 100)">
-                  <circle cx="100" cy="100" r="70" class="seg" data-k="tim" style="stroke:#1F6F4A"/>
-                  <circle cx="100" cy="100" r="70" class="seg" data-k="steve" style="stroke:#4E9A72"/>
-                  <circle cx="100" cy="100" r="70" class="seg" data-k="safe" style="stroke:#C08A2E"/>
-                  <circle cx="100" cy="100" r="70" class="seg" data-k="pool" style="stroke:#A9CDB8"/>
-                  <circle cx="100" cy="100" r="70" class="seg" data-k="seed" style="stroke:#6E7781"/>
-                  <circle cx="100" cy="100" r="70" class="seg" data-k="a" style="stroke:#2D3A33"/>
+    </div>
+    <div class="hero-r">
+      <div class="storyb" id="grow" aria-roledescription="animation" aria-label="A startup's cap table, from two founders with an idea to a unicorn">
+        <div class="tilt">
+          <div class="appcard">
+            <div class="ac-h">
+              <span class="ac-co"><svg width="18" height="18" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path></svg>Acme Inc.<span class="tag" id="gtag">Not incorporated</span></span>
+              <span class="ac-val" id="gval">Idea</span>
+            </div>
+            <div class="ac-b">
+              <svg class="donut" viewBox="0 0 120 120" aria-hidden="true">
+                <circle cx="60" cy="60" r="44" class="track"/>
+                <g transform="rotate(-90 60 60)">
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="jobs" style="stroke:#1F6F4A"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="woz" style="stroke:#4E9A72"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="bill" style="stroke:#C08A2E"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="pool" style="stroke:#A9CDB8"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="seed" style="stroke:#6E7781"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="a" style="stroke:#2D3A33"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="cfo" style="stroke:#5B7FA3"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="b" style="stroke:#9AA3AD"/>
                 </g>
               </svg>
-              <svg class="uni" viewBox="0 0 100 100">
-                <path class="uni-body" d="M70 30C60 26 48 28 40 36L22 52C16 58 18 66 26 66L40 64C44 70 46 80 44 92H78C80 72 82 50 70 30Z"/>
-                <path class="uni-body" d="M66 31 71 17 75 33Z"/>
-                <path class="uni-horn" d="M55 31 65 3 62 32Z"/>
-                <path class="uni-mane" d="M74 31C88 38 84 56 91 66C82 64 80 74 85 84C77 80 79 88 79 92"/>
-                <circle cx="47" cy="44" r="2.4" fill="#0E120F"/>
-                <g class="spark"><path d="M14 20l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path d="M86 10l1.5 3.5 3.5 1.5-3.5 1.5L86 20l-1.5-3.5L81 15l3.5-1.5z"/><path d="M90 46l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></g>
-              </svg>
-              <div class="gval"><b id="gval">Idea</b><span id="gvsub">no company yet</span></div>
-            </div>
-            <div class="gcard">
-              <div class="gcard-h"><span id="gtitle">Tim and Steve shake on it</span><span class="tag" id="gtag">Not incorporated</span></div>
               <div id="grows"></div>
-              <p class="gnote" id="gnote">Write down who's in and what you promised.</p>
             </div>
+            <div class="ac-f" id="gfootbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span id="gfoot">Totals add to 100%</span><span class="q409" id="q409" hidden><button type="button" aria-describedby="tip409">?</button><span role="tooltip" id="tip409">A 409A is an independent valuation of your common shares. It sets the lowest strike price for options, so your team avoids a tax penalty.</span></span></div>
+          </div>
+        </div>
+        <div class="chip" data-i="0" style="--x:-2%;--y:0px;--fx:-120px;--fy:-20px" aria-hidden="true"><img src="/img/story/light-bulb.svg" alt=""><span><b>Jobs &amp; Woz · 50/50</b><small>Two founders, one idea</small></span></div>
+        <div class="chip" data-i="1" style="--x:auto;--y:-4px;--fx:140px;--fy:-20px;right:-2%" aria-hidden="true"><img src="/img/story/money-with-wings.svg" alt=""><span><b>Bill Gates · $250k</b><small>SAFE at a $5M cap</small></span></div>
+        <div class="chip" data-i="2" style="--x:4%;--y:62px;--fx:-140px;--fy:0px" aria-hidden="true"><img src="/img/story/woman-technologist.svg" alt=""><span><b>Tim Apple + 2 joined</b><small>Options from a 10% pool</small></span></div>
+        <div class="chip" data-i="3" style="--x:auto;--y:56px;--fx:140px;--fy:0px;right:2%" aria-hidden="true"><img src="/img/story/money-bag.svg" alt=""><span><b>Seed · $5M</b><small>SAFEs at a $20M cap</small></span></div>
+        <div class="chip chip-low chip-r1" data-i="4" style="--x:0%;--fx:-140px;--fy:0px" aria-hidden="true"><img src="/img/story/rocket.svg" alt=""><span><b>Series A · $25M</b><small>Priced at $120M post</small></span></div>
+        <div class="chip chip-low chip-r1" data-i="5" style="--x:50%;--fx:140px;--fy:0px" aria-hidden="true"><img src="/img/story/waving-hand.svg" alt=""><span><b>Woz leaves · new CFO</b><small>Vesting stops · CFO gets 5%</small></span></div>
+        <div class="chip chip-low" data-i="6" style="--x:6%;--fx:0px;--fy:90px" aria-hidden="true"><img src="/img/story/chart-increasing.svg" alt=""><span><b>Series B · $75M</b><small>Priced at $500M post</small></span></div>
+        <div class="uni-sticker" aria-hidden="true"><img class="u" src="/img/story/unicorn.svg" alt=""><img class="s1" src="/img/story/sparkles.svg" alt=""><img class="s2" src="/img/story/sparkles.svg" alt=""></div>
+        <div class="chip chip-low" data-i="7" style="--x:54%;--fx:0px;--fy:90px" aria-hidden="true"><img src="/img/story/unicorn.svg" alt=""><span><b>$1B · a unicorn</b><small>Records right from day one</small></span></div>
+        <div class="story-nav">
+          <div class="gsteps" role="group" aria-label="Chapters">
+            <button type="button" data-s="0" aria-label="Idea"><i></i></button><button type="button" data-s="1" aria-label="First cheque"><i></i></button><button type="button" data-s="2" aria-label="First hires"><i></i></button><button type="button" data-s="3" aria-label="Seed"><i></i></button><button type="button" data-s="4" aria-label="Series A"><i></i></button><button type="button" data-s="5" aria-label="Founder leaves"><i></i></button><button type="button" data-s="6" aria-label="Series B"><i></i></button><button type="button" data-s="7" aria-label="Unicorn"><i></i></button>
           </div>
           <button type="button" id="pause-motion" aria-pressed="false">Pause</button>
         </div>
       </div>
     </div>
-    <p class="center" style="margin: 48px 0 0 0; font-size: 14px; color: var(--muted)">Works with the tools you already use</p>
-    <div class="strip"><span>Claude</span><span>Codex</span><span>Gemini</span><span>Ollama</span><span>LM Studio</span><span>ChatGPT</span><span>Excel</span><span>Pulley</span><span>Carta</span></div>
+  </header>
 
-    <h2 class="sr">What Capfolder covers</h2>
+  <section class="wrap" aria-label="Product video">
+    <div class="works">
+      <div><p>Works with your AI</p><ul class="logos" aria-label="AI tools Capfolder works with"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg><span>Claude</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10.5h3v3h-3v3h-1.5v3H18v-3h-1.5v3H15v-3H9v3H7.5v-3H6v3H4.5v-3H3v-3H0v-3h3v-6h18Zm-15 0h1.5v-3H6Zm10.5 0H18v-3h-1.5z"/></svg><span>Claude Code</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg><span>Gemini CLI</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.361 10.26a.894.894 0 0 0-.558.47l-.072.148.001.207c0 .193.004.217.059.353.076.193.152.312.291.448.24.238.51.3.872.205a.86.86 0 0 0 .517-.436.752.752 0 0 0 .08-.498c-.064-.453-.33-.782-.724-.897a1.06 1.06 0 0 0-.466 0zm-9.203.005c-.305.096-.533.32-.65.639a1.187 1.187 0 0 0-.06.52c.057.309.31.59.598.667.362.095.632.033.872-.205.14-.136.215-.255.291-.448.055-.136.059-.16.059-.353l.001-.207-.072-.148a.894.894 0 0 0-.565-.472 1.02 1.02 0 0 0-.474.007Zm4.184 2c-.131.071-.223.25-.195.383.031.143.157.288.353.407.105.063.112.072.117.136.004.038-.01.146-.029.243-.02.094-.036.194-.036.222.002.074.07.195.143.253.064.052.076.054.255.059.164.005.198.001.264-.03.169-.082.212-.234.15-.525-.052-.243-.042-.28.087-.355.137-.08.281-.219.324-.314a.365.365 0 0 0-.175-.48.394.394 0 0 0-.181-.033c-.126 0-.207.03-.355.124l-.085.053-.053-.032c-.219-.13-.259-.145-.391-.143a.396.396 0 0 0-.193.032zm.39-2.195c-.373.036-.475.05-.654.086-.291.06-.68.195-.951.328-.94.46-1.589 1.226-1.787 2.114-.04.176-.045.234-.045.53 0 .294.005.357.043.524.264 1.16 1.332 2.017 2.714 2.173.3.033 1.596.033 1.896 0 1.11-.125 2.064-.727 2.493-1.571.114-.226.169-.372.22-.602.039-.167.044-.23.044-.523 0-.297-.005-.355-.045-.531-.288-1.29-1.539-2.304-3.072-2.497a6.873 6.873 0 0 0-.855-.031zm.645.937a3.283 3.283 0 0 1 1.44.514c.223.148.537.458.671.662.166.251.26.508.303.82.02.143.01.251-.043.482-.08.345-.332.705-.672.957a3.115 3.115 0 0 1-.689.348c-.382.122-.632.144-1.525.138-.582-.006-.686-.01-.853-.042-.57-.107-1.022-.334-1.35-.68-.264-.28-.385-.535-.45-.946-.03-.192.025-.509.137-.776.136-.326.488-.73.836-.963.403-.269.934-.46 1.422-.512.187-.02.586-.02.773-.002zm-5.503-11a1.653 1.653 0 0 0-.683.298C5.617.74 5.173 1.666 4.985 2.819c-.07.436-.119 1.04-.119 1.503 0 .544.064 1.24.155 1.721.02.107.031.202.023.208a8.12 8.12 0 0 1-.187.152 5.324 5.324 0 0 0-.949 1.02 5.49 5.49 0 0 0-.94 2.339 6.625 6.625 0 0 0-.023 1.357c.091.78.325 1.438.727 2.04l.13.195-.037.064c-.269.452-.498 1.105-.605 1.732-.084.496-.095.629-.095 1.294 0 .67.009.803.088 1.266.095.555.288 1.143.503 1.534.071.128.243.393.264.407.007.003-.014.067-.046.141a7.405 7.405 0 0 0-.548 1.873c-.062.417-.071.552-.071.991 0 .56.031.832.148 1.279L3.42 24h1.478l-.05-.091c-.297-.552-.325-1.575-.068-2.597.117-.472.25-.819.498-1.296l.148-.29v-.177c0-.165-.003-.184-.057-.293a.915.915 0 0 0-.194-.25 1.74 1.74 0 0 1-.385-.543c-.424-.92-.506-2.286-.208-3.451.124-.486.329-.918.544-1.154a.787.787 0 0 0 .223-.531c0-.195-.07-.355-.224-.522a3.136 3.136 0 0 1-.817-1.729c-.14-.96.114-2.005.69-2.834.563-.814 1.353-1.336 2.237-1.475.199-.033.57-.028.776.01.226.04.367.028.512-.041.179-.085.268-.19.374-.431.093-.215.165-.333.36-.576.234-.29.46-.489.822-.729.413-.27.884-.467 1.352-.561.17-.035.25-.04.569-.04.319 0 .398.005.569.04a4.07 4.07 0 0 1 1.914.997c.117.109.398.457.488.602.034.057.095.177.132.267.105.241.195.346.374.43.14.068.286.082.503.045.343-.058.607-.053.943.016 1.144.23 2.14 1.173 2.581 2.437.385 1.108.276 2.267-.296 3.153-.097.15-.193.27-.333.419-.301.322-.301.722-.001 1.053.493.539.801 1.866.708 3.036-.062.772-.26 1.463-.533 1.854a2.096 2.096 0 0 1-.224.258.916.916 0 0 0-.194.25c-.054.109-.057.128-.057.293v.178l.148.29c.248.476.38.823.498 1.295.253 1.008.231 2.01-.059 2.581a.845.845 0 0 0-.044.098c0 .006.329.009.732.009h.73l.02-.074.036-.134c.019-.076.057-.3.088-.516.029-.217.029-1.016 0-1.258-.11-.875-.295-1.57-.597-2.226-.032-.074-.053-.138-.046-.141.008-.005.057-.074.108-.152.376-.569.607-1.284.724-2.228.031-.26.031-1.378 0-1.628-.083-.645-.182-1.082-.348-1.525a6.083 6.083 0 0 0-.329-.7l-.038-.064.131-.194c.402-.604.636-1.262.727-2.04a6.625 6.625 0 0 0-.024-1.358 5.512 5.512 0 0 0-.939-2.339 5.325 5.325 0 0 0-.95-1.02 8.097 8.097 0 0 1-.186-.152.692.692 0 0 1 .023-.208c.208-1.087.201-2.443-.017-3.503-.19-.924-.535-1.658-.98-2.082-.354-.338-.716-.482-1.15-.455-.996.059-1.8 1.205-2.116 3.01a6.805 6.805 0 0 0-.097.726c0 .036-.007.066-.015.066a.96.96 0 0 1-.149-.078A4.857 4.857 0 0 0 12 3.03c-.832 0-1.687.243-2.456.698a.958.958 0 0 1-.148.078c-.008 0-.015-.03-.015-.066a6.71 6.71 0 0 0-.097-.725C8.997 1.392 8.337.319 7.46.048a2.096 2.096 0 0 0-.585-.041Zm.293 1.402c.248.197.523.759.682 1.388.03.113.06.244.069.292.007.047.026.152.041.233.067.365.098.76.102 1.24l.002.475-.12.175-.118.178h-.278c-.324 0-.646.041-.954.124l-.238.06c-.033.007-.038-.003-.057-.144a8.438 8.438 0 0 1 .016-2.323c.124-.788.413-1.501.696-1.711.067-.05.079-.049.157.013zm9.825-.012c.17.126.358.46.498.888.28.854.36 2.028.212 3.145-.019.14-.024.151-.057.144l-.238-.06a3.693 3.693 0 0 0-.954-.124h-.278l-.119-.178-.119-.175.002-.474c.004-.669.066-1.19.214-1.772.157-.623.434-1.185.68-1.382.078-.062.09-.063.159-.012z"/></svg><span>Ollama</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.025 0c3.492 0 5.237 0 6.571.68a6.24 6.24 0 0 1 2.725 2.724C24 4.738 24 6.484 24 9.975v4.05c0 3.492 0 5.237-.68 6.571a6.24 6.24 0 0 1-2.724 2.725c-1.334.679-3.08.679-6.571.679h-4.05c-3.492 0-5.237 0-6.571-.68A6.24 6.24 0 0 1 .68 20.597C0 19.262 0 17.516 0 14.025v-4.05c0-3.492 0-5.237.68-6.571A6.23 6.23 0 0 1 3.404.68C4.738 0 6.484 0 9.975 0zM7.688 16.313a1.313 1.313 0 0 0 0 2.625h11.625a1.313 1.313 0 0 0 0-2.625zm-3-3.75a1.313 1.313 0 0 0 0 2.624h11.625a1.313 1.313 0 0 0 0-2.624zm3-3.75a1.313 1.313 0 0 0 0 2.624h11.625a1.313 1.313 0 0 0 0-2.624zm-3-3.75a1.313 1.313 0 0 0 0 2.625h11.625a1.313 1.313 0 0 0 0-2.625z"/></svg><span>LM Studio</span></li><li><img src="/img/logos/openai.svg" alt="" height="18"><span>Codex</span></li><li><img src="/img/logos/openai.svg" alt="" height="18"><span>ChatGPT</span> <span class="tag">Coming</span></li></ul></div>
+      <div><p>Bring your cap table from</p><ul class="logos" aria-label="Where you can import from"><li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 9v11"/></svg><span>Excel</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 9v11"/></svg><span>CSV</span></li><li><img src="/img/logos/pulley-mark.png" alt="" height="16"><span>Pulley</span></li><li class="wordmark"><img src="/img/logos/carta.svg" alt="" height="20"><span class="sr">Carta</span></li><li class="wordmark"><img class="wide" src="/img/logos/cake-mark.png" alt="" height="14"><span class="sr">Cake</span></li></ul></div>
+    </div>
+
+    <h2 class="h2 center" style="margin-top: clamp(56px, 9vw, 96px); max-width: 760px">Every paper your cap table needs.</h2>
+    <p class="sub center">From the first promise between cofounders to a signed SAFE. Capfolder keeps track of each one and tells you what's missing.</p>
     <div class="cover">
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11l3-3a2 2 0 0 1 3 0l1 1"/><path d="M3 12l4-4 3 1M21 12l-4-4-3 1"/><path d="m8 14 3 3a1.5 1.5 0 0 0 2 0l5-5"/></svg><span>Founder promises<small>before you incorporate</small></span></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l6 4"/></svg><span>Common shares<small>founders and team</small></span></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><path d="M6 20V14M10 20V11M14 20V8M18 20V5"/></svg><span>Vesting<small>cliff and monthly</small></span></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="m9 15 2 2 4-4"/></svg><span>83(b) election<small>30-day deadline flagged</small></span></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="3"/></svg><span>Option grants<small>and the pool</small></span></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><path d="M8 21h8M12 17v4"/><path d="m9 12 2 2 4-4"/></svg><span>Board consents<small>what's missing, listed</small></span></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 16h5"/></svg><span>SAFEs<small>YC post-money template</small></span></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17c3 0 4-6 6-6s1 6 3 6 3-3 5-3 2 1 4 1"/><path d="M3 21h18"/></svg><span>E-signatures<small>from a link, no account</small></span></div>
+      <div><img src="/img/icons/founder-promises.svg" alt="" width="40" height="40"><span>Founder promises<small>before you incorporate</small></span></div>
+      <div><img src="/img/icons/certificate.svg" alt="" width="40" height="40"><span>Common shares<small>founders and team</small></span></div>
+      <div><img src="/img/icons/vesting.svg" alt="" width="40" height="40"><span>Vesting<small>cliff and monthly</small></span></div>
+      <div><img src="/img/icons/83b-deadline.svg" alt="" width="40" height="40"><span>83(b) election<small>30-day deadline flagged</small></span></div>
+      <div><img src="/img/icons/option-pool.svg" alt="" width="40" height="40"><span>Option grants<small>and the pool</small></span></div>
+      <div><img src="/img/icons/board-consent.svg" alt="" width="40" height="40"><span>Board consents<small>what's missing, listed</small></span></div>
+      <div><img src="/img/icons/safe.svg" alt="" width="40" height="40"><span>SAFEs<small>YC post-money template</small></span></div>
+      <div><img src="/img/icons/signature.svg" alt="" width="40" height="40"><span>E-signatures<small>from a link, no account</small></span></div>
     </div>
   </section>
 
@@ -426,10 +491,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
     <h2 class="h2 center" style="max-width: 760px">From first idea to first raise.</h2>
     <p class="sub center">Start the day you agree to build it together. Capfolder keeps up as the company becomes real.</p>
     <div class="steps">
-      <div><span class="stepn"><span>01</span><b>Idea</b></span><p>Write down who's in and what each cofounder was promised. No company needed yet.</p></div>
-      <div><span class="stepn"><span>02</span><b>Split</b></span><p>Set each founder's shares and vesting. Four years with a one-year cliff, with the math shown.</p></div>
-      <div><span class="stepn"><span>03</span><b>Incorporate</b></span><p>Your promises become real Common shares, after a preview and your yes. The 83(b) deadline is flagged.</p></div>
-      <div><span class="stepn"><span>04</span><b>Raise</b></span><p>Fill the YC SAFE from a short form. Investors sign from a link. Every paper lands in your folder.</p></div>
+      <div><img class="step-ic" src="/img/icons/founder-promises.svg" alt="" width="40" height="40"><span class="stepn"><span>01</span><b>Idea</b></span><p>Write down who's in and what each cofounder was promised. No company needed yet.</p></div>
+      <div><img class="step-ic" src="/img/icons/cap-table.svg" alt="" width="40" height="40"><span class="stepn"><span>02</span><b>Split</b></span><p>Set each founder's shares and vesting. Four years with a one-year cliff, with the math shown.</p></div>
+      <div><img class="step-ic" src="/img/icons/certificate.svg" alt="" width="40" height="40"><span class="stepn"><span>03</span><b>Incorporate</b></span><p>Your promises become real Common shares, after a preview and your yes. The 83(b) deadline is flagged.</p></div>
+      <div><img class="step-ic" src="/img/icons/safe.svg" alt="" width="40" height="40"><span class="stepn"><span>04</span><b>Raise</b></span><p>Fill the YC SAFE from a short form. Investors sign from a link. Every paper lands in your folder.</p></div>
     </div>
   </section>
 
@@ -528,7 +593,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
         <table class="cmp">
           <thead><tr><th scope="col"><span class="sr">Feature</span></th><th scope="col">Capfolder</th><th scope="col">Carta</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Price</th><td>Free</td><td>Not published</td></tr>
+            <tr><th scope="row">Price</th><td>Free</td><td>~$1,200 / year*</td></tr>
             <tr><th scope="row">Setup</th><td>Download, open</td><td>Account + onboarding</td></tr>
             <tr><th scope="row">Your data</th><td>Your computer</td><td>Their servers</td></tr>
             <tr><th scope="row">Open source</th><td>Yes</td><td>No</td></tr>
@@ -536,7 +601,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
           </tbody>
         </table>
       </div>
-      <p class="center" style="margin: 22px 0 0 0; font-size: 15px"><a href="/compare/carta/">Full comparison with Carta</a> · <a href="/compare/pulley/">Pulley</a> · <a href="/compare/">All comparisons</a></p>
+      <p class="center" style="margin: 16px auto 0; font-size: 13px; color: #A8AFA9; max-width: 640px">* Reported by Carta customers (Vendr, Spendflo), not published by Carta. Prices vary by plan and company size.</p>
+      <p class="center" style="margin: 14px 0 0 0; font-size: 15px"><a href="/compare/carta/">Full comparison with Carta</a> · <a href="/compare/pulley/">Pulley</a> · <a href="/compare/">All comparisons</a></p>
     </div>
   </section>
 
@@ -585,14 +651,9 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   </section>
 
   <section id="learn" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
-    <h2 class="h2 center">Learn as you go.</h2>
-    <p class="sub center">Free guides for every step, for founders who are new to all of this.</p>
-    <div class="tracks">
-      <div class="track"><span class="stepn"><span>01</span><b>Validate</b></span><ul><li><a href="/guides/before-you-found/">Before you found a startup</a></li><li>Talk to users <span class="tag">Coming</span></li></ul></div>
-      <div class="track"><span class="stepn"><span>02</span><b>Split &amp; incorporate</b></span><ul><li><a href="/learn/vesting/">Vesting and the cliff</a></li><li><a href="/learn/83b-election/">The 83(b) election</a></li></ul></div>
-      <div class="track"><span class="stepn"><span>03</span><b>Accelerators</b></span><ul><li>The YC application <span class="tag">Coming</span></li><li>Which accelerator <span class="tag">Coming</span></li></ul></div>
-      <div class="track"><span class="stepn"><span>04</span><b>Raise</b></span><ul><li><a href="/learn/safe/">What is a SAFE?</a></li><li><a href="/learn/valuation-cap-discount/">Cap and discount</a></li></ul></div>
-    </div>
+    <h2 class="h2 center" style="max-width: 760px">We share our knowledge and experience.</h2>
+    <p class="sub center">From Y Combinator, Endeavor and more. Free guides for founders who are new to all of this.</p>
+    <div class="arts"><div class="art soon"><span class="kind">Fundraising</span><b>How to fundraise</b><span class="blurb">From your first angel to a seed round: who to talk to, what to ask for, and in what order.</span><span class="more"><span class="tag">Coming</span></span></div><div class="art soon"><span class="kind">Validate</span><b>Getting your first users</b><span class="blurb">Find the first ten people who need what you build, before you build too much.</span><span class="more"><span class="tag">Coming</span></span></div><a class="art" href="/learn/safe/"><span class="kind">Fundraising</span><b>What is a SAFE?</b><span class="blurb">Raise money now, issue the shares later. How the YC post-money SAFE works.</span><span class="more">Read <span aria-hidden="true">→</span></span></a><div class="art soon"><span class="kind">Fundraising</span><b>Types of investors to avoid</b><span class="blurb">Not all money is good money. The terms and behaviours that should make you walk away.</span><span class="more"><span class="tag">Coming</span></span></div><a class="art" href="/learn/vesting/"><span class="kind">Founders</span><b>Vesting and the cliff</b><span class="blurb">Four years with a one-year cliff, month by month, and what happens when someone leaves.</span><span class="more">Read <span aria-hidden="true">→</span></span></a><a class="art" href="/learn/valuation-cap-discount/"><span class="kind">Fundraising</span><b>Valuation cap and discount</b><span class="blurb">How they decide your investor's shares, with the math worked out.</span><span class="more">Read <span aria-hidden="true">→</span></span></a></div>
     <p class="center" style="margin: 22px 0 0 0; font-size: 15px"><a href="/learn/">All guides</a></p>
   </section>
 
@@ -626,58 +687,88 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 </div>
 
 <script>
-// Growth story (replaces the demo video): steps through 7 stages; pausable (WCAG 2.2.2), still under reduced motion.
+// Hero story: the cap table card is the hero; each chapter's chip drifts in beside it and stays, faded, as the journey builds.
+// One thing moves at a time. Pausable (WCAG 2.2.2), a still frame under reduced motion, stops off screen.
 (function () {
-  var C = 2 * Math.PI * 70;
-  var K = ["tim", "steve", "safe", "pool", "seed", "a"];
-  var COL = { tim: "#1F6F4A", steve: "#4E9A72", safe: "#C08A2E", pool: "#A9CDB8", seed: "#6E7781", a: "#2D3A33" };
-  // ponytail: sample numbers for the story, each stage sums to 100%
+  var C = 2 * Math.PI * 44;
+  var K = ["jobs", "woz", "bill", "pool", "seed", "a", "cfo", "b"];
+  var COL = { jobs: "#1F6F4A", woz: "#4E9A72", bill: "#C08A2E", pool: "#A9CDB8", seed: "#6E7781", a: "#2D3A33", cfo: "#5B7FA3", b: "#9AA3AD" };
+  // Sample numbers, % of fully diluted, each chapter sums to 100%. Post-money SAFEs keep their % until the priced round:
+  // $250k at a $5M cap = 5%; $5M at a $20M cap = 25%; Series A $25M at $120M post = 20.8%;
+  // Woz leaves at 75% vested, his unvested shares go back to the pool, a new CFO gets 5%; Series B $75M at $500M post = 15%.
   var S = [
-    { val: "Idea", sub: "no company yet", title: "Tim and Steve shake on it", tag: "Not incorporated", note: "Write down who's in and what you promised.",
-      own: { tim: 50, steve: 50 }, rows: [["tim", "Tim Apple", "promised"], ["steve", "Steve Jobs", "promised"]] },
-    { val: "Acme Inc.", sub: "Delaware C-corp", title: "Incorporated", tag: "83(b) filed", note: "Promises become 4,000,000 Common shares each, vesting over 4 years.",
-      own: { tim: 50, steve: 50 }, rows: [["tim", "Tim Apple", "4,000,000 Common"], ["steve", "Steve Jobs", "4,000,000 Common"]] },
-    { val: "$8M cap", sub: "first SAFE", title: "Bill Gates invests $50k", tag: "Signed", note: "YC post-money SAFE, signed from a link. No account needed.",
-      own: { tim: 49.7, steve: 49.7, safe: 0.6 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["safe", "Bill Gates", "SAFE $50k"]] },
-    { val: "10% pool", sub: "first hires", title: "Option pool for the team", tag: "3 grants", note: "Grants with vesting and a cliff. The board consent is on file.",
-      own: { tim: 44.7, steve: 44.7, safe: 0.6, pool: 10 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["safe", "Bill Gates", "SAFE"], ["pool", "Option pool", "3 grants"]] },
-    { val: "$20M", sub: "seed round", title: "Six angels and a seed fund", tag: "7 investors", note: "Every SAFE converts, with the math shown.",
-      own: { tim: 35.8, steve: 35.8, pool: 8, seed: 20.4 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["pool", "Option pool", "12 grants"], ["seed", "Seed investors", "Preferred"]] },
-    { val: "$120M", sub: "Series A", title: "A lead investor joins", tag: "Diligence ready", note: "Every signed paper is in the folder before their lawyer asks.",
-      own: { tim: 28, steve: 28, pool: 12, seed: 16, a: 16 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["pool", "Option pool", "40 grants"], ["seed", "Seed investors", "Preferred"], ["a", "Series A", "Preferred"]] },
-    { val: "$1B", sub: "unicorn", title: "The day it all pays off", tag: "Liquidity", note: "Started free, with the records right from day one.",
-      own: { tim: 28, steve: 28, pool: 12, seed: 16, a: 16 }, rows: [["tim", "Tim Apple", "Common"], ["steve", "Steve Jobs", "Common"], ["pool", "Team", "options"], ["seed", "Seed investors", "Preferred"], ["a", "Series A", "Preferred"]] },
+    { tag: "Not incorporated", val: "Idea", foot: "Promises recorded. They become shares when you incorporate.", own: { jobs: 50, woz: 50 },
+      rows: [["jobs", "Steve Jobs", "promised"], ["woz", "Steve Wozniak", "promised"]] },
+    { tag: "SAFE signed", val: "$5M cap", foot: "SAFE signed from a link. Totals add to 100%.", own: { jobs: 47.5, woz: 47.5, bill: 5 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["bill", "Bill Gates", "SAFE $250k"]] },
+    { tag: "Option pool", val: "$5M cap", foot: "Before you grant options: get a 409A valuation", q409: true, own: { jobs: 42.5, woz: 42.5, bill: 5, pool: 10 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["bill", "Bill Gates", "SAFE"], ["pool", "Tim Apple + 2", "options"]] },
+    { tag: "Seed on SAFEs", val: "$20M cap", foot: "Every SAFE converts at the next priced round.", own: { jobs: 31.3, woz: 31.3, pool: 7.4, bill: 5, seed: 25 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool", "Team", "options"], ["bill", "Bill Gates", "SAFE"], ["seed", "Seed investors", "SAFE $5M"]] },
+    { tag: "Series A", val: "$120M", foot: "SAFEs converted. Every paper is ready for diligence.", own: { jobs: 24.8, woz: 24.8, pool: 5.8, bill: 4, seed: 19.8, a: 20.8 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool", "Team", "options"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred $25M"]] },
+    { tag: "Founder leaves", val: "$120M", foot: "Woz's unvested shares go back to the pool.", own: { jobs: 24.8, woz: 18.6, pool: 7, cfo: 5, bill: 4, seed: 19.8, a: 20.8 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "vesting stopped"], ["cfo", "New CFO", "options"], ["pool", "Pool", "unallocated"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred"]] },
+    { tag: "Series B", val: "$500M", foot: "Priced round. Preferred shares issued.", own: { jobs: 21.1, woz: 15.8, pool: 6, cfo: 4.2, bill: 3.4, seed: 16.8, a: 17.7, b: 15 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool+cfo", "Team", "options"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred"], ["b", "Series B", "Preferred $75M"]] },
+    { tag: "Unicorn", val: "$1B", foot: "The records were right from day one.", own: { jobs: 21.1, woz: 15.8, pool: 6, cfo: 4.2, bill: 3.4, seed: 16.8, a: 17.7, b: 15 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool+cfo", "Team", "options"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred"], ["b", "Series B", "Preferred"]] },
   ];
+  S.forEach(function (s, n) { s.ms = n === S.length - 1 ? 8000 : 6000; });
   var root = document.getElementById("grow");
+  var chips = root.querySelectorAll(".chip");
   var segs = {}; root.querySelectorAll(".seg").forEach(function (c) { segs[c.dataset.k] = c; });
-  var steps = root.querySelectorAll(".gsteps button");
+  var bars = root.querySelectorAll(".gsteps button");
   var btn = document.getElementById("pause-motion");
   var $ = function (id) { return document.getElementById(id); };
-  var i = 0, timer = null, playing = true, visible = true;
-  function show(n) {
-    i = n; var st = S[n], off = 0;
+  var starts = [], total = 0;
+  S.forEach(function (s) { starts.push(total); total += s.ms; });
+  var FADE = 1200; // the last moments of the loop clear the chips before the story starts again
+  var t = 0, cur = -1, ending = false, playing = true, visible = true, last = 0;
+  function pct(v) { return (Math.round(v * 10) / 10).toFixed(v % 1 ? 1 : 0) + "%"; }
+  function sum(own, keys) { return keys.split("+").reduce(function (a, k) { return a + (own[k] || 0); }, 0); }
+  function chapter(n) {
+    if (n === cur) return;
+    cur = n;
+    chips.forEach(function (c, j) {
+      c.classList.remove("gone");
+      c.classList.toggle("now", j === n);
+      c.classList.toggle("past", j < n);
+    });
+    root.className = root.className.replace(/\bst-\d\b/g, "").trim() + " st-" + n;
+    var st = S[n], off = 0;
     K.forEach(function (k) {
       var len = (st.own[k] || 0) / 100 * C;
-      segs[k].style.strokeDasharray = Math.max(len - (len ? 1.5 : 0), 0) + " " + C;
+      segs[k].style.strokeDasharray = Math.max(len - (len ? 1.2 : 0), 0) + " " + C;
       segs[k].style.strokeDashoffset = -off; off += len;
     });
-    root.classList.toggle("unicorn", n === S.length - 1);
-    $("gval").textContent = st.val; $("gvsub").textContent = st.sub;
-    $("gtitle").textContent = st.title; $("gtag").textContent = st.tag; $("gnote").textContent = st.note;
+    $("gval").textContent = st.val; $("gtag").textContent = st.tag; $("gfoot").textContent = st.foot;
+    $("q409").hidden = !st.q409; $("gfootbox").classList.toggle("warn", !!st.q409);
     $("grows").innerHTML = st.rows.map(function (r, j) {
-      return '<div class="grow-row" style="animation-delay:' + j * 60 + 'ms"><i style="background:' + COL[r[0]] + '"></i><span>' + r[1] + '</span><span class="v">' + r[2] + '</span><span class="p">' + (st.own[r[0]] || 0).toFixed(st.own[r[0]] % 1 ? 1 : 0) + '%</span></div>';
+      return '<div class="grow-row" style="animation-delay:' + j * 70 + 'ms"><i style="background:' + COL[r[0].split("+")[0]] + '"></i><span>' + r[1] + '</span><span class="v">' + r[2] + '</span><span class="p">' + pct(sum(st.own, r[0])) + "</span></div>";
     }).join("");
-    steps.forEach(function (b, j) { b.classList.toggle("done", j < n); if (j === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
   }
-  function tick() { show((i + 1) % S.length); }
-  function run() { clearInterval(timer); timer = playing && visible ? setInterval(tick, i === S.length - 1 ? 4200 : 2600) : null; }
-  function setPlaying(p) { playing = p; btn.setAttribute("aria-pressed", String(!p)); btn.textContent = p ? "Pause" : "Play"; run(); }
-  steps.forEach(function (b) { b.addEventListener("click", function () { show(+b.dataset.s); setPlaying(false); }); });
+  function paint() {
+    var n = 0; while (n < S.length - 1 && t >= starts[n + 1]) n++;
+    chapter(n);
+    var end = playing && t > total - FADE;
+    if (end !== ending) { ending = end; chips.forEach(function (c) { c.classList.toggle("gone", end); }); root.classList.toggle("st-" + n, !end); }
+    bars.forEach(function (b, j) {
+      var p = j < n ? 100 : j > n ? 0 : Math.min(100, (t - starts[n]) / S[n].ms * 100);
+      b.firstChild.style.setProperty("--p", p + "%");
+      if (j === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    });
+  }
+  function frame(now) {
+    if (playing && visible && last) { t += Math.min(now - last, 100); if (t >= total) { t = 0; cur = -1; } }
+    last = now; paint(); requestAnimationFrame(frame);
+  }
+  function setPlaying(p) { playing = p; root.classList.toggle("paused", !p); btn.setAttribute("aria-pressed", String(!p)); btn.textContent = p ? "Pause" : "Play"; }
+  bars.forEach(function (b) { b.addEventListener("click", function () { t = starts[+b.dataset.s] + 1; }); });
   btn.addEventListener("click", function () { setPlaying(!playing); });
-  // the unicorn stays on screen a little longer before the loop restarts
-  var _show = show; show = function (n) { _show(n); run(); };
-  if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; run(); }).observe(root);
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { _show(2); setPlaying(false); } else { _show(0); run(); }
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(root);
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setPlaying(false); t = starts[S.length - 1] + 1; }
+  requestAnimationFrame(frame);
 })();
 
 // Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
