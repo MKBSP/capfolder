@@ -3,6 +3,10 @@
     "includes": [
       "**",
       "!**/node_modules",
+      "!.agents",
+      "!.claude/skills",
+      "!.github/skills",
+      "!.taste-skill",
       "!fixtures",
       "!templates/yc",
       "!design",

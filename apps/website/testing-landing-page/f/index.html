@@ -299,7 +299,7 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
 
 .chip-low{top:auto;bottom:54px}
 .story-nav{display:flex;align-items:center;gap:14px;margin-top:168px;padding:0 2%}
-.gsteps{display:flex;gap:5px;flex:1}
+.gsteps{display:flex;gap:5px;flex:1;border:0;padding:0;margin:0;min-width:0}
 .gsteps button{flex:1;height:14px;border:0;padding:5px 0;background:none;cursor:pointer}
 .gsteps i{display:block;height:4px;border-radius:99px;background:#DDDFD9;overflow:hidden;position:relative}
 .gsteps i::after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--green);border-radius:99px}
@@ -396,7 +396,7 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
     </div>
     </div>
     <div class="hero-r">
-      <div class="storyb" id="grow" aria-roledescription="animation" aria-label="A startup's cap table, from two founders with an idea to a unicorn">
+      <section class="storyb" id="grow" aria-roledescription="animation" aria-label="A startup's cap table, from two founders with an idea to a unicorn">
         <div class="tilt">
           <div class="appcard">
             <div class="ac-h">
@@ -432,12 +432,12 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
         <div class="uni-sticker" aria-hidden="true"><img class="u" src="/img/story/unicorn.svg" alt=""><img class="s1" src="/img/story/sparkles.svg" alt=""><img class="s2" src="/img/story/sparkles.svg" alt=""></div>
         <div class="chip chip-low" data-i="7" style="--x:54%;--fx:0px;--fy:90px" aria-hidden="true"><img src="/img/story/unicorn.svg" alt=""><span><b>$1B · a unicorn</b><small>Records right from day one</small></span></div>
         <div class="story-nav">
-          <div class="gsteps" role="group" aria-label="Chapters">
+          <fieldset class="gsteps" aria-label="Chapters">
             <button type="button" data-s="0" aria-label="Idea"><i></i></button><button type="button" data-s="1" aria-label="First cheque"><i></i></button><button type="button" data-s="2" aria-label="First hires"><i></i></button><button type="button" data-s="3" aria-label="Seed"><i></i></button><button type="button" data-s="4" aria-label="Series A"><i></i></button><button type="button" data-s="5" aria-label="Founder leaves"><i></i></button><button type="button" data-s="6" aria-label="Series B"><i></i></button><button type="button" data-s="7" aria-label="Unicorn"><i></i></button>
-          </div>
+          </fieldset>
           <button type="button" id="pause-motion" aria-pressed="false">Pause</button>
         </div>
-      </div>
+      </section>
     </div>
   </header>
 

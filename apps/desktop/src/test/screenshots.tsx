@@ -30,7 +30,9 @@ async function platform() {
   const flow = new URLSearchParams(location.search).get("flow");
   if (flow !== "import" && flow !== "ai") return fakePlatform().platform;
   const file = "/home/me/Downloads/acme-cap-table.csv";
-  const fp = fakePlatform(flow === "ai" ? { relay: localAi } : { pickFile: { path: file, name: "acme-cap-table.csv" } });
+  const fp = fakePlatform(
+    flow === "ai" ? { relay: localAi } : { pickFile: { path: file, name: "acme-cap-table.csv" } },
+  );
   fp.fs.writeSync(file, importCsv);
   const v = await createVault(
     fp.fs,

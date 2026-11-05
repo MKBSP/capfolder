@@ -1,5 +1,5 @@
 // The desktop side of signing (docs/05): a small relay client and the envelopes as the record tells them.
-import type { EventDraft, VaultEvent } from "@capfolder/core";
+import type { VaultEvent } from "@capfolder/core";
 import type { Envelope } from "@capfolder/vault";
 import type { Platform } from "./platform";
 
