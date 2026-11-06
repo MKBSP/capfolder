@@ -45,6 +45,7 @@ const READ_TOOLS = [
   "list_documents",
   "list_people",
   "read_document",
+  "run_scenario",
   "switch_company",
 ];
 

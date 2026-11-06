@@ -17,6 +17,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { PDFPageProxy } from "pdfjs-dist";
 import { z } from "zod";
 import { currentRoot, currentVault, type ServerOpts } from "../context";
+import { RUN_SCENARIO, runScenarioInput, runScenarioTool } from "./plans";
 
 export const PROMISED = "Promised — not legal until the company exists.";
 export const NO_COMPANY = "No company yet. Say “Set up my cap table” to create one.";
@@ -32,7 +33,7 @@ export const reply = (text: string, data?: Data) => ({
 const str = (x: bigint | null | undefined) => (x === null || x === undefined ? null : x.toString());
 export const todayOf = (o: ServerOpts) => o.ctx.now().toISOString().slice(0, 10);
 const nameOf = (s: State, id: string): string => s.stakeholders.get(id)?.name?.legal_name ?? id;
-const readOnly = (title: string) => ({ title, readOnlyHint: true, openWorldHint: false });
+export const readOnly = (title: string) => ({ title, readOnlyHint: true, openWorldHint: false });
 const asOfSchema = z.iso.date().optional().describe("Date as YYYY-MM-DD. Defaults to today.");
 
 /** Runs a read against the current vault; adds the broken-record warning the app shows. */
@@ -215,6 +216,28 @@ export function registerReadTools(server: McpServer, o: ServerOpts) {
           data: { as_of: asOf, csv, rows: data },
         };
       }),
+  );
+
+  server.registerTool(
+    RUN_SCENARIO.name,
+    {
+      title: RUN_SCENARIO.title,
+      description: RUN_SCENARIO.description,
+      inputSchema: runScenarioInput.shape,
+      annotations: readOnly(RUN_SCENARIO.title),
+    },
+    async (a) => {
+      let events = null;
+      if (a.start === "company") {
+        try {
+          events = (await currentVault(o))?.events ?? null;
+        } catch (e) {
+          return reply(`I couldn't open the company folder: ${(e as Error).message}`);
+        }
+      }
+      const r = await runScenarioTool(a, events, todayOf(o));
+      return reply(r.text, r.data);
+    },
   );
 
   server.registerTool(
