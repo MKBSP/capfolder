@@ -80,7 +80,7 @@ export function engineSteps(steps: Step[]): Step[] {
         };
       case "exit":
         return { kind: "exit", value: n(st.value) ?? "" };
-      case "grant":
+      default:
         return st;
     }
   });

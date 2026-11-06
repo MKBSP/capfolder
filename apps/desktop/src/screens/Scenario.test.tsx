@@ -100,3 +100,43 @@ test("removing a step recomputes the ones after it", async () => {
   await screen.findByRole("heading", { name: "Seed" });
   expect(rows().some((r) => r.startsWith("Bill Gates"))).toBe(false);
 });
+
+test("save hands founders, pool and SAFEs to the wizard, not the round", async () => {
+  await openEmpty();
+  await founders(["Steve Jobs", "Steve Wozniak"], "5000000");
+  await add("Option pool");
+  await userEvent.type(screen.getByLabelText("Pool, % of fully diluted"), "10");
+  await add("SAFE");
+  await userEvent.type(screen.getByLabelText("Investor"), "Bill Gates");
+  await userEvent.type(screen.getByLabelText("Amount (USD)"), "500000");
+  await userEvent.type(screen.getByLabelText("Valuation cap (USD)"), "2000000");
+  await add("Priced round");
+  await screen.findByRole("heading", { name: "Seed" });
+  await userEvent.click(screen.getByRole("button", { name: "Save as my cap table" }));
+  // first run: terms and lock, then the email step, then Create company carries the scenario along
+  await userEvent.click(await screen.findByLabelText("No lock"));
+  await userEvent.click(screen.getByLabelText(/I accept the/));
+  await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+  await userEvent.click(await screen.findByRole("button", { name: "Skip for now" }));
+  expect(await screen.findByText(/Rounds that haven't happened/)).toBeInTheDocument();
+  await userEvent.type(screen.getByLabelText("Legal name"), "Acme Inc.");
+  await userEvent.type(screen.getByLabelText("Incorporated"), "2026-01-02");
+  await userEvent.click(screen.getByRole("button", { name: "Create folder" }));
+  await screen.findByRole("heading", { name: "How many shares can the company issue?" });
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  await screen.findByRole("heading", { name: "Who are the founders?" });
+  const digits = (el: HTMLElement) => (el as HTMLInputElement).value.replace(/[,\s]/g, "");
+  expect(screen.getAllByLabelText("Name").map((i) => (i as HTMLInputElement).value)).toEqual([
+    "Steve Jobs",
+    "Steve Wozniak",
+  ]);
+  expect(screen.getAllByLabelText(/^Shares/).map(digits)).toEqual(["5000000", "5000000"]);
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  await screen.findByRole("heading", { name: "Is there an option pool?" });
+  expect(digits(screen.getByLabelText(/^Pool size/))).toBe("1111111"); // 10% after: floor(10M × 0.1 ÷ 0.9)
+  await userEvent.click(screen.getByRole("button", { name: "Next" }));
+  await screen.findByRole("heading", { name: "Any SAFEs already signed?" });
+  expect((screen.getByLabelText("Investor") as HTMLInputElement).value).toBe("Bill Gates");
+  expect(digits(screen.getByLabelText("Amount (USD)"))).toBe("500000");
+  expect(digits(screen.getByLabelText("Valuation cap (USD)"))).toBe("2000000");
+});

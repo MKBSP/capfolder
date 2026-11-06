@@ -2,6 +2,7 @@ import { type Line, type Step, type StepResult, titleOf } from "@capfolder/core"
 import { useMemo, useState } from "react";
 import { CrumbHeader } from "../components/Header";
 import { Field, Menu, ShowMath } from "../components/ui";
+import { TERMS_VERSION } from "../copy";
 import { money, shares, todayIso, wholeInput, withCurrency } from "../fmt";
 import {
   addStep,
@@ -34,9 +35,10 @@ export function Scenario() {
   const shown: StepResult[] = useMemo(() => result?.steps ?? [], [result]);
   const current = picked !== null && picked < shown.length ? picked : shown.length - 1;
   const sel = current >= 0 ? shown[current] : undefined;
+  // the pool as it stands before any projected round: that is the real part a founder can save
   const poolShares = (() => {
-    const last = [...shown].reverse().find((s) => !s.error && s.step.kind !== "exit");
-    return last?.lines.find((l) => l.kind === "pool")?.shares ?? null;
+    const real = shown.filter((s) => !s.error && s.step.kind !== "round" && s.step.kind !== "exit").at(-1);
+    return real?.lines.find((l) => l.kind === "pool")?.shares ?? null;
   })();
 
   const update = (i: number, step: Step) => setSteps(setStep(steps, i, step));
@@ -53,7 +55,13 @@ export function Scenario() {
             type="button"
             className="btn primary"
             disabled={!ready}
-            onClick={() => app.go({ name: "create", prefill: prefillOf(steps, poolShares) })}
+            onClick={() =>
+              app.go({
+                // first run goes through Welcome (terms, lock) and the email step first; the prefill rides along
+                name: app.settings.termsAccepted === TERMS_VERSION ? "create" : "welcome",
+                prefill: prefillOf(steps, poolShares),
+              })
+            }
           >
             Save as my cap table
           </button>

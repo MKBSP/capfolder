@@ -18,14 +18,34 @@ export function Wizard() {
   const app = useApp();
   const formation = (app.latest?.issuer?.formation_date as string) ?? todayIso();
   const [step, setStep] = useState(0);
-  const [w, setW] = useState<WizardInput>({
-    authorized: wholeInput("10000000"),
-    par: decimalInput("0.00001"),
-    founders: [
-      { name: "", email: "", shares: "", issueDate: formation, vesting: true, vestingStart: formation },
-    ],
-    pool: null,
-    safes: [],
+  const pre = app.route.name === "wizard" ? app.route.prefill : undefined; // F-39: from Try a scenario
+  const [w, setW] = useState<WizardInput>(() => {
+    const founder = (f = { name: "", shares: "" }) => ({
+      name: f.name,
+      email: "",
+      shares: f.shares ? wholeInput(f.shares) : "",
+      issueDate: formation,
+      vesting: true,
+      vestingStart: formation,
+    });
+    const sum = pre?.founders.reduce((a, f) => a + BigInt(f.shares || "0"), 0n) ?? 0n;
+    const poolShares = pre?.pool ? BigInt(pre.pool.shares) : 0n;
+    return {
+      authorized: wholeInput(sum + poolShares > 10_000_000n ? (sum + poolShares).toString() : "10000000"),
+      par: decimalInput("0.00001"),
+      founders: pre?.founders.length ? pre.founders.map((f) => founder(f)) : [founder()],
+      pool: pre?.pool
+        ? { size: wholeInput(pre.pool.shares), name: "Option plan", approved: formation }
+        : null,
+      safes: (pre?.safes ?? []).map((s) => ({
+        investor: s.investor,
+        amount: wholeInput(s.amount),
+        cap: s.cap ? wholeInput(s.cap) : "",
+        discount: s.discount,
+        mfn: false,
+        date: formation,
+      })),
+    };
   });
   const [preview, setPreview] = useState<Row[]>([]);
   const [errors, setErrors] = useState<string[] | null>(null);

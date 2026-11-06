@@ -13,9 +13,10 @@ import type { ScenarioPrefill } from "./scenario";
 import { addRecent, type Settings } from "./settings";
 
 export type Route =
-  | { name: "welcome" | "email" | "start" | "people" | "vesting" | "import" | "scenario" }
-  // prefill: "Save as my cap table" on Try a scenario (F-39) carries the founders, pool and SAFEs into the setup
-  | { name: "create" | "wizard"; prefill?: ScenarioPrefill }
+  | { name: "start" | "people" | "vesting" | "import" | "scenario" }
+  // prefill: "Save as my cap table" on Try a scenario (F-39) carries the founders, pool and SAFEs through first
+  // run (welcome, email) into Create company and the wizard
+  | { name: "welcome" | "email" | "create" | "wizard"; prefill?: ScenarioPrefill }
   | { name: "home"; tour?: boolean; incorporate?: boolean } // tour: Settings → Take the tour; incorporate: opens the dialog (CAP-61)
   | { name: "documents"; imported?: boolean }
   // prefill: a draft from Ask AI (docs/18) opens the form filled in; the founder still saves it

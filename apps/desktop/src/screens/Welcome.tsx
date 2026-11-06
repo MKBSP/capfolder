@@ -38,7 +38,7 @@ export function Welcome() {
       }
     }
     await app.setSettings({ ...settings, lock, idleMinutes: idle, termsAccepted: TERMS_VERSION });
-    app.go({ name: "email" });
+    app.go({ name: "email", prefill: app.route.name === "welcome" ? app.route.prefill : undefined });
   }
 
   return (

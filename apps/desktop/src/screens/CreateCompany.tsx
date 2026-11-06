@@ -37,6 +37,7 @@ export function CreateCompany() {
     if (folder) backupStatus(folder, (p) => platform.fs.exists(p)).then(setBackup);
   }, [folder, platform]);
 
+  const prefill = app.route.name === "create" ? app.route.prefill : undefined; // F-39 Save as my cap table
   async function create() {
     const errs: string[] = [];
     if (!name.trim()) errs.push("Enter the company's legal name.");
@@ -60,7 +61,8 @@ export function CreateCompany() {
       });
       registerForAgent(app, name.trim(), v);
       app.setVault(v);
-      app.go({ name: planned ? "home" : "start" }); // start → wizard sets up classes, which wait for incorporation
+      // start → wizard sets up classes, which wait for incorporation; a scenario's real part goes straight to the wizard
+      app.go(planned ? { name: "home" } : prefill ? { name: "wizard", prefill } : { name: "start" });
     } catch (e) {
       setErrors([(e as Error).message]);
     } finally {
@@ -79,6 +81,12 @@ export function CreateCompany() {
         }}
       >
         <h1>Your company</h1>
+        {prefill ? (
+          <div className="banner">
+            Your scenario's founders, pool and SAFEs will be filled into the setup after this step. Rounds
+            that haven't happened are recorded in the app when they close.
+          </div>
+        ) : null}
         <label>
           <span className="lbl">Legal name</span>
           <input
