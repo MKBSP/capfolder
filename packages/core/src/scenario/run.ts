@@ -44,8 +44,26 @@ export function titleOf(step: Step): string {
 
 const isRecordable = (s: Step): s is RecordableStep => s.kind !== "round" && s.kind !== "exit";
 
+/** Every step's problems come back as `error` text; nothing escapes to the caller. */
 async function walk(s: Scenario): Promise<StepResult[]> {
   const out: StepResult[] = [];
+  try {
+    await walkInto(s, out);
+  } catch (e) {
+    const step = s.steps[out.length];
+    if (step)
+      out.push({
+        step,
+        title: titleOf(step),
+        lines: out.at(-1)?.lines ?? [],
+        notes: [],
+        error: (e as Error).message,
+      });
+  }
+  return out;
+}
+
+async function walkInto(s: Scenario, out: StepResult[]): Promise<void> {
   const recorded: RecordableStep[] = [];
   let holdings: Holding[] = s.start ? holdingsOf(reduce(s.start, s.today)) : [];
   let previous: Line[] | null = s.start ? tableOf(holdings, null, {}) : null;
@@ -94,7 +112,6 @@ async function walk(s: Scenario): Promise<StepResult[]> {
       out.push({ step, title, lines: r.lines, notes: r.notes });
     }
   }
-  return out;
 }
 
 /**

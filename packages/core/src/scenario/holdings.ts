@@ -20,7 +20,8 @@ export function holdingsOf(state: State): Holding[] {
   for (const p of promisedTable(state)) add({ holder: p.name, kind: "shares", shares: p.shares });
   for (const r of capTableRows(state)) {
     const kind = KIND[r.group]!;
-    if (kind === "safe")
+    if (kind === "safe") {
+      const x = state.securities.get(r.securityId);
       add({
         holder: r.stakeholder,
         kind,
@@ -28,9 +29,11 @@ export function holdingsOf(state: State): Holding[] {
         amount: r.safeAmount,
         ...(r.safeCap ? { cap: r.safeCap } : {}),
         ...(r.safeDiscount ? { discount: r.safeDiscount } : {}),
-        ...(state.securities.get(r.securityId)?.mfn ? { mfn: true } : {}),
+        ...(x?.mfn ? { mfn: true } : {}),
+        ...(x?.timing ? { timing: x.timing } : {}),
+        ...(x?.convertibleType ? { type: x.convertibleType } : {}),
       });
-    else add({ holder: kind === "pool" ? POOL : r.stakeholder, kind, shares: r.shares ?? 0n });
+    } else add({ holder: kind === "pool" ? POOL : r.stakeholder, kind, shares: r.shares ?? 0n });
   }
   return out;
 }

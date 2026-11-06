@@ -26,10 +26,22 @@ const money = (s: string) => fmtInt(BigInt(s.split(".")[0]!));
 type Math = Record<string, Record<string, string>>;
 
 /**
- * Apply one round. New investors become one holding "<name> investors"; converted SAFEs become share holdings
- * under the investor's name; a top-up is added to the pool holding. `math` is keyed by holder, then by label.
+ * Apply one round. New investors become one holding "<name> investors"; converted SAFEs become shares under the
+ * investor's name (merged with shares they already hold); a top-up is added to the pool holding. `math` is keyed
+ * by holder, then by label. Every problem comes back as `error`, nothing throws.
  */
 export function applyRound(
+  holdings: Holding[],
+  round: RoundStep,
+): { holdings: Holding[]; notes: string[]; math: Math } | { error: string } {
+  try {
+    return apply(holdings, round);
+  } catch (e) {
+    return { error: (e as Error).message };
+  }
+}
+
+function apply(
   holdings: Holding[],
   round: RoundStep,
 ): { holdings: Holding[]; notes: string[]; math: Math } | { error: string } {
@@ -41,7 +53,9 @@ export function applyRound(
       m = Object.create(null) as Record<string, string>;
       math[holder] = m;
     }
-    m[label] = text;
+    let key = label;
+    for (let i = 2; key in m; i++) key = `${label} (${i})`;
+    m[key] = text;
   };
   const investors = `${round.name} investors`;
   const out: Holding[] = holdings.filter((h) => h.kind !== "safe").map((h) => ({ ...h }));
@@ -49,107 +63,150 @@ export function applyRound(
   const priced = !!round.newMoney && !!(round.preMoney || round.postMoney);
   if (!priced && !round.sells)
     return { error: "Give the round new money and a valuation, or the percent of the company it sells." };
+  if (priced && round.sells)
+    return { error: "Give either new money and a valuation, or the percent sold, not both." };
+  if (round.preMoney && round.postMoney && round.newMoney) {
+    if (sumDec([round.preMoney, round.newMoney]) !== sumDec([round.postMoney]))
+      return { error: "The pre-money, new money and post-money don't add up: post = pre + new money." };
+  }
+  const odd = safes.find((s) => (s.timing && s.timing !== "POST_MONEY") || (s.type && s.type !== "SAFE"));
+  if (odd)
+    return {
+      error: `${odd.holder} holds a ${odd.type === "SAFE" ? "pre-money SAFE" : (odd.type ?? "convertible").toLowerCase()}; only post-money SAFEs are projected in v1.`,
+    };
+  const t = round.poolTarget ? pct(round.poolTarget) : null;
+  if (t && (!(t.n > 0n) || ge(t, ONE))) return { error: "The pool target must be between 0 and 100." };
 
   // 1. Capitalization before the round: everything but the SAFEs, unissued pool included.
   const S = out.reduce((a, h) => a + h.shares, 0n);
+  if (S <= 0n) return { error: "Nothing is held yet. Add the founders before a round." };
+  const pool = out.find((h) => h.kind === "pool") ?? { holder: POOL, kind: "pool" as const, shares: 0n };
+  if (!out.includes(pool) && t) out.push(pool);
 
-  // 2a. Cap SAFEs: share of the capitalization is exactly amount ÷ cap, solved together.
-  const capped = safes.filter((s) => s.cap);
-  const sumRatio = capped.reduce((a, s) => add(a, div(dec(s.amount!), dec(s.cap!))), ZERO);
-  if (ge(sumRatio, ONE))
-    return { error: "The SAFE caps are below the money raised, so the SAFEs can't convert on their caps." };
-  const C = div(F(S), sub(ONE, sumRatio));
-  const converted: Holding[] = [];
-  for (const s of capped) {
-    const ratio = div(dec(s.amount!), dec(s.cap!));
-    const shares = floor(mul(C, ratio));
-    converted.push({ holder: s.holder, kind: "shares", shares });
+  // The converted shares per SAFE, merged into the holder's share line at the end.
+  const converted = new Map<Holding, bigint>();
+  const merge = () => {
+    for (const [s, shares] of converted) {
+      const same = out.find((h) => h.holder === s.holder && h.kind === "shares");
+      if (same) same.shares += shares;
+      else out.push({ holder: s.holder, kind: "shares", shares });
+    }
+  };
+  const atCap = (capped: Holding[]): { C: Frac; sumRatio: Frac } | { error: string } => {
+    const sumRatio = capped.reduce((a, s) => add(a, div(dec(s.amount!), dec(s.cap!))), ZERO);
+    if (ge(sumRatio, ONE))
+      return { error: "The SAFE caps are below the money raised, so the SAFEs can't convert on their caps." };
+    return { C: div(F(S), sub(ONE, sumRatio)), sumRatio };
+  };
+  const capNote = (s: Holding, shares: bigint, sumRatio: Frac) =>
     note(
       s.holder,
       "shares",
       `${fmtInt(shares)} = ${fmtInt(S)} ÷ (1 − ${show(sumRatio)}) × ${money(s.amount!)} ÷ ${money(s.cap!)} (post-money cap)`,
     );
-    if (s.mfn) note(s.holder, "MFN", "most favored nation ignored in projections");
-  }
-  // 2b. Discount-only and uncapped SAFEs need a price.
-  const unpriced = safes.filter((s) => !s.cap);
-  if (!priced && unpriced.length)
-    return {
-      error: `Give this round a valuation: ${unpriced.map((s) => s.holder).join(", ")} ${unpriced.length > 1 ? "hold SAFEs" : "holds a SAFE"} without a cap, which can't be sized from a percent.`,
-    };
-  const D = unpriced.reduce((a, s) => add(a, div(dec(s.amount!), sub(ONE, dec(s.discount ?? "0")))), ZERO);
-  const held = S + converted.reduce((a, h) => a + h.shares, 0n);
-  const pool = out.find((h) => h.kind === "pool") ?? { holder: POOL, kind: "pool" as const, shares: 0n };
-  if (!out.includes(pool)) out.push(pool);
-  const t = round.poolTarget ? pct(round.poolTarget) : null;
 
   if (priced) {
     const pre = round.preMoney ?? subDec(round.postMoney!, round.newMoney!);
     const post = round.postMoney ?? sumDec([pre, round.newMoney!]);
-    const preAfterSafes = sub(dec(pre), D);
-    if (!ge(preAfterSafes, ZERO))
-      return { error: "The pre-money valuation is below the SAFE money, so there is no price." };
-    // 3. Pool top-up T so that (pool + T) = t × post-money fully diluted, where post FD = (held + T) × post ÷ (pre − D).
-    let T = 0n;
-    if (t) {
-      const k = div(dec(post), preAfterSafes);
-      const tk = mul(t, k);
-      const want = div(sub(mul(tk, F(held)), F(pool.shares)), sub(ONE, tk));
-      if (want.n > 0n) T = floor(want);
-      else notes.push(`The pool is already above ${round.poolTarget}% of the post-money, so no top-up.`);
-    }
-    if (T > 0n) {
-      pool.shares += T;
-      note(
-        POOL,
-        "top-up",
-        `${fmtInt(T)} added in the pre-money so the pool is ${round.poolTarget}% after the round`,
+    // 2. SAFEs: those converting at their cap, and those converting at the round price (uncapped, or a cap-and-
+    // discount SAFE whose discount gives more shares). A SAFE that moves to the price set changes the price, so
+    // re-solve until the sets are stable (at most one move per SAFE).
+    let capSet = safes.filter((s) => s.cap);
+    let priceSet = safes.filter((s) => !s.cap);
+    for (;;) {
+      const c = atCap(capSet);
+      if ("error" in c) return c;
+      const capShares = new Map(capSet.map((s) => [s, floor(mul(c.C, div(dec(s.amount!), dec(s.cap!))))]));
+      const held = S + [...capShares.values()].reduce((a, n) => a + n, 0n);
+      const D = priceSet.reduce(
+        (a, s) => add(a, div(dec(s.amount!), sub(ONE, dec(s.discount ?? "0")))),
+        ZERO,
       );
-    }
-    // 4. Price and 5. new shares.
-    const price = div(preAfterSafes, F(held + T));
-    note(
-      investors,
-      "round price",
-      `${money(pre)}${D.n ? ` − ${show(D, 0)} (uncapped SAFE money at its discount)` : ""} ÷ ${fmtInt(held + T)} = ${show(price)}`,
-    );
-    for (const s of unpriced) {
-      const shares = floor(div(dec(s.amount!), mul(price, sub(ONE, dec(s.discount ?? "0")))));
-      converted.push({ holder: s.holder, kind: "shares", shares });
-      note(
-        s.holder,
-        "shares",
-        `${fmtInt(shares)} = ${money(s.amount!)} ÷ (${show(price)} × (1 − ${s.discount ?? "0"}))`,
+      const preAfterSafes = sub(dec(pre), D);
+      if (!(preAfterSafes.n > 0n))
+        return { error: "The pre-money valuation is not above the SAFE money, so there is no price." };
+      // 3. Pool top-up T so (pool + T) = t × post-money fully diluted, where post FD = (held + T) × post ÷ (pre − D).
+      let T = 0n;
+      let topUp = "";
+      if (t) {
+        const tk = mul(t, div(dec(post), preAfterSafes));
+        if (ge(tk, ONE))
+          return {
+            error: `A pool target of ${round.poolTarget}% can't be reached in the pre-money of this round; lower the pool target or raise the valuation.`,
+          };
+        const want = div(sub(mul(tk, F(held)), F(pool.shares)), sub(ONE, tk));
+        if (want.n > 0n) T = floor(want);
+      }
+      // 4. Price.
+      const price = div(preAfterSafes, F(held + T));
+      // A cap-and-discount SAFE takes whichever gives more shares.
+      const moved = capSet.find(
+        (s) =>
+          s.discount &&
+          floor(div(dec(s.amount!), mul(price, sub(ONE, dec(s.discount!))))) > capShares.get(s)!,
       );
-    }
-    for (const s of capped.filter((x) => x.discount)) {
-      // ponytail: cap and discount, the larger count wins at the cap-path price; the price is not re-solved
-      const atDiscount = floor(div(dec(s.amount!), mul(price, sub(ONE, dec(s.discount!)))));
-      const h = converted.find((x) => x.holder === s.holder)!;
-      if (atDiscount > h.shares) {
+      if (moved) {
+        note(
+          moved.holder,
+          "discount",
+          `the ${Number(moved.discount) * 100}% discount gives more shares than the ${money(moved.cap!)} cap at this price`,
+        );
+        capSet = capSet.filter((s) => s !== moved);
+        priceSet = [...priceSet, moved];
+        continue;
+      }
+      for (const s of capSet) {
+        converted.set(s, capShares.get(s)!);
+        capNote(s, capShares.get(s)!, c.sumRatio);
+        if (s.mfn) note(s.holder, "MFN", "most favored nation ignored in projections");
+      }
+      if (T > 0n) {
+        pool.shares += T;
+        topUp = `${fmtInt(T)} added in the pre-money so the pool is ${round.poolTarget}% after the round`;
+        note(POOL, "top-up", topUp);
+      } else if (t)
+        notes.push(`The pool is already above ${round.poolTarget}% of the post-money, so no top-up.`);
+      note(
+        investors,
+        "round price",
+        `${money(pre)}${D.n ? ` − ${show(D, 0)} (SAFE money converting at the price, grossed up by its discount)` : ""} ÷ ${fmtInt(held + T)} = ${show(price)}`,
+      );
+      for (const s of priceSet) {
+        const shares = floor(div(dec(s.amount!), mul(price, sub(ONE, dec(s.discount ?? "0")))));
+        converted.set(s, shares);
         note(
           s.holder,
-          "discount",
-          `${fmtInt(atDiscount)} at the discount beats ${fmtInt(h.shares)} at the cap`,
+          "shares",
+          `${fmtInt(shares)} = ${money(s.amount!)} ÷ (${show(price)} × (1 − ${s.discount ?? "0"}))`,
         );
-        h.shares = atDiscount;
-      } else
-        note(
-          s.holder,
-          "discount",
-          `${fmtInt(h.shares)} at the cap beats ${fmtInt(atDiscount)} at the discount`,
-        );
+      }
+      // 5. New shares.
+      const n = floor(div(dec(round.newMoney!), price));
+      note(investors, "new shares", `${fmtInt(n)} = ${money(round.newMoney!)} ÷ ${show(price)}`);
+      merge();
+      out.push({ holder: investors, kind: "shares", shares: n });
+      return { holdings: out, notes, math };
     }
-    const n = floor(div(dec(round.newMoney!), price));
-    note(investors, "new shares", `${fmtInt(n)} = ${money(round.newMoney!)} ÷ ${show(price)}`);
-    out.push(...converted, { holder: investors, kind: "shares", shares: n });
-    return { holdings: out, notes, math };
   }
 
   // A "sells X%" round: no price; the new investors get X% of the post-money fully diluted count.
   const s = pct(round.sells!);
   if (!(s.n > 0n) || ge(s, ONE)) return { error: "The percent sold must be between 0 and 100." };
-  if (capped.length) notes.push("SAFEs convert on their caps, assuming the round prices above them.");
+  const unpriced = safes.filter((x) => !x.cap);
+  if (unpriced.length)
+    return {
+      error: `Give this round a valuation: ${unpriced.map((x) => x.holder).join(", ")} ${unpriced.length > 1 ? "hold SAFEs" : "holds a SAFE"} without a cap, which can't be sized from a percent.`,
+    };
+  const c = atCap(safes);
+  if ("error" in c) return c;
+  for (const x of safes) {
+    const shares = floor(mul(c.C, div(dec(x.amount!), dec(x.cap!))));
+    converted.set(x, shares);
+    capNote(x, shares, c.sumRatio);
+    if (x.discount) note(x.holder, "discount", "a percent-only round has no price, so the cap is used");
+  }
+  if (safes.length) notes.push("SAFEs convert on their caps, assuming the round prices above them.");
+  const held = S + [...converted.values()].reduce((a, n) => a + n, 0n);
   const H = held - pool.shares;
   let total = div(F(held), sub(ONE, s));
   if (t) {
@@ -173,6 +230,7 @@ export function applyRound(
     "new shares",
     `${fmtInt(n)} = ${round.sells}% × ${fmtInt(floor(total))} post-money fully diluted`,
   );
-  out.push(...converted, { holder: investors, kind: "shares", shares: n });
+  merge();
+  out.push({ holder: investors, kind: "shares", shares: n });
   return { holdings: out, notes, math };
 }

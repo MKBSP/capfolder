@@ -65,3 +65,15 @@ test("a recordable step after a round is refused", async () => {
   });
   expect(r.steps[2]!.error).toContain("Record the round first");
 });
+
+test("an error inside a step comes back as text, never a throw (bad sweep value)", async () => {
+  const r = await runScenario(
+    {
+      start: null,
+      today: "2026-11-06",
+      steps: [two, { kind: "round", name: "Seed", newMoney: "1000000", preMoney: "4000000" }],
+    },
+    { step: 1, field: "preMoney", values: ["abc", "0"] },
+  );
+  expect(r.sweep!.results.every((x) => x.steps.at(-1)!.error)).toBe(true);
+});

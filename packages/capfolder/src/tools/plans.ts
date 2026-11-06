@@ -165,11 +165,13 @@ function render(r: StepResult): string {
 
 function renderSweep(s: NonNullable<ScenarioResult["sweep"]>): string {
   const last = (steps: StepResult[]) => steps.at(-1)!;
-  const holders = [...new Set(s.results.flatMap((r) => last(r.steps).lines.map((l) => l.holder)))];
-  const exit = s.results.some((r) => last(r.steps).step.kind === "exit");
+  const fine = s.results.filter((r) => !last(r.steps).error);
+  const holders = [...new Set(fine.flatMap((r) => last(r.steps).lines.map((l) => l.holder)))];
+  const exit = fine.some((r) => last(r.steps).step.kind === "exit");
   const head = `| ${s.field} | ${holders.map(cell).join(" | ")} |`;
   const rows = s.results.map((r, i) => {
     const l = last(r.steps);
+    if (l.error) return `| ${s.values[i]} | stopped: ${cell(l.error)} |`;
     const cells = holders.map((h) => {
       const line = l.lines.find((x) => x.holder === h);
       if (!line) return "";
@@ -179,7 +181,7 @@ function renderSweep(s: NonNullable<ScenarioResult["sweep"]>): string {
   });
   return [
     `## Side by side: ${s.field}`,
-    `After the last step (${last(s.results[0]!.steps).title}), per value of ${s.field}:`,
+    `After the last step (${last((fine[0] ?? s.results[0]!).steps).title}), per value of ${s.field}:`,
     head,
     `|---|${holders.map(() => "---:").join("|")}|`,
     ...rows,
@@ -203,7 +205,7 @@ export async function runScenarioTool(
   company: VaultEvent[] | null,
   today: string,
 ): Promise<{ text: string; data: Record<string, unknown> }> {
-  if (input.start === "company" && !company)
+  if (input.start === "company" && !company?.length)
     return {
       text: "No company is open. Start with 'empty' and name the founders in the first step, or set up a cap table first.",
       data: { error: "no company" },
@@ -211,7 +213,9 @@ export async function runScenarioTool(
   const steps: Step[] = [...(input.steps as Step[])];
   const used: Benchmark[] = [];
   if (input.default_path) {
-    steps.push(...defaultPath(input.default_path));
+    // the typical rounds go before a trailing exit, so "normal rounds, then a $200M exit" is one call
+    const at = steps.at(-1)?.kind === "exit" ? steps.length - 1 : steps.length;
+    steps.splice(at, 0, ...defaultPath(input.default_path));
     used.push(...BENCHMARKS.filter((b) => PATH_KEYS.includes(b.key)));
   }
   const result = await runScenario(

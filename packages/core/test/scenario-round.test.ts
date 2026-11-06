@@ -102,3 +102,110 @@ test("post-money valuation input becomes pre-money minus new money", () => {
   const b = ok(applyRound(base, { kind: "round", name: "Seed", newMoney: "2000000", postMoney: "10000000" }));
   expect(b.holdings).toEqual(a.holdings);
 });
+
+// ---- from the final review (2026-11-06): each of these failed first ----
+
+test("priced round with a pool top-up to 15% in the pre-money", () => {
+  const r = ok(
+    applyRound([...base, bill], {
+      kind: "round",
+      name: "Seed",
+      newMoney: "2000000",
+      preMoney: "8000000",
+      poolTarget: "15",
+    }),
+  );
+  expect(shares(r.holdings, "Option pool")).toBe(2102564n);
+  expect(shares(r.holdings, "Seed investors")).toBe(2803418n);
+  expect(total(r.holdings)).toBe(14017093n);
+});
+
+test("an impossible pool target is an error, not 'already above'", () => {
+  const r = applyRound(base, {
+    kind: "round",
+    name: "Seed",
+    newMoney: "1000000",
+    preMoney: "4000000",
+    poolTarget: "90",
+  });
+  expect(r).toMatchObject({ error: expect.stringContaining("pool target") });
+});
+
+test("a round on nothing, or at a zero valuation, is an error", () => {
+  expect(applyRound([], { kind: "round", name: "Seed", newMoney: "1", preMoney: "1" })).toMatchObject({
+    error: expect.any(String),
+  });
+  expect(applyRound(base, { kind: "round", name: "Seed", newMoney: "1", preMoney: "0" })).toMatchObject({
+    error: expect.any(String),
+  });
+});
+
+test("cap and discount: the discount wins and the price is re-solved with that SAFE in the discount set", () => {
+  const r = ok(
+    applyRound(
+      [
+        ...base,
+        {
+          holder: "Bill Gates",
+          kind: "safe",
+          shares: 0n,
+          amount: "1000000",
+          cap: "20000000",
+          discount: "0.2",
+        },
+      ],
+      {
+        kind: "round",
+        name: "Seed",
+        newMoney: "2000000",
+        preMoney: "8000000",
+      },
+    ),
+  );
+  expect(shares(r.holdings, "Bill Gates")).toBe(1851851n); // $1M ÷ (0.675 × 0.8), beats 526,315 at the cap
+  const seed = shares(r.holdings, "Seed investors");
+  expect((seed * 10000n + total(r.holdings) / 2n) / total(r.holdings)).toBe(2000n); // 20.00% for $2M on a $10M post
+});
+
+test("two SAFEs from one investor merge into one share line", () => {
+  const r = ok(
+    applyRound(
+      [
+        ...base,
+        { holder: "Bill Gates", kind: "safe", shares: 0n, amount: "500000", cap: "5000000" },
+        { holder: "Bill Gates", kind: "safe", shares: 0n, amount: "500000", cap: "10000000" },
+      ],
+      { kind: "round", name: "Seed", sells: "20" },
+    ),
+  );
+  expect(r.holdings.filter((h) => h.holder === "Bill Gates")).toHaveLength(1);
+  expect(shares(r.holdings, "Bill Gates")).toBe(1764705n + 0n); // C = 10M ÷ 0.85; 0.1C + 0.05C
+});
+
+test("a pre-money SAFE or a note is refused in v1", () => {
+  const r = applyRound([...base, { ...bill, timing: "PRE_MONEY" }], {
+    kind: "round",
+    name: "Seed",
+    sells: "20",
+  });
+  expect(r).toMatchObject({ error: expect.stringContaining("post-money") });
+});
+
+test("pre, post and new money that don't add up are an error; sells with money too", () => {
+  expect(
+    applyRound(base, {
+      kind: "round",
+      name: "Seed",
+      newMoney: "1000000",
+      preMoney: "4000000",
+      postMoney: "10000000",
+    }),
+  ).toMatchObject({
+    error: expect.stringContaining("add up"),
+  });
+  expect(
+    applyRound(base, { kind: "round", name: "Seed", newMoney: "1000000", preMoney: "4000000", sells: "20" }),
+  ).toMatchObject({
+    error: expect.stringContaining("either"),
+  });
+});

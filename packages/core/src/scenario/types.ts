@@ -51,6 +51,8 @@ export type Holding = {
   cap?: string;
   discount?: string;
   mfn?: boolean;
+  timing?: string; // convertibles: OCF conversion_timing (POST_MONEY, PRE_MONEY)
+  type?: string; // convertibles: SAFE, NOTE, …
 };
 export type Line = {
   holder: string;
