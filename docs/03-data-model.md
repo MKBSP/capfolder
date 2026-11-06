@@ -166,6 +166,9 @@ Acme/                         # any folder name; usually inside iCloud/Dropbox/D
 - **Replace (F-28):** one write: `doc_added` (same type, fields and links), `doc_replaced {doc_id, by}`, `doc_removed` for the old one (moved to `docs/_removed/`).
 - **Drafts:** a document filed with the flag `draft` is kept but is never proof (gaps, checklist).
 
+## Decision (2026-11-06): scenarios are derived, never stored
+- A scenario (`packages/core/src/scenario/`, F-39) is derived state: its recordable steps (founders, pool, SAFE, grant) run through the same builders and `appendEvents` on an in-memory copy of the log; its projection steps (priced round, exit) are pure math over holdings and produce no event. Nothing from a scenario is written unless the founder saves a recordable step through the normal preview → yes flow, as ordinary events. A real priced round is recorded with `TX_STOCK_ISSUANCE`, `TX_CONVERTIBLE_CONVERSION` and `TX_STOCK_PLAN_POOL_ADJUSTMENT` when CAP-49 item 6 lands; until then the app refuses to save one.
+
 ## Export columns (F-29 full cap table, decided 2026-10-16)
 The Excel export (`packages/core/src/export/full.ts`) follows the Pulley/Carta layout so lawyers and investors find what they expect: Summary, Ownership, a ledger per stock class, a ledger per stock plan (with the plan summary), Convertibles, Voting Ownership, and "All holdings" (the same rows as the CSV export). The vault's own `captable.csv` keeps its short golden format.
 

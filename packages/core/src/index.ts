@@ -26,6 +26,7 @@ export * from "./ocf-export";
 export * from "./ocf-import";
 export * from "./reduce";
 export * from "./rows";
+export * from "./scenario";
 export * from "./schedule";
 export * from "./sort";
 export * from "./text";
