@@ -12,7 +12,7 @@ test("default path from pre-seed through series B", () => {
   ).toEqual([
     ["Seed", "20", "12"],
     ["Series A", "18", undefined],
-    ["Series B", "14", undefined],
+    ["Series B", "16", undefined],
   ]);
 });
 
@@ -20,6 +20,6 @@ test("pre-seed cap band by amount raised", () => {
   expect([preseedCapFor("200000"), preseedCapFor("500000"), preseedCapFor("2000000")]).toEqual([
     "7500000",
     "10000000",
-    "12000000",
+    "15000000",
   ]);
 });

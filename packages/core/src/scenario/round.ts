@@ -36,8 +36,12 @@ export function applyRound(
   const notes: string[] = [];
   const math: Math = Object.create(null); // no prototype: holder names are founder input
   const note = (holder: string, label: string, text: string) => {
-    math[holder] ??= Object.create(null);
-    math[holder][label] = text;
+    let m = math[holder];
+    if (!m) {
+      m = Object.create(null) as Record<string, string>;
+      math[holder] = m;
+    }
+    m[label] = text;
   };
   const investors = `${round.name} investors`;
   const out: Holding[] = holdings.filter((h) => h.kind !== "safe").map((h) => ({ ...h }));
