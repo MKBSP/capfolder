@@ -3,395 +3,678 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="favicon.ico" sizes="48x48">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#1F6F4A">
-<title>Capfolder — Your cap table, in a folder you own</title>
-<meta name="description" content="Free, open-source cap table app. Your equity records live in a folder on your computer, not in someone else's cloud. No setup needed: download and open.">
+<title>Capfolder — The free cap table app, from first idea to first raise</title>
+<meta name="description" content="Free, open-source cap table app for early-stage founders: split equity with your cofounders, issue your first SAFE, get it signed.">
 <link rel="canonical" href="https://capfolder.com/">
 <!-- docs/11: cookieless visits, referrers and button clicks (data-umami-event), no banner. Umami Cloud site for capfolder.com. -->
 <script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
 <script defer src="/track.js"></script>
 <!-- fonts are served from this site (no Google Fonts request); SIL OFL, fonts/OFL.txt -->
 <style>
-@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
-@font-face{font-family:'IBM Plex Sans';font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2')}
-@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
-@font-face{font-family:'IBM Plex Sans';font-weight:700;font-display:swap;src:url(fonts/ibm-plex-sans-latin-700-normal.woff2) format('woff2')}
-@font-face{font-family:'IBM Plex Mono';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
-@font-face{font-family:'IBM Plex Mono';font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(/fonts/instrument-serif-latin-400-italic.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:700;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
 </style>
 <style>
 body{margin:0;background:#FAFAF8}
 a{color:#1F6F4A}a:hover{color:#16543A}
-:root{--ease-out:cubic-bezier(0.23,1,0.32,1);--ease-io:cubic-bezier(0.77,0,0.175,1)}
+:root{--ease-out:cubic-bezier(0.23,1,0.32,1)}
+.page{font-family:'IBM Plex Sans',system-ui,sans-serif;color:#111311;background:#FAFAF8;overflow-x:hidden}
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .wrap{max-width:1160px;margin:0 auto;padding:0 24px;box-sizing:border-box}
-.h2{font-weight:600;font-size:clamp(32px,7vw,46px);line-height:1.08;letter-spacing:-0.03em;margin:0}
+.h2{font-weight:600;font-size:clamp(30px,5.4vw,46px);line-height:1.08;letter-spacing:-0.03em;margin:0;text-wrap:balance}
+.h3{font-size:20px;font-weight:600;margin:0 0 8px 0;letter-spacing:-0.01em}
 .lead{font-size:18px;line-height:1.6;margin:0;color:#3A3E46}
+.body{margin:0;font-size:16px;line-height:1.6;color:#3A3E46}
+.sec{padding-top:clamp(56px,10vw,104px);padding-bottom:clamp(56px,10vw,104px)}
+.card{background:#fff;border:1px solid #E4E4E0;border-radius:16px}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;padding:15px 22px;border-radius:10px;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform 160ms var(--ease-out),box-shadow 200ms ease,background-color 200ms ease}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;padding:15px 22px;border-radius:10px;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform 160ms var(--ease-out),background-color 200ms ease}
 .btn:active{transform:scale(0.97)}
-.btn-p{background:#1F6F4A;color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 8px 20px -8px rgba(31,111,74,.6)}
+.btn-p{background:#1F6F4A;color:#fff}
 .btn-s{background:#fff;color:#111311;border-color:#D9DAD6}
 @media (hover:hover) and (pointer:fine){
   .btn-p:hover{background:#18603F;color:#fff}
   .btn-s:hover{background:#F3F4F1;color:#111311}
-  .lift{transition:transform 250ms var(--ease-out),box-shadow 250ms ease}
-  .lift:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(17,19,17,.25)}
   .navlink:hover{color:#111311}
 }
+.navlink{color:#3A3E46;text-decoration:none}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
 
-/* hero headline: words rise in once */
-.w{display:inline-block}
-header .fade-in{animation:none;opacity:1}
-@media (max-width:640px){nav[aria-label="Main"] .navlink:not([href="/learn/"]){display:none}}
-@keyframes rise{to{opacity:1;filter:blur(0);transform:translateY(0)}}
-.fade-in{opacity:0;animation:fadeup 700ms var(--ease-out) forwards}
-@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.mark{position:relative;white-space:nowrap}
-@keyframes draw{to{clip-path:inset(0 0 0 0)}}
+/* hero video */
+.demo{position:relative;background:#fff;border:1px solid #E4E4E0;border-radius:18px;overflow:hidden}
+.demo video{display:block;width:100%;height:auto;aspect-ratio:1440/900}
+#pause-motion{position:absolute;right:16px;bottom:16px;font:500 14px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 12px;border-radius:999px;border:1px solid #D6D6D0;background:#FFFFFFE6;color:#3A3E46;cursor:pointer}
+#pause-motion:focus-visible{outline:2px solid #1F6F4A;outline-offset:2px}
+#pause-motion[hidden]{display:none}
 
-/* hero demo: messy -> sorted */
-.demo{position:relative;background:#fff;border:1px solid #E4E4E0;border-radius:18px;overflow:hidden;box-shadow:0 50px 100px -50px rgba(31,111,74,.35)}
-.scan{position:absolute;left:0;right:0;top:56px;height:52px;background:linear-gradient(180deg,rgba(79,191,133,0) 0%,rgba(79,191,133,.18) 50%,rgba(79,191,133,0) 100%);border-bottom:2px solid #4FBF85;pointer-events:none;opacity:0;animation:scan 9s var(--ease-io) infinite}
-@keyframes scan{0%,14%{opacity:0;transform:translateY(0)}18%{opacity:1;transform:translateY(0)}48%{opacity:1;transform:translateY(260px)}54%,100%{opacity:0;transform:translateY(260px)}}
-.drow{display:grid;grid-template-columns:minmax(0,1fr);height:52px;align-items:center;padding:0 22px;border-bottom:1px solid #EFEFEC;font-size:15px}
-.drow > *{grid-area:1/1}
-.raw{display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#5B606B;animation:rawout 9s var(--ease-out) infinite}
-.parsed{display:flex;flex-wrap:wrap;align-items:center;gap:10px;opacity:0;animation:parsedin 9s var(--ease-out) infinite}
-@keyframes rawout{0%,20%{opacity:1;filter:blur(0);transform:none}25%,88%{opacity:0;filter:blur(4px);transform:translateX(-8px)}94%,100%{opacity:1;filter:blur(0);transform:none}}
-@keyframes parsedin{0%,20%{opacity:0;filter:blur(4px);transform:translateX(10px)}25%,88%{opacity:1;filter:blur(0);transform:none}94%,100%{opacity:0;filter:blur(4px)}}
-.r1 > *{animation-delay:0s}.r2 > *{animation-delay:.45s}.r3 > *{animation-delay:.9s}.r4 > *{animation-delay:1.35s}.r5 > *{animation-delay:1.8s}
-.pill{font-size:12px;padding:3px 9px;border-radius:999px;white-space:nowrap}
-.counter{display:grid}.counter > *{grid-area:1/1}
-.cA{animation:cA 9s steps(1) infinite}.cB{opacity:0;animation:cB 9s steps(1) infinite}
-@keyframes cA{0%,52%{opacity:1}53%,93%{opacity:0}94%,100%{opacity:1}}
-@keyframes cB{0%,52%{opacity:0}53%,93%{opacity:1}94%,100%{opacity:0}}
+/* app screenshots, cropped: margins are % of the frame's width */
+.crop{overflow:hidden;border:1px solid #E4E4E0;border-radius:14px;background:#FAFAF8}
+.crop img{display:block;max-width:none;height:auto}
 
-/* marquee */
-.marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.track{display:flex;gap:56px;width:max-content;animation:slide 32s linear infinite}
-.track span{font-size:20px;font-weight:600;color:#3A3E46;white-space:nowrap;display:inline-flex;align-items:center;gap:10px}
-@keyframes slide{to{transform:translateX(-50%)}}
-@media (hover:hover){.marquee:hover .track{animation-play-state:paused}}
+/* features */
+.big{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:40px;align-items:center;padding:32px}
+.pair{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:18px;margin-top:18px}
+.pair > .card{padding:26px;display:flex;flex-direction:column;gap:22px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:44px 0;border-top:1px solid #ECECE8}
+.row.flip > :first-child{order:2}
+.chip{font-size:14px;padding:10px 12px;border-radius:8px;background:#F6F7F4;line-height:1.5}
 
-/* lost docs */
+/* chat (local AI) */
+.chat{display:flex;flex-direction:column;gap:12px;padding:22px;font-size:15px;line-height:1.55}
+.me{align-self:flex-end;max-width:80%;background:#1F6F4A;color:#fff;border-radius:14px 14px 4px 14px;padding:10px 14px}
+.ai{max-width:92%;background:#F3F4F1;border-radius:14px 14px 14px 4px;padding:10px 14px}
 
-/* signing round trip */
-.lane{position:relative;height:200px}
-.node{position:absolute;top:28px;width:150px;margin-left:-75px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:14px}
-.nodeicon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center}
-.rail{position:absolute;left:8%;right:8%;top:60px;height:2px;background:repeating-linear-gradient(90deg,#C9CBC6 0 8px,transparent 8px 14px)}
-.mover{position:absolute;left:8%;width:84%;top:46px;height:28px;animation:travel 8s var(--ease-io) infinite}
-.doc{position:absolute;left:0;top:0;margin-left:-38px;width:76px;height:28px;border-radius:7px;background:#fff;border:1px solid #9C8FBF;box-shadow:0 6px 14px -6px rgba(78,63,134,.5);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#4E3F86;overflow:hidden}
-.docw > span{grid-area:1/1}.docw{display:grid;place-items:center}
-.d1{animation:d1 8s steps(1) infinite}.d2{opacity:0;color:#16543A;animation:d2 8s steps(1) infinite}
-@keyframes travel{0%,6%{transform:translateX(0)}22%,30%{transform:translateX(50%)}44%,58%{transform:translateX(100%)}84%,100%{transform:translateX(0)}}
-@keyframes d1{0%,50%{opacity:1}51%,100%{opacity:0}}
-@keyframes d2{0%,50%{opacity:0}51%,99%{opacity:1}100%{opacity:0}}
-.cloudA{animation:cloudA 8s steps(1) infinite}.cloudB{opacity:0;animation:cloudB 8s steps(1) infinite}
-@keyframes cloudA{0%,19%{opacity:0}20%,70%{opacity:1}71%,100%{opacity:0}}
-@keyframes cloudB{0%,70%{opacity:0}71%,96%{opacity:1}97%,100%{opacity:0}}
-.ping{animation:ping 8s var(--ease-out) infinite}
-@keyframes ping{0%,84%{box-shadow:0 0 0 0 rgba(31,111,74,0)}86%{box-shadow:0 0 0 0 rgba(31,111,74,.45)}96%,100%{box-shadow:0 0 0 18px rgba(31,111,74,0)}}
-.sig{animation:sig 8s var(--ease-out) infinite}
-@keyframes sig{0%,46%{box-shadow:0 0 0 0 rgba(78,63,134,0)}48%{box-shadow:0 0 0 0 rgba(78,63,134,.45)}58%,100%{box-shadow:0 0 0 18px rgba(78,63,134,0)}}
+/* price */
+.price{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.price > div{padding:24px 26px}
+.price > div + div{border-left:1px solid #ECECE8}
+.amt{font-size:30px;font-weight:600;margin-top:6px}
 
-/* kill switch */
-.frow{display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:14px;border-bottom:1px solid #EFEFEC}
+/* learn */
+.guides{list-style:none;margin:28px 0 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px}
+.guides a{display:flex;flex-direction:column;gap:4px;padding:18px 0;border-top:1px solid #E4E4E0;text-decoration:none;color:#111311}
+.guides b{font-weight:600;font-size:17px;color:#1F6F4A}
+.guides span{font-size:16px;color:#3A3E46;line-height:1.5}
 
-/* chat */
-.typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#9AA09A;margin-right:4px;animation:blink 1.2s ease infinite}
-.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
-@keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+/* tags, tools, tracks, compare */
+.tag{font-size:13px;padding:2px 8px;border-radius:999px;background:#EEF5F0;color:#1F6F4A;white-space:nowrap}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding:0;list-style:none}
+.tools li{font-size:14px;padding:6px 10px;border-radius:8px;background:#fff;border:1px solid #E4E4E0}
+.tracks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:32px}
+.tracks .card{padding:22px}
+.tracks ol{margin:10px 0 0 0;padding-left:18px;font-size:15px;line-height:1.7}
+.cmp{width:100%;border-collapse:collapse;font-size:16px}
+.cmp th,.cmp td{text-align:left;padding:14px 18px;border-top:1px solid #ECECE8}
+.cmp thead th{border-top:0;font-weight:600}
+.cmp td:nth-child(2){font-weight:600;color:#16543A}
 
-/* scroll reveals (progressive) */
-@supports (animation-timeline: view()){
-  .reveal{animation:fadeup linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
-  .reveal2{animation:fadeup linear both;animation-timeline:view();animation-range:entry 10% entry 50%}
-  .reveal3{animation:fadeup linear both;animation-timeline:view();animation-range:entry 20% entry 60%}
-  .msg1{animation:fadeup linear both;animation-timeline:view();animation-range:entry 30% cover 30%}
-  .msg2{animation:fadeup linear both;animation-timeline:view();animation-range:entry 50% cover 36%}
-  .msg3{animation:fadeup linear both;animation-timeline:view();animation-range:entry 70% cover 42%}
-  .msg4{animation:fadeup linear both;animation-timeline:view();animation-range:entry 90% cover 48%}
-}
+/* faq */
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 56px;margin-top:32px}
 
 .motion-paused *,.motion-paused *::before,.motion-paused *::after{animation-play-state:paused!important}
-#pause-motion{position:fixed;left:16px;bottom:16px;z-index:50;font:500 13px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 12px;border-radius:999px;border:1px solid #D6D6D0;background:#FFFFFFE6;color:#3A3E46;cursor:pointer}
-#pause-motion:focus-visible{outline:2px solid #1F6F4A;outline-offset:2px}
-.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
-@media (prefers-reduced-motion: reduce){#pause-motion{display:none}}
-@media (prefers-reduced-motion: reduce){
-  .w,.fade-in{animation:none;opacity:1;filter:none;transform:none}
-  .track,.mover,.scan,.ping,.sig{animation:none}
-  .raw{animation:none;opacity:0}.parsed{animation:none;opacity:1;filter:none;transform:none}
-  .cA{animation:none;opacity:0}.cB{animation:none;opacity:1}
-  .reveal,.reveal2,.reveal3,.msg1,.msg2,.msg3,.msg4{animation:none}
+@media (max-width:860px){
+  .big{grid-template-columns:minmax(0,1fr);padding:22px;gap:24px}
+  .row{gap:28px;padding:36px 0}
+}
+@media (max-width:960px){.tracks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:700px){
+  .pair,.row{grid-template-columns:minmax(0,1fr)}
+  .row{gap:22px}
+  .row.flip > :first-child{order:0}
 }
 @media (max-width:640px){
-  .node{width:96px;margin-left:-48px;font-size:12px}
-  .nodeicon{width:48px;height:48px;border-radius:12px}
-  .rail{top:52px}.mover{top:38px}
-  .drow{padding:0 14px;font-size:13px}.raw{font-size:12px}
-  #pause-motion{bottom:10px;left:10px;padding:7px 10px;font-size:12px}
+  nav[aria-label="Main"] .navlink:not([href="/learn/"]){display:none}
+  .price{grid-template-columns:minmax(0,1fr)}
+  .price > div + div{border-left:0;border-top:1px solid #ECECE8}
+  .guides,.faq,.tracks{grid-template-columns:minmax(0,1fr)}
+  .cmp th,.cmp td{padding:12px 10px;font-size:15px}
+  #pause-motion{right:10px;bottom:10px;padding:7px 10px;font-size:13px}
+  .chat{padding:16px;font-size:14px}
 }
+
+/* ---- F v2: Probo/Cal-inspired layout ---- */
+:root{--ink:#0E120F;--muted:#5B606B;--line:#E6E7E3;--panel:#F2F3EF;--green:#1F6F4A;--green-d:#16543A;--mint:#EEF5F0}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:8px}
+.btn-d{background:var(--green);color:#fff}
+@media (hover:hover) and (pointer:fine){.btn-d:hover{background:var(--green-d);color:#fff}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pillnav{position:sticky;top:12px;z-index:20;margin:12px auto 0;max-width:1160px;padding:0 16px;box-sizing:border-box}
+.pillnav > div{display:flex;align-items:center;gap:18px;padding:8px 8px 8px 18px;border:1px solid var(--line);border-radius:16px;background:rgba(250,250,248,.9);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px)}
+.pillnav .links{display:flex;gap:22px;font-size:15px;margin-left:24px}
+.pillnav .right{margin-left:auto;display:flex;align-items:center;gap:16px;font-size:15px}
+.announce{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:14px;color:#2B2E33;text-decoration:none;max-width:100%;box-sizing:border-box}
+.announce b{font-size:11.5px;font-weight:600;letter-spacing:.05em;padding:3px 8px;border-radius:999px;background:var(--mint);color:var(--green)}
+.announce:hover{border-color:#C9DECF;color:var(--ink)}
+.stage{position:relative;border-radius:24px;padding:clamp(14px,4vw,56px);background:radial-gradient(120% 90% at 50% 0%,#D7E9DD 0%,#EAF2EC 45%,#F4F5F1 100%);border:1px solid var(--line)}
+.win{border-radius:14px;overflow:hidden;background:#fff;border:1px solid #D9DCD6;box-shadow:0 30px 60px -30px rgba(14,18,15,.35)}
+.win-bar{display:flex;align-items:center;gap:7px;height:36px;padding:0 14px;background:#F7F7F5;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.win-bar i{width:11px;height:11px;border-radius:50%;background:#DFE0DB;display:inline-block}
+.win-bar span{margin-left:10px}
+.win video{display:block;width:100%;height:auto;aspect-ratio:1440/900}
+.strip{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 40px;margin-top:20px;font-weight:600;font-size:19px;color:#8A8F98;letter-spacing:-.01em}
+.cover{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:56px}
+.cover > div{display:flex;flex-direction:column;align-items:center;gap:12px;padding:30px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;font-size:15.5px;font-weight:500}
+.cover img{width:40px;height:40px}
+.cover small{display:block;color:var(--muted);font-size:13px;font-weight:400;margin-top:3px}
+.center{text-align:center;margin-left:auto;margin-right:auto}
+.sub{font-size:18px;line-height:1.6;color:var(--muted);margin:14px auto 0;max-width:620px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin-top:52px;position:relative}
+.steps::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--line)}
+.steps > div{padding-top:28px;position:relative}
+.steps > div::before{content:"";position:absolute;top:-3px;left:0;width:7px;height:7px;border-radius:2px;background:#CFD2CB}
+.stepn{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:15px;background:#fff}
+.stepn span{padding:5px 9px;color:var(--muted);border-right:1px solid var(--line);font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500}
+.stepn b{padding:5px 10px;font-weight:600}
+.step-ic{display:block;width:40px;height:40px;margin-bottom:14px}
+.steps p{margin:14px 0 0;font-size:16px;line-height:1.6;color:#2B2E33}
+.fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 24px;margin-top:52px}
+.feat .panel{height:236px;border-radius:16px;background:var(--panel);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+.feat h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:20px 0 6px}
+.feat p{margin:0;font-size:15.5px;line-height:1.6;color:var(--muted)}
+.feat p a{font-weight:500}
+.ui{background:#fff;border:1px solid #E2E3DE;border-radius:12px;box-shadow:0 14px 30px -18px rgba(14,18,15,.3);font-size:13.5px;width:100%;max-width:300px;box-sizing:border-box}
+.ui-row{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;border-top:1px solid #EEEFEB}
+.ui-row:first-child{border-top:0}
+.ui-h{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:9px 12px;background:#FAFAF8;border-bottom:1px solid #EEEFEB;border-radius:12px 12px 0 0}
+.ok{color:var(--green);font-weight:600}
+.warn{color:#9A5806;font-weight:600}
+.tag{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--mint);color:var(--green);white-space:nowrap;font-weight:500}
+.tag-d{background:var(--green);color:#fff}
+.bub{border-radius:12px;padding:8px 11px;line-height:1.45;max-width:86%}
+.bub.me{align-self:flex-end;background:var(--green);color:#fff;border-radius:12px 12px 3px 12px}
+.bub.ai{background:#F1F2EE;border-radius:12px 12px 12px 3px}
+.term{background:var(--ink);color:#E9F2EC;border-radius:10px;padding:12px 14px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px}
+.term span{color:#7FC79E}
+.dark{background:var(--ink);color:#F3F5F2}
+.dark .sub{color:#A8AFA9}
+.dark a{color:#8FD3AC}
+.cmp{width:100%;border-collapse:collapse}
+.cmpbox{margin:44px auto 0;max-width:880px;border:1px solid #262B27;border-radius:16px;overflow-x:auto;background:#141915}
+.cmp th,.cmp td{border-top:1px solid #262B27;text-align:left;padding:16px 20px;font-size:16px}
+.cmp tbody th{font-weight:500}
+.cmp thead th{border-top:0;color:#A8AFA9;font-weight:500}
+.cmp td:nth-child(2){color:#8FD3AC;font-weight:600}
+.cmp td:nth-child(3){color:#A8AFA9}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:44px}
+.plan{border:1px solid var(--line);border-radius:18px;background:#fff;padding:26px;display:flex;flex-direction:column}
+.plan.hi{background:var(--ink);color:#F3F5F2;border-color:var(--ink)}
+.plan .nm{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px}
+.plan .pr{font-size:42px;font-weight:600;letter-spacing:-.02em;margin:10px 0 2px}
+.plan .pr small{font-size:15px;font-weight:400;color:var(--muted);letter-spacing:0}
+.plan.hi .pr small,.plan.hi .ds,.plan.hi .lbl{color:#A8AFA9}
+.plan .ds{font-size:15px;color:var(--muted);margin:0 0 20px;line-height:1.5}
+.plan .btn{justify-content:center;width:100%;box-sizing:border-box}
+.plan ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:15px}
+.plan li{display:flex;gap:10px;align-items:flex-start;line-height:1.45}
+.plan li svg{flex:none;width:18px;height:18px;margin-top:1px;stroke:var(--green);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.plan.hi li svg{stroke:#8FD3AC}
+.plan .lbl{font-size:13px;color:var(--muted);margin-top:24px}
+.tracks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:44px}
+.track{border:1px solid var(--line);border-radius:16px;background:#fff;padding:22px}
+.track .stepn{margin-bottom:16px}
+.track ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;font-size:15px}
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px;margin-top:44px;align-items:start}
+.faq details{border:1px solid var(--line);border-radius:14px;background:#fff;padding:18px 20px}
+.faq summary{font-weight:600;font-size:16.5px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--muted);font-weight:400;font-size:20px;line-height:1}
+.faq details[open] summary::after{content:"\2013"}
+.faq details p{margin:10px 0 0;font-size:15.5px;line-height:1.6;color:#3A3E46}
+@media (max-width:960px){
+  .fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps,.tracks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .plans{grid-template-columns:minmax(0,1fr);max-width:520px;margin-left:auto;margin-right:auto}
+  .pillnav .links{display:none}
+}
+@media (max-width:640px){
+  .fgrid,.steps,.tracks,.faq{grid-template-columns:minmax(0,1fr)}
+  .cover{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pillnav .talk{display:none}
+  .strip{font-size:15px;gap:8px 22px}
+  .cmp th,.cmp td{padding:12px 12px;font-size:14.5px}
+  .wrap{padding:0 16px}
+}
+
+/* works-with logos, article cards */
+.works{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 40px;margin-top:56px}
+.works > div{text-align:center}
+.works p{margin:0 0 12px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.logos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.logos li{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:14.5px;font-weight:500;color:#2B2E33}
+.logos svg{width:18px;height:18px;fill:#3A3E46;flex:none}
+.logos svg[fill="none"]{fill:none;stroke:#3A3E46}
+.logos img{height:18px;width:auto;flex:none;filter:grayscale(1) brightness(.35);border-radius:4px}
+.logos .wordmark img{height:20px;border-radius:0}
+.logos img.wide,.logos .wordmark img.wide{height:15px}
+.arts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:44px}
+.art{display:flex;flex-direction:column;gap:8px;padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;color:var(--ink);transition:border-color .2s,transform .3s var(--ease-out),box-shadow .3s}
+a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30px -22px rgba(14,18,15,.3);color:var(--ink)}
+.art .kind{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);font-weight:600}
+.art b{font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.art .blurb{font-size:15px;line-height:1.55;color:var(--muted)}
+.art .more{margin-top:auto;padding-top:8px;font-size:14px;font-weight:600;color:var(--green)}
+.art.soon{background:#FBFBFA}
+@media (max-width:960px){.arts{grid-template-columns:repeat(2,minmax(0,1fr))}.works{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.arts{grid-template-columns:minmax(0,1fr)}}
+
+/* hero: two columns, the cap table card with the story floating around it */
+.hero2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(28px,5vw,64px);align-items:center;padding-top:clamp(40px,7vw,88px);padding-bottom:clamp(48px,8vw,88px)}
+.hero-h1{font-weight:600;font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-0.045em;margin:24px 0 0;text-wrap:balance}
+.hero-script{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(30px,4.2vw,50px);line-height:1.05;letter-spacing:-0.01em;color:var(--green);margin:8px 0 0}
+.hero-sub{margin:22px 0 0;max-width:520px;font-size:18px}
+.hero-dl{margin-top:30px;max-width:540px}
+.hero-dl #gate > p{text-align:left}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;list-style:none;margin:22px 0 0;padding:0;font-size:14px;color:#3A3E46}
+.trust li{display:flex;align-items:center;gap:7px}
+.trust svg{width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+.storyb{position:relative;padding:128px 4% 0;--ease-in:cubic-bezier(.55,0,.75,.2)}
+.tilt{perspective:1600px}
+.appcard{background:#fff;border:1px solid #E2E3DE;border-radius:18px;box-shadow:0 1px 0 #fff inset,0 40px 80px -40px rgba(14,18,15,.35),0 18px 30px -24px rgba(14,18,15,.25);transform:rotateX(7deg) rotateY(-11deg) rotateZ(1deg);transform-origin:50% 50%;overflow:hidden}
+.ac-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #EEEFEB}
+.ac-co{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.ac-co .tag{margin-left:4px}
+.ac-val{font-size:clamp(22px,2.6vw,30px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:opacity .4s}
+.ac-b{display:grid;grid-template-columns:132px minmax(0,1fr);gap:22px;align-items:center;padding:20px}
+.storyb .donut{width:132px;height:132px}
+.storyb .donut .track{fill:none;stroke:#EEF0EC;stroke-width:15}
+.storyb .donut .seg{fill:none;stroke-width:15;transition:stroke-dasharray 1.2s var(--ease-out),stroke-dashoffset 1.2s var(--ease-out)}
+#grows{min-height:226px;display:flex;flex-direction:column;justify-content:center}
+.grow-row{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 0;border-top:1px solid #F3F4F0;font-size:14px;animation:rowIn .6s var(--ease-out) both}
+.grow-row:first-child{border-top:0}
+.grow-row i{width:10px;height:10px;border-radius:3px}
+.grow-row .v{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.grow-row .p{font-weight:600;font-variant-numeric:tabular-nums;min-width:46px;text-align:right}
+@keyframes rowIn{from{opacity:0;transform:translateY(6px)}}
+.ac-f{display:flex;align-items:center;gap:8px;padding:11px 20px;background:#F3F8F4;color:var(--green-d);font-size:13px;border-top:1px solid #E3EEE6}
+
+.chip{position:absolute;left:var(--x);top:var(--y);z-index:2;display:flex;align-items:center;gap:10px;padding:9px 14px 9px 10px;background:rgba(255,255,255,.96);border:1px solid #E6E7E3;border-radius:14px;box-shadow:0 18px 36px -18px rgba(14,18,15,.35);white-space:nowrap;opacity:0;transform:translate(var(--fx),var(--fy)) scale(.92);transition:transform 1.4s var(--ease-out),opacity .9s ease,filter .9s ease}
+.chip img{width:34px;height:34px;flex:none}
+.chip b{display:block;font-size:14px;font-weight:600;line-height:1.25}
+.chip small{display:block;font-size:12.5px;color:var(--muted);line-height:1.3}
+.chip.now{opacity:1;transform:none;animation:drift 4s ease-in-out infinite .9s}
+.chip.past{opacity:.5;transform:scale(.94);filter:saturate(.6)}
+.chip.gone{opacity:0;transform:translate(0,-12px) scale(.94);transition:transform .9s var(--ease-in),opacity .8s ease}
+@keyframes drift{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.uni-sticker{position:absolute;left:40%;top:74px;width:min(124px,24%);aspect-ratio:1;z-index:3;opacity:0;transform:translateY(-30px) scale(.6) rotate(-10deg);transition:transform 1.4s cubic-bezier(.22,1.3,.36,1),opacity .8s ease;pointer-events:none}
+.uni-sticker .u{width:100%;height:100%;filter:drop-shadow(0 18px 18px rgba(14,18,15,.2))}
+.uni-sticker .s1,.uni-sticker .s2{position:absolute;width:34%}
+.uni-sticker .s1{left:-22%;top:6%}.uni-sticker .s2{right:-14%;bottom:4%;width:26%}
+.storyb.st-7 .uni-sticker{opacity:1;transform:none}
+.storyb.st-7 .uni-sticker .s1,.storyb.st-7 .uni-sticker .s2{animation:twinkle 1.8s ease-in-out infinite}
+@keyframes twinkle{50%{opacity:.35}}
+
+.chip-low{top:auto;bottom:54px}
+.story-nav{display:flex;align-items:center;gap:14px;margin-top:168px;padding:0 2%}
+.gsteps{display:flex;gap:5px;flex:1;border:0;padding:0;margin:0;min-width:0}
+.gsteps button{flex:1;height:14px;border:0;padding:5px 0;background:none;cursor:pointer}
+.gsteps i{display:block;height:4px;border-radius:99px;background:#DDDFD9;overflow:hidden;position:relative}
+.gsteps i::after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--green);border-radius:99px}
+.storyb #pause-motion{position:static;font-size:13px;padding:6px 11px}
+.paused .chip.now{animation-play-state:paused}
+.chip-r1{bottom:104px}
+.ac-f.warn{background:#FFF7E8;color:#7A4A06;border-top-color:#F3E2C2}
+.q409{position:relative;display:inline-flex;margin-left:2px}
+.q409[hidden]{display:none}
+.q409 button{width:20px;height:20px;border-radius:50%;border:1px solid #E2C48E;background:#fff;color:#7A4A06;font:600 12px/1 'IBM Plex Sans',system-ui,sans-serif;cursor:help;padding:0}
+.q409 [role="tooltip"]{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);width:240px;padding:10px 12px;border-radius:10px;background:var(--ink);color:#fff;font-size:12.5px;line-height:1.45;white-space:normal;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+.q409:hover [role="tooltip"],.q409 button:focus-visible + [role="tooltip"]{opacity:1}
+
+
+@media (max-width:900px){.hero2{grid-template-columns:minmax(0,1fr)}.storyb{max-width:620px;margin:0 auto}}
+@media (max-width:560px){
+  .storyb{padding:104px 0 0}
+  .uni-sticker{top:66px}
+  .appcard{transform:none}
+  .ac-b{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:14px}
+  .storyb .donut{width:88px;height:88px}
+  .chip{padding:7px 10px 7px 8px;gap:8px}.chip img{width:26px;height:26px}.chip b{font-size:12.5px}.chip small{display:none}
+  .chip[data-i="0"]{--x:0%!important}.chip[data-i="1"]{--x:auto!important;left:auto;right:0}
+  .chip[data-i="2"]{--x:0%!important;--y:52px!important}.chip[data-i="3"]{--y:46px!important;right:0}
+  .story-nav{margin-top:134px}
+  .chip-low{bottom:46px}
+  .chip-r1{bottom:92px}
+  .chip[data-i="5"]{--x:auto!important;left:auto;right:0}
+  .chip[data-i="7"]{--x:auto!important;left:auto;right:0}
+}
+@media (prefers-reduced-motion:reduce){.chip,.uni-sticker,.storyb .donut .seg,.grow-row{transition:none;animation:none}}
 </style>
 </head>
 <body>
-<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #111311; background: #FAFAF8; overflow-x: hidden">
+<div class="page">
 
-  <nav aria-label="Main" class="wrap" style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; padding-top: 20px; padding-bottom: 20px">
-    <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111311; font-weight: 600; font-size: 18px">
+  <nav aria-label="Main" class="pillnav"><div>
+    <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 18px">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>
       Capfolder
     </a>
-    <div style="margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 22px; font-size: 15px">
-      <a href="/features/" class="navlink" style="color: #3A3E46; text-decoration: none">Features</a>
-      <a href="/compare/" class="navlink" style="color: #3A3E46; text-decoration: none">Compare</a>
-      <a href="/roadmap/" class="navlink" style="color: #3A3E46; text-decoration: none">Roadmap</a>
-      <a href="/help/" class="navlink" style="color: #3A3E46; text-decoration: none">Help</a>
-      <a href="/learn/" class="navlink" style="color: #3A3E46; text-decoration: none">Learn</a>
-      <a href="/blog/" class="navlink" style="color: #3A3E46; text-decoration: none">Blog</a>
-      <a href="https://github.com/MKBSP/capfolder" class="navlink" style="color: #3A3E46; text-decoration: none">GitHub</a>
-      <a href="#download" class="btn btn-p" data-umami-event="nav-download" style="font-size: 14px; padding: 10px 16px">Download</a>
+    <div class="links">
+      <a href="/learn/" class="navlink">Learn</a>
+      <a href="/compare/" class="navlink">Compare</a>
+      <a href="#pricing" class="navlink">Pricing</a>
+      <a href="https://github.com/MKBSP/capfolder" class="navlink">GitHub</a>
     </div>
-  </nav>
+    <div class="right">
+      <button type="button" class="linkbtn navlink talk" data-talk data-umami-event="book-call-nav" style="text-decoration: none">Book a call</button>
+      <a href="#download" class="btn btn-d" data-umami-event="nav-download" style="font-size: 14px; padding: 10px 16px">Download</a>
+    </div>
+  </div></nav>
 
-  <header class="wrap" style="padding-top: 80px; padding-bottom: 40px; text-align: center; position: relative">
-    <div style="position: relative; z-index: 1">
-      <a href="https://github.com/MKBSP/capfolder" class="fade-in" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #C9DECF; color: #16543A; text-decoration: none">
-        <span style="width: 8px; height: 8px; border-radius: 50%; background: #4FBF85; box-shadow: 0 0 0 3px #DDF1E5"></span>
-        Free and open source
-      </a>
-      <h1 style="font-weight: 600; font-size: clamp(40px, 10.5vw, 80px); line-height: 1.02; letter-spacing: -0.04em; margin: 28px auto 0 auto; max-width: 940px; isolation: isolate">
-        <span class="w" style="animation-delay: 80ms">Your</span> <span class="w" style="animation-delay: 140ms">cap</span> <span class="w" style="animation-delay: 200ms">table,</span> <span class="w" style="animation-delay: 260ms">in</span> <span class="w" style="animation-delay: 320ms">a</span> <span class="w mark" style="animation-delay: 380ms">folder you own.</span>
-      </h1>
-      <p class="lead fade-in" style="margin: 26px auto 0 auto; max-width: 620px; font-size: 20px; animation-delay: 650ms">Issue SAFEs and options, track everyone's vesting, collect signatures. Plain files on your computer. Investors sign from any browser.</p>
-      <p class="fade-in" style="margin: 18px auto 0 auto; display: inline-block; padding: 8px 16px; border-radius: 999px; background: #E8F3EC; color: #16543A; font-size: 16px; animation-delay: 720ms"><b style="font-weight: 600">No setup needed.</b> No server, no account, no terminal. Download, open, done.</p>
-      <div id="download" class="fade-in" style="max-width: 560px; margin: 34px auto 0 auto; animation-delay: 800ms">
-        <div id="gate">
-          <div style="display: flex; justify-content: center">
-            <button type="button" class="btn btn-p" id="getdl" data-umami-event="get-download" style="font-size: 17px; padding: 14px 22px">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
-              Get the download
-            </button>
-          </div>
-          <p style="font-size: 14px; color: #5B606B; margin: 14px 0 0 0">macOS, Windows, Linux · free · leave your email to hear about new versions, or <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">No thanks, just download</button></p>
-          <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
+  <header id="top" class="wrap hero2">
+    <div class="hero-l">
+      <a class="announce" href="#ai" data-umami-event="announce-ai"><b>NEW</b><span>Works with Claude Code, Codex and Gemini CLI</span><span aria-hidden="true">→</span></a>
+      <h1 class="hero-h1">The Free Cap Table App.</h1>
+      <p class="hero-script">from first idea to first raise</p>
+      <p class="sub hero-sub">For founders with an idea, a company or a first cheque. Split equity, issue your first SAFE and get it signed. Free, on your computer, no account.</p>
+      <div id="download" class="hero-dl">
+      <div id="gate">
+        <div class="hero-btns">
+          <button type="button" class="btn btn-d" id="getdl" data-umami-event="get-download" style="font-size: 16px; padding: 14px 22px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+            Download, it's free
+          </button>
+          <button type="button" class="btn btn-s" data-talk data-umami-event="book-call-hero" style="font-size: 16px; padding: 14px 22px">Book a call</button>
         </div>
-        <div id="dlthanks" hidden aria-live="polite">
-          <div class="fade-in" style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left; box-shadow: 0 20px 40px -24px rgba(31,111,74,.35)">
-            <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-              Your download is ready
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
-              <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
-              <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
-              <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
-            </div>
-            <div style="font-size: 13px; color: #5B606B; margin-top: 10px">
-              <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
-            </div>
-            <p style="font-size: 13px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECECE8">
-              <span style="flex: 1 1 240px; font-size: 15px; line-height: 1.5; color: #3A3E46">Capfolder is free. If it saves you a headache, <b style="font-weight: 600; color: #111311">pay what you want.</b></span>
-              <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>
-                Buy me a coffee
-              </a>
-            </div>
+        <p style="font-size: 14px; line-height: 1.5; color: var(--muted); margin: 14px 0 0 0">macOS, Windows, Linux · <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">No thanks, just download</button></p>
+        <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
+        <ul class="trust"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Open source</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>YC's standard SAFE</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No account needed</li></ul>
+      </div>
+      <div id="dlthanks" hidden aria-live="polite">
+        <div style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left">
+          <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Your download is ready
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
+            <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
+            <a id="dl-win" data-umami-event="download-windows" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Windows</a>
+            <a id="dl-linux" data-umami-event="download-linux" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Linux</a>
+          </div>
+          <div style="font-size: 14px; color: #5B606B; margin-top: 10px">
+            <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
+          </div>
+          <p style="font-size: 14px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECECE8">
+            <span style="flex: 1 1 240px; font-size: 15px; line-height: 1.5; color: #3A3E46">Capfolder is free. If it saves you a headache, <b style="font-weight: 600; color: #111311">pay what you want.</b></span>
+            <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Buy me a coffee</a>
           </div>
         </div>
       </div>
+    </div>
+    </div>
+    <div class="hero-r">
+      <section class="storyb" id="grow" aria-roledescription="animation" aria-label="A startup's cap table, from two founders with an idea to a unicorn">
+        <div class="tilt">
+          <div class="appcard">
+            <div class="ac-h">
+              <span class="ac-co"><svg width="18" height="18" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path></svg>Acme Inc.<span class="tag" id="gtag">Not incorporated</span></span>
+              <span class="ac-val" id="gval">Idea</span>
+            </div>
+            <div class="ac-b">
+              <svg class="donut" viewBox="0 0 120 120" aria-hidden="true">
+                <circle cx="60" cy="60" r="44" class="track"/>
+                <g transform="rotate(-90 60 60)">
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="jobs" style="stroke:#1F6F4A"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="woz" style="stroke:#4E9A72"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="bill" style="stroke:#C08A2E"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="pool" style="stroke:#A9CDB8"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="seed" style="stroke:#6E7781"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="a" style="stroke:#2D3A33"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="cfo" style="stroke:#5B7FA3"/>
+                  <circle cx="60" cy="60" r="44" class="seg" data-k="b" style="stroke:#9AA3AD"/>
+                </g>
+              </svg>
+              <div id="grows"></div>
+            </div>
+            <div class="ac-f" id="gfootbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span id="gfoot">Totals add to 100%</span><span class="q409" id="q409" hidden><button type="button" aria-describedby="tip409">?</button><span role="tooltip" id="tip409">A 409A is an independent valuation of your common shares. It sets the lowest strike price for options, so your team avoids a tax penalty.</span></span></div>
+          </div>
+        </div>
+        <div class="chip" data-i="0" style="--x:-2%;--y:0px;--fx:-120px;--fy:-20px" aria-hidden="true"><img src="/img/story/light-bulb.svg" alt=""><span><b>Jobs &amp; Woz · 50/50</b><small>Two founders, one idea</small></span></div>
+        <div class="chip" data-i="1" style="--x:auto;--y:-4px;--fx:140px;--fy:-20px;right:-2%" aria-hidden="true"><img src="/img/story/money-with-wings.svg" alt=""><span><b>Bill Gates · $250k</b><small>SAFE at a $5M cap</small></span></div>
+        <div class="chip" data-i="2" style="--x:4%;--y:62px;--fx:-140px;--fy:0px" aria-hidden="true"><img src="/img/story/woman-technologist.svg" alt=""><span><b>Tim Apple + 2 joined</b><small>Options from a 10% pool</small></span></div>
+        <div class="chip" data-i="3" style="--x:auto;--y:56px;--fx:140px;--fy:0px;right:2%" aria-hidden="true"><img src="/img/story/money-bag.svg" alt=""><span><b>Seed · $5M</b><small>SAFEs at a $20M cap</small></span></div>
+        <div class="chip chip-low chip-r1" data-i="4" style="--x:0%;--fx:-140px;--fy:0px" aria-hidden="true"><img src="/img/story/rocket.svg" alt=""><span><b>Series A · $25M</b><small>Priced at $120M post</small></span></div>
+        <div class="chip chip-low chip-r1" data-i="5" style="--x:50%;--fx:140px;--fy:0px" aria-hidden="true"><img src="/img/story/waving-hand.svg" alt=""><span><b>Woz leaves · new CFO</b><small>Vesting stops · CFO gets 5%</small></span></div>
+        <div class="chip chip-low" data-i="6" style="--x:6%;--fx:0px;--fy:90px" aria-hidden="true"><img src="/img/story/chart-increasing.svg" alt=""><span><b>Series B · $75M</b><small>Priced at $500M post</small></span></div>
+        <div class="uni-sticker" aria-hidden="true"><img class="u" src="/img/story/unicorn.svg" alt=""><img class="s1" src="/img/story/sparkles.svg" alt=""><img class="s2" src="/img/story/sparkles.svg" alt=""></div>
+        <div class="chip chip-low" data-i="7" style="--x:54%;--fx:0px;--fy:90px" aria-hidden="true"><img src="/img/story/unicorn.svg" alt=""><span><b>$1B · a unicorn</b><small>Records right from day one</small></span></div>
+        <div class="story-nav">
+          <fieldset class="gsteps" aria-label="Chapters">
+            <button type="button" data-s="0" aria-label="Idea"><i></i></button><button type="button" data-s="1" aria-label="First cheque"><i></i></button><button type="button" data-s="2" aria-label="First hires"><i></i></button><button type="button" data-s="3" aria-label="Seed"><i></i></button><button type="button" data-s="4" aria-label="Series A"><i></i></button><button type="button" data-s="5" aria-label="Founder leaves"><i></i></button><button type="button" data-s="6" aria-label="Series B"><i></i></button><button type="button" data-s="7" aria-label="Unicorn"><i></i></button>
+          </fieldset>
+          <button type="button" id="pause-motion" aria-pressed="false">Pause</button>
+        </div>
+      </section>
     </div>
   </header>
 
-  <section class="wrap fade-in" aria-label="Live demo: sorting a messy folder" style="padding-bottom: clamp(56px, 12vw, 96px); animation-delay: 1000ms">
-    <div class="demo">
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 0 22px; height: 56px; border-bottom: 1px solid #E4E4E0; background: #FBFBFA">
-        <span style="display: flex; gap: 6px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span></span>
-        <span style="font-weight: 600; font-size: 14px">Add your messy folder</span>
-        <span class="counter num" style="margin-left: auto; font-size: 13px">
-          <span class="cA" style="color: #5B606B">Reading 5 files…</span>
-          <span class="cB" style="color: #16543A">5 sorted · 1 needs you</span>
-        </span>
-      </div>
-      <div class="drow r1"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>SAFE_YC_signed.pdf</span><span class="parsed"><b style="font-weight: 600">SAFE</b> · Y Combinator · <span class="num">$500,000</span> · cap <span class="num">$10M</span><span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
-      <div class="drow r2"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>scan_0042.pdf</span><span class="parsed"><b style="font-weight: 600">SAFE</b> · Fund X · <span class="num">$250,000</span> · cap unreadable<span class="pill" style="margin-left: auto; background: #FDF1E3; color: #8A3E05">Needs you</span></span></div>
-      <div class="drow r3"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>Re_ docs - FINAL v3.pdf</span><span class="parsed"><b style="font-weight: 600">SAFE</b> · Angel A · <span class="num">$150,000</span> · 20% discount<span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
-      <div class="drow r4"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>woz grant (1).pdf</span><span class="parsed"><b style="font-weight: 600">Option grant</b> · Steve Wozniak · <span class="num">40,000</span> @ <span class="num">$0.12</span><span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
-      <div class="drow r5" style="border-bottom: none"><span class="raw"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>IMG_2231_83b.jpg</span><span class="parsed"><b style="font-weight: 600">83(b) election</b> · Steve Jobs · filed 2021<span class="pill" style="margin-left: auto; background: #E8F3EC; color: #16543A">Matched</span></span></div>
-      <div class="scan" aria-hidden="true"></div>
+  <section class="wrap" aria-label="Product video">
+    <div class="works">
+      <div><p>Works with your AI</p><ul class="logos" aria-label="AI tools Capfolder works with"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg><span>Claude</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10.5h3v3h-3v3h-1.5v3H18v-3h-1.5v3H15v-3H9v3H7.5v-3H6v3H4.5v-3H3v-3H0v-3h3v-6h18Zm-15 0h1.5v-3H6Zm10.5 0H18v-3h-1.5z"/></svg><span>Claude Code</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg><span>Gemini CLI</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.361 10.26a.894.894 0 0 0-.558.47l-.072.148.001.207c0 .193.004.217.059.353.076.193.152.312.291.448.24.238.51.3.872.205a.86.86 0 0 0 .517-.436.752.752 0 0 0 .08-.498c-.064-.453-.33-.782-.724-.897a1.06 1.06 0 0 0-.466 0zm-9.203.005c-.305.096-.533.32-.65.639a1.187 1.187 0 0 0-.06.52c.057.309.31.59.598.667.362.095.632.033.872-.205.14-.136.215-.255.291-.448.055-.136.059-.16.059-.353l.001-.207-.072-.148a.894.894 0 0 0-.565-.472 1.02 1.02 0 0 0-.474.007Zm4.184 2c-.131.071-.223.25-.195.383.031.143.157.288.353.407.105.063.112.072.117.136.004.038-.01.146-.029.243-.02.094-.036.194-.036.222.002.074.07.195.143.253.064.052.076.054.255.059.164.005.198.001.264-.03.169-.082.212-.234.15-.525-.052-.243-.042-.28.087-.355.137-.08.281-.219.324-.314a.365.365 0 0 0-.175-.48.394.394 0 0 0-.181-.033c-.126 0-.207.03-.355.124l-.085.053-.053-.032c-.219-.13-.259-.145-.391-.143a.396.396 0 0 0-.193.032zm.39-2.195c-.373.036-.475.05-.654.086-.291.06-.68.195-.951.328-.94.46-1.589 1.226-1.787 2.114-.04.176-.045.234-.045.53 0 .294.005.357.043.524.264 1.16 1.332 2.017 2.714 2.173.3.033 1.596.033 1.896 0 1.11-.125 2.064-.727 2.493-1.571.114-.226.169-.372.22-.602.039-.167.044-.23.044-.523 0-.297-.005-.355-.045-.531-.288-1.29-1.539-2.304-3.072-2.497a6.873 6.873 0 0 0-.855-.031zm.645.937a3.283 3.283 0 0 1 1.44.514c.223.148.537.458.671.662.166.251.26.508.303.82.02.143.01.251-.043.482-.08.345-.332.705-.672.957a3.115 3.115 0 0 1-.689.348c-.382.122-.632.144-1.525.138-.582-.006-.686-.01-.853-.042-.57-.107-1.022-.334-1.35-.68-.264-.28-.385-.535-.45-.946-.03-.192.025-.509.137-.776.136-.326.488-.73.836-.963.403-.269.934-.46 1.422-.512.187-.02.586-.02.773-.002zm-5.503-11a1.653 1.653 0 0 0-.683.298C5.617.74 5.173 1.666 4.985 2.819c-.07.436-.119 1.04-.119 1.503 0 .544.064 1.24.155 1.721.02.107.031.202.023.208a8.12 8.12 0 0 1-.187.152 5.324 5.324 0 0 0-.949 1.02 5.49 5.49 0 0 0-.94 2.339 6.625 6.625 0 0 0-.023 1.357c.091.78.325 1.438.727 2.04l.13.195-.037.064c-.269.452-.498 1.105-.605 1.732-.084.496-.095.629-.095 1.294 0 .67.009.803.088 1.266.095.555.288 1.143.503 1.534.071.128.243.393.264.407.007.003-.014.067-.046.141a7.405 7.405 0 0 0-.548 1.873c-.062.417-.071.552-.071.991 0 .56.031.832.148 1.279L3.42 24h1.478l-.05-.091c-.297-.552-.325-1.575-.068-2.597.117-.472.25-.819.498-1.296l.148-.29v-.177c0-.165-.003-.184-.057-.293a.915.915 0 0 0-.194-.25 1.74 1.74 0 0 1-.385-.543c-.424-.92-.506-2.286-.208-3.451.124-.486.329-.918.544-1.154a.787.787 0 0 0 .223-.531c0-.195-.07-.355-.224-.522a3.136 3.136 0 0 1-.817-1.729c-.14-.96.114-2.005.69-2.834.563-.814 1.353-1.336 2.237-1.475.199-.033.57-.028.776.01.226.04.367.028.512-.041.179-.085.268-.19.374-.431.093-.215.165-.333.36-.576.234-.29.46-.489.822-.729.413-.27.884-.467 1.352-.561.17-.035.25-.04.569-.04.319 0 .398.005.569.04a4.07 4.07 0 0 1 1.914.997c.117.109.398.457.488.602.034.057.095.177.132.267.105.241.195.346.374.43.14.068.286.082.503.045.343-.058.607-.053.943.016 1.144.23 2.14 1.173 2.581 2.437.385 1.108.276 2.267-.296 3.153-.097.15-.193.27-.333.419-.301.322-.301.722-.001 1.053.493.539.801 1.866.708 3.036-.062.772-.26 1.463-.533 1.854a2.096 2.096 0 0 1-.224.258.916.916 0 0 0-.194.25c-.054.109-.057.128-.057.293v.178l.148.29c.248.476.38.823.498 1.295.253 1.008.231 2.01-.059 2.581a.845.845 0 0 0-.044.098c0 .006.329.009.732.009h.73l.02-.074.036-.134c.019-.076.057-.3.088-.516.029-.217.029-1.016 0-1.258-.11-.875-.295-1.57-.597-2.226-.032-.074-.053-.138-.046-.141.008-.005.057-.074.108-.152.376-.569.607-1.284.724-2.228.031-.26.031-1.378 0-1.628-.083-.645-.182-1.082-.348-1.525a6.083 6.083 0 0 0-.329-.7l-.038-.064.131-.194c.402-.604.636-1.262.727-2.04a6.625 6.625 0 0 0-.024-1.358 5.512 5.512 0 0 0-.939-2.339 5.325 5.325 0 0 0-.95-1.02 8.097 8.097 0 0 1-.186-.152.692.692 0 0 1 .023-.208c.208-1.087.201-2.443-.017-3.503-.19-.924-.535-1.658-.98-2.082-.354-.338-.716-.482-1.15-.455-.996.059-1.8 1.205-2.116 3.01a6.805 6.805 0 0 0-.097.726c0 .036-.007.066-.015.066a.96.96 0 0 1-.149-.078A4.857 4.857 0 0 0 12 3.03c-.832 0-1.687.243-2.456.698a.958.958 0 0 1-.148.078c-.008 0-.015-.03-.015-.066a6.71 6.71 0 0 0-.097-.725C8.997 1.392 8.337.319 7.46.048a2.096 2.096 0 0 0-.585-.041Zm.293 1.402c.248.197.523.759.682 1.388.03.113.06.244.069.292.007.047.026.152.041.233.067.365.098.76.102 1.24l.002.475-.12.175-.118.178h-.278c-.324 0-.646.041-.954.124l-.238.06c-.033.007-.038-.003-.057-.144a8.438 8.438 0 0 1 .016-2.323c.124-.788.413-1.501.696-1.711.067-.05.079-.049.157.013zm9.825-.012c.17.126.358.46.498.888.28.854.36 2.028.212 3.145-.019.14-.024.151-.057.144l-.238-.06a3.693 3.693 0 0 0-.954-.124h-.278l-.119-.178-.119-.175.002-.474c.004-.669.066-1.19.214-1.772.157-.623.434-1.185.68-1.382.078-.062.09-.063.159-.012z"/></svg><span>Ollama</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.025 0c3.492 0 5.237 0 6.571.68a6.24 6.24 0 0 1 2.725 2.724C24 4.738 24 6.484 24 9.975v4.05c0 3.492 0 5.237-.68 6.571a6.24 6.24 0 0 1-2.724 2.725c-1.334.679-3.08.679-6.571.679h-4.05c-3.492 0-5.237 0-6.571-.68A6.24 6.24 0 0 1 .68 20.597C0 19.262 0 17.516 0 14.025v-4.05c0-3.492 0-5.237.68-6.571A6.23 6.23 0 0 1 3.404.68C4.738 0 6.484 0 9.975 0zM7.688 16.313a1.313 1.313 0 0 0 0 2.625h11.625a1.313 1.313 0 0 0 0-2.625zm-3-3.75a1.313 1.313 0 0 0 0 2.624h11.625a1.313 1.313 0 0 0 0-2.624zm3-3.75a1.313 1.313 0 0 0 0 2.624h11.625a1.313 1.313 0 0 0 0-2.624zm-3-3.75a1.313 1.313 0 0 0 0 2.625h11.625a1.313 1.313 0 0 0 0-2.625z"/></svg><span>LM Studio</span></li><li><img src="/img/logos/openai.svg" alt="" height="18"><span>Codex</span></li><li><img src="/img/logos/openai.svg" alt="" height="18"><span>ChatGPT</span> <span class="tag">Coming</span></li></ul></div>
+      <div><p>Bring your cap table from</p><ul class="logos" aria-label="Where you can import from"><li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 9v11"/></svg><span>Excel</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 9v11"/></svg><span>CSV</span></li><li><img src="/img/logos/pulley-mark.png" alt="" height="16"><span>Pulley</span></li><li class="wordmark"><img src="/img/logos/carta.svg" alt="" height="20"><span class="sr">Carta</span></li><li class="wordmark"><img class="wide" src="/img/logos/cake-mark.png" alt="" height="14"><span class="sr">Cake</span></li></ul></div>
     </div>
-    <p style="text-align: center; margin: 18px 0 0 0; font-size: 14px; color: #5B606B">Any file name, any layout. Read on your computer, matched to your cap table.</p>
-  </section>
 
-  <section id="story" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
-    <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
-      <div style="flex: 1 1 440px; min-width: 0" class="reveal">
-        <h2 class="h2" style="margin-top: 14px">We lost our cap table paperwork.</h2>
-        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px; font-size: 18px; line-height: 1.65; color: #2B2E33">
-          <p style="margin: 0">We raised our seed on SAFEs from 28 investors. Some signed in one tool. Some sent their own paperwork. Some signed by email.</p>
-          <p style="margin: 0">When we needed the documents, the data was gone. We're now digging through old inboxes and asking investors to sign again.</p>
-          <p style="margin: 0">A cap table is the most important record a company has. It shouldn't depend on a vendor, a subscription or a login. So we built one that lives in a folder you own, and open-sourced it so it's always yours.</p>
-        </div>
-      </div>
-      <div class="reveal" style="flex: 1 1 520px; min-width: 0">
-        <div class="demo">
-          <div style="display: flex; align-items: center; gap: 12px; padding: 0 22px; height: 56px; border-bottom: 1px solid #E4E4E0; background: #FBFBFA">
-            <span style="display: flex; gap: 6px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span></span>
-            <span style="font-weight: 600; font-size: 14px">Your company folder</span>
-          </div>
-          <capfolder-paperwork captions></capfolder-paperwork>
-        </div>
-      </div>
+    <h2 class="h2 center" style="margin-top: clamp(56px, 9vw, 96px); max-width: 760px">Every paper your cap table needs.</h2>
+    <p class="sub center">From the first promise between cofounders to a signed SAFE. Capfolder keeps track of each one and tells you what's missing.</p>
+    <div class="cover">
+      <div><img src="/img/icons/founder-promises.svg" alt="" width="40" height="40"><span>Founder promises<small>before you incorporate</small></span></div>
+      <div><img src="/img/icons/certificate.svg" alt="" width="40" height="40"><span>Common shares<small>founders and team</small></span></div>
+      <div><img src="/img/icons/vesting.svg" alt="" width="40" height="40"><span>Vesting<small>cliff and monthly</small></span></div>
+      <div><img src="/img/icons/83b-deadline.svg" alt="" width="40" height="40"><span>83(b) election<small>30-day deadline flagged</small></span></div>
+      <div><img src="/img/icons/option-pool.svg" alt="" width="40" height="40"><span>Option grants<small>and the pool</small></span></div>
+      <div><img src="/img/icons/board-consent.svg" alt="" width="40" height="40"><span>Board consents<small>what's missing, listed</small></span></div>
+      <div><img src="/img/icons/safe.svg" alt="" width="40" height="40"><span>SAFEs<small>YC post-money template</small></span></div>
+      <div><img src="/img/icons/signature.svg" alt="" width="40" height="40"><span>E-signatures<small>from a link, no account</small></span></div>
     </div>
   </section>
 
-  <section class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
-    <div class="reveal" style="max-width: 640px">
-      <h2 class="h2" style="margin-top: 14px">What it does for you.</h2>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 40px">
-      <div class="lift reveal" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px" aria-hidden="true">
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5B606B"><span>Sam</span><span class="num">75%</span></div>
-          <div style="height: 8px; border-radius: 4px; background: #E9ECE8; overflow: hidden"><div class="reveal2" style="width: 75%; height: 100%; background: #1F6F4A; border-radius: 4px"></div></div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5B606B"><span>Woz</span><span class="num">25%</span></div>
-          <div style="height: 8px; border-radius: 4px; background: #E9ECE8; overflow: hidden"><div class="reveal3" style="width: 25%; height: 100%; background: #1F6F4A; border-radius: 4px"></div></div>
-        </div>
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">The cap table is the first screen</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Who owns what, with everyone's vesting, on one page.</p>
-      </div>
-      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; font-size: 13px" aria-hidden="true">
-          <div style="display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; background: #FFFBF4; color: #8A3E05"><span style="width: 7px; height: 7px; border-radius: 50%; background: #D97706"></span>83(b) missing · Steve</div>
-          <div style="display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; background: #FDF3F1; color: #A1261A"><span style="width: 7px; height: 7px; border-radius: 50%; background: #C0392B"></span>No signed SAFE · Fund X</div>
-        </div>
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">What's missing, flagged</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Found before an investor's lawyer finds it.</p>
-      </div>
-      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <div style="display: flex; gap: 8px; margin-bottom: 22px" aria-hidden="true">
-          <span style="font-size: 13px; padding: 8px 12px; border-radius: 8px; background: #1F6F4A; color: #fff">+ SAFE</span>
-          <span style="font-size: 13px; padding: 8px 12px; border-radius: 8px; background: #F0F1EE">+ Grant</span>
-          <span style="font-size: 13px; padding: 8px 12px; border-radius: 8px; background: #F0F1EE">+ Shares</span>
-        </div>
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">SAFEs, grants and shares in two minutes</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Record them from a short form, then send your signed-off PDF for signature. Capfolder adds the signature page.</p>
-      </div>
-      <div class="lift reveal" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <div class="num" style="display: flex; gap: 8px; margin-bottom: 22px; font-size: 13px" aria-hidden="true">
-          <span style="padding: 8px 12px; border-radius: 8px; background: #F0F1EE">captable.xlsx</span>
-          <span style="padding: 8px 12px; border-radius: 8px; background: #F0F1EE">as of 2025-12-31</span>
-        </div>
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Excel or CSV, any date</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">For the auditor, the bank or the tax office.</p>
-      </div>
-      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <div style="margin-bottom: 22px; font-size: 13px; padding: 10px 12px; border-radius: 8px; background: #F6F7F4; line-height: 1.5" aria-hidden="true"><span class="num">10,000</span> = <span class="num">40,000</span> × 12/48 months<br><span style="color: #5B606B">cliff passed Oct 7, 2026</span></div>
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">Math you can check</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Click a holding to see how its numbers were computed. Tests are public.</p>
-      </div>
-      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px">
-        <div style="display: flex; gap: 8px; margin-bottom: 22px; font-size: 13px" aria-hidden="true">
-          <span style="padding: 8px 12px; border-radius: 8px; background: #E8F3EC; color: #16543A">Works offline</span>
-          <span style="padding: 8px 12px; border-radius: 8px; background: #F0F1EE">~15 MB</span>
-        </div>
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0">A real desktop app</h3>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Fast, small, and no login screen.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="signing" style="background: #F3F1F9; padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
+  <div style="height: clamp(56px, 10vw, 104px)"></div>
+  <section id="story" class="sec" style="background: #fff; border-top: 1px solid #ECECE8; border-bottom: 1px solid #ECECE8">
     <div class="wrap">
-      <div class="reveal" style="max-width: 760px">
-        <h2 class="h2" style="margin-top: 14px">The only thing in the cloud is the unsigned document.</h2>
-        <p class="lead" style="margin-top: 18px">It waits on the relay until everyone has signed. Then it comes back to your folder, is checked against your original, and the relay deletes its copy (within 7 days).</p>
-      </div>
-      <div class="reveal2" style="margin-top: 48px; background: #fff; border-radius: 18px; border: 1px solid #E2DEEF; padding: 28px 12px 8px 12px; overflow: hidden">
-        <div class="lane" role="img" aria-label="A document travels from your folder to the relay, to the investor, and back">
-          <div class="rail"></div>
-          <div class="node" style="left: 8%">
-            <span class="nodeicon ping" style="background: #E8F3EC; color: #16543A"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
-            <b style="font-weight: 600">Your folder</b><span style="color: #5B606B; font-size: 13px">original + hash</span>
+      <p class="lead" style="font-size: 22px; max-width: 760px; color: #111311">Today your equity split is a handshake, your cap table is a spreadsheet, and the signed PDFs are lost in email.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 56px; align-items: center; margin-top: 48px">
+        <div style="flex: 1 1 400px; min-width: 0">
+          <h2 class="h2">We lost our cap table paperwork.</h2>
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px; max-width: 62ch; font-size: 18px; line-height: 1.65; color: #2B2E33">
+            <p style="margin: 0">We raised our seed on SAFEs from 28 investors. Some signed in one tool, some sent their own paperwork, some signed by email.</p>
+            <p style="margin: 0">When we needed the documents, they were gone. So we built the tool we wanted: one folder, every paper in it.</p>
           </div>
-          <div class="node" style="left: 50%">
-            <span class="nodeicon" style="background: #EEEBF7; color: #4E3F86"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg></span>
-            <b style="font-weight: 600">Relay</b>
-            <span class="counter" style="font-size: 13px"><span style="color: #5B606B">empty</span><span class="cloudA" style="color: #4E3F86; background: #fff">holding 1</span><span class="cloudB" style="color: #16543A; background: #fff">copy deleted</span></span>
+        </div>
+        <div style="flex: 1 1 440px; min-width: 0; max-width: 560px">
+          <div class="demo">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 0 22px; height: 56px; border-bottom: 1px solid #E4E4E0; background: #FBFBFA">
+              <span style="display: flex; gap: 6px" aria-hidden="true"><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: #E4E4E0"></span></span>
+              <span style="font-weight: 600; font-size: 14px">Your company folder</span>
+            </div>
+            <capfolder-paperwork captions></capfolder-paperwork>
           </div>
-          <div class="node" style="left: 92%">
-            <span class="nodeicon sig" style="background: #F0F1EE; color: #3A3E46"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
-            <b style="font-weight: 600">Investor</b><span style="color: #5B606B; font-size: 13px">signs in browser</span>
-          </div>
-          <div class="mover" aria-hidden="true"><div class="doc"><span class="docw"><span class="d1">SAFE</span><span class="d2">✓ Signed</span></span></div></div>
         </div>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 18px">
-        <div class="reveal" style="background: #fff; border-radius: 14px; padding: 20px; font-size: 15px; line-height: 1.55"><b style="font-weight: 600">No account for signers.</b> <span style="color: #3A3E46">A link in their email, that's it.</span></div>
-        <div class="reveal2" style="background: #fff; border-radius: 14px; padding: 20px; font-size: 15px; line-height: 1.55"><b style="font-weight: 600">Matched to your original.</b> <span style="color: #3A3E46">Every page you sent must come back with the same text and nothing added on top.</span></div>
-        <div class="reveal3" style="background: #fff; border-radius: 14px; padding: 20px; font-size: 15px; line-height: 1.55"><b style="font-weight: 600">Self-host the relay.</b> <span style="color: #3A3E46">Documenso plus a small API, both in the repo, if you want zero cloud.</span></div>
+    </div>
+  </section>
+
+
+  <section class="wrap sec">
+    <h2 class="h2 center" style="max-width: 760px">From first idea to first raise.</h2>
+    <p class="sub center">Start the day you agree to build it together. Capfolder keeps up as the company becomes real.</p>
+    <div class="steps">
+      <div><img class="step-ic" src="/img/icons/founder-promises.svg" alt="" width="40" height="40"><span class="stepn"><span>01</span><b>Idea</b></span><p>Write down who's in and what each cofounder was promised. No company needed yet.</p></div>
+      <div><img class="step-ic" src="/img/icons/cap-table.svg" alt="" width="40" height="40"><span class="stepn"><span>02</span><b>Split</b></span><p>Set each founder's shares and vesting. Four years with a one-year cliff, with the math shown.</p></div>
+      <div><img class="step-ic" src="/img/icons/certificate.svg" alt="" width="40" height="40"><span class="stepn"><span>03</span><b>Incorporate</b></span><p>Your promises become real Common shares, after a preview and your yes. The 83(b) deadline is flagged.</p></div>
+      <div><img class="step-ic" src="/img/icons/safe.svg" alt="" width="40" height="40"><span class="stepn"><span>04</span><b>Raise</b></span><p>Fill the YC SAFE from a short form. Investors sign from a link. Every paper lands in your folder.</p></div>
+    </div>
+  </section>
+
+  <section id="features" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
+    <h2 class="h2 center" style="max-width: 760px">Everything for your first raise. Nothing you don't need.</h2>
+    <div class="fgrid">
+
+      <div class="feat">
+        <div class="panel">
+          <div class="ui" aria-hidden="true">
+            <div class="ui-h">Cap table · fully diluted</div>
+            <div class="ui-row"><span>Tim Apple</span><span class="num">50.00%</span></div>
+            <div class="ui-row"><span>Steve Jobs</span><span class="num">37.50%</span></div>
+            <div class="ui-row"><span>Option pool</span><span class="num">12.50%</span></div>
+            <div class="ui-row" style="background: #FAFAF8; border-radius: 0 0 12px 12px"><span class="num" style="color: var(--muted)">10,000 = 40,000 × 12/48</span><span class="tag">math</span></div>
+          </div>
+        </div>
+        <h3>Cap table management. Free.</h3>
+        <p>Founders, vesting, options and SAFEs, fully diluted as of any date. No limits.</p>
+      </div>
+
+      <div class="feat">
+        <div class="panel">
+          <div class="ui" aria-hidden="true" style="padding: 12px; display: flex; flex-direction: column; gap: 8px">
+            <div class="bub me">What's missing before our seed?</div>
+            <div class="bub ai">3 things: Steve's 83(b), Bill's signed SAFE, approval for the pool.</div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); border-top: 1px solid #EEEFEB; padding-top: 8px"><span>Ollama · this computer</span><span class="ok">$0 tokens</span></div>
+          </div>
+        </div>
+        <h3>AI inside the app. No tokens to pay for.</h3>
+        <p>Runs on a free model on your computer, so there's no bill and nothing leaves your laptop. Or use your own key. <a href="/help/local-ai/" data-umami-event="local-ai-guide">Set it up</a></p>
+      </div>
+
+      <div class="feat" id="ai">
+        <div class="panel">
+          <div style="width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 10px" aria-hidden="true">
+            <div class="term"><span>$</span> npx capfolder install</div>
+            <div class="ui" style="padding: 12px; display: flex; flex-direction: column; gap: 8px">
+              <div class="bub me">Set up my cap table. Tim and Steve, 50/50.</div>
+              <div class="bub ai">Preview: 2 founders, 4-year vesting. Save it?</div>
+            </div>
+          </div>
+        </div>
+        <h3>Works with the AI you already use.</h3>
+        <p>Claude Code, Claude Desktop, Codex, Gemini CLI. ChatGPT <span class="tag">Coming</span>. Nothing is saved until you say yes. <a href="/testing-landing-page/e/" data-umami-event="ai-page">How it works</a></p>
+      </div>
+
+      <div class="feat">
+        <div class="panel">
+          <div class="ui" aria-hidden="true">
+            <div class="ui-h">Import · carta-export.xlsx</div>
+            <div class="ui-row"><span>Fully diluted</span><span class="ok num">10,000,000 ✓</span></div>
+            <div class="ui-row"><span>Options outstanding</span><span class="ok num">640,000 ✓</span></div>
+            <div class="ui-row"><span>SAFE total</span><span class="ok num">$900,000 ✓</span></div>
+            <div class="ui-row"><span style="color: var(--muted)">Matches Carta, to the share</span><span class="tag tag-d">Saved</span></div>
+          </div>
+        </div>
+        <h3>Bring your cap table.</h3>
+        <p>From Excel, CSV, Pulley, Carta or Cake. Every total is checked against the old tool. <a href="/features/import/">How import works</a></p>
+      </div>
+
+      <div class="feat">
+        <div class="panel">
+          <div class="ui" aria-hidden="true">
+            <div class="ui-h">Acme Inc. / docs</div>
+            <div class="ui-row"><span>SAFE · Bill Gates.pdf</span><span class="ok">Signed</span></div>
+            <div class="ui-row"><span>Stock purchase · Tim.pdf</span><span class="ok">Signed</span></div>
+            <div class="ui-row"><span>83(b) · Steve Jobs</span><span class="warn">Missing</span></div>
+            <div class="ui-row"><span>Board consent · pool</span><span class="warn">Missing</span></div>
+          </div>
+        </div>
+        <h3>Organise everything.</h3>
+        <p>Every SAFE, grant and signed PDF in one folder, with what an investor's lawyer will ask for flagged first.</p>
+      </div>
+
+      <div class="feat">
+        <div class="panel">
+          <div class="ui" aria-hidden="true">
+            <div class="ui-row" style="padding: 12px"><span><b style="font-weight: 600">Bill Gates</b> signed the SAFE</span><span style="color: var(--muted)">9:41</span></div>
+            <div class="ui-row"><span>Investor &amp; employee web app</span><span class="tag">Coming</span></div>
+            <div class="ui-row"><span>Access from their own AI</span><span class="tag">Coming</span></div>
+          </div>
+        </div>
+        <h3>Give your stakeholders access.</h3>
+        <p>Investors and employees sign from a link, with no account. Soon they'll see their own stake too.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="carta" class="dark sec">
+    <div class="wrap">
+      <h2 class="h2 center">Like Carta, but free.</h2>
+      <p class="sub center">The free Carta alternative for founders who are just starting. Carta does almost everything. You need SAFEs, grants, vesting and signatures.</p>
+      <div class="cmpbox">
+        <table class="cmp">
+          <thead><tr><th scope="col"><span class="sr">Feature</span></th><th scope="col">Capfolder</th><th scope="col">Carta</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Price</th><td>Free</td><td>~$1,200 / year*</td></tr>
+            <tr><th scope="row">Setup</th><td>Download, open</td><td>Account + onboarding</td></tr>
+            <tr><th scope="row">Your data</th><td>Your computer</td><td>Their servers</td></tr>
+            <tr><th scope="row">Open source</th><td>Yes</td><td>No</td></tr>
+            <tr><th scope="row">SAFEs, grants, vesting, e-signatures</th><td>Yes</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="center" style="margin: 16px auto 0; font-size: 13px; color: #A8AFA9; max-width: 640px">* Reported by Carta customers (Vendr, Spendflo), not published by Carta. Prices vary by plan and company size.</p>
+      <p class="center" style="margin: 14px 0 0 0; font-size: 15px"><a href="/compare/carta/">Full comparison with Carta</a> · <a href="/compare/pulley/">Pulley</a> · <a href="/compare/">All comparisons</a></p>
+    </div>
+  </section>
+
+  <section id="pricing" class="wrap sec">
+    <h2 class="h2 center">Free. Pro if you want sync.</h2>
+    <p class="sub center">No trial, no card, no limit on your cap table. <b style="color: var(--ink); font-weight: 600">How is it free?</b> The app runs on your computer, so it costs us almost nothing. Pro pays for the servers that sync.</p>
+    <div class="plans">
+      <div class="plan">
+        <div class="nm">Free</div>
+        <div class="pr">$0 <small>forever</small></div>
+        <p class="ds">Everything a founder needs before the first priced round.</p>
+        <a href="#download" class="btn btn-d" data-umami-event="plan-free">Download, it's free</a>
+        <div class="lbl">Included:</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Unlimited cap table, people and documents</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>SAFEs from the YC template</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>5 signature requests a month</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Local AI, or your own key</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Works with Claude Code, Codex, Gemini CLI</span></li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="nm">Self-host</div>
+        <div class="pr">$0 <small>your server</small></div>
+        <p class="ds">Run the signing relay yourself, so nothing touches ours.</p>
+        <a href="https://github.com/MKBSP/capfolder/tree/main/apps/relay" class="btn btn-s" data-umami-event="plan-selfhost">Relay setup</a>
+        <div class="lbl">Everything in Free, plus:</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Your own signing relay</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Open source, AGPL-3.0</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Read the code and the math</span></li>
+        </ul>
+      </div>
+      <div class="plan hi">
+        <div class="nm">Pro <span class="tag" style="background: #22302A; color: #8FD3AC">Coming</span></div>
+        <div class="pr">$50 <small>/month</small></div>
+        <p class="ds">For when the cap table lives on more than one laptop.</p>
+        <button type="button" id="prowait" data-umami-event="pro-waitlist" class="btn" style="background: #fff; color: var(--ink)">Tell me when it's ready</button>
+        <p class="ds" style="margin-top: 8px">On the list: 25% off the first year.</p>
+        <div class="lbl">Everything in Free, plus:</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Sync across computers</span></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Encrypted online backup</span></li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section id="ai" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px); display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
-    <div class="reveal" style="flex: 1 1 380px; min-width: 0">
-      <h2 class="h2" style="margin-top: 14px">Plug in your local AI. Give your folder superpowers.</h2>
-      <p class="lead" style="margin-top: 18px">Ollama or LM Studio keep everything on your machine. The AI reads the odd PDFs the rules can't, and fills in a proposal. Every field is checked against the cap table, and nothing is saved until you click.</p>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; font-family: 'IBM Plex Mono', monospace; font-size: 12px">
-        <span style="padding: 5px 10px; border-radius: 999px; background: #E8F3EC; color: #16543A">Ollama · local</span>
-        <span style="padding: 5px 10px; border-radius: 999px; background: #E8F3EC; color: #16543A">LM Studio · local</span>
-      </div>
-    </div>
-    <div style="flex: 1 1 440px; min-width: 0; background: #fff; border: 1px solid #E4E4E0; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 14px; font-size: 15px; line-height: 1.55; box-shadow: 0 40px 80px -50px rgba(17,19,17,.35)">
-      <div class="msg1" style="align-self: flex-end; max-width: 80%; background: #1F6F4A; color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px">Sort my SAFEs folder (14 files)</div>
-      <div class="msg2" style="max-width: 92%; background: #F3F4F1; border-radius: 14px 14px 14px 4px; padding: 10px 14px">11 filed. 3 need you. <span class="num">scan_0042.pdf</span> looks like Fund X's SAFE (<span class="num">$250k</span>, Mar 14, 2023), signed as “Fund X Ventures I, L.P.” Same investor?</div>
-      <div class="msg3" style="align-self: flex-end; max-width: 80%; background: #1F6F4A; color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 14px">Yes. Remember that name.</div>
-      <div class="msg4" style="max-width: 92%; background: #F3F4F1; border-radius: 14px 14px 14px 4px; padding: 10px 14px">Filed as <span class="num">docs/safes/2023-03-14_fund-x_safe.pdf</span>. Next time it’s automatic.</div>
-      <div class="typing" aria-hidden="true" style="padding: 4px 6px"><span></span><span></span><span></span></div>
-      <div style="font-size: 12px; color: #5B606B; border-top: 1px solid #E4E4E0; padding-top: 12px">Ollama · running on this Mac · nothing sent out</div>
+  <section id="learn" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
+    <h2 class="h2 center" style="max-width: 760px">We share our knowledge and experience.</h2>
+    <p class="sub center">From Y Combinator, Endeavor and more. Free guides for founders who are new to all of this.</p>
+    <div class="arts"><div class="art soon"><span class="kind">Fundraising</span><b>How to fundraise</b><span class="blurb">From your first angel to a seed round: who to talk to, what to ask for, and in what order.</span><span class="more"><span class="tag">Coming</span></span></div><div class="art soon"><span class="kind">Validate</span><b>Getting your first users</b><span class="blurb">Find the first ten people who need what you build, before you build too much.</span><span class="more"><span class="tag">Coming</span></span></div><a class="art" href="/learn/safe/"><span class="kind">Fundraising</span><b>What is a SAFE?</b><span class="blurb">Raise money now, issue the shares later. How the YC post-money SAFE works.</span><span class="more">Read <span aria-hidden="true">→</span></span></a><div class="art soon"><span class="kind">Fundraising</span><b>Types of investors to avoid</b><span class="blurb">Not all money is good money. The terms and behaviours that should make you walk away.</span><span class="more"><span class="tag">Coming</span></span></div><a class="art" href="/learn/vesting/"><span class="kind">Founders</span><b>Vesting and the cliff</b><span class="blurb">Four years with a one-year cliff, month by month, and what happens when someone leaves.</span><span class="more">Read <span aria-hidden="true">→</span></span></a><a class="art" href="/learn/valuation-cap-discount/"><span class="kind">Fundraising</span><b>Valuation cap and discount</b><span class="blurb">How they decide your investor's shares, with the math worked out.</span><span class="more">Read <span aria-hidden="true">→</span></span></a></div>
+    <p class="center" style="margin: 22px 0 0 0; font-size: 15px"><a href="/learn/">All guides</a></p>
+  </section>
+
+  <section id="faq" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
+    <h2 class="h2 center">Questions</h2>
+    <div class="faq">
+      <details><summary>We haven't incorporated or raised yet. Is it for us?</summary><p>Yes. Record the split you agreed with your cofounders now. When you incorporate, it becomes real shares. When you raise, the SAFE is one form away.</p></details>
+      <details><summary>Do I need a server or any setup?</summary><p>No setup needed. Capfolder is a normal app: download it, open it, pick a folder. No server, no database, no account, no terminal. Signing goes through our hosted relay, so that needs no setup either. Running your own relay is optional.</p></details>
+      <details><summary>Is it really free?</summary><p>Yes, the whole app, with 5 signature requests a month. Pro, when it ships, adds sync and backup.</p></details>
+      <details><summary>Who can see my data?</summary><p>Your cap table and documents stay on your computer. A document you send for signature sits on the relay until it's signed (self-host the relay if that matters). The app sends an anonymous install count; turn it off in Settings.</p></details>
+      <details><summary>Do I need to pay for AI?</summary><p>No. Use a free model on your computer (Ollama or LM Studio). Your own Claude, OpenAI or Gemini key works too.</p></details>
+      <details><summary>Which companies does it support?</summary><p>Delaware C-corps first. More jurisdictions after.</p></details>
+      <details><summary>Is this legal advice?</summary><p>No. Capfolder records what you and your lawyer decided. It fills in YC's standard SAFE word for word and drafts nothing else. Have a lawyer review it.</p></details>
     </div>
   </section>
 
-  <section id="pricing" class="wrap" style="padding-top: clamp(56px, 12vw, 112px); padding-bottom: clamp(56px, 12vw, 112px)">
-    <div class="reveal" style="max-width: 760px">
-      <h2 class="h2" style="margin-top: 14px">Free forever. Your cap table never sits behind a paywall.</h2>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 40px">
-      <div class="lift reveal" style="background: #fff; border: 1px solid #1F6F4A; border-radius: 16px; padding: 26px; display: flex; flex-direction: column">
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0">Free forever</h3>
-        <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span class="num" style="font-size: 34px; font-weight: 600">$0</span><span style="color: #5B606B; font-size: 14px">forever</span></div>
-        <ul style="list-style: none; margin: 20px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Unlimited cap table, people and documents</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>YC SAFE and pro rata side letter, filled in for you</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>E-signatures through our relay: 5 signing requests a month</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Bring your own AI: Ollama or LM Studio on your computer</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #A3A6AD">–</span><span style="color: #5B606B">No sync with other apps or computers</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #A3A6AD">–</span><span style="color: #5B606B">No online backup: your folder, your backups</span></li></ul>
-        <div style="margin-top: auto; padding-top: 24px"><a href="#download" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">Download</a></div>
-      </div>
-      <div class="lift reveal2" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px; display: flex; flex-direction: column">
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0">Self-hosted</h3>
-        <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span class="num" style="font-size: 34px; font-weight: 600">$0</span><span style="color: #5B606B; font-size: 14px">on your own server</span></div>
-        <ul style="list-style: none; margin: 20px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Everything in Free forever</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Run the signing relay yourself: unsigned documents never leave your server</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Your own daily limits</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>AGPL-3.0: audit it, change it, fork it</span></li></ul>
-        <div style="margin-top: auto; padding-top: 24px"><a href="https://github.com/MKBSP/capfolder/tree/main/apps/relay" data-umami-event="relay-setup" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Relay setup on GitHub</a></div>
-      </div>
-      <div class="lift reveal3" style="background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; padding: 26px; display: flex; flex-direction: column">
-        <h3 style="font-size: 18px; font-weight: 600; margin: 0">Pro</h3>
-        <div style="margin-top: 10px; display: flex; align-items: baseline; gap: 6px"><span class="num" style="font-size: 34px; font-weight: 600">$50</span><span style="color: #5B606B; font-size: 14px">per month · <span style="display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #F3F1F9; color: #5B3FA6">Coming</span></span></div>
-        <ul style="list-style: none; margin: 20px 0 0 0; padding: 0; display: grid; gap: 10px; font-size: 15px; line-height: 1.5; color: #3A3E46"><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Everything in Free forever</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Sync your folder across computers and apps</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>Encrypted online backup</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>No limit on signing requests</span></li><li style="display: flex; gap: 10px"><span aria-hidden="true" style="color: #1F6F4A">✓</span><span>AI included, no setup</span></li></ul>
-        <div style="margin-top: auto; padding-top: 24px"><button type="button" id="prowait" data-umami-event="pro-waitlist" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">I want Pro: tell me when it's ready</button><p style="color: #5B606B; font-size: 14px; margin: 10px 0 0 0">Join the list and get <b style="font-weight: 600; color: #111311">25% off the first year</b>. The free app stays free.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="thanks" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
-    <div class="reveal">
+<section id="thanks" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
+    <div>
       <h2 class="h2" style="margin-top: 14px">Open source we use, with thanks.</h2>
     </div>
-    <div class="reveal2" style="margin-top: 32px; background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; overflow-x: auto">
+    <div style="margin-top: 32px; background: #fff; border: 1px solid #E4E4E0; border-radius: 16px; overflow-x: auto">
       <table style="width: 100%; border-collapse: collapse; min-width: 620px; font-size: 15px">
         <thead><tr style="font-size: 13px; color: #5B606B; text-align: left"><th style="padding: 14px 22px; font-weight: 500; border-bottom: 1px solid #E4E4E0">Project</th><th style="padding: 14px 12px; font-weight: 500; border-bottom: 1px solid #E4E4E0">What we use it for</th><th style="padding: 14px 22px; font-weight: 500; border-bottom: 1px solid #E4E4E0">License</th></tr></thead>
         <tbody>
@@ -414,55 +697,118 @@ header .fade-in{animation:none;opacity:1}
     <p style="margin: 14px 0 0 0; font-size: 13px; color: #5B606B">Every package with its license: <a href="https://github.com/MKBSP/capfolder/blob/main/THIRD_PARTY_LICENSES.md">THIRD_PARTY_LICENSES.md</a>.</p>
   </section>
 
-  <section id="faq" class="wrap" style="padding-bottom: clamp(56px, 12vw, 112px)">
-    <h2 class="h2 reveal">Questions</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px 56px; margin-top: 32px">
-      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Who can see my data?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Your cap table and documents stay on your computer. A document you send for signature sits on the relay until it's signed, and whoever runs the relay could read it (self-host it if that matters). The app sends an anonymous install count; turn it off in Settings. Details below.</p></div>
-      <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Do I need a server or any setup?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">No. Capfolder is a normal app: download it, open it, pick a folder. No server, no database, no account, no terminal. Signing goes through our hosted relay, so that needs no setup either. Running your own relay is optional.</p></div>
-      
-      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">What does it cost?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Free forever, or free on your own server. A $50/month Pro plan with sync, online backup and built-in AI is coming. See <a href="#pricing">Pricing</a>.</p></div>
-      <div class="reveal2"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Which companies does it support?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">Delaware C-corps first. More jurisdictions after.</p></div>
-      <div class="reveal"><h3 style="font-weight: 600; font-size: 17px; margin: 0 0 8px 0">Is this legal advice?</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3A3E46">No. Capfolder records what you and your lawyer decided. It fills in YC's standard SAFE and side letter word for word, and drafts nothing else. Have a lawyer review them.</p></div>
-    </div>
-  </section>
-
-  <section style="background: #1F6F4A; color: #fff; padding-top: clamp(56px, 12vw, 120px); padding-bottom: clamp(56px, 12vw, 120px); text-align: center; position: relative; overflow: hidden">
-    <div aria-hidden="true" style="position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1px); background-size: 22px 22px"></div>
-    <div class="wrap reveal" style="position: relative">
-      <h2 class="h2" style="font-size: clamp(36px, 9vw, 60px)">Own your cap table.</h2>
-      <p class="lead" style="color: #D6EBDD; margin: 18px auto 0 auto; max-width: 520px">Free, open source, on your computer. No setup.</p>
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px">
-        <a href="#download" class="btn" style="background: #fff; color: #16543A">Download for macOS</a>
-        <a href="https://github.com/MKBSP/capfolder" data-umami-event="github" class="btn" style="border-color: rgba(255,255,255,.45); color: #fff">Star on GitHub</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="privacy" class="wrap" style="padding-bottom: clamp(56px, 12vw, 96px)">
+<section id="privacy" class="wrap" style="padding-bottom: clamp(56px, 12vw, 96px)">
     <h2 class="h2" style="font-size: 32px">Privacy</h2>
     <div style="max-width: 760px; font-size: 15px; line-height: 1.65; color: #3A3E46">
       <p><b>This page.</b> Fonts and images come from this site. Visits, where they came from, and clicks on buttons are counted with <a href="https://umami.is/privacy">Umami</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
-      <p><b>The download form.</b> When you click "Get the download", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
-      <p><b>The Pro list.</b> "I want Pro" opens a second <a href="https://tally.so/help/privacy-policy">Tally</a> form: your email, and optionally your company and what you'd want from Pro. We use it only to tell you when Pro is ready and give you the 25% discount.</p>
+      <p><b>The download form.</b> When you click "Download, it's free", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
+      <p><b>The Pro list.</b> "Tell me when it's ready" opens a second <a href="https://tally.so/help/privacy-policy">Tally</a> form: your email, and optionally your company and what you'd want from Pro. We use it only to tell you when Pro is ready and give you the 25% discount.</p>
       <p><b>Questions about your data.</b> Write to <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a>.</p>
       <p><b>The app.</b> Your cap table and documents stay in your folder. Documents you send for signature pass through the signing relay until everyone has signed, then the relay deletes them (within 7 days, or 30 if never signed). The app sends an anonymous install ping (a random install id, the app version, your operating system, and yes/no for "imported", "has documents", "sent for signature") once on first run and then weekly, only after you accept the terms. The relay keeps the day, not the time or your IP address. Turn it off in Settings → Privacy. The code that sends and stores it is public in the repo.</p>
     </div>
   </section>
 
-  <button type="button" id="pause-motion" aria-pressed="false">Pause animations</button>
-  <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; color: #5B606B">
-    <span>Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</span>
-    <span style="display: flex; flex-wrap: wrap; gap: 18px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="https://github.com/MKBSP/capfolder/fork">Fork it</a><a href="/help/">Help</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="#thanks">Acknowledgements</a><a href="#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><a href="https://github.com/MKBSP/capfolder/issues">Contact (GitHub issues)</a><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
+  <section id="contact" class="wrap" style="padding-bottom: clamp(56px, 10vw, 104px)">
+    <div class="stage center" style="padding: clamp(40px, 7vw, 80px) 20px">
+      <h2 class="h2" style="font-size: clamp(30px, 5.6vw, 52px)">Get in touch.</h2>
+      <p class="sub">Questions about your split, your first SAFE or moving off a spreadsheet? Tell us where you are and we'll help.</p>
+      <div style="margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">
+        <button type="button" class="btn btn-s" data-talk data-umami-event="book-call-close">Book a call</button>
+        <a href="#download" class="btn btn-d" data-umami-event="close-download">Download, it's free</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; line-height: 1.55; color: #5B606B">
+    <span style="flex: 1 1 360px; max-width: 62ch">Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px 18px; flex: 1 1 360px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="/help/">Help</a><a href="/features/">Features</a><a href="/blog/">Blog</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="/#thanks">Acknowledgements</a><a href="/#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><button type="button" class="linkbtn" data-talk data-umami-event="book-call-footer" style="color: #1F6F4A">Book a call</button><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
   </footer>
 </div>
 
 <script>
-  // WCAG 2.2.2: anything that moves for more than 5 seconds can be paused
-  document.getElementById("pause-motion").addEventListener("click", (e) => {
-    const on = document.documentElement.classList.toggle("motion-paused");
-    e.currentTarget.setAttribute("aria-pressed", String(on));
-    e.currentTarget.textContent = on ? "Play animations" : "Pause animations";
-  });
+// Hero story: the cap table card is the hero; each chapter's chip drifts in beside it and stays, faded, as the journey builds.
+// One thing moves at a time. Pausable (WCAG 2.2.2), a still frame under reduced motion, stops off screen.
+(function () {
+  var C = 2 * Math.PI * 44;
+  var K = ["jobs", "woz", "bill", "pool", "seed", "a", "cfo", "b"];
+  var COL = { jobs: "#1F6F4A", woz: "#4E9A72", bill: "#C08A2E", pool: "#A9CDB8", seed: "#6E7781", a: "#2D3A33", cfo: "#5B7FA3", b: "#9AA3AD" };
+  // Sample numbers, % of fully diluted, each chapter sums to 100%. Post-money SAFEs keep their % until the priced round:
+  // $250k at a $5M cap = 5%; $5M at a $20M cap = 25%; Series A $25M at $120M post = 20.8%;
+  // Woz leaves at 75% vested, his unvested shares go back to the pool, a new CFO gets 5%; Series B $75M at $500M post = 15%.
+  var S = [
+    { tag: "Not incorporated", val: "Idea", foot: "Promises recorded. They become shares when you incorporate.", own: { jobs: 50, woz: 50 },
+      rows: [["jobs", "Steve Jobs", "promised"], ["woz", "Steve Wozniak", "promised"]] },
+    { tag: "SAFE signed", val: "$5M cap", foot: "SAFE signed from a link. Totals add to 100%.", own: { jobs: 47.5, woz: 47.5, bill: 5 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["bill", "Bill Gates", "SAFE $250k"]] },
+    { tag: "Option pool", val: "$5M cap", foot: "Before you grant options: get a 409A valuation", q409: true, own: { jobs: 42.5, woz: 42.5, bill: 5, pool: 10 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["bill", "Bill Gates", "SAFE"], ["pool", "Tim Apple + 2", "options"]] },
+    { tag: "Seed on SAFEs", val: "$20M cap", foot: "Every SAFE converts at the next priced round.", own: { jobs: 31.3, woz: 31.3, pool: 7.4, bill: 5, seed: 25 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool", "Team", "options"], ["bill", "Bill Gates", "SAFE"], ["seed", "Seed investors", "SAFE $5M"]] },
+    { tag: "Series A", val: "$120M", foot: "SAFEs converted. Every paper is ready for diligence.", own: { jobs: 24.8, woz: 24.8, pool: 5.8, bill: 4, seed: 19.8, a: 20.8 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool", "Team", "options"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred $25M"]] },
+    { tag: "Founder leaves", val: "$120M", foot: "Woz's unvested shares go back to the pool.", own: { jobs: 24.8, woz: 18.6, pool: 7, cfo: 5, bill: 4, seed: 19.8, a: 20.8 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "vesting stopped"], ["cfo", "New CFO", "options"], ["pool", "Pool", "unallocated"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred"]] },
+    { tag: "Series B", val: "$500M", foot: "Priced round. Preferred shares issued.", own: { jobs: 21.1, woz: 15.8, pool: 6, cfo: 4.2, bill: 3.4, seed: 16.8, a: 17.7, b: 15 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool+cfo", "Team", "options"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred"], ["b", "Series B", "Preferred $75M"]] },
+    { tag: "Unicorn", val: "$1B", foot: "The records were right from day one.", own: { jobs: 21.1, woz: 15.8, pool: 6, cfo: 4.2, bill: 3.4, seed: 16.8, a: 17.7, b: 15 },
+      rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool+cfo", "Team", "options"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred"], ["b", "Series B", "Preferred"]] },
+  ];
+  S.forEach(function (s, n) { s.ms = n === S.length - 1 ? 8000 : 6000; });
+  var root = document.getElementById("grow");
+  var chips = root.querySelectorAll(".chip");
+  var segs = {}; root.querySelectorAll(".seg").forEach(function (c) { segs[c.dataset.k] = c; });
+  var bars = root.querySelectorAll(".gsteps button");
+  var btn = document.getElementById("pause-motion");
+  var $ = function (id) { return document.getElementById(id); };
+  var starts = [], total = 0;
+  S.forEach(function (s) { starts.push(total); total += s.ms; });
+  var FADE = 1200; // the last moments of the loop clear the chips before the story starts again
+  var t = 0, cur = -1, ending = false, playing = true, visible = true, last = 0;
+  function pct(v) { return (Math.round(v * 10) / 10).toFixed(v % 1 ? 1 : 0) + "%"; }
+  function sum(own, keys) { return keys.split("+").reduce(function (a, k) { return a + (own[k] || 0); }, 0); }
+  function chapter(n) {
+    if (n === cur) return;
+    cur = n;
+    chips.forEach(function (c, j) {
+      c.classList.remove("gone");
+      c.classList.toggle("now", j === n);
+      c.classList.toggle("past", j < n);
+    });
+    root.className = root.className.replace(/\bst-\d\b/g, "").trim() + " st-" + n;
+    var st = S[n], off = 0;
+    K.forEach(function (k) {
+      var len = (st.own[k] || 0) / 100 * C;
+      segs[k].style.strokeDasharray = Math.max(len - (len ? 1.2 : 0), 0) + " " + C;
+      segs[k].style.strokeDashoffset = -off; off += len;
+    });
+    $("gval").textContent = st.val; $("gtag").textContent = st.tag; $("gfoot").textContent = st.foot;
+    $("q409").hidden = !st.q409; $("gfootbox").classList.toggle("warn", !!st.q409);
+    $("grows").innerHTML = st.rows.map(function (r, j) {
+      return '<div class="grow-row" style="animation-delay:' + j * 70 + 'ms"><i style="background:' + COL[r[0].split("+")[0]] + '"></i><span>' + r[1] + '</span><span class="v">' + r[2] + '</span><span class="p">' + pct(sum(st.own, r[0])) + "</span></div>";
+    }).join("");
+  }
+  function paint() {
+    var n = 0; while (n < S.length - 1 && t >= starts[n + 1]) n++;
+    chapter(n);
+    var end = playing && t > total - FADE;
+    if (end !== ending) { ending = end; chips.forEach(function (c) { c.classList.toggle("gone", end); }); root.classList.toggle("st-" + n, !end); }
+    bars.forEach(function (b, j) {
+      var p = j < n ? 100 : j > n ? 0 : Math.min(100, (t - starts[n]) / S[n].ms * 100);
+      b.firstChild.style.setProperty("--p", p + "%");
+      if (j === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    });
+  }
+  function frame(now) {
+    if (playing && visible && last) { t += Math.min(now - last, 100); if (t >= total) { t = 0; cur = -1; } }
+    last = now; paint(); requestAnimationFrame(frame);
+  }
+  function setPlaying(p) { playing = p; root.classList.toggle("paused", !p); btn.setAttribute("aria-pressed", String(!p)); btn.textContent = p ? "Pause" : "Play"; }
+  bars.forEach(function (b) { b.addEventListener("click", function () { t = starts[+b.dataset.s] + 1; }); });
+  btn.addEventListener("click", function () { setPlaying(!playing); });
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(root);
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setPlaying(false); t = starts[S.length - 1] + 1; }
+  requestAnimationFrame(frame);
+})();
 
 // Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
 // Links point at the latest published GitHub release (until one is published, the releases page).
@@ -473,9 +819,10 @@ function showDownloads() {
 }
 document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
 document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") })); // Pro waitlist (integrations/tally.md)
-document.getElementById("skipdl").addEventListener("click", showDownloads); // Show HN: no signup required to try
+document.getElementById("skipdl").addEventListener("click", showDownloads);
+// "Book a call" (Tally 8NqXQ5, integrations/tally.md)
+for (const b of document.querySelectorAll("[data-talk]")) b.addEventListener("click", () => openForm("8NqXQ5", { onSubmit: () => window.umami?.track("book-call-submitted") })); // Show HN: no signup required to try
 // Tally is loaded only when someone asks for the download (no third-party request before that)
-// download form: autoClose closes Tally's own thank-you and the page shows the download links
 function openForm(id, opts) {
   const popup = () =>
     window.Tally.openPopup(id, {
@@ -505,17 +852,7 @@ fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
     set("dl-linux", find(/\.AppImage$/) || find(/\.deb$/));
   })
   .catch(() => {});
-fetch("https://api.github.com/repos/MKBSP/capfolder")
-  .then((r) => r.ok ? r.json() : null)
-  .then((repo) => {
-    if (!repo) return;
-    var n = repo.stargazers_count;
-    document.querySelectorAll(".stars").forEach((el) => { el.textContent = n; });
-    document.querySelectorAll(".stars-sep").forEach((el) => { el.textContent = ` · ${n} ★`; });
-  })
-  .catch(() => {});
 </script>
-<script src="/roadmap.js" defer></script>
 <script src="/capfolder-paperwork.js" defer></script>
 </body>
 </html>

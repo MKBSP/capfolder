@@ -176,7 +176,7 @@ test("HN-friendly download: email optional, works without JS, unsigned-beta step
   expect(html).not.toMatch(/then the relay deletes them\./);
 });
 
-test("homepage is short and talks to first-time founders: no compare, open-source, roadmap or marquee sections, no eyebrows, Pulley only in the footer", () => {
+test("homepage talks to first-time founders: no roadmap or marquee sections, no eyebrows, no Pulley or Carta before the features (page F, 2026-11-04)", () => {
   for (const gone of [
     'id="compare"',
     'id="open"',
@@ -189,10 +189,14 @@ test("homepage is short and talks to first-time founders: no compare, open-sourc
   ])
     expect([gone, html.includes(gone)]).toEqual([gone, false]);
   const nav = html.match(/<nav aria-label="Main"[\s\S]*?<\/nav>/)![0];
-  expect(nav).not.toMatch(/href="#(story|signing|ai|open|pricing)"/);
+  expect(nav).not.toMatch(/href="#(story|signing|ai|open)"/);
   expect(nav).not.toContain("Star");
-  const body = html.slice(0, html.indexOf("<footer"));
-  expect(body.slice(body.indexOf("<body")).match(/Pulley|Carta/g)).toBeNull();
+  // Pulley and Carta appear in the import feature, the "Like Carta, but free" section and the footer: never in the hero.
+  const hero = html
+    .slice(html.indexOf("<body"), html.indexOf('id="features"'))
+    .replace(/<ul class="logos"[\s\S]*?<\/ul>/g, ""); // the "Bring your cap table from" logo strip may name them
+  expect(hero.match(/Pulley|Carta/g)).toBeNull();
+  expect(html).toContain('id="carta"');
 });
 
 test("the homepage never asks what happens if we shut down", () => {
@@ -206,19 +210,22 @@ test("pricing: free forever, self-hosted, and a paid plan that's clearly not out
     html.indexOf("</section>", html.indexOf('id="pricing"')),
   );
   for (const s of [
-    "Free forever",
-    "Self-hosted",
+    "$0 <small>forever</small>",
+    "Self-host",
     "$50",
     "Coming",
-    "5 signing requests a month",
-    "No online backup",
-    "Bring your own AI",
+    "5 signature requests a month",
+    "Sync across computers",
+    "Local AI, or your own key",
   ])
     expect([s, pricing.includes(s)]).toEqual([s, true]);
 });
 
 test("Pro: 'tell me when it's ready' opens the Pro waitlist form (aONDJb) with the 25% first-year offer", () => {
-  const pro = html.slice(html.indexOf(">Pro</h3>"), html.indexOf("</section>", html.indexOf(">Pro</h3>")));
+  const pro = html.slice(
+    html.indexOf('class="nm">Pro'),
+    html.indexOf("</section>", html.indexOf('class="nm">Pro')),
+  );
   expect(pro).toMatch(/id="prowait"[^>]*data-umami-event="pro-waitlist"/);
   expect(pro).toContain("25% off the first year");
   expect(html).toContain('"aONDJb"');
