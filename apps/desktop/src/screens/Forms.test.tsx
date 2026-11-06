@@ -30,6 +30,18 @@ test("New SAFE: live impact, record, then it's on the cap table", async () => {
   expect(fs.readSync(`${root}/captable.csv`)).toContain("Fund Y,safe,,,,,,200000,10000000,,2.00,missing");
 });
 
+test("New SAFE: a half-typed amount never crashes (CAP-47)", async () => {
+  await openNew("SAFE");
+  const amount = screen.getByLabelText("Amount (USD)");
+  await userEvent.type(amount, "50,");
+  expect(screen.getByText("Type a whole amount, like 50,000.")).toBeTruthy();
+  await userEvent.type(amount, "000");
+  expect(screen.queryByText("Type a whole amount, like 50,000.")).toBeNull();
+  await userEvent.clear(amount);
+  await userEvent.type(amount, "$50,000");
+  expect(screen.queryByText("Type a whole amount, like 50,000.")).toBeNull();
+});
+
 test("New grant: pool line, record, pool shrinks", async () => {
   await openNew("Grant");
   await userEvent.type(screen.getByLabelText("Name"), "Rui");

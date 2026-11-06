@@ -123,6 +123,7 @@ export function NewSafe() {
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="200,000"
               />
+              {amount.trim() && !digits(amount) ? <div className="muted">Type a whole amount, like 50,000.</div> : null}
             </Field>
             <Field label={withCurrency("Valuation cap")} tip="cap">
               <input

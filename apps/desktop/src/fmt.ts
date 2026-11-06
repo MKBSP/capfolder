@@ -77,8 +77,11 @@ export const moneyShort = (amount: string | undefined, currency = cfg.currency) 
   return parts.map((x, i) => (i === at ? `${x.value}${suffix}` : x.value)).join("");
 };
 
-/** What the founder typed in a number field, read with their decimal mark; the raw text when it isn't a number. */
-export const num = (text: string) => parseLocalNumber(text, cfg.decimalMark) ?? text.trim();
+/**
+ * What the founder typed in a number field, read with their decimal mark; "" when it isn't a number (yet), so a
+ * half-typed "50," never reaches the exact math (CAP-47). Callers check for "" before building events.
+ */
+export const num = (text: string) => parseLocalNumber(text, cfg.decimalMark) ?? "";
 
 /** "2026-11-07" → "7 Nov 2026" (day month year, everywhere in the app). */
 export const day = (iso: string) => {

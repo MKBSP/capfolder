@@ -418,6 +418,7 @@ function TransferDialog({ secs, onClose }: { secs: Security[]; onClose(): void }
             const who = resolvePerson(to);
             if (!who) return setErrors(["Enter who receives it."]);
             const q = num(qty);
+            if (!q) return setErrors(["Enter a whole number of shares."]);
             const r = b.transfer({
               state: at,
               securityId: secId,
