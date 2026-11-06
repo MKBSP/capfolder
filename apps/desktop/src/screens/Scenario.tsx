@@ -45,6 +45,10 @@ export function Scenario() {
     return real?.lines.find((l) => l.kind === "pool")?.shares ?? null;
   })();
 
+  // every real step (founders, pool, SAFE) has a table without an error: what Save would hand over is what is shown
+  const realSteps = steps.filter((s) => s.kind !== "round" && s.kind !== "exit").length;
+  const realShown = shown.filter((s) => !s.error && s.step.kind !== "round" && s.step.kind !== "exit").length;
+  const saveable = ready && realSteps === realShown;
   const update = (i: number, step: Step) => setSteps(setStep(steps, i, step));
   const remove = (i: number) => {
     setSteps(removeStep(steps, i));
@@ -58,7 +62,7 @@ export function Scenario() {
           <button
             type="button"
             className="btn primary"
-            disabled={!ready}
+            disabled={!saveable}
             onClick={() =>
               app.go({
                 // first run goes through Welcome (terms, lock) and the email step first; the prefill rides along
@@ -198,6 +202,31 @@ function Row({ l, exit }: { l: Line; exit: boolean }) {
   );
 }
 
+/** Keeps what the founder types (so "12.5" survives the "12." moment); the step stores the fraction. */
+function DiscountInput({
+  step,
+  onChange,
+}: {
+  step: Extract<Step, { kind: "safe" }>;
+  onChange(s: Step): void;
+}) {
+  const [text, setText] = useState(
+    step.discount ? String(Math.round(Number(step.discount) * 10000) / 100) : "",
+  );
+  return (
+    <input
+      className="inp num"
+      value={text}
+      onChange={(e) => {
+        const t = e.target.value.replace("%", "");
+        setText(t);
+        onChange({ ...step, discount: discountFraction(t) });
+      }}
+      placeholder="e.g. 20"
+    />
+  );
+}
+
 function StepCard({
   step,
   onChange,
@@ -209,7 +238,7 @@ function StepCard({
 }) {
   const head = (
     <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline" }}>
-      <b>{titleOf(step)}</b>
+      <b>{titleOf(engineSteps([step])[0]!)}</b>
       {onRemove ? (
         <button type="button" className="btn link small" onClick={onRemove}>
           Remove
@@ -349,14 +378,7 @@ function StepCard({
               />
             </Field>
             <Field label="Discount % (optional)" tip="discount">
-              <input
-                className="inp num"
-                value={step.discount ? String(Math.round(Number(step.discount) * 10000) / 100) : ""}
-                onChange={(e) =>
-                  onChange({ ...step, discount: discountFraction(e.target.value.replace("%", "")) })
-                }
-                placeholder="e.g. 20"
-              />
+              <DiscountInput step={step} onChange={onChange} />
             </Field>
           </div>
         </div>

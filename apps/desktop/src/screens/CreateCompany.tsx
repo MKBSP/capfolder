@@ -83,8 +83,9 @@ export function CreateCompany() {
         <h1>Your company</h1>
         {prefill ? (
           <div className="banner">
-            Your scenario's founders, pool and SAFEs will be filled into the setup after this step. Rounds
-            that haven't happened are recorded in the app when they close.
+            {planned
+              ? "Not incorporated yet: your scenario's founders aren't carried over as promises yet. Add them with + New → Promise shares; the pool and SAFEs wait for the incorporation."
+              : "Your scenario's founders, pool and SAFEs will be filled into the setup after this step. Rounds that haven't happened are recorded in the app when they close."}
           </div>
         ) : null}
         <label>

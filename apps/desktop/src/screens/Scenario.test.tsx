@@ -173,3 +173,75 @@ test("sample company: scenarios run, no save button", async () => {
   await screen.findByRole("heading", { name: "Seed" });
   expect(rows().some((r) => r.startsWith("Seed investors"))).toBe(true);
 });
+
+// ---- from the final review (2026-11-06): each of these failed first ----
+
+async function toCreateWithScenario() {
+  await openEmpty();
+  await founders(["Steve Jobs", "Steve Wozniak"], "5000000");
+  await screen.findByRole("heading", { name: "Founders" });
+  await userEvent.click(screen.getByRole("button", { name: "Save as my cap table" }));
+  await userEvent.click(await screen.findByLabelText("No lock"));
+  await userEvent.click(screen.getByLabelText(/I accept the/));
+  await userEvent.click(screen.getByRole("button", { name: "Continue" }));
+  await userEvent.click(await screen.findByRole("button", { name: "Skip for now" }));
+  await screen.findByText(/Rounds that haven't happened/);
+}
+
+test("not incorporated yet: the banner says the scenario can't be filled in as promises, no false promise", async () => {
+  await toCreateWithScenario();
+  await userEvent.click(screen.getByLabelText("Not incorporated yet"));
+  expect(screen.getByText(/Promise shares/)).toBeInTheDocument();
+  expect(screen.queryByText(/will be filled into the setup/)).toBeNull();
+});
+
+test("the discount field keeps what is typed, decimals included", async () => {
+  await openEmpty();
+  await founders(["Steve Jobs", "Steve Wozniak"], "5000000");
+  await add("SAFE");
+  const d = screen.getByLabelText(/^Discount/);
+  await userEvent.type(d, "12.5");
+  expect((d as HTMLInputElement).value).toBe("12.5");
+});
+
+test("a card heading reads the amount the way the founder typed it", async () => {
+  await openEmpty();
+  await founders(["Steve Jobs", "Steve Wozniak"], "5000000");
+  await add("Exit");
+  await userEvent.type(screen.getByLabelText("Company sells for (USD)"), "200,000,000");
+  expect(screen.getAllByText("Exit at $200M").length).toBeGreaterThan(0);
+  expect(screen.queryByText(/NaN/)).toBeNull();
+});
+
+test("a SAFE added after the typical rounds goes before the first round", async () => {
+  await openEmpty();
+  await founders(["Steve Jobs", "Steve Wozniak"], "5000000");
+  await userEvent.click(screen.getByRole("button", { name: "Use the typical rounds" }));
+  await add("SAFE");
+  await userEvent.type(screen.getByLabelText("Investor"), "Bill Gates");
+  await userEvent.type(screen.getByLabelText("Amount (USD)"), "500000");
+  await userEvent.type(screen.getByLabelText("Valuation cap (USD)"), "2000000");
+  await screen.findByRole("button", { name: "Series B" });
+  const chips = screen.getAllByRole("button", {
+    name: /^(Founders|SAFE: Bill Gates|Seed|Series A|Series B)$/,
+  });
+  expect(chips.map((c) => c.textContent)).toEqual([
+    "Founders",
+    "SAFE: Bill Gates",
+    "Seed",
+    "Series A",
+    "Series B",
+  ]);
+});
+
+test("Save is disabled while a real step is refused", async () => {
+  await openEmpty();
+  await founders(["Steve Jobs", "Steve Wozniak"], "5000000");
+  await screen.findByRole("heading", { name: "Founders" });
+  expect(screen.getByRole("button", { name: "Save as my cap table" })).toBeEnabled();
+  await add("SAFE");
+  await userEvent.type(screen.getByLabelText("Investor"), "Bill Gates");
+  await userEvent.type(screen.getByLabelText("Amount (USD)"), "50,");
+  await screen.findByText(/whole/);
+  expect(screen.getByRole("button", { name: "Save as my cap table" })).toBeDisabled();
+});

@@ -146,7 +146,16 @@ export function addStep(steps: Step[], kind: Step["kind"]): Step[] {
           : kind === "exit"
             ? ({ kind: "exit", value: "" } satisfies ExitStep)
             : STARTER_STEPS[0]!;
-  const at = steps.at(-1)?.kind === "exit" && kind !== "exit" ? steps.length - 1 : steps.length;
+  // real steps (pool, SAFE) go before the first projected step; a round before a trailing exit; an exit last
+  const firstProjection = steps.findIndex((s) => s.kind === "round" || s.kind === "exit");
+  const at =
+    kind === "pool" || kind === "safe"
+      ? firstProjection < 0
+        ? steps.length
+        : firstProjection
+      : steps.at(-1)?.kind === "exit" && kind !== "exit"
+        ? steps.length - 1
+        : steps.length;
   return [...steps.slice(0, at), step, ...steps.slice(at)];
 }
 
