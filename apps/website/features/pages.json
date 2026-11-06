@@ -19,13 +19,14 @@
     ]
   },
   "features/ai": {
-    "checked": "5ba750c",
+    "checked": "bf57cf0",
     "covers": [
       "apps/desktop/src/screens/ConnectAi.tsx",
       "packages/capfolder/src/tools/read.ts",
       "packages/capfolder/src/tools/write.ts",
       "packages/capfolder/src/install.ts",
-      "skills/capfolder/SKILL.md"
+      "skills/capfolder/SKILL.md",
+      "packages/capfolder/src/tools/plans.ts"
     ]
   }
 }

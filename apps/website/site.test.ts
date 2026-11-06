@@ -267,6 +267,7 @@ test("every sub-page has the same navbar, with its section marked", () => {
     ["help/import/index.html", "/help/"],
     ["help/local-ai/index.html", "/help/"],
     ["help/install-local-ai/index.html", "/help/"],
+    ["help/scenario/index.html", "/help/"],
     ["features/index.html", "/features/"],
     ["features/import/index.html", "/features/"],
     ["migrate/from-pulley/index.html", "/features/"],

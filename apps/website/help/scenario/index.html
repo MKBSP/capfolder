@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Try a scenario · Capfolder help</title>
+<meta name="description" content="Play out founders, a SAFE, the usual rounds and an exit in Capfolder before anything is real. Every number shows its math. Nothing is saved.">
+<link rel="canonical" href="https://capfolder.com/help/scenario/">
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<link rel="stylesheet" href="/page.css">
+<style>
+@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
+body{margin:0;background:#FAFAF8;color:#111311;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:17px;line-height:1.6}
+a{color:#1F6F4A}a:hover{color:#16543A}
+main{max-width:760px;margin:0 auto;padding:40px 16px 80px}
+.crumb{font-size:14px;color:#5B606B}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:12px 0 8px}
+h2{font-size:20px;margin:40px 0 8px}
+.lead{color:#3A3E46;margin:0}
+ol.steps{padding-left:22px}ol.steps li{margin:6px 0}
+figure{margin:16px 0 0}
+.shot img{display:block;width:100%;height:auto;border:1px solid #E4E4E0;border-radius:12px;background:#fff}
+.shot{position:relative;display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.shot:focus-visible{outline:3px solid #1F6F4A;outline-offset:3px;border-radius:12px}
+.hl{position:absolute;border:3px solid #E07B00;border-radius:10px;box-shadow:0 0 0 4px rgba(224,123,0,.25);pointer-events:none}
+#zoom{border:0;padding:0;background:none;max-width:96vw;max-height:96vh;overflow:auto}
+#zoom::backdrop{background:rgba(17,19,17,.75)}
+#zoom .shot{width:min(1480px,94vw);cursor:zoom-out}
+figcaption{font-size:14px;color:#5B606B;margin-top:6px}
+.tip{background:#E8F3EC;border-radius:10px;padding:14px 16px;font-size:15px;margin-top:16px}
+dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A3E46}
+.foot{margin-top:56px;font-size:14px;color:#5B606B}
+</style>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/features/">Features</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/" aria-current="true">Help</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<main>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/help/">Help</a> · Before you start</div>
+  <h1>Try a scenario</h1>
+  <p class="lead">No company yet, or just curious? Play out founders, an option pool, a SAFE, the usual rounds and an exit. One table per step, with the math behind every number. Nothing is saved.</p>
+
+  <h2>1. Open it</h2>
+  <ul>
+    <li>With no company: on the Welcome screen, click <b>Try a scenario</b>.</li>
+    <li>With a company open: on the cap table, click <b>Try a scenario</b>. The first chip, <b>Today</b>, is your cap table as it is; the steps you add build on it.</li>
+  </ul>
+
+  <h2>2. Add steps</h2>
+  <ol class="steps">
+    <li><b>Founders:</b> names and shares. The first table appears as soon as both are filled in.</li>
+    <li><b>+ Add step:</b> an <b>Option pool</b> (by percent of fully diluted, or by shares), a <b>SAFE</b> (amount, post-money cap, optional discount), a <b>Priced round</b> (the percent it sells, or new money and a pre-money valuation, with an optional pool top-up), or an <b>Exit</b> (what the company sells for).</li>
+    <li><b>Use the typical rounds</b> fills in a normal run: seed, Series A and Series B at the medians Carta reports, with the source and year shown under the button. Change or remove any of them.</li>
+    <li>Click a chip on the right to see that step's table. <b>Change</b> is the move in percentage points from the step before; an exit shows each holder's proceeds instead. <b>How is this calculated?</b> under a holder shows the formula with the real numbers.</li>
+  </ol>
+  <div class="tip">A SAFE converts at the next priced round on the YC post-money method: the investor's share of the company before the round is exactly amount ÷ cap. Unissued options are cancelled at an exit, so the pool gets nothing. Exit numbers are before liquidation preferences and exercise prices, which can change them a lot.</div>
+
+  <h2>3. Keep the real part</h2>
+  <p>With no company open, <b>Save as my cap table</b> takes the founders, the pool and the SAFEs into <b>Create company</b> and the setup, filled in for you. Rounds that haven't happened are never saved; the app records a priced round when it actually closes. Leaving the screen clears the steps.</p>
+
+  <h2>From your AI</h2>
+  <p>The same engine answers "what would I own after seed, A and B?" from Claude, Codex or Gemini. See <a href="/features/ai/">Run your cap table from your AI</a>.</p>
+
+  <h2>Words used here</h2>
+  <dl>
+    <dt>Fully diluted</dt><dd>Every share that exists or could exist: issued shares, granted options and the unissued pool. Percentages here are of that total.</dd>
+    <dt>Post-money cap</dt><dd>The valuation a SAFE converts at, counting the SAFE money itself. The investor's share before the next round is amount ÷ cap.</dd>
+    <dt>Pool top-up</dt><dd>Investors often ask for the option pool to be a set percent after the round, created before their money comes in, so it dilutes the founders, not them.</dd>
+  </dl>
+
+  <p class="foot">Projections, not advice. Something unclear? Tell us on <a href="https://github.com/MKBSP/capfolder/issues">GitHub</a>. Capfolder isn't legal advice: check your documents with a lawyer.</p>
+</main>
+</body>
+</html>

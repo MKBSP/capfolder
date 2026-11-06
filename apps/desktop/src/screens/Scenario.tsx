@@ -13,6 +13,7 @@ import {
   STARTER_STEPS,
   setStep,
   TYPICAL,
+  todayResult,
   typicalRounds,
   useScenario,
 } from "../scenario";
@@ -32,7 +33,10 @@ export function Scenario() {
   const ready = company ? true : foundersReady(engineSteps(steps)[0]);
   const { result } = useScenario(company, steps, today, ready);
   // the step results, with "Today" first when a company is open
-  const shown: StepResult[] = useMemo(() => result?.steps ?? [], [result]);
+  const shown: StepResult[] = useMemo(
+    () => (company ? [todayResult(company, today), ...(result?.steps ?? [])] : (result?.steps ?? [])),
+    [company, today, result],
+  );
   const current = picked !== null && picked < shown.length ? picked : shown.length - 1;
   const sel = current >= 0 ? shown[current] : undefined;
   // the pool as it stands before any projected round: that is the real part a founder can save

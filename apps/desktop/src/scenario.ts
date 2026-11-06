@@ -4,12 +4,16 @@ import {
   defaultPath,
   type ExitStep,
   type FoundersStep,
+  holdingsOf,
   type PoolStep,
   type RoundStep,
+  reduce,
   runScenario,
   type SafeStep,
   type ScenarioResult,
   type Step,
+  type StepResult,
+  tableOf,
   type VaultEvent,
 } from "@capfolder/core";
 import { useEffect, useState } from "react";
@@ -107,6 +111,16 @@ export function useScenario(start: VaultEvent[] | null, steps: Step[], today: st
     };
   }, [start, steps, today, ready]);
   return { result, running };
+}
+
+/** The open company's table as of today, shown as the first chip when a scenario builds on a company. */
+export function todayResult(events: VaultEvent[], today: string): StepResult {
+  return {
+    step: { kind: "founders", founders: [] }, // a placeholder: "Today" is not a step the founder edits
+    title: "Today",
+    lines: tableOf(holdingsOf(reduce(events, today)), null, {}),
+    notes: [],
+  };
 }
 
 export const setStep = (steps: Step[], i: number, step: Step): Step[] =>

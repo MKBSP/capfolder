@@ -33,5 +33,14 @@
   "install-local-ai": {
     "checked": "v0.1.5",
     "covers": ["apps/desktop/src/screens/Settings.tsx", "apps/desktop/src/ai.ts"]
+  },
+  "scenario": {
+    "checked": "bf57cf0",
+    "covers": [
+      "apps/desktop/src/screens/Scenario.tsx",
+      "apps/desktop/src/scenario.ts",
+      "apps/desktop/src/screens/Welcome.tsx",
+      "packages/core/src/scenario/benchmarks.ts"
+    ]
   }
 }

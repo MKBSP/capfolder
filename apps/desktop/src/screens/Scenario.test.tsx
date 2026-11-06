@@ -3,6 +3,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { App } from "../App";
+import { acmePlatform } from "../test/acme";
 import { fakePlatform } from "../test/fakePlatform";
 
 async function openEmpty() {
@@ -139,4 +140,36 @@ test("save hands founders, pool and SAFEs to the wizard, not the round", async (
   expect((screen.getByLabelText("Investor") as HTMLInputElement).value).toBe("Bill Gates");
   expect(digits(screen.getByLabelText("Amount (USD)"))).toBe("500000");
   expect(digits(screen.getByLabelText("Valuation cap (USD)"))).toBe("2000000");
+});
+
+test("from the cap table: Today, then an exit at $100M; nothing is written", async () => {
+  const fp = acmePlatform();
+  render(<App platform={fp.platform} />);
+  await screen.findByText("Fully diluted");
+  const before = fp.fs.readSync(`${fp.root}/events.jsonl`);
+  await userEvent.click(screen.getByRole("button", { name: "Try a scenario" }));
+  await screen.findByRole("heading", { name: "Try a scenario" });
+  expect(await screen.findByRole("button", { name: "Today" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Save as my cap table" })).toBeNull();
+  expect(rows().some((r) => r.startsWith("Tim Apple"))).toBe(true);
+  await add("Exit");
+  await userEvent.type(screen.getByLabelText("Company sells for (USD)"), "100000000");
+  await screen.findByRole("heading", { name: "Exit at $100M" });
+  expect(screen.getByText(/Convert the SAFEs with a round first/)).toBeInTheDocument(); // acme has SAFEs outstanding
+  expect(fp.fs.readSync(`${fp.root}/events.jsonl`)).toBe(before);
+});
+
+test("sample company: scenarios run, no save button", async () => {
+  const fp = fakePlatform();
+  render(<App platform={fp.platform} />);
+  await screen.findByRole("heading", { name: "Welcome to Capfolder" });
+  await userEvent.click(screen.getByRole("button", { name: "Try the sample company" }));
+  await screen.findByText("Fully diluted");
+  await userEvent.click(screen.getByRole("button", { name: "Try a scenario" }));
+  await screen.findByRole("heading", { name: "Try a scenario" });
+  expect(await screen.findByRole("button", { name: "Today" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Save as my cap table" })).toBeNull();
+  await add("Priced round");
+  await screen.findByRole("heading", { name: "Seed" });
+  expect(rows().some((r) => r.startsWith("Seed investors"))).toBe(true);
 });

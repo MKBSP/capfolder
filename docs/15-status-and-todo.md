@@ -123,7 +123,7 @@ Not yet: billing, pricing and referrals wait; for now users can only donate (Rev
 
 18. **Field editor for your own templates (requested 2026-10-22).** When a founder uploads a new template, they mark where things go: fields like `<name>`, amount and date, and the signature block for each signer, placed on the right area of the page. Needed before "attach your own" documents can be sent for signature properly.
 
-19. **Scenarios (F-39), v1 built 2026-11-06:** the engine (`packages/core/src/scenario/`), `run_scenario` in the MCP tools and in Ask AI, defined once in `packages/capfolder/src/tools/plans.ts`. Next: the desktop "Try a scenario" screen (plan 2) and the website cofounder-split calculator, CAP-65 (plan 3). v2: 1x non-participating liquidation preferences and exercise prices at the exit; moving the existing `propose_*` tools onto `plans.ts` ("Ask AI runs on the capfolder tool definitions").
+19. **Scenarios (F-39), v1 built 2026-11-06:** the engine (`packages/core/src/scenario/`), `run_scenario` in the MCP tools and in Ask AI, defined once in `packages/capfolder/src/tools/plans.ts`. Desktop "Try a scenario" screen built the same day (plan 2; Welcome and the cap table; Save as my cap table → Create company → wizard prefilled). Next: the website cofounder-split calculator, CAP-65 (plan 3). v2: 1x non-participating liquidation preferences and exercise prices at the exit; moving the existing `propose_*` tools onto `plans.ts` ("Ask AI runs on the capfolder tool definitions").
 
 ## Future ideas (not in v1)
 - **Stakeholders see their own holdings from their own AI (Mads, 2026-10-21; research first).**
