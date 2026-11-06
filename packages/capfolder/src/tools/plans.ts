@@ -107,9 +107,16 @@ export const runScenarioInput = z.object({
 });
 export type RunScenarioInput = z.infer<typeof runScenarioInput>;
 
+/** The input as JSON Schema for the chat providers (Anthropic, OpenAI-style, Gemini); `$schema` is dropped. */
+export const runScenarioJsonSchema = (() => {
+  const { $schema: _s, ...js } = z.toJSONSchema(runScenarioInput) as Record<string, unknown>;
+  return js;
+})();
+
 export const RUN_SCENARIO = {
   name: "run_scenario",
   title: "Try a scenario",
+  parameters: runScenarioJsonSchema,
   description:
     "Plays out what-ifs: founders, a pool, SAFEs, priced rounds and an exit, one cap table per step with every number's math. Nothing is written; the engine does all the math. Start 'empty' for a founder with no company, 'company' to build on the open cap table. Results name the source of every default (Carta). Show the numbers as they are; never present a number as advice.",
 };

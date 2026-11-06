@@ -65,6 +65,9 @@ importers:
       '@tesseract.js-data/eng':
         specifier: 1.0.0
         version: 1.0.0
+      capfolder:
+        specifier: workspace:*
+        version: link:../../packages/capfolder
       driver.js:
         specifier: 1.8.0
         version: 1.8.0

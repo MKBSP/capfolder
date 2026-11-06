@@ -396,3 +396,28 @@ describe("What needs my attention (no AI call: built from Capfolder's own gaps a
     expect(safeGoto({ name: "home" }, s, "javascript:alert(1)")).toBe(false);
   });
 });
+
+test("Ask AI runs a scenario through the shared run_scenario tool and never writes", async () => {
+  const { d, calls } = await deps([
+    {
+      stop_reason: "tool_use",
+      content: [
+        {
+          type: "tool_use",
+          id: "t1",
+          name: "run_scenario",
+          input: { start: "company", steps: [{ kind: "exit", value: "100000000" }] },
+        },
+      ],
+    },
+    { stop_reason: "end_turn", content: [{ type: "text", text: "done" }] },
+  ]);
+  const before = await d.platform.fs.readText(`${d.vault.root}/events.jsonl`);
+  const m = await askChat(d, [], "What do we get at a $100M exit?");
+  expect(body(calls[0]!).tools.map((t: { name: string }) => t.name)).toContain("run_scenario");
+  const result = body(calls[1]!).messages.at(-1).content[0].content;
+  expect(result).toContain("## Exit at $100M");
+  expect(result).toContain("not advice");
+  expect(m.drafts).toBeUndefined();
+  expect(await d.platform.fs.readText(`${d.vault.root}/events.jsonl`)).toBe(before);
+});
