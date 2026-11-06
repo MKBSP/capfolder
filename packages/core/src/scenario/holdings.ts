@@ -28,6 +28,7 @@ export function holdingsOf(state: State): Holding[] {
         amount: r.safeAmount,
         ...(r.safeCap ? { cap: r.safeCap } : {}),
         ...(r.safeDiscount ? { discount: r.safeDiscount } : {}),
+        ...(state.securities.get(r.securityId)?.mfn ? { mfn: true } : {}),
       });
     else add({ holder: kind === "pool" ? POOL : r.stakeholder, kind, shares: r.shares ?? 0n });
   }
@@ -55,7 +56,8 @@ export function tableOf(
   return sorted.map((h) => {
     const percent = h.kind === "safe" ? "" : percentOf(h.shares, fd);
     const before = previous?.find((l) => l.holder === h.holder && l.kind === h.kind);
-    const change = !previous || h.kind === "safe" ? "" : before ? signed(bp(percent) - bp(before.percent)) : "new";
+    const change =
+      !previous || h.kind === "safe" ? "" : before ? signed(bp(percent) - bp(before.percent)) : "new";
     return {
       holder: h.holder,
       kind: h.kind,

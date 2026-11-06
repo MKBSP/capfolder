@@ -102,7 +102,12 @@ function draftsFor(s: State, step: RecordableStep, today: string): EventDraft[] 
         );
       } else
         out.push(
-          b.stockPlan({ name: "Option plan", reserved: reserve.toString(), boardApprovalDate: date, classId }),
+          b.stockPlan({
+            name: "Option plan",
+            reserved: reserve.toString(),
+            boardApprovalDate: date,
+            classId,
+          }),
         );
       return out;
     }

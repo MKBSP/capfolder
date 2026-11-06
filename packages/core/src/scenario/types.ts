@@ -50,6 +50,7 @@ export type Holding = {
   amount?: string;
   cap?: string;
   discount?: string;
+  mfn?: boolean;
 };
 export type Line = {
   holder: string;
