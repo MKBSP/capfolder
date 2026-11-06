@@ -34,9 +34,9 @@ export function applyRound(
   round: RoundStep,
 ): { holdings: Holding[]; notes: string[]; math: Math } | { error: string } {
   const notes: string[] = [];
-  const math: Math = {};
+  const math: Math = Object.create(null); // no prototype: holder names are founder input
   const note = (holder: string, label: string, text: string) => {
-    math[holder] ??= {};
+    math[holder] ??= Object.create(null);
     math[holder][label] = text;
   };
   const investors = `${round.name} investors`;
