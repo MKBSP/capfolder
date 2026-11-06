@@ -111,7 +111,14 @@ export function CrumbHeader({
     <header className="app-header">
       <span className="crumb">
         <button type="button" className="btn link" onClick={() => go(to)}>
-          ← {to.name === "people" ? "People" : to.name === "documents" ? "Documents" : "Cap table"}
+          ←{" "}
+          {to.name === "people"
+            ? "People"
+            : to.name === "documents"
+              ? "Documents"
+              : to.name === "welcome"
+                ? "Welcome"
+                : "Cap table"}
         </button>
         <span className="sep">/</span>
         <span style={{ color: "var(--ink)" }}>{title}</span>

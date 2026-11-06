@@ -14,6 +14,7 @@ import { People } from "./People";
 import { Person } from "./Person";
 import { Pool } from "./Pool";
 import { Questions } from "./Questions";
+import { Scenario } from "./Scenario";
 import { Settings } from "./Settings";
 import { Signatures } from "./Signatures";
 import { Sort } from "./Sort";
@@ -64,6 +65,8 @@ export function Screen() {
       return <People />;
     case "vesting":
       return <Vesting />;
+    case "scenario":
+      return <Scenario />;
     case "person":
       return <Person id={route.id} />;
     case "comingSoon":

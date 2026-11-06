@@ -1,4 +1,5 @@
 // App-wide state: settings, the open vault, the as-of date and navigation. Screens read core-derived views from here.
+
 import { type AppendCtx, builders, type EventDraft, MAX_DATE, reduce, type State } from "@capfolder/core";
 import { appendToVault, baseName, openVault, registerCompany, type Vault } from "@capfolder/vault";
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -8,10 +9,13 @@ import { configureFormat, todayIso } from "./fmt";
 import type { AppUpdate, Platform } from "./platform";
 import { regionOf } from "./regions";
 import { BUNDLED_RULES, type RulesPack } from "./rules";
+import type { ScenarioPrefill } from "./scenario";
 import { addRecent, type Settings } from "./settings";
 
 export type Route =
-  | { name: "welcome" | "email" | "create" | "start" | "wizard" | "people" | "vesting" | "import" }
+  | { name: "welcome" | "email" | "start" | "people" | "vesting" | "import" | "scenario" }
+  // prefill: "Save as my cap table" on Try a scenario (F-39) carries the founders, pool and SAFEs into the setup
+  | { name: "create" | "wizard"; prefill?: ScenarioPrefill }
   | { name: "home"; tour?: boolean; incorporate?: boolean } // tour: Settings → Take the tour; incorporate: opens the dialog (CAP-61)
   | { name: "documents"; imported?: boolean }
   // prefill: a draft from Ask AI (docs/18) opens the form filled in; the founder still saves it

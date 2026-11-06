@@ -85,6 +85,9 @@ export function Home() {
             />
           </label>
         )}
+        <button type="button" className="btn" onClick={() => app.go({ name: "scenario" })}>
+          Try a scenario
+        </button>
         {Export}
         {New}
       </MainHeader>

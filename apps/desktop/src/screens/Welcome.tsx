@@ -54,6 +54,12 @@ export function Welcome() {
           </button>
           <span className="meta">Look around a made-up company first. Nothing is saved.</span>
         </div>
+        <div className="row wrap" style={{ alignItems: "center" }}>
+          <button type="button" className="btn" onClick={() => app.go({ name: "scenario" })}>
+            Try a scenario
+          </button>
+          <span className="meta">Founders, a SAFE, the usual rounds, an exit. Nothing is saved.</span>
+        </div>
         {settings.recentVaults.length ? (
           <div className="row wrap">
             {settings.recentVaults.map((r) => (
