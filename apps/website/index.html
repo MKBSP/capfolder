@@ -28,7 +28,7 @@
 body{margin:0;background:#FAFAF8}
 a{color:#1F6F4A}a:hover{color:#16543A}
 :root{--ease-out:cubic-bezier(0.23,1,0.32,1)}
-.page{font-family:'IBM Plex Sans',system-ui,sans-serif;color:#111311;background:#FAFAF8;overflow-x:hidden}
+.page{font-family:'IBM Plex Sans',system-ui,sans-serif;color:#111311;background:#FAFAF8;overflow-x:clip}/* clip, not hidden: hidden makes .page a scroll container and the sticky nav never sticks */
 .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .wrap{max-width:1160px;margin:0 auto;padding:0 24px;box-sizing:border-box}
 .h2{font-weight:600;font-size:clamp(30px,5.4vw,46px);line-height:1.08;letter-spacing:-0.03em;margin:0;text-wrap:balance}
@@ -721,7 +721,7 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
 
   <footer class="wrap" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-top: 28px; padding-bottom: 44px; font-size: 14px; line-height: 1.55; color: #5B606B">
     <span style="flex: 1 1 360px; max-width: 62ch">Capfolder · AGPL-3.0 · not affiliated with Pulley or Carta<br>Capfolder is software, not a law firm. It does not give legal, tax or financial advice. Templates come from public sources such as Y Combinator and are provided as is. Have a lawyer review your documents.</span>
-    <span style="display: flex; flex-wrap: wrap; gap: 8px 18px; flex: 1 1 360px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="/help/">Help</a><a href="/features/">Features</a><a href="/blog/">Blog</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="/#thanks">Acknowledgements</a><a href="/#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><button type="button" class="linkbtn" data-talk data-umami-event="book-call-footer" style="color: #1F6F4A">Book a call</button><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
+    <span style="display: flex; flex-wrap: wrap; align-items: baseline; align-content: flex-start; gap: 8px 18px; flex: 1 1 360px"><a href="https://github.com/MKBSP/capfolder" data-umami-event="github">GitHub</a><a href="/help/">Help</a><a href="/features/">Features</a><a href="/blog/">Blog</a><a href="/compare/pulley/">Pulley alternative</a><a href="/compare/carta/">Carta alternative</a><a href="/roadmap/">Roadmap</a><a href="/#thanks">Acknowledgements</a><a href="/#privacy">Privacy</a><a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate">Buy me a coffee</a><button type="button" class="linkbtn" data-talk data-umami-event="book-call-footer" style="color: #1F6F4A">Book a call</button><a href="mailto:privacy@capfolder.com">Privacy contact</a></span>
   </footer>
 </div>
 
