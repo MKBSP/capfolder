@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Run your cap table from Claude, Codex or Gemini · Capfolder</title>
+<meta name="description" content="Use Capfolder from Claude Code, Claude Desktop, Codex or Gemini CLI. Your AI reads the cap table and previews each change. Nothing saves until you say yes.">
+<link rel="canonical" href="https://capfolder.com/features/ai/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Run your cap table from Claude, Codex or Gemini · Capfolder">
+<meta property="og:description" content="Use Capfolder from Claude Code, Claude Desktop, Codex or Gemini CLI. Your AI reads the cap table and previews each change. Nothing saves until you say yes.">
+<meta property="og:url" content="https://capfolder.com/features/ai/">
+<meta property="og:image" content="https://capfolder.com/icon-512.png">
+<link rel="stylesheet" href="/page.css">
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<style>
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(/fonts/instrument-serif-latin-400-italic.woff2) format('woff2')}
+.script{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(26px,3.6vw,40px);line-height:1.05;color:#1F6F4A;margin:6px 0 0}
+.chat{display:grid;gap:12px;margin:18px 0 0;max-width:640px}
+.chat .you{justify-self:end;background:#1F6F4A;color:#fff;border-radius:16px 16px 4px 16px;padding:11px 15px;max-width:85%;font-size:15px;line-height:1.5}
+.chat .ai{background:#fff;border:1px solid #E4E4E0;border-radius:16px 16px 16px 4px;padding:14px 16px;font-size:15px;line-height:1.55}
+.chat .ai .tool{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;color:#5B606B;margin:0 0 8px}
+.chat table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px}
+.chat th,.chat td{text-align:left;padding:6px 0;border-bottom:1px solid #EFEFEC}
+.chat td.amt,.chat th.amt{text-align:right;font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.chat .ok{color:#16543A;font-weight:600}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:#EEF5F0;color:#16543A;vertical-align:middle;margin-left:6px}
+.tag.soon{background:#F2F3EF;color:#5B606B}
+.clients{display:grid;gap:14px;margin:16px 0 0;padding:0;list-style:none}
+.clients li{background:#fff;border:1px solid #E4E4E0;border-radius:14px;padding:16px 18px}
+.clients h3{margin:0 0 8px;font-size:17px}
+.clients p{margin:8px 0 0;font-size:14px;color:#3A3E46}
+.term{display:flex;align-items:center;gap:10px;background:#0E120F;color:#E9F2EC;border-radius:10px;padding:10px 12px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;margin:8px 0 0;overflow-x:auto}
+.term code{flex:1;white-space:nowrap}
+.term button{flex:none;font:inherit;font-size:12px;color:#E9F2EC;background:#22302A;border:0;border-radius:6px;padding:4px 9px;cursor:pointer}
+.term button:hover{background:#2C3A33}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}
+.rules li{margin:8px 0}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Capfolder", "applicationCategory": "BusinessApplication", "operatingSystem": "macOS, Windows, Linux", "license": "https://www.gnu.org/licenses/agpl-3.0.html", "url": "https://capfolder.com/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which AI can I use?", "acceptedAnswer": {"@type": "Answer", "text": "Claude Code, Claude Desktop, Codex and Gemini CLI today. ChatGPT is coming. Inside the desktop app, Ask AI works with Ollama, LM Studio or your own Claude, OpenAI or Gemini key."}}, {"@type": "Question", "name": "Can the AI mess up my cap table?", "acceptedAnswer": {"@type": "Answer", "text": "No. Every change comes back as a preview first: the exact records and the cap table after. Nothing is saved until you say yes, and every saved change is checked against the Open Cap Table Format and logged."}}, {"@type": "Question", "name": "Does my data go to an AI company?", "acceptedAnswer": {"@type": "Answer", "text": "Only what your AI reads to answer you, and only if you use a cloud AI. The folder stays on your computer. Use a local model and nothing leaves it."}}, {"@type": "Question", "name": "Is this legal advice?", "acceptedAnswer": {"@type": "Answer", "text": "No. Capfolder records what you and your lawyer decided and fills in YC's standard SAFE word for word. Have a lawyer review your documents."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "HowTo", "name": "Run your cap table from your AI", "step": [{"@type": "HowToStep", "position": 1, "name": "Add Capfolder to your AI", "text": "In Claude Code, Claude Desktop, Codex or Gemini CLI, add Capfolder with one command, or run npx capfolder install."}, {"@type": "HowToStep", "position": 2, "name": "Say: Set up my cap table", "text": "Your AI asks for the company, the folder, the founders and their vesting, one question at a time."}, {"@type": "HowToStep", "position": 3, "name": "Say yes to each preview", "text": "Every change is shown first, with the cap table after. Nothing is saved until you confirm."}]}</script>
+</head>
+<body>
+<header class="topbar"><nav class="top" aria-label="Main"><a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt="">Capfolder</a><a href="/features/" aria-current="true">Features</a><a href="/compare/">Compare</a><a href="/roadmap/">Roadmap</a><a href="/help/">Help</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="https://github.com/MKBSP/capfolder">GitHub</a><a class="dl" href="/#download">Download</a></nav></header>
+<section class="lhero"><div class="lhero-in"><div>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/features/">Features</a> · Your AI</div>
+  <h1>Works with the AI you already use.</h1>
+  <p class="script">Claude Code, Claude Desktop, Codex, Gemini CLI.</p>
+  <p class="meta">Free · open source · nothing is saved until you say yes</p>
+</div><img src="/img/ill/network.svg" width="400" height="300" alt=""></div></section>
+<main class="narrow">
+  <div class="short"><b>In short:</b> add Capfolder to your AI and type "set up my cap table". It asks about your company and cofounders, reads the documents you point it to, and keeps everything in a folder on your computer. Every change is previewed first. The desktop app opens the same folder.</div>
+
+  <h2>What it looks like</h2>
+  <div class="chat" aria-label="Example conversation">
+    <div class="you">Give Steve Wozniak 40,000 options, 4 years with a 1-year cliff, from today.</div>
+    <div class="ai">
+      <p class="tool">capfolder · add_grant · preview</p>
+      <p style="margin:0 0 6px"><b>Preview, nothing is recorded yet.</b> 40,000 options to Steve Wozniak from the 2026 Plan, strike $0.42 (latest 409A), vesting monthly over 4 years with a 1-year cliff.</p>
+      <table><thead><tr><th>Holder</th><th class="amt">Shares</th><th class="amt">Fully diluted</th></tr></thead>
+      <tbody><tr><td>Tim Apple</td><td class="amt">4,000,000</td><td class="amt">50.0%</td></tr><tr><td>Steve Jobs</td><td class="amt">3,000,000</td><td class="amt">37.5%</td></tr><tr><td>Steve Wozniak · options</td><td class="amt">40,000</td><td class="amt">0.5%</td></tr><tr><td>Option pool · available</td><td class="amt">960,000</td><td class="amt">12.0%</td></tr></tbody></table>
+      <p style="margin:6px 0 0">Shall I record it?</p>
+    </div>
+    <div class="you">Yes.</div>
+    <div class="ai"><p class="ok" style="margin:0">✓ Recorded. The grant is in your folder and the cap table is updated. Next: attach the signed grant notice when you have it.</p></div>
+  </div>
+
+  <h2>What your AI can do today</h2>
+  <ul class="checks">
+    <li><b>Read everything.</b> The cap table as of any date, each person's vesting, what's missing before diligence, and the text of any filed document.</li>
+    <li><b>Set up the company.</b> Founders and their vesting, the option pool, SAFEs from the YC template, a 409A. Each one previewed, then recorded on your yes.</li>
+    <li><b>Not incorporated yet?</b> Record the shares you promise each cofounder. When you incorporate, one step turns them into real shares.</li>
+    <li><b>File documents.</b> Point it at a signed PDF; it says what the document proves and files it against the right line.</li>
+    <li><b>Share the folder with the app.</b> The desktop app and your AI write the same folder, and a lock keeps them from overwriting each other.</li>
+  </ul>
+  <p>Coming next: sending and chasing signatures from chat, scenarios you can play with before saving, and investors and employees reading their own holdings from their own AI. <a href="/roadmap/">Roadmap</a>.</p>
+
+  <h2>Add Capfolder to your AI</h2>
+  <p>Pick yours. Then say "Set up my cap table". Needs Node 22 or newer, which Claude Code, Codex and Gemini CLI already use.</p>
+  <ul class="clients">
+    <li><h3>Claude Code</h3>
+      <div class="term"><code>/plugin marketplace add MKBSP/capfolder</code><button type="button" data-copy>Copy</button></div>
+      <div class="term"><code>/plugin install capfolder@capfolder</code><button type="button" data-copy>Copy</button></div></li>
+    <li><h3>Claude Desktop</h3><p>Download <code>capfolder.mcpb</code> from <a href="https://github.com/MKBSP/capfolder/releases/latest">GitHub releases</a> and double-click it. Claude asks once to add Capfolder.</p></li>
+    <li><h3>Codex</h3>
+      <div class="term"><code>codex mcp add capfolder -- npx -y capfolder mcp</code><button type="button" data-copy>Copy</button></div></li>
+    <li><h3>Gemini CLI</h3>
+      <div class="term"><code>gemini extensions install https://github.com/MKBSP/capfolder</code><button type="button" data-copy>Copy</button></div></li>
+    <li><h3>One command for whichever you have</h3>
+      <div class="term"><code>npx capfolder install</code><button type="button" data-copy>Copy</button></div>
+      <p>Finds Claude Code, Codex and Gemini CLI on your computer and sets each one up. The same setup is in the app under Settings → AI → Connect your AI.</p></li>
+    <li><h3>ChatGPT <span class="tag soon">Coming</span></h3><p>The connection for ChatGPT and claude.ai in the browser is being built.</p></li>
+  </ul>
+
+  <h2>Rules your AI can't break</h2>
+  <ul class="rules">
+    <li><b>Preview, then yes.</b> A change is written only after you confirm the exact preview you were shown. A preview expires in 10 minutes, and it is refused if the folder changed in between.</li>
+    <li><b>The engine does the math.</b> Your AI never adds up shares itself; it reads every number from Capfolder.</li>
+    <li><b>Open Cap Table Format.</b> Every record is checked against the OCF schema before it is written, and every write is logged in <code>events.jsonl</code>.</li>
+    <li><b>Documents are data.</b> Text inside a PDF can't trigger anything. If a document contains instructions, your AI tells you instead of following them.</li>
+    <li><b>No legal advice.</b> Ask "should I", and it points you to your lawyer and shows what the cap table says.</li>
+  </ul>
+
+  <h2>AI inside the app, too</h2>
+  <p>The desktop app has Ask AI built in: questions about the cap table and drafts that open the right form prefilled. It runs on a free local model with Ollama or LM Studio, or your own Claude, OpenAI or Gemini key. <a href="/help/local-ai/">Set up local AI →</a></p>
+
+  <h2 id="faq">Questions people ask</h2>
+  <div class="faq">
+    <details><summary>Which AI can I use?</summary><p>Claude Code, Claude Desktop, Codex and Gemini CLI today. ChatGPT is coming. Inside the desktop app, Ask AI works with Ollama, LM Studio or your own Claude, OpenAI or Gemini key.</p></details>
+    <details><summary>Can the AI mess up my cap table?</summary><p>No. Every change comes back as a preview first: the exact records and the cap table after. Nothing is saved until you say yes, and every saved change is checked against the Open Cap Table Format and logged.</p></details>
+    <details><summary>Does my data go to an AI company?</summary><p>Only what your AI reads to answer you, and only if you use a cloud AI. The folder stays on your computer. Use a local model and nothing leaves it.</p></details>
+    <details><summary>Is this legal advice?</summary><p>No. Capfolder records what you and your lawyer decided and fills in YC's standard SAFE word for word. Have a lawyer review your documents.</p></details>
+  </div>
+
+  <div class="ctas"><a class="btn" href="/#download">Download Capfolder, free</a><a href="/help/local-ai/">Local AI in the app</a><a href="/learn/safe/">What a SAFE is</a><a href="https://github.com/MKBSP/capfolder/tree/main/packages/capfolder">The code</a></div>
+  <p class="foot">Checked against Capfolder 0.1.5 on November 6, 2026. Capfolder isn't legal advice: check your documents with a lawyer. Something wrong? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+</main>
+<script>
+for (const b of document.querySelectorAll("[data-copy]"))
+  b.addEventListener("click", () => {
+    navigator.clipboard.writeText(b.previousElementSibling.textContent).then(() => { b.textContent = "Copied"; setTimeout(() => { b.textContent = "Copy"; }, 1500); }, () => { b.textContent = "Select and copy"; });
+  });
+</script>
+</body>
+</html>

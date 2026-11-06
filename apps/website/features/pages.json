@@ -17,5 +17,15 @@
       "apps/desktop/src/components/MoveChecklist.tsx",
       "packages/core/src/import/build.ts"
     ]
+  },
+  "features/ai": {
+    "checked": "5ba750c",
+    "covers": [
+      "apps/desktop/src/screens/ConnectAi.tsx",
+      "packages/capfolder/src/tools/read.ts",
+      "packages/capfolder/src/tools/write.ts",
+      "packages/capfolder/src/install.ts",
+      "skills/capfolder/SKILL.md"
+    ]
   }
 }
