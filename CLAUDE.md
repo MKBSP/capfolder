@@ -6,7 +6,7 @@ The company's cap table lives in a **folder of plain files** on the founder's co
 
 ## Read first, in this order
 1. `docs/00-overview.md`: what we're building and the decisions already made
-2. `docs/02-user-stories.md`: 38 founder stories (F-01 to F-38) with flows. **This is the spec.**
+2. `docs/02-user-stories.md`: 39 founder stories (F-01 to F-39) with flows. **This is the spec.**
 3. `docs/01-architecture.md`: repo layout, stack, components
 4. `docs/03-data-model.md`: vault folder, event log, OCF mapping, invariants, vesting math
 5. The topic you're working on: `04-import.md`, `05-signing.md`, `06-ai.md`, `07-updates-and-rules-pack.md`, `08-design-system.md`

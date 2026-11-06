@@ -88,6 +88,7 @@ Each story has the happy path, what can go wrong (and why), what the app does, a
 | F-36 | The relay is down or I'm offline | Safety |
 | F-37 | Switch to a self-hosted relay | Safety |
 | F-38 | Update the app | Safety |
+| F-39 | Try a scenario before anything is real | Early stage |
 
 ---
 
@@ -1137,6 +1138,21 @@ flowchart TD
   K --> I
   H --> I
 ```
+
+---
+
+## F-39 Try a scenario before anything is real
+
+A founder with no company yet (or one with a cap table) asks "what if": two cofounders, a $500K SAFE at a $2M cap, the usual rounds, a $200M exit. The engine plays it out; nothing is written.
+
+1. **Start.** Empty (the founders are named in the first step), or the open company's cap table as of today.
+2. **Steps, in order.** Recordable ones (founders and vesting, option pool, SAFE, grant) run through the real builders on an in-memory copy of the record, so every check the app makes applies. Projection ones (a priced round, an exit) are pure math over the holdings and never become events.
+3. **One table per step:** holder, shares, % fully diluted, change in points from the step before. The exit table shows proceeds per holder; the unissued pool is cancelled and gets nothing. Every number carries its math.
+4. **The default path** fills in "a normal run of rounds" (seed 20%, A 18%, B 16%, pool to 12% at seed) from `packages/core/src/scenario/benchmarks.ts`; every default names its source and year (Carta) and the founder can change or delete it. A **sweep** ("cap 1M, 2M, 5M") returns the side by side in one call.
+5. **Where:** the `run_scenario` tool from the founder's AI (Claude, Codex, Gemini) and the app's Ask AI, defined once in `packages/capfolder/src/tools/plans.ts`. The desktop "Try a scenario" screen and the website calculator (CAP-65) come next.
+6. **Rules:** never "should": results say "typical" with a source. A recordable step after a projected round is refused ("record the round first"). Saving the real part goes through the usual preview → yes. Exit numbers are before liquidation preferences and exercise prices, and say so (v2 adds a 1x non-participating preference).
+
+Design: `docs/superpowers/specs/2026-11-06-scenarios-design.md`.
 
 ---
 

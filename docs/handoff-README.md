@@ -18,7 +18,7 @@ CLAUDE.md                       instructions Claude Code follows
 docs/
   00-overview.md                product, decisions, disclaimer, links
   01-architecture.md            monorepo, stack, components, relay, security
-  02-user-stories.md            38 founder stories with Mermaid flows (the spec)
+  02-user-stories.md            39 founder stories with Mermaid flows (the spec)
   03-data-model.md              vault folder, event log, OCF mapping, math, invariants
   04-import.md                  F-07 import: detect → map → OCF → validate → reconcile
   05-signing.md                 relay API + Documenso flow + verification

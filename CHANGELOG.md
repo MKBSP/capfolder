@@ -3,6 +3,9 @@
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions follow semver once the app ships.
 
 ## [Unreleased]
+### Added
+- **Try a scenario from your AI:** founders, a SAFE, the typical rounds and an exit, with every number's math and its source. Nothing is recorded. (`run_scenario`, for Claude, Codex and Gemini.)
+- **Ask AI can run the same scenarios.**
 
 ## [0.1.5] — 2026-11-03
 ### Added
