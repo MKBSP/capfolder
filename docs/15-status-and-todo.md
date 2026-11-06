@@ -5,8 +5,8 @@ Updated 2026-10-11 (after M4). Milestones and acceptance tests: `docs/09-build-p
 ## Where the docs are
 | Topic | File |
 |---|---|
-| Requirements (product, decisions, scope) | `docs/00-overview.md`, `docs/02-user-stories.md` (F-01…F-38, the spec) |
-| Architecture | `docs/01-architecture.md`, data model `docs/03-data-model.md` |
+| Requirements (product, decisions, scope) | `docs/00-overview.md`, `docs/02-user-stories.md` (F-01…F-39, the spec) |
+| Architecture | `docs/01-architecture.md`, data model `docs/03-data-model.md`, tests `docs/22-tests.md` |
 | Plans | `docs/09-build-plan.md` (milestones), `docs/superpowers/specs/` (design specs), `docs/superpowers/plans/` (implementation plans) |
 | Topic specs | import `04`, signing `05`, AI `06`, updates `07`, design system `08` |
 | Research, metrics, licensing, brand | `10`, `11`, `13`, `14`; competitor gap analysis `20` (SumoShares) |

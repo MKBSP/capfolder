@@ -28,6 +28,7 @@ docs/
   09-build-plan.md              milestones M0–M8 with acceptance tests
   10-research.md                Pulley shutdown, export paths, OCF, sources
   11-metrics.md                 downloads, installs, stars, donations; pass/fail
+  22-tests.md                   every test file: what it captures, why; how to run
   12-cloud-later.md             $50/mo cloud sync tier (later); MVP rules for it
   13-licensing-and-cla.md       AGPL + CLA (CLA Assistant), to set up in M0
   14-brand-and-logo.md          brand colors/type + logo prompts for image generators

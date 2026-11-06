@@ -17,22 +17,28 @@ flowchart LR
   UI -. updates .-> GH["GitHub Releases: app + rules pack"]
 ```
 
-## Monorepo (pnpm workspaces)
+## Monorepo (pnpm workspaces), as built (2026-11-06)
 ```
 apps/
-  desktop/        Tauri 2 app. React + TypeScript + Vite UI, Rust in src-tauri/
-  website/        Static landing page (start from design/website/index.html)
-  relay/          Thin TypeScript API in front of Documenso (Hono or Fastify) + docker-compose
+  desktop/        Tauri 2 app. React + TypeScript + Vite UI, Rust in src-tauri/. Ask AI in src/chat.ts (docs/18)
+  website/        Static site (landing, features, help, guides); vite dev, plain HTML pages
+  relay/          Thin Hono API in front of Documenso + docker-compose
 packages/
-  core/           OCF types, event log, hash chain, reducer → cap table, vesting, invariants, exports
-  importers/      Format detection + mappers: OCF, OCX, Pulley, Carta, Cake, generic
-  docsort/        PDF text, OCR, classify, extract, match, file
-  ai/             Provider interface + providers (ollama, lmstudio, claude-cli, codex-cli, gemini-cli, anthropic, openai)
-  mcp/            MCP server exposing read-only vault tools
-  rules/          Rules pack schema, loader, signature check, default pack
-  ui/             Shared React components + design tokens (docs/08)
-fixtures/         Golden vaults + expected outputs
+  core/           OCF types, event log, hash chain, reducer → cap table, vesting, invariants, import/export,
+                  and scenario/ (what-if math: founders, pool, SAFEs, priced rounds, exit; never writes)
+  vault/          The company folder: Fs interface (Node, memory, Tauri), create/open/append, registry, lock
+  capfolder/      The npm package "capfolder": MCP server (tools/read.ts, tools/write.ts), install for
+                  Claude/Codex/Gemini, and tools/plans.ts, the tools defined once for MCP and Ask AI
+skills/           The Claude skill (copied into plugin/ and GEMINI.md; packaging.test.ts keeps them identical)
+fixtures/         Golden vault (acme-vault) + expected outputs
 ```
+The original plan's `importers`, `docsort`, `ai`, `mcp`, `rules` and `ui` packages were folded into `core`, `desktop` and `capfolder` as they were built.
+
+### Scenarios and the shared AI tools (decided 2026-11-06, F-39)
+- **One engine, three fronts.** What-if math lives in `packages/core/src/scenario/` and is pure: `runScenario(start, steps, sweep?)`. The desktop screen, the MCP tool, Ask AI and the website calculator all call it; none of them adds up shares.
+- **Recordable vs projection.** Founders, pool, SAFE and grant steps run through the real builders and `appendEvents` on an in-memory copy of the log, so every app check applies; a priced round and an exit are math over holdings and never become events (docs/03 decision). A real priced round is recorded by the app when it closes (CAP-49 item 6).
+- **Tools defined once.** `packages/capfolder/src/tools/plans.ts` holds a tool's pure parts (zod input, description, the function that renders the result, and the JSON Schema for chat providers). `tools/read.ts`/`write.ts` keep the MCP registration and Node I/O; `apps/desktop/src/chat.ts` imports the same file. `run_scenario` is the first tool built this way; moving the existing `propose_*` tools over is the follow-up ticket.
+- **Benchmarks are data with sources.** `scenario/benchmarks.ts` carries every default (Carta, year, URL); results show the source and never say "should".
 
 ## Stack and libraries (prefer these; all AGPL-compatible) [verify licenses on add]
 | Need | Library |

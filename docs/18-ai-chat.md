@@ -30,6 +30,11 @@
 - A local model that refuses tools gets a one-shot cap-table summary and a "connect a bigger model" note.
 - Not yet: chat history is in memory per company (lost on restart); streaming answers; doc → plan settings are proposed but only the pool size/name reach the form.
 
+## Scenarios in Ask AI (built 2026-11-06)
+- `run_scenario` is listed next to the read tools and runs the same function as the MCP tool (`packages/capfolder/src/tools/plans.ts`, deep-imported; the desktop never imports zod, the JSON Schema comes ready-made). Nothing is written; `chat.test.ts` proves `events.jsonl` is untouched.
+- The system prompt says: for what-ifs call `run_scenario` and show its tables as they are; the numbers are projections, never advice.
+- An empty folder counts as no company; the tool says to start "empty" and name the founders.
+
 ## "What needs my attention?" + Take me there (built 2026-10-21)
 - **The list:** at most 3 items, the most urgent first.
   - **Where they come from:** Capfolder's own data, never the AI's guess (`attention()` in `chat.ts`). Signed SAFEs still waiting for wire instructions come first, then documents waiting for signatures, then What's missing gaps grouped by kind (red before amber).
