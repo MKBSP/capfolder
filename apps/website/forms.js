@@ -3,7 +3,7 @@
 // FORMS mirrors the function's field table (forms-ui.test.ts checks ids, field order, options and required).
 
 // Turnstile site key (public). Test key until Mads creates the widget (integrations/forms.md, step 3).
-const SITE_KEY = "1x00000000000000000000AA";
+const SITE_KEY = "0x4AAAAAAF6DYQTOAAyQXwAM";
 const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
 const STAGES = [
