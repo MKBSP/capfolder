@@ -19,26 +19,13 @@ globalThis.document?.addEventListener(
   true,
 );
 
-// "Book a call" (Tally 8NqXQ5, integrations/tally.md), on every page. Tally loads only when someone asks for it
-// (no third-party request before that); if it fails to load, the form opens on tally.so instead.
+// "Book a call" on every page: our own form (apps/website/forms.js, integrations/forms.md), loaded only when
+// someone asks for it (no third-party request before that).
 globalThis.document?.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(location.search);
-  const popup = () =>
-    globalThis.Tally.openPopup("8NqXQ5", {
-      layout: "modal",
-      hideTitle: true,
-      hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
-      onSubmit: () => globalThis.umami?.track("book-call-submitted"),
-    });
   for (const b of document.querySelectorAll("[data-talk]"))
-    b.addEventListener("click", () => {
-      if (globalThis.Tally) return popup();
-      const s = document.createElement("script");
-      s.src = "https://tally.so/widgets/embed.js";
-      s.onload = popup;
-      s.onerror = () => {
-        location.href = `https://tally.so/r/8NqXQ5?${params.toString()}`;
-      };
-      document.head.appendChild(s);
-    });
+    b.addEventListener("click", () =>
+      import("/forms.js").then((m) =>
+        m.open("book-a-call", { onSubmit: () => globalThis.umami?.track("book-call-submitted") }),
+      ),
+    );
 });

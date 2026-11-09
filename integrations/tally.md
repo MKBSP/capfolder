@@ -1,3 +1,5 @@
+**Retired 2026-11-09: the site uses its own forms, see `integrations/forms.md`.** Kept for the field history.
+
 # Tally — website download form
 
 - **Account:** the maintainer's Tally account, workspace `wAQeRl`

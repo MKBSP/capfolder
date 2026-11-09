@@ -42,12 +42,31 @@ test("no features that aren't built", () => {
     expect([bad, html.includes(bad)]).toEqual([bad, false]);
 });
 
-test("download goes through the Tally form, then GitHub Releases; donations through Revolut", () => {
-  expect(html).toContain("https://tally.so/widgets/embed.js");
-  expect(html).toContain('"rjxQjR"');
+test("download goes through our own form, then GitHub Releases; donations through Revolut", () => {
+  expect(html).toContain('import("/forms.js")');
+  expect(html).toContain('"download"');
+  expect(html).not.toContain("tally.so");
   expect(html).toContain("https://api.github.com/repos/MKBSP/capfolder/releases/latest");
   expect(html).toContain("https://github.com/MKBSP/capfolder/releases/latest");
   expect(html).toContain("https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df");
+});
+
+test("no Tally anywhere on the live site (integrations/forms.md); forms.js ships in the build", () => {
+  const files = execSync("git ls-files '*.html' '*.js' '_headers'", { cwd: new URL(".", import.meta.url) })
+    .toString()
+    .trim()
+    .split("\n")
+    .filter((f) => !f.startsWith("testing-landing-page/"));
+  for (const f of files) expect([f, read(f).includes("tally.so")]).toEqual([f, false]);
+  expect(read("package.json")).toMatch(/"build": ".*\bforms\.js\b/);
+});
+
+test("CSP allows Turnstile and nothing else new", () => {
+  const csp = read("_headers");
+  expect(csp).toContain("script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com;");
+  expect(csp).toContain("frame-src https://challenges.cloudflare.com;");
+  expect(csp).toContain("connect-src 'self' https://api.github.com;");
+  expect(csp).not.toContain("tally");
 });
 
 test("cookieless analytics, no banner (docs/11): Umami Cloud through our own /stats proxy, on every page", () => {
@@ -141,10 +160,10 @@ test("acknowledged npm packages carry the license our license check found", () =
 
 test("visitors' browsers only talk to what the privacy section names (M8 review)", () => {
   expect(html).not.toContain("fonts.googleapis.com");
-  expect(html).not.toMatch(/<script[^>]+tally\.so\/widgets\/embed\.js/); // Tally loads on click only
+  expect(html).not.toMatch(/<script[^>]+challenges\.cloudflare\.com/); // Turnstile loads when a form opens
   expect(html).toContain('id="privacy"');
   const privacy = html.slice(html.indexOf('id="privacy"'));
-  for (const named of ["Umami", "Tally", "GitHub", "install ping", "Settings", "relay"])
+  for (const named of ["Umami", "Turnstile", "Google Sheet", "GitHub", "install ping", "Settings", "relay"])
     expect([named, privacy.includes(named)]).toEqual([named, true]);
 });
 
@@ -222,14 +241,14 @@ test("pricing: free forever, self-hosted, and a paid plan that's clearly not out
     expect([s, pricing.includes(s)]).toEqual([s, true]);
 });
 
-test("Pro: 'tell me when it's ready' opens the Pro waitlist form (aONDJb) with the 25% first-year offer", () => {
+test("Pro: 'tell me when it's ready' opens the Pro waitlist form with the 25% first-year offer", () => {
   const pro = html.slice(
     html.indexOf('class="nm">Pro'),
     html.indexOf("</section>", html.indexOf('class="nm">Pro')),
   );
   expect(pro).toMatch(/id="prowait"[^>]*data-umami-event="pro-waitlist"/);
   expect(pro).toContain("25% off the first year");
-  expect(html).toContain('"aONDJb"');
+  expect(html).toContain('openForm("pro-waitlist"');
 });
 
 test("help pages: each one is in help/pages.json with the app files it shows, and listed on /help/", async () => {
@@ -280,8 +299,8 @@ test("every page carries the shared nav from _nav.fragment, with its section mar
   }
   expect(read("page.css")).toContain(".pillnav");
   expect(read("page.css")).not.toContain(".topbar");
-  expect(read("track.js")).toContain("8NqXQ5");
-  expect(read("index.html")).not.toContain('openForm("8NqXQ5"');
+  expect(read("track.js")).toContain('m.open("book-a-call"');
+  expect(read("index.html")).not.toContain('"book-a-call"');
 });
 
 test("learn's footer line keeps Compare and Help reachable on narrow screens", () => {
@@ -693,5 +712,5 @@ test("narrow screens keep Learn in the nav on every page; anchors clear the stic
     .toString()
     .trim()
     .split("\n"))
-    expect([f, read(f).includes('openForm("8NqXQ5"')]).toEqual([f, false]); // only track.js opens the call form
+    expect([f, read(f).includes('"book-a-call"')]).toEqual([f, false]); // only track.js opens the call form
 });

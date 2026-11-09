@@ -101,9 +101,15 @@ delete the three Tally forms.
 
 ## Local development
 
+`wrangler d1 execute --local` needs a config file naming the database, and the repo deliberately has no
+wrangler.toml (bindings live in the Pages dashboard). Use a throwaway one outside the repo, and run `pages dev`
+from the repo root so it finds `functions/`:
+
 ```bash
-cd apps/website && pnpm build
-npx wrangler d1 execute forms --local --command "<the CREATE TABLE statement from step 1>"
-npx wrangler pages dev dist --d1 DB=forms --binding TURNSTILE_SECRET=1x0000000000000000000000000000000AA IP_SALT=dev SHEETS_SECRET=dev SHEETS_WEBHOOK_URL=https://example.invalid
-npx wrangler d1 execute forms --local --command "SELECT form_id, email FROM submissions"
+mkdir -p /tmp/forms-dev && printf 'name = "forms-dev"\ncompatibility_date = "2026-11-01"\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "forms"\ndatabase_id = "forms"\n' > /tmp/forms-dev/wrangler.toml
+npx wrangler d1 execute forms --local --config /tmp/forms-dev/wrangler.toml --persist-to /tmp/forms-dev/state --command "<the CREATE TABLE statement from step 1>"
+(cd apps/website && pnpm build)
+npx wrangler pages dev apps/website/dist --port 8788 --d1 DB=forms --persist-to /tmp/forms-dev/state --binding TURNSTILE_SECRET=1x0000000000000000000000000000000AA IP_SALT=dev SHEETS_SECRET=dev SHEETS_WEBHOOK_URL=https://example.invalid
+# open http://localhost:8788, submit a form, then:
+npx wrangler d1 execute forms --local --config /tmp/forms-dev/wrangler.toml --persist-to /tmp/forms-dev/state --command "SELECT form_id, email FROM submissions"
 ```

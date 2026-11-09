@@ -702,8 +702,8 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
     <h2 class="h2" style="font-size: 32px">Privacy</h2>
     <div style="max-width: 760px; font-size: 15px; line-height: 1.65; color: #3A3E46">
       <p><b>This page.</b> Fonts and images come from this site. Visits, where they came from, and clicks on buttons are counted with <a href="https://umami.is/privacy">Umami</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
-      <p><b>The download form.</b> When you click "Download, it's free", the form is loaded from <a href="https://tally.so/help/privacy-policy">Tally</a>. It asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
-      <p><b>The Pro list.</b> "Tell me when it's ready" opens a second <a href="https://tally.so/help/privacy-policy">Tally</a> form: your email, and optionally your company and what you'd want from Pro. We use it only to tell you when Pro is ready and give you the 25% discount.</p>
+      <p><b>The forms.</b> The download, Pro list and Book-a-call forms are ours. What you type is stored on <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> (D1) and copied to a <a href="https://policies.google.com/privacy">Google Sheet</a> we read; your IP is hashed, not stored. A Cloudflare <a href="https://www.cloudflare.com/products/turnstile/">Turnstile</a> check runs when you open a form, to keep bots out. The download form asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
+      <p><b>The Pro list.</b> "Tell me when it's ready" asks for your email, and optionally your company and what you'd want from Pro. We use it only to tell you when Pro is ready and give you the 25% discount.</p>
       <p><b>Questions about your data.</b> Write to <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a>.</p>
       <p><b>The app.</b> Your cap table and documents stay in your folder. Documents you send for signature pass through the signing relay until everyone has signed, then the relay deletes them (within 7 days, or 30 if never signed). The app sends an anonymous install ping (a random install id, the app version, your operating system, and yes/no for "imported", "has documents", "sent for signature") once on first run and then weekly, only after you accept the terms. The relay keeps the day, not the time or your IP address. Turn it off in Settings → Privacy. The code that sends and stores it is public in the repo.</p>
     </div>
@@ -809,35 +809,18 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
   requestAnimationFrame(frame);
 })();
 
-// Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.
+// Download: our own form (forms.js, integrations/forms.md) asks for the email, then the release links show.
 // Links point at the latest published GitHub release (until one is published, the releases page).
-var params = new URLSearchParams(location.search);
 function showDownloads() {
   document.getElementById("gate").hidden = true;
   document.getElementById("dlthanks").hidden = false;
 }
-document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
-document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") })); // Pro waitlist (integrations/tally.md)
+// forms.js is loaded only when someone asks for a form (no third-party request before that)
+const openForm = (id, opts) => import("/forms.js").then((m) => m.open(id, opts));
+document.getElementById("getdl").addEventListener("click", () => openForm("download", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
+document.getElementById("prowait").addEventListener("click", () => openForm("pro-waitlist", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") }));
 document.getElementById("skipdl").addEventListener("click", showDownloads);
 // "Book a call" is wired in track.js (shared with every page)
-// Tally is loaded only when someone asks for the download (no third-party request before that)
-function openForm(id, opts) {
-  const popup = () =>
-    window.Tally.openPopup(id, {
-      layout: "modal",
-      hideTitle: true,
-      hiddenFields: { utm_source: params.get("utm_source") || "", ref: params.get("ref") || "" },
-      ...opts,
-    });
-  if (window.Tally) return popup();
-  const s = document.createElement("script");
-  s.src = "https://tally.so/widgets/embed.js";
-  s.onload = popup;
-  s.onerror = () => {
-    location.href = `https://tally.so/r/${id}?${params.toString()}`;
-  };
-  document.head.appendChild(s);
-}
 fetch("https://api.github.com/repos/MKBSP/capfolder/releases/latest")
   .then((r) => r.ok ? r.json() : null)
   .then((rel) => {
