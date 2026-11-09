@@ -327,19 +327,19 @@ a{color:#1F6F4A}a:hover{color:#16543A}
 
 <script>
 // Hero video: paused under reduced motion; the button pauses and plays it (WCAG 2.2.2).
-(function () {
+(() => {
   var video = document.getElementById("demo");
   var btn = document.getElementById("pause-motion");
   function set(paused) {
-    if (paused) video.pause(); else video.play().catch(function () {});
+    if (paused) video.pause(); else video.play().catch(() => {});
     document.documentElement.classList.toggle("motion-paused", paused);
     btn.setAttribute("aria-pressed", String(paused));
     btn.textContent = paused ? "Play video" : "Pause video";
   }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); set(true); }
-  btn.addEventListener("click", function () { set(btn.getAttribute("aria-pressed") !== "true"); });
+  btn.addEventListener("click", () => { set(btn.getAttribute("aria-pressed") !== "true"); });
   var sources = video.querySelectorAll("source"), failed = 0;
-  sources.forEach(function (s) { s.addEventListener("error", function () { if (++failed === sources.length) btn.hidden = true; }); });
+  sources.forEach((s) => { s.addEventListener("error", () => { if (++failed === sources.length) btn.hidden = true; }); });
 })();
 
 // Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.

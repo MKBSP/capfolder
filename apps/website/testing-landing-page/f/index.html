@@ -689,7 +689,7 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
 <script>
 // Hero story: the cap table card is the hero; each chapter's chip drifts in beside it and stays, faded, as the journey builds.
 // One thing moves at a time. Pausable (WCAG 2.2.2), a still frame under reduced motion, stops off screen.
-(function () {
+(() => {
   var C = 2 * Math.PI * 44;
   var K = ["jobs", "woz", "bill", "pool", "seed", "a", "cfo", "b"];
   var COL = { jobs: "#1F6F4A", woz: "#4E9A72", bill: "#C08A2E", pool: "#A9CDB8", seed: "#6E7781", a: "#2D3A33", cfo: "#5B7FA3", b: "#9AA3AD" };
@@ -714,46 +714,44 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
     { tag: "Unicorn", val: "$1B", foot: "The records were right from day one.", own: { jobs: 21.1, woz: 15.8, pool: 6, cfo: 4.2, bill: 3.4, seed: 16.8, a: 17.7, b: 15 },
       rows: [["jobs", "Steve Jobs", "Common"], ["woz", "Steve Wozniak", "Common"], ["pool+cfo", "Team", "options"], ["bill+seed", "SAFE investors", "Preferred"], ["a", "Series A", "Preferred"], ["b", "Series B", "Preferred"]] },
   ];
-  S.forEach(function (s, n) { s.ms = n === S.length - 1 ? 8000 : 6000; });
+  S.forEach((s, n) => { s.ms = n === S.length - 1 ? 8000 : 6000; });
   var root = document.getElementById("grow");
   var chips = root.querySelectorAll(".chip");
-  var segs = {}; root.querySelectorAll(".seg").forEach(function (c) { segs[c.dataset.k] = c; });
+  var segs = {}; root.querySelectorAll(".seg").forEach((c) => { segs[c.dataset.k] = c; });
   var bars = root.querySelectorAll(".gsteps button");
   var btn = document.getElementById("pause-motion");
-  var $ = function (id) { return document.getElementById(id); };
+  var $ = (id) => document.getElementById(id);
   var starts = [], total = 0;
-  S.forEach(function (s) { starts.push(total); total += s.ms; });
+  S.forEach((s) => { starts.push(total); total += s.ms; });
   var FADE = 1200; // the last moments of the loop clear the chips before the story starts again
   var t = 0, cur = -1, ending = false, playing = true, visible = true, last = 0;
   function pct(v) { return (Math.round(v * 10) / 10).toFixed(v % 1 ? 1 : 0) + "%"; }
-  function sum(own, keys) { return keys.split("+").reduce(function (a, k) { return a + (own[k] || 0); }, 0); }
+  function sum(own, keys) { return keys.split("+").reduce((a, k) => a + (own[k] || 0), 0); }
   function chapter(n) {
     if (n === cur) return;
     cur = n;
-    chips.forEach(function (c, j) {
+    chips.forEach((c, j) => {
       c.classList.remove("gone");
       c.classList.toggle("now", j === n);
       c.classList.toggle("past", j < n);
     });
     root.className = root.className.replace(/\bst-\d\b/g, "").trim() + " st-" + n;
     var st = S[n], off = 0;
-    K.forEach(function (k) {
+    K.forEach((k) => {
       var len = (st.own[k] || 0) / 100 * C;
       segs[k].style.strokeDasharray = Math.max(len - (len ? 1.2 : 0), 0) + " " + C;
       segs[k].style.strokeDashoffset = -off; off += len;
     });
     $("gval").textContent = st.val; $("gtag").textContent = st.tag; $("gfoot").textContent = st.foot;
     $("q409").hidden = !st.q409; $("gfootbox").classList.toggle("warn", !!st.q409);
-    $("grows").innerHTML = st.rows.map(function (r, j) {
-      return '<div class="grow-row" style="animation-delay:' + j * 70 + 'ms"><i style="background:' + COL[r[0].split("+")[0]] + '"></i><span>' + r[1] + '</span><span class="v">' + r[2] + '</span><span class="p">' + pct(sum(st.own, r[0])) + "</span></div>";
-    }).join("");
+    $("grows").innerHTML = st.rows.map((r, j) => '<div class="grow-row" style="animation-delay:' + j * 70 + 'ms"><i style="background:' + COL[r[0].split("+")[0]] + '"></i><span>' + r[1] + '</span><span class="v">' + r[2] + '</span><span class="p">' + pct(sum(st.own, r[0])) + "</span></div>").join("");
   }
   function paint() {
     var n = 0; while (n < S.length - 1 && t >= starts[n + 1]) n++;
     chapter(n);
     var end = playing && t > total - FADE;
-    if (end !== ending) { ending = end; chips.forEach(function (c) { c.classList.toggle("gone", end); }); root.classList.toggle("st-" + n, !end); }
-    bars.forEach(function (b, j) {
+    if (end !== ending) { ending = end; chips.forEach((c) => { c.classList.toggle("gone", end); }); root.classList.toggle("st-" + n, !end); }
+    bars.forEach((b, j) => {
       var p = j < n ? 100 : j > n ? 0 : Math.min(100, (t - starts[n]) / S[n].ms * 100);
       b.firstChild.style.setProperty("--p", p + "%");
       if (j === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
@@ -764,9 +762,9 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
     last = now; paint(); requestAnimationFrame(frame);
   }
   function setPlaying(p) { playing = p; root.classList.toggle("paused", !p); btn.setAttribute("aria-pressed", String(!p)); btn.textContent = p ? "Pause" : "Play"; }
-  bars.forEach(function (b) { b.addEventListener("click", function () { t = starts[+b.dataset.s] + 1; }); });
-  btn.addEventListener("click", function () { setPlaying(!playing); });
-  if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(root);
+  bars.forEach((b) => { b.addEventListener("click", () => { t = starts[+b.dataset.s] + 1; }); });
+  btn.addEventListener("click", () => { setPlaying(!playing); });
+  if ("IntersectionObserver" in window) new IntersectionObserver((e) => { visible = e[0].isIntersecting; }).observe(root);
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setPlaying(false); t = starts[S.length - 1] + 1; }
   requestAnimationFrame(frame);
 })();

@@ -326,27 +326,27 @@ h1{font-weight:600;font-size:clamp(36px,8.4vw,76px);line-height:1.04;letter-spac
 
 <script>
 // Video: paused under reduced motion; the button pauses and plays it (WCAG 2.2.2).
-(function () {
+(() => {
   var video = document.getElementById("demo");
   var btn = document.getElementById("pause-motion");
   function set(paused) {
-    if (paused) video.pause(); else video.play().catch(function () {});
+    if (paused) video.pause(); else video.play().catch(() => {});
     document.documentElement.classList.toggle("motion-paused", paused);
     btn.setAttribute("aria-pressed", String(paused));
     btn.textContent = paused ? "Play video" : "Pause video";
   }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); set(true); }
-  btn.addEventListener("click", function () { set(btn.getAttribute("aria-pressed") !== "true"); });
+  btn.addEventListener("click", () => { set(btn.getAttribute("aria-pressed") !== "true"); });
   var sources = video.querySelectorAll("source"), failed = 0;
-  sources.forEach(function (s) { s.addEventListener("error", function () { if (++failed === sources.length) btn.hidden = true; }); });
+  sources.forEach((s) => { s.addEventListener("error", () => { if (++failed === sources.length) btn.hidden = true; }); });
 })();
 
 // Sections rise in as they arrive. Only with motion allowed; without JS or IntersectionObserver nothing is hidden.
 if (matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) {
-  const io = new IntersectionObserver(function (es) {
-    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  const io = new IntersectionObserver((es) => {
+    es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
   }, { rootMargin: "0px 0px -10% 0px" });
-  document.querySelectorAll(".step, .why li, .guides li, .faq > div, .prompt, .story > *, .player").forEach(function (el) {
+  document.querySelectorAll(".step, .why li, .guides li, .faq > div, .prompt, .story > *, .player").forEach((el) => {
     if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("rv"); io.observe(el); }
   });
 }

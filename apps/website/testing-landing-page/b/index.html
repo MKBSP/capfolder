@@ -533,28 +533,28 @@ footer .fl a{color:#3D4148}
 
 <script>
 // Hero video: paused under reduced motion; the button pauses and plays it (WCAG 2.2.2).
-(function () {
+(() => {
   var video = document.getElementById("demo");
   var btn = document.getElementById("pause-motion");
   function set(paused) {
-    if (paused) video.pause(); else video.play().catch(function () {});
+    if (paused) video.pause(); else video.play().catch(() => {});
     document.documentElement.classList.toggle("motion-paused", paused);
     btn.setAttribute("aria-pressed", String(paused));
     btn.textContent = paused ? "Play video" : "Pause video";
   }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); set(true); }
-  btn.addEventListener("click", function () { set(btn.getAttribute("aria-pressed") !== "true"); });
+  btn.addEventListener("click", () => { set(btn.getAttribute("aria-pressed") !== "true"); });
   // no video file yet (only the poster): nothing to pause
   var sources = video.querySelectorAll("source"), failed = 0;
-  sources.forEach(function (s) { s.addEventListener("error", function () { if (++failed === sources.length) btn.hidden = true; }); });
+  sources.forEach((s) => { s.addEventListener("error", () => { if (++failed === sources.length) btn.hidden = true; }); });
 })();
 
 // How it works: pick a step, see its screen. Without JS every screen shows, stacked.
-(function () {
+(() => {
   var buttons = document.querySelectorAll(".steps button");
-  buttons.forEach(function (b) {
-    b.addEventListener("click", function () {
-      buttons.forEach(function (x) {
+  buttons.forEach((b) => {
+    b.addEventListener("click", () => {
+      buttons.forEach((x) => {
         var on = x === b;
         x.setAttribute("aria-current", String(on));
         document.getElementById(x.getAttribute("aria-controls")).classList.toggle("on", on);
@@ -564,24 +564,24 @@ footer .fl a{color:#3D4148}
 })();
 
 // The founder's questions settle from scattered to a tidier spread as they arrive.
-(function () {
+(() => {
   var desk = document.querySelector("[data-rise-desk]");
   if (!desk || !("IntersectionObserver" in window)) return desk && desk.classList.add("in");
-  var o = new IntersectionObserver(function (es) {
+  var o = new IntersectionObserver((es) => {
     if (es[0].isIntersecting) { desk.classList.add("in"); o.disconnect(); }
   }, { threshold: 0.25 });
   o.observe(desk);
 })();
 
 // Hero papers drift a few px with scroll and pointer (transform only; off under reduced motion).
-(function () {
+(() => {
   if (!matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
   var papers = [].slice.call(document.querySelectorAll(".paper"));
   var mx = 0, my = 0, queued = false;
   function draw() {
     queued = false;
     var y = Math.min(window.scrollY, 900);
-    papers.forEach(function (p) {
+    papers.forEach((p) => {
       var d = parseFloat(p.dataset.d);
       p.style.setProperty("--px", (mx * 10 * d).toFixed(1) + "px");
       p.style.setProperty("--py", (my * 8 * d - y * 0.08 * d).toFixed(1) + "px");
@@ -589,13 +589,13 @@ footer .fl a{color:#3D4148}
   }
   function ask() { if (!queued) { queued = true; requestAnimationFrame(draw); } }
   addEventListener("scroll", ask, { passive: true });
-  addEventListener("pointermove", function (e) {
+  addEventListener("pointermove", (e) => {
     mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; ask();
   }, { passive: true });
 })();
 
 // Floating bar: shows once the hero is passed (always on a phone); the burger opens the links.
-(function () {
+(() => {
   var bar = document.getElementById("floatbar");
   var burger = bar.querySelector(".burger");
   var menu = document.getElementById("menu");
@@ -612,26 +612,26 @@ footer .fl a{color:#3D4148}
     bar.inert = !on;
     if (!on) open(false);
   }
-  burger.addEventListener("click", function () { open(burger.getAttribute("aria-expanded") !== "true"); });
-  bar.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) { open(false, true); } });
-  document.addEventListener("click", function (e) { if (!menu.hidden && !bar.contains(e.target)) open(false); });
-  bar.addEventListener("focusout", function (e) { if (!menu.hidden && e.relatedTarget && !bar.contains(e.relatedTarget)) open(false); });
-  menu.addEventListener("click", function (e) { if (e.target.closest("a")) open(false); });
+  burger.addEventListener("click", () => { open(burger.getAttribute("aria-expanded") !== "true"); });
+  bar.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { open(false, true); } });
+  document.addEventListener("click", (e) => { if (!menu.hidden && !bar.contains(e.target)) open(false); });
+  bar.addEventListener("focusout", (e) => { if (!menu.hidden && e.relatedTarget && !bar.contains(e.relatedTarget)) open(false); });
+  menu.addEventListener("click", (e) => { if (e.target.closest("a")) open(false); });
   var hero = document.querySelector(".hero");
   var passed = false;
   if ("IntersectionObserver" in window) {
-    new IntersectionObserver(function (es) { passed = !es[0].isIntersecting; show(passed); }).observe(hero);
+    new IntersectionObserver((es) => { passed = !es[0].isIntersecting; show(passed); }).observe(hero);
   }
-  phone.addEventListener("change", function () { show(passed); });
+  phone.addEventListener("change", () => { show(passed); });
   show(passed);
 })();
 
 // Sections rise in once as they arrive; content is visible without JS.
 if ("IntersectionObserver" in window) {
-  const io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
   }, { rootMargin: "0px 0px -8% 0px" });
-  document.querySelectorAll("[data-rise]").forEach(function (el) { io.observe(el); });
+  document.querySelectorAll("[data-rise]").forEach((el) => { io.observe(el); });
 }
 
 // Download: the Tally form (rjxQjR, integrations/tally.md) asks for the email, then the release links show.

@@ -1,6 +1,7 @@
 // The launch page must not ship placeholders or claim things the app doesn't do (docs/09 M8).
 import { execSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readdirSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { expect, test } from "vitest";
 
 const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
@@ -204,7 +205,7 @@ test("the homepage never asks what happens if we shut down", () => {
 });
 
 test("pricing: free forever, self-hosted, and a paid plan that's clearly not out yet", () => {
-  expect(html).toContain('href="#pricing"');
+  expect(html).toContain('href="/#pricing"'); // the shared nav uses absolute anchors so it works on every page
   const pricing = html.slice(
     html.indexOf('id="pricing"'),
     html.indexOf("</section>", html.indexOf('id="pricing"')),
@@ -254,41 +255,39 @@ test("no setup needed: said in the hero and the FAQ", () => {
   expect(html).toContain("Do I need a server");
 });
 
-test("every sub-page has the same navbar, with its section marked", () => {
-  for (const [p, section] of [
-    ["help/index.html", "/help/"],
-    ["help/founders/index.html", "/help/"],
-    ["roadmap/index.html", "/roadmap/"],
-    ["compare/index.html", "/compare/"],
-    ...comparePages().map((c) => [c, "/compare/"]),
-    ["learn/index.html", "/learn/"],
-    ...learnPages().map((l) => [l, "/learn/"]),
-    ...guidePages().map((g) => [g, "/learn/"]),
-    ["help/import/index.html", "/help/"],
-    ["help/local-ai/index.html", "/help/"],
-    ["help/install-local-ai/index.html", "/help/"],
-    ["help/scenario/index.html", "/help/"],
-    ["features/index.html", "/features/"],
-    ["features/import/index.html", "/features/"],
-    ["migrate/from-pulley/index.html", "/features/"],
-    ["blog/index.html", "/blog/"],
-    ...blogPosts().map((b) => [b, "/blog/"]),
-  ]) {
-    const nav = read(p).match(/<nav class="top"[\s\S]*?<\/nav>/)?.[0] ?? "";
-    for (const must of [
-      'src="/favicon.svg"',
-      'href="/features/"',
-      'href="/compare/"',
-      'href="/roadmap/"',
-      'href="/help/"',
-      'href="/learn/"',
-      'href="/blog/"',
-      'href="/#download"',
-      `href="${section}" aria-current="true"`,
-    ])
-      expect([p, must, nav.includes(must)]).toEqual([p, must, true]);
-    expect([p, read(p).includes('href="/page.css"')]).toEqual([p, true]);
+const sitePages = () =>
+  [
+    "index.html",
+    ...globSync("**/index.html", {
+      cwd: fileURLToPath(new URL("./", import.meta.url)),
+      exclude: (f: string) => /^(dist|node_modules|testing-landing-page)(\/|$)/.test(f),
+    }),
+  ].sort();
+
+test("every page carries the shared nav from _nav.html, with its section marked", () => {
+  const shared = read("_nav.html").trim();
+  for (const p of sitePages()) {
+    const nav = read(p).match(/<nav aria-label="Main"[\s\S]*?<\/nav>/)?.[0] ?? "";
+    expect([p, nav.replace(' aria-current="page"', "")]).toEqual([p, shared]);
+    const section = /^(learn|guides|blog)\//.test(p)
+      ? "/learn/"
+      : /^(compare|migrate)\//.test(p)
+        ? "/compare/"
+        : null;
+    const current = nav.match(/href="([^"]+)"[^>]*aria-current="page"/)?.[1] ?? null;
+    expect([p, current]).toEqual([p, section]);
+    if (p !== "index.html") expect([p, read(p).includes('href="/page.css"')]).toEqual([p, true]);
   }
+  expect(read("page.css")).toContain(".pillnav");
+  expect(read("page.css")).not.toContain(".topbar");
+  expect(read("track.js")).toContain("8NqXQ5");
+  expect(read("index.html")).not.toContain('openForm("8NqXQ5"');
+});
+
+test("learn's footer line keeps Compare and Help reachable on narrow screens", () => {
+  const foot = read("learn/index.html").match(/<p class="foot"[\s\S]*?<\/p>/)![0];
+  expect(foot).toContain('href="/compare/"');
+  expect(foot).toContain('href="/help/"');
 });
 
 test("story: the paperwork animation replaces the old list, and the Pause button pauses it too", () => {
@@ -490,7 +489,8 @@ const allPages = () =>
   })
     .toString()
     .trim()
-    .split("\n");
+    .split("\n")
+    .filter((f) => !f.startsWith("_")); // _nav.html is a fragment, not a page
 
 test("every page: a title, a description, a canonical URL, alt text on every image, and JSON-LD that parses", () => {
   for (const p of allPages()) {
