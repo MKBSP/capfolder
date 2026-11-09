@@ -82,8 +82,11 @@ export function validate(schema, input) {
   return { fields };
 }
 
-const cell = (v) =>
-  Array.isArray(v) ? v.join(", ") : v === true ? "yes" : v === false ? "" : String(v ?? "");
+// Sheet cell text. A leading = + - @ or tab/CR would make Sheets treat the text as a formula: prefix an apostrophe.
+const cell = (v) => {
+  const s = Array.isArray(v) ? v.join(", ") : v === true ? "yes" : v === false ? "" : String(v ?? "");
+  return /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+};
 
 export async function onRequestPost({ request, env, waitUntil }) {
   const raw = await request.text();
@@ -95,8 +98,9 @@ export async function onRequestPost({ request, env, waitUntil }) {
     return json({ error: "json" }, 400);
   }
   const { formId, fields: input, token } = body ?? {};
+  if (typeof formId !== "string" || !Object.hasOwn(FORMS, formId) || !input || typeof input !== "object")
+    return json({ error: "form" }, 400);
   const schema = FORMS[formId];
-  if (!schema || !input || typeof input !== "object") return json({ error: "form" }, 400);
   if (input.website) return json({ ok: true }); // honeypot: pretend success
 
   const ip = request.headers.get("CF-Connecting-IP") ?? "";

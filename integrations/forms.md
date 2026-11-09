@@ -40,6 +40,7 @@ variable name `DB`, database `forms`. Add it for **Production** and **Preview**.
    function doPost(e) {
      const b = JSON.parse(e.postData.contents);
      if (b.secret !== SECRET) return ContentService.createTextOutput("no");
+     if (!["download", "pro-waitlist", "book-a-call"].includes(b.form)) return ContentService.createTextOutput("no");
      const ss = SpreadsheetApp.getActiveSpreadsheet();
      const sh = ss.getSheetByName(b.form) || ss.insertSheet(b.form);
      if (sh.getLastRow() === 0) sh.appendRow(["created_at", ...b.columns]);

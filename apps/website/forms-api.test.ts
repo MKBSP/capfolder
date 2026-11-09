@@ -176,3 +176,25 @@ test("FORMS lists the three forms with the required fields", () => {
   expect(FORMS["book-a-call"].name.required).toBe(true);
   for (const f of Object.values(FORMS)) expect(Object.keys(f).slice(-2)).toEqual(["utm_source", "ref"]);
 });
+
+test("values that would start a spreadsheet formula are neutralised before reaching the Sheet", async () => {
+  const h = harness();
+  await h.post({
+    formId: "book-a-call",
+    fields: { ...call, name: '=HYPERLINK("x")', notes: "+1 -2 @x" },
+    token: "t",
+  });
+  await Promise.all(h.pending);
+  const body = h.sheetCalls[0] as { columns: string[]; values: string[] };
+  const row = Object.fromEntries(body.columns.map((c, i) => [c, body.values[i]]));
+  expect(row.name).toBe('\'=HYPERLINK("x")');
+  expect(row.notes).toBe("'+1 -2 @x");
+  expect(row.company).toBe("");
+});
+
+test("prototype keys are not form ids → 400", async () => {
+  const h = harness();
+  for (const id of ["constructor", "__proto__", "toString"])
+    expect((await h.post({ formId: id, fields: download, token: "t" })).status).toBe(400);
+  expect((await h.post({ formId: 7, fields: download, token: "t" })).status).toBe(400);
+});
