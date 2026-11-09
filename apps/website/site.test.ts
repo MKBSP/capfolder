@@ -658,3 +658,25 @@ test("page E install tabs match what ships", () => {
   expect(e).not.toContain("Settings → Apps");
   expect(e.match(/id="ip-gpt"[\s\S]*?<\/div>/)?.[0]).toContain("Coming");
 });
+
+test("learn is the hub: every explainer, every guide and the latest posts are listed, with a way to Help", () => {
+  const hub = read("learn/index.html");
+  for (const p of learnPages())
+    expect([p, hub.includes(`href="/${p.replace("index.html", "")}"`)]).toEqual([p, true]);
+  for (const p of guidePages())
+    expect([p, hub.includes(`href="/${p.replace("index.html", "")}"`)]).toEqual([p, true]);
+  expect(hub.match(/href="\/blog\/[a-z0-9-]+\/"/g)?.length).toBeGreaterThanOrEqual(2);
+  for (const id of ["guides", "explainers", "news"]) expect(hub).toContain(`id="${id}"`);
+  expect(hub).toContain('href="/blog/"');
+  expect(hub).toContain('href="/help/"');
+});
+
+test("blog is the What's new collection: every post listed, crumbs lead back to Learn", () => {
+  const index = read("blog/index.html");
+  for (const p of blogPosts()) {
+    expect([p, index.includes(`href="/${p.replace("index.html", "")}"`)]).toEqual([p, true]);
+    expect([p, read(p).includes('<a href="/learn/">Learn</a>')]).toEqual([p, true]);
+  }
+  expect(index).toContain("What's new in Capfolder");
+  expect(index).toContain('href="/learn/"');
+});

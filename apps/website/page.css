@@ -655,6 +655,34 @@ ol.steps li {
   margin: 8px 0;
   font-weight: 600;
 }
+/* /learn collection chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 4px;
+}
+.chips a {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid #dfe1dc;
+  border-radius: 999px;
+  background: #fff;
+  color: #2b2e33;
+  font-size: 14px;
+  text-decoration: none;
+}
+.chips a:hover {
+  border-color: #1f6f4a;
+  color: #16543a;
+}
+.tipline {
+  margin: 28px 0 0;
+  padding: 14px 16px;
+  background: #e8f3ec;
+  border-radius: 10px;
+  font-size: 15px;
+}
 /* /learn hero band with the brand illustration, and the index cards */
 .lhero {
   background: #f3f8f4;
