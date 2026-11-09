@@ -20,14 +20,20 @@ const stage = (required) => ({
   ...(required ? { required: true } : {}),
 });
 const email = { type: "email", label: "Email", placeholder: "you@company.com", required: true };
+const halfEmail = { ...email, half: true };
 const hidden = { utm_source: { type: "text", label: "utm_source" }, ref: { type: "text", label: "ref" } };
 
 export const FORMS = {
   download: {
     title: "Download Capfolder",
-    intro: "Free and open source. Tick the box below if you'd like an email when there's a new version.",
+    script: "free and open source",
+    intro:
+      "We'll email you the download links and install steps. Tick the box below if you'd also like an email when there's a new version.",
     button: "Download",
-    thanks: ["Your download is ready", "The links are on the page behind this window."],
+    thanks: [
+      "Thanks, check your inbox",
+      "We've emailed you the links and install steps. You can also download now.",
+    ],
     fields: {
       email,
       stage: stage(false),
@@ -38,6 +44,7 @@ export const FORMS = {
   },
   "pro-waitlist": {
     title: "Capfolder Pro: tell me when it's ready",
+    script: "25% off the first year",
     intro:
       "Pro adds sync across computers, encrypted online backup, no signing limit and AI included. Leave your email and we'll tell you when it's ready. Everyone on this list gets <b>25% off the first year</b>.",
     button: "Tell me when it's ready",
@@ -46,8 +53,8 @@ export const FORMS = {
       "We'll email you when Pro is ready, with your 25% off the first year. Until then, Capfolder stays free.",
     ],
     fields: {
-      email,
-      company: { type: "text", label: "Company (optional)", placeholder: "Acme Inc." },
+      email: halfEmail,
+      company: { type: "text", label: "Company (optional)", placeholder: "Acme Inc.", half: true },
       stage: stage(false),
       want_pro: { type: "radio", label: "Yes, I want the Pro Paid version", options: ["Yes", "No"] },
       before: {
@@ -65,6 +72,7 @@ export const FORMS = {
   },
   "book-a-call": {
     title: "Book a call",
+    script: "tell me where you are",
     intro:
       "I just want to help. I've been through Y Combinator and worked with other accelerator programs, and I'm happy to share what I learned.<br><br>Want to learn about Capfolder, fundraising or something else? Tell me a bit about where you are, and I'll email you a time for a short call.",
     button: "Book a call",
@@ -73,8 +81,8 @@ export const FORMS = {
       "We'll email you a time for the call, usually within a day. Capfolder isn't legal advice, so for anything binding, check with a lawyer.",
     ],
     fields: {
-      name: { type: "text", label: "Your name", required: true },
-      email,
+      name: { type: "text", label: "Your name", required: true, half: true },
+      email: halfEmail,
       company: { type: "text", label: "Company (if it has a name yet)" },
       stage: stage(true),
       help: {
@@ -127,55 +135,94 @@ export async function waitForToken(read, timeoutMs = 15000, stepMs = 100) {
 }
 
 const CSS = `
-.cfdlg{font-family:'IBM Plex Sans',system-ui,sans-serif;color:#111311;background:#fff;border:1px solid #E4E4E0;border-radius:16px;padding:0;width:min(520px,calc(100vw - 32px));max-height:calc(100vh - 32px);box-shadow:0 30px 60px -30px rgba(14,18,15,.35)}
-.cfdlg::backdrop{background:rgba(14,18,15,.45)}
-.cfdlg form,.cfdlg .cf-done{padding:28px 28px 24px;box-sizing:border-box}
-.cfdlg h2{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:0 36px 10px 0}
-.cfdlg .cf-intro,.cfdlg .cf-done p{font-size:15px;line-height:1.6;color:#3A3E46;margin:0 0 18px}
-.cfdlg .cf-x{position:absolute;top:14px;right:14px;width:36px;height:36px;border:0;border-radius:10px;background:transparent;color:#5B606B;font:inherit;font-size:22px;line-height:1;cursor:pointer}
-.cfdlg .cf-x:hover{background:#F2F3EF;color:#111311}
-.cfdlg label,.cfdlg legend{display:block;font-size:14px;font-weight:600;margin:0 0 6px}
-.cfdlg .cf-f{margin:0 0 16px}
-.cfdlg input[type=text],.cfdlg input[type=email],.cfdlg textarea{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:12px 14px;border:1px solid #D9DAD6;border-radius:10px;background:#FAFAF8;color:#111311}
-.cfdlg textarea{min-height:88px;resize:vertical}
-.cfdlg input:focus-visible,.cfdlg textarea:focus-visible,.cfdlg button:focus-visible{outline:2px solid #1F6F4A;outline-offset:2px}
-.cfdlg fieldset{border:0;padding:0;margin:0 0 16px;min-width:0}
-.cfdlg .cf-opt{display:flex;align-items:center;gap:10px;font-weight:400;font-size:15px;padding:6px 0;margin:0;cursor:pointer}
-.cfdlg .cf-opt input{width:18px;height:18px;margin:0;accent-color:#1F6F4A}
-.cfdlg .cf-ts{min-height:0;margin:0 0 12px}
-.cfdlg .cf-err{font-size:14px;color:#9B2C2C;margin:0 0 12px}
-.cfdlg .cf-err a{color:inherit}
-.cfdlg .btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:16px;font-weight:600;padding:14px 22px;border-radius:10px;border:1px solid transparent;cursor:pointer;background:#1F6F4A;color:#fff}
-.cfdlg .btn:hover{background:#16543A}
-.cfdlg .btn:disabled{opacity:.6;cursor:default}
-.cfdlg .cf-fine{font-size:12.5px;color:#5B606B;margin:12px 0 0;line-height:1.5}
-@media (max-width:560px){.cfdlg{width:100vw;max-width:100vw;max-height:100vh;margin:auto 0 0;border-radius:16px 16px 0 0}}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(/fonts/instrument-serif-latin-400-italic.woff2) format('woff2')}
+.cfdlg{font-family:'IBM Plex Sans',system-ui,sans-serif;color:#0E120F;background:#FAFAF8;border:1px solid #E6E7E3;border-radius:24px;padding:0;width:min(720px,calc(100vw - 32px));max-width:none;max-height:calc(100dvh - 32px);overflow:hidden;box-shadow:0 30px 60px -30px rgba(14,18,15,.35)}
+.cfdlg[open]{animation:cf-in 180ms cubic-bezier(.23,1,.32,1)}
+@keyframes cf-in{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.cfdlg[open]{animation:none}}
+.cfdlg::backdrop{background:rgba(14,18,15,.32);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.cf-body{max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain}
+.cf-x{position:absolute;z-index:1;top:14px;right:14px;width:40px;height:40px;border:1px solid #E6E7E3;border-radius:999px;background:rgba(255,255,255,.8);color:#5B606B;font:inherit;font-size:22px;line-height:1;cursor:pointer}
+.cf-x:hover{background:#fff;color:#0E120F}
+.cf-head{padding:34px 64px 26px 36px;background:radial-gradient(120% 140% at 50% 0%,#D7E9DD 0%,#EAF2EC 55%,#F4F5F1 100%);border-bottom:1px solid #E6E7E3}
+.cfdlg h2{font-size:clamp(28px,4.4vw,36px);font-weight:600;letter-spacing:-.03em;line-height:1.08;margin:0;text-wrap:balance}
+.cf-script{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:clamp(23px,3.4vw,27px);line-height:1.2;color:#1F6F4A;margin:4px 0 0}
+.cf-intro{font-size:16px;line-height:1.6;color:#3A3E46;margin:14px 0 0}
+.cf-form{padding:26px 36px 28px}
+.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 18px}
+.cf-wide{grid-column:1/-1}
+.cfdlg label.cf-l,.cfdlg legend{display:block;font-size:15px;font-weight:600;margin:0 0 8px;padding:0}
+.cfdlg input[type=text],.cfdlg input[type=email],.cfdlg textarea{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:13px 14px;border:1px solid #D9DAD6;border-radius:10px;background:#fff;color:#0E120F}
+.cfdlg ::placeholder{color:#8A8F98}
+.cfdlg textarea{min-height:92px;resize:vertical}
+.cfdlg input[type=text]:focus-visible,.cfdlg input[type=email]:focus-visible,.cfdlg textarea:focus-visible,.cfdlg button:focus-visible,.cfdlg a:focus-visible{outline:2px solid #1F6F4A;outline-offset:2px}
+.cfdlg fieldset{border:0;padding:0;margin:0;min-width:0}
+.cf-pills{display:flex;flex-wrap:wrap;gap:8px}
+.cf-pill{position:relative;cursor:pointer}
+.cf-pill input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.cf-pill span{display:block;padding:9px 15px;border:1px solid #D9DAD6;border-radius:18px;background:#fff;font-size:15px;line-height:1.35;color:#2B2E33;transition:background-color 120ms ease,border-color 120ms ease}
+.cf-pill:hover span{border-color:#A9C9B5}
+.cf-pill input:checked+span{background:#EEF5F0;border-color:#1F6F4A;color:#16543A;font-weight:500}
+.cf-pill input:focus-visible+span{outline:2px solid #1F6F4A;outline-offset:2px}
+.cf-check{display:flex;align-items:center;gap:10px;font-size:15px;cursor:pointer}
+.cf-check input{width:18px;height:18px;margin:0;accent-color:#1F6F4A}
+.cf-err{font-size:15px;line-height:1.5;color:#9B2C2C;margin:18px 0 0}
+.cf-err a{color:inherit}
+.cf-ts:not(:empty){margin-top:18px}
+.cf-foot{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:24px}
+.cfdlg .cf-go{display:inline-flex;justify-content:center;font:inherit;font-size:16px;font-weight:600;padding:15px 24px;border-radius:10px;border:1px solid transparent;cursor:pointer;background:#1F6F4A;color:#fff;transition:transform 160ms cubic-bezier(.23,1,.32,1),background-color 200ms ease}
+.cfdlg .cf-go:hover{background:#16543A}
+.cfdlg .cf-go:active{transform:scale(.97)}
+.cfdlg .cf-go:disabled{opacity:.6;cursor:default}
+.cf-skip{font:inherit;font-size:15px;padding:6px 0;border:0;background:none;color:#5B606B;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cf-skip:hover{color:#0E120F}
+.cf-fine{font-size:13px;color:#5B606B;margin:16px 0 0;line-height:1.5}
+.cf-fine a{color:inherit}
+.cf-done-head{display:flex;align-items:flex-start;gap:16px}
+.cf-tick{flex:none;width:46px;height:46px;border-radius:999px;background:#1F6F4A;display:grid;place-items:center}
+.cf-tick svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cf-panel{padding:24px 36px 30px}
+@media (max-width:640px){
+.cfdlg{width:100%;max-height:92dvh;margin:auto 0 0;border-width:1px 0 0;border-radius:24px 24px 0 0}
+.cf-body{max-height:92dvh;padding-bottom:env(safe-area-inset-bottom)}
+.cf-head{padding:28px 60px 22px 20px}
+.cf-form,.cf-panel{padding-left:20px;padding-right:20px}
+.cf-grid{grid-template-columns:1fr}
+.cfdlg input[type=text],.cfdlg input[type=email],.cfdlg textarea{font-size:16px}
+.cf-foot{flex-direction:column;align-items:stretch}
+.cf-skip{text-align:center}
+}
 `;
 
 const esc = (s) =>
   String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-function fieldHtml(name, f) {
+const maxLen = (f) => (f.type === "textarea" ? 2000 : 200); // same caps as /api/submit
+const TICK =
+  '<div class="cf-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>';
+
+function fieldHtml(name, f, focus) {
   if (name === "utm_source" || name === "ref") return "";
   const req = f.required ? " required" : "";
   if (f.type === "radio" || f.type === "checkboxes") {
     const type = f.type === "radio" ? "radio" : "checkbox";
-    return `<fieldset><legend>${esc(f.label)}</legend>${f.options
+    return `<fieldset class="cf-wide"><legend>${esc(f.label)}</legend><div class="cf-pills">${f.options
       .map(
         (o) =>
-          `<label class="cf-opt"><input type="${type}" name="${name}" value="${esc(o)}"${type === "radio" ? req : ""}>${esc(o)}</label>`,
+          `<label class="cf-pill"><input type="${type}" name="${name}" value="${esc(o)}"${type === "radio" ? req : ""}><span>${esc(o)}</span></label>`,
       )
-      .join("")}</fieldset>`;
+      .join("")}</div></fieldset>`;
   }
   if (f.type === "checkbox")
-    return `<div class="cf-f"><label class="cf-opt"><input type="checkbox" name="${name}">${esc(f.label)}</label></div>`;
+    return `<label class="cf-check cf-wide"><input type="checkbox" name="${name}">${esc(f.label)}</label>`;
   const ph = f.placeholder ? ` placeholder="${esc(f.placeholder)}"` : "";
   const id = `cf-${name}`;
+  const attrs = `id="${id}" name="${name}" maxlength="${maxLen(f)}"${ph}${req}${focus ? " autofocus" : ""}`;
   const control =
     f.type === "textarea"
-      ? `<textarea id="${id}" name="${name}"${ph}${req}></textarea>`
-      : `<input id="${id}" type="${f.type === "email" ? "email" : "text"}" name="${name}"${ph}${req}${f.type === "email" ? ' autocomplete="email"' : ""}>`;
-  return `<div class="cf-f"><label for="${id}">${esc(f.label)}</label>${control}</div>`;
+      ? `<textarea ${attrs}></textarea>`
+      : `<input type="${f.type === "email" ? "email" : "text"}" ${attrs}${f.type === "email" ? ' autocomplete="email"' : ""}>`;
+  return `<div class="${f.half ? "" : "cf-wide"}"><label class="cf-l" for="${id}">${esc(f.label)}</label>${control}</div>`;
 }
 
 let turnstileReady;
@@ -203,22 +250,34 @@ export function open(formId, opts = {}) {
     document.head.appendChild(st);
   }
   document.querySelector(".cfdlg")?.remove();
+  // Only with a mouse: on a phone, focusing the first field would throw the keyboard over the form.
+  const focusFirst = globalThis.matchMedia?.("(pointer:fine)").matches;
   const dlg = document.createElement("dialog");
   dlg.className = "cfdlg";
-  dlg.innerHTML = `<form method="dialog">
-    <button type="button" class="cf-x" aria-label="Close">×</button>
-    <h2>${esc(def.title)}</h2>
-    <p class="cf-intro">${def.intro}</p>
-    ${Object.entries(def.fields)
-      .map(([n, f]) => fieldHtml(n, f))
-      .join("")}
-    <input name="website" tabindex="-1" autocomplete="off" hidden aria-hidden="true">
-    <div class="cf-ts"></div>
-    <p class="cf-err" hidden></p>
-    <button type="submit" class="btn">${esc(def.button)}</button>
-    <p class="cf-fine">Stored on Cloudflare and in a Google Sheet we read; your IP is hashed, not stored. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed.</p>
-  </form>`;
+  dlg.setAttribute("aria-labelledby", "cf-title");
+  dlg.innerHTML = `<button type="button" class="cf-x" aria-label="Close">×</button>
+  <div class="cf-body">
+    <div class="cf-head">
+      <h2 id="cf-title">${esc(def.title)}</h2>
+      <p class="cf-script">${esc(def.script)}</p>
+      <p class="cf-intro">${def.intro}</p>
+    </div>
+    <form class="cf-form">
+      <div class="cf-grid">${Object.entries(def.fields)
+        .map(([n, f], i) => fieldHtml(n, f, focusFirst && i === 0))
+        .join("")}</div>
+      <input name="website" tabindex="-1" autocomplete="off" hidden aria-hidden="true">
+      <div class="cf-ts"></div>
+      <p class="cf-err" role="alert" hidden></p>
+      <div class="cf-foot">
+        <button type="submit" class="cf-go">${esc(def.button)}</button>
+        ${opts.skip ? `<button type="button" class="cf-skip" data-umami-event="skip-download">${esc(opts.skip)}</button>` : ""}
+      </div>
+      <p class="cf-fine">Stored on Cloudflare and in a Google Sheet we read; your IP is hashed, not stored. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed.</p>
+    </form>
+  </div>`;
   document.body.appendChild(dlg);
+  const body = dlg.querySelector(".cf-body");
   const form = dlg.querySelector("form");
   const err = dlg.querySelector(".cf-err");
   const btn = dlg.querySelector('button[type="submit"]');
@@ -228,7 +287,26 @@ export function open(formId, opts = {}) {
     btn.disabled = false;
     btn.textContent = def.button;
   };
+  // The closing state: the thank-you (none when the form was skipped), then the page's own panel if there is one.
+  const showDone = (thanks) => {
+    body.innerHTML = thanks
+      ? `<div class="cf-head"><div class="cf-done-head">${TICK}<div><h2 id="cf-title">${esc(thanks[0])}</h2><p class="cf-intro" style="margin-top:8px">${esc(thanks[1])}</p></div></div></div>`
+      : "";
+    const panel = opts.panel?.();
+    if (panel) {
+      const wrap = document.createElement("div");
+      wrap.className = "cf-panel";
+      wrap.append(panel);
+      body.append(wrap);
+    }
+    body.scrollTop = 0;
+    dlg.querySelector(".cf-x").focus();
+  };
   dlg.querySelector(".cf-x").addEventListener("click", () => dlg.close());
+  dlg.querySelector(".cf-skip")?.addEventListener("click", () => {
+    opts.onSkip?.();
+    showDone(null);
+  });
   dlg.addEventListener("click", (e) => {
     if (e.target === dlg) dlg.close();
   });
@@ -270,15 +348,8 @@ export function open(formId, opts = {}) {
         if (widget !== undefined) globalThis.turnstile.reset(widget); // a token works once; a retry needs a new one
         return showError();
       }
-      form.replaceWith(
-        Object.assign(document.createElement("div"), {
-          className: "cf-done",
-          innerHTML: `<button type="button" class="cf-x" aria-label="Close">×</button><h2>${esc(def.thanks[0])}</h2><p>${esc(def.thanks[1])}</p>`,
-        }),
-      );
-      dlg.querySelector(".cf-x").addEventListener("click", () => dlg.close());
       opts.onSubmit?.();
-      if (opts.autoClose) setTimeout(() => dlg.close(), opts.autoClose);
+      showDone(def.thanks);
     } catch {
       showError();
     }

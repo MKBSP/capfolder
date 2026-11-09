@@ -714,3 +714,31 @@ test("narrow screens keep Learn in the nav on every page; anchors clear the stic
     .split("\n"))
     expect([f, read(f).includes('"book-a-call"')]).toEqual([f, false]); // only track.js opens the call form
 });
+
+test("every Download link opens the form, also when arriving from another page", () => {
+  expect(html).toContain(`'a[href="#download"],a[href="/#download"]'`);
+  expect(html).toContain('location.hash === "#download"');
+});
+
+test("the beta is plain to see, with install help next to the download", () => {
+  const hero = html.slice(html.indexOf('id="gate"'), html.indexOf('id="dlthanks"'));
+  expect(hero).toContain('href="/help/install-beta/"');
+  const panel = html.slice(html.indexOf('id="dlthanks"'), html.indexOf("Buy me a coffee"));
+  expect(panel).toContain(">Beta<");
+  expect(panel).toContain('href="/help/install-beta/"');
+  expect(read("help/install-beta/index.html")).toContain("Open Anyway");
+  expect(read("help/install-beta/index.html")).toContain("Run anyway");
+});
+
+test("privacy section names the download email and who sends it", () => {
+  const privacy = html.slice(html.indexOf('id="privacy"'));
+  expect(privacy).toContain("Resend");
+});
+
+test("the dynamic import of forms.js gets a content hash in the build", async () => {
+  const { bust } = await import("./bust.mjs");
+  expect(bust('import("/forms.js").then(x)', { "forms.js": "abc" })).toBe(
+    'import("/forms.js?v=abc").then(x)',
+  );
+  expect(bust('<script src="/track.js">', { "track.js": "def" })).toBe('<script src="/track.js?v=def">');
+});

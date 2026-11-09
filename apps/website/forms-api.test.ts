@@ -6,7 +6,12 @@ import { FORMS, onRequestPost } from "../../functions/api/submit.js";
 const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const SHEET = "https://script.google.com/macros/s/x/exec";
 
-function harness({ turnstile = true, sheet = async () => new Response("ok") } = {}) {
+function harness({
+  turnstile = true,
+  sheet = async () => new Response("ok"),
+  resend = async () => new Response("{}"),
+} = {}) {
+  const resendCalls: { headers: Record<string, string>; body: Record<string, string | string[]> }[] = [];
   const inserts: { sql: string; args: unknown[] }[] = [];
   const sheetCalls: unknown[] = [];
   const pending: Promise<unknown>[] = [];
@@ -14,6 +19,13 @@ function harness({ turnstile = true, sheet = async () => new Response("ok") } = 
     "fetch",
     vi.fn(async (url: string, init?: RequestInit) => {
       if (url === SITEVERIFY) return Response.json({ success: turnstile });
+      if (url === "https://api.resend.com/emails") {
+        resendCalls.push({
+          headers: init?.headers as Record<string, string>,
+          body: JSON.parse(init?.body as string),
+        });
+        return resend();
+      }
       if (url === SHEET) {
         sheetCalls.push(JSON.parse(init?.body as string));
         return sheet();
@@ -31,6 +43,7 @@ function harness({ turnstile = true, sheet = async () => new Response("ok") } = 
     IP_SALT: "salt",
     SHEETS_WEBHOOK_URL: SHEET,
     SHEETS_SECRET: "sheet-secret",
+    RESEND_API_KEY: "re_test",
   };
   const post = async (body: unknown) => {
     const request = new Request("https://capfolder.com/api/submit", {
@@ -45,7 +58,7 @@ function harness({ turnstile = true, sheet = async () => new Response("ok") } = 
     } as never);
     return { status: res.status, body: await res.json() };
   };
-  return { post, inserts, sheetCalls, pending };
+  return { post, inserts, sheetCalls, resendCalls, pending, env };
 }
 
 afterEach(() => vi.unstubAllGlobals());
@@ -281,5 +294,57 @@ test("sheet unreachable is logged too", async () => {
   await h.post({ formId: "book-a-call", fields: call, token: "t" });
   await Promise.all(h.pending);
   expect(log.mock.calls[0]?.[0]).toBe("sheet copy failed:");
+  log.mockRestore();
+});
+
+test("download form emails the visitor once, from hello@capfolder.com, with the steps for their computer", async () => {
+  const h = harness();
+  await h.post({ formId: "download", fields: { email: "Founder@Example.com", os: "Windows" }, token: "t" });
+  await Promise.all(h.pending);
+  expect(h.resendCalls).toHaveLength(1);
+  const { headers, body } = h.resendCalls[0];
+  expect(headers.Authorization).toBe("Bearer re_test");
+  expect(headers["User-Agent"]).toBeTruthy();
+  expect(body.from).toBe("Capfolder <hello@capfolder.com>");
+  expect(body.to).toEqual(["founder@example.com"]);
+  for (const part of [body.html, body.text]) {
+    expect(part).toContain("Run anyway");
+    expect(part).not.toContain("Open Anyway");
+    expect(part).toContain("https://capfolder.com/help/install-beta/");
+    expect(part).toContain("https://github.com/MKBSP/capfolder/releases/latest");
+    expect(part).toContain("beta");
+  }
+});
+
+test("Pro waitlist and Book a call send no email to the visitor", async () => {
+  const h = harness();
+  await h.post({ formId: "book-a-call", fields: call, token: "t" });
+  await h.post({ formId: "pro-waitlist", fields: { email: "a@b.co" }, token: "t" });
+  await Promise.all(h.pending);
+  expect(h.resendCalls).toEqual([]);
+});
+
+test("honeypot and bad submissions send no email", async () => {
+  const h = harness();
+  await h.post({ formId: "download", fields: { ...download, website: "x" }, token: "t" });
+  await h.post({ formId: "download", fields: { email: "a@b.co" }, token: "t" });
+  await Promise.all(h.pending);
+  expect(h.resendCalls).toEqual([]);
+});
+
+test("no Resend key: the download still succeeds and nothing is sent", async () => {
+  const h = harness();
+  delete (h.env as { RESEND_API_KEY?: string }).RESEND_API_KEY;
+  expect((await h.post({ formId: "download", fields: download, token: "t" })).status).toBe(200);
+  await Promise.all(h.pending);
+  expect(h.resendCalls).toEqual([]);
+});
+
+test("a Resend failure is logged and the visitor still gets ok", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
+  const h = harness({ resend: async () => new Response("quota", { status: 429 }) });
+  expect((await h.post({ formId: "download", fields: download, token: "t" })).status).toBe(200);
+  await Promise.all(h.pending);
+  expect(log.mock.calls[0]?.[0]).toBe("download email failed:");
   log.mockRestore();
 });

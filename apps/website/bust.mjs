@@ -6,13 +6,16 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const bust = (html, hashes) =>
-  html.replace(/(href|src)="\/([\w.-]+\.(?:css|js))"/g, (m, attr, file) =>
-    hashes[file] ? `${attr}="/${file}?v=${hashes[file]}"` : m,
-  );
+  html
+    .replace(/(href|src)="\/([\w.-]+\.(?:css|js))"/g, (m, attr, file) =>
+      hashes[file] ? `${attr}="/${file}?v=${hashes[file]}"` : m,
+    )
+    .replace(/import\("\/([\w.-]+\.js)"\)/g, (m, file) =>
+      hashes[file] ? `import("/${file}?v=${hashes[file]}")` : m,
+    );
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const dist = fileURLToPath(new URL("./dist/", import.meta.url));
-  const hashes = Object.fromEntries(
+const hashAll = (dist) =>
+  Object.fromEntries(
     readdirSync(dist)
       .filter((f) => /\.(css|js)$/.test(f))
       .map((f) => [
@@ -23,6 +26,14 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
           .slice(0, 10),
       ]),
   );
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const dist = fileURLToPath(new URL("./dist/", import.meta.url));
+  // Scripts first: track.js imports forms.js, so its own hash must be taken after that import is rewritten.
+  const first = hashAll(dist);
+  for (const f of readdirSync(dist).filter((f) => f.endsWith(".js")))
+    writeFileSync(join(dist, f), bust(readFileSync(join(dist, f), "utf8"), first));
+  const hashes = hashAll(dist);
   for (const f of readdirSync(dist, { recursive: true }).filter((f) => f.endsWith(".html")))
     writeFileSync(join(dist, f), bust(readFileSync(join(dist, f), "utf8"), hashes));
 }

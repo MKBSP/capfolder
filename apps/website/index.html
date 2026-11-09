@@ -138,6 +138,9 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .pillnav .talk{text-decoration:none}
 .pillnav .btn{font-size:14px;padding:10px 16px}
 .announce{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:14px;color:#2B2E33;text-decoration:none;max-width:100%;box-sizing:border-box}
+.betatag{font-size:11.5px;font-weight:600;letter-spacing:.05em;padding:3px 9px;border-radius:999px;background:#FBEBCB;color:#7A4E00}
+.betabox{background:#FFF8EC;border:1px solid #F0DDB8;border-radius:12px;padding:14px 16px;margin-top:14px;font-size:14.5px;line-height:1.55;color:#3A3E46}
+.betabox p{margin:0}.betabox p+p{margin-top:8px}.betabox b{font-weight:600;color:#111311}.betabox a{color:#16543A}
 .announce b{font-size:11.5px;font-weight:600;letter-spacing:.05em;padding:3px 8px;border-radius:999px;background:var(--mint);color:var(--green)}
 .announce:hover{border-color:#C9DECF;color:var(--ink)}
 .stage{position:relative;border-radius:24px;padding:clamp(14px,4vw,56px);background:radial-gradient(120% 90% at 50% 0%,#D7E9DD 0%,#EAF2EC 45%,#F4F5F1 100%);border:1px solid var(--line)}
@@ -368,7 +371,7 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
           </button>
           <button type="button" class="btn btn-s" data-talk data-umami-event="book-call-hero" style="font-size: 16px; padding: 14px 22px">Book a call</button>
         </div>
-        <p style="font-size: 14px; line-height: 1.5; color: var(--muted); margin: 14px 0 0 0">macOS, Windows, Linux · <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">No thanks, just download</button></p>
+        <p style="font-size: 14px; line-height: 1.5; color: var(--muted); margin: 14px 0 0 0">macOS, Windows, Linux · <a href="/help/install-beta/" data-umami-event="install-help-hero">Beta install help</a> · <button type="button" id="skipdl" data-umami-event="skip-download" class="linkbtn">No thanks, just download</button></p>
         <noscript><p style="font-size: 14px; margin: 10px 0 0 0"><a href="https://github.com/MKBSP/capfolder/releases/latest">Download from GitHub Releases</a></p></noscript>
         <ul class="trust"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Open source</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>YC's standard SAFE</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No account needed</li></ul>
       </div>
@@ -376,7 +379,7 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
         <div style="background: #fff; border: 1px solid #C9DECF; border-radius: 16px; padding: 22px; text-align: left">
           <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #16543A">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-            Your download is ready
+            Your download is ready <span class="betatag">Beta</span>
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px">
             <a id="dl-mac" data-umami-event="download-macos" href="https://github.com/MKBSP/capfolder/releases/latest" class="btn btn-p" style="font-size: 15px; padding: 12px 18px">macOS</a>
@@ -386,7 +389,11 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
           <div style="font-size: 14px; color: #5B606B; margin-top: 10px">
             <a id="dl-mac-intel" data-umami-event="download-macos-intel" href="https://github.com/MKBSP/capfolder/releases/latest">Intel Mac</a> · <a href="https://github.com/MKBSP/capfolder/releases/latest">All files and checksums</a>
           </div>
-          <p style="font-size: 14px; line-height: 1.55; color: #3A3E46; margin: 12px 0 0 0"><b style="font-weight: 600">Beta:</b> the installers aren't signed with Apple or Microsoft certificates yet, so your computer warns once. <b style="font-weight: 600">macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b style="font-weight: 600">Windows:</b> More info → Run anyway. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
+          <div class="betabox">
+            <p><b>Capfolder is in beta.</b> We don't have Apple or Microsoft certificates yet, so your computer warns you the first time you open it. That warning is expected.</p>
+            <p><b>macOS:</b> open the app, then System Settings → Privacy &amp; Security → Open Anyway. <b>Windows:</b> More info → Run anyway.</p>
+            <p><a href="/help/install-beta/" data-umami-event="install-help-panel">Step-by-step install help</a>. Found a bug? <a href="https://github.com/MKBSP/capfolder/issues/new/choose">Tell us</a> (please don't attach a real cap table).</p>
+          </div>
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #ECECE8">
             <span style="flex: 1 1 240px; font-size: 15px; line-height: 1.5; color: #3A3E46">Capfolder is free. If it saves you a headache, <b style="font-weight: 600; color: #111311">pay what you want.</b></span>
             <a href="https://checkout.revolut.com/pay/5f256b0e-5234-478c-b512-e92228c101df" data-umami-event="donate" class="btn btn-s" style="font-size: 15px; padding: 12px 18px">Buy me a coffee</a>
@@ -702,7 +709,7 @@ a.art:hover{border-color:#C9DECF;transform:translateY(-2px);box-shadow:0 18px 30
     <h2 class="h2" style="font-size: 32px">Privacy</h2>
     <div style="max-width: 760px; font-size: 15px; line-height: 1.65; color: #3A3E46">
       <p><b>This page.</b> Fonts and images come from this site. Visits, where they came from, and clicks on buttons are counted with <a href="https://umami.is/privacy">Umami</a>: no cookies, no personal data, your IP isn't stored. The star count and download links are read from GitHub's public API when the page loads, so <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a> sees that request.</p>
-      <p><b>The forms.</b> The download, Pro list and Book-a-call forms are ours. What you type is stored on <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> (D1) and copied to a <a href="https://policies.google.com/privacy">Google Sheet</a> we read; your IP is hashed, not stored. A Cloudflare <a href="https://www.cloudflare.com/products/turnstile/">Turnstile</a> check runs when you open a form, to keep bots out. The download form asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
+      <p><b>The forms.</b> The download, Pro list and Book-a-call forms are ours. What you type is stored on <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> (D1) and copied to a <a href="https://policies.google.com/privacy">Google Sheet</a> we read; your IP is hashed, not stored. A Cloudflare <a href="https://www.cloudflare.com/products/turnstile/">Turnstile</a> check runs when you open a form, to keep bots out. After the download form we send you one email with the links and install steps, through <a href="https://resend.com/legal/privacy-policy">Resend</a>. The download form asks for your email and your computer, only to send you new versions. Email <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a> to be removed, or reply to any email.</p>
       <p><b>The Pro list.</b> "Tell me when it's ready" asks for your email, and optionally your company and what you'd want from Pro. We use it only to tell you when Pro is ready and give you the 25% discount.</p>
       <p><b>Questions about your data.</b> Write to <a href="mailto:privacy@capfolder.com">privacy@capfolder.com</a>.</p>
       <p><b>The app.</b> Your cap table and documents stay in your folder. Documents you send for signature pass through the signing relay until everyone has signed, then the relay deletes them (within 7 days, or 30 if never signed). The app sends an anonymous install ping (a random install id, the app version, your operating system, and yes/no for "imported", "has documents", "sent for signature") once on first run and then weekly, only after you accept the terms. The relay keeps the day, not the time or your IP address. Turn it off in Settings → Privacy. The code that sends and stores it is public in the repo.</p>
@@ -817,7 +824,20 @@ function showDownloads() {
 }
 // forms.js is loaded only when someone asks for a form (no third-party request before that)
 const openForm = (id, opts) => import("/forms.js").then((m) => m.open(id, opts));
-document.getElementById("getdl").addEventListener("click", () => openForm("download", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
+// The panel shown in the dialog is a copy of #dlthanks, so it has the real release links once GitHub has answered.
+const downloadPanel = () => {
+  const panel = document.querySelector("#dlthanks > div").cloneNode(true);
+  for (const el of panel.querySelectorAll("[id]")) el.removeAttribute("id");
+  return panel;
+};
+const openDownload = () => {
+  if (document.getElementById("gate").hidden) return; // already through the form: the links are on the page
+  openForm("download", { skip: "No thanks, just download", onSkip: showDownloads, panel: downloadPanel, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } });
+};
+document.getElementById("getdl").addEventListener("click", openDownload);
+// Every Download link scrolls here and opens the form; from another page it arrives as /#download.
+document.addEventListener("click", (e) => { if (e.target.closest?.('a[href="#download"],a[href="/#download"]')) openDownload(); });
+if (location.hash === "#download") openDownload();
 document.getElementById("prowait").addEventListener("click", () => openForm("pro-waitlist", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") }));
 document.getElementById("skipdl").addEventListener("click", showDownloads);
 // "Book a call" is wired in track.js (shared with every page)

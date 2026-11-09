@@ -28,11 +28,17 @@
   },
   "local-ai": {
     "checked": "v0.1.5",
-    "covers": ["apps/desktop/src/screens/Settings.tsx", "apps/desktop/src/ai.ts"]
+    "covers": [
+      "apps/desktop/src/screens/Settings.tsx",
+      "apps/desktop/src/ai.ts"
+    ]
   },
   "install-local-ai": {
     "checked": "v0.1.5",
-    "covers": ["apps/desktop/src/screens/Settings.tsx", "apps/desktop/src/ai.ts"]
+    "covers": [
+      "apps/desktop/src/screens/Settings.tsx",
+      "apps/desktop/src/ai.ts"
+    ]
   },
   "scenario": {
     "checked": "e6bf1a0",
@@ -44,6 +50,12 @@
       "apps/desktop/src/screens/Home.tsx",
       "apps/desktop/src/screens/CreateCompany.tsx",
       "apps/desktop/src/screens/Wizard.tsx"
+    ]
+  },
+  "install-beta": {
+    "checked": "ae10339",
+    "covers": [
+      "apps/desktop/src-tauri/tauri.conf.json"
     ]
   }
 }

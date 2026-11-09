@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Install the Capfolder beta · Capfolder help</title>
+<meta name="description" content="Capfolder is in beta and not signed with Apple or Microsoft certificates yet. How to get past the warning on macOS, Windows and Linux.">
+<link rel="canonical" href="https://capfolder.com/help/install-beta/">
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<link rel="stylesheet" href="/page.css">
+<style>
+@font-face{font-family:'IBM Plex Sans';font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2')}
+body{margin:0;background:#FAFAF8;color:#111311;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:17px;line-height:1.6}
+a{color:#1F6F4A}a:hover{color:#16543A}
+main{max-width:760px;margin:0 auto;padding:40px 16px 80px}
+.crumb{font-size:14px;color:#5B606B}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:12px 0 8px}
+h2{font-size:20px;margin:40px 0 8px}
+.lead{color:#3A3E46;margin:0}
+ol.steps{padding-left:22px}ol.steps li{margin:6px 0}
+figure{margin:16px 0 0}
+.shot img{display:block;width:100%;height:auto;border:1px solid #E4E4E0;border-radius:12px;background:#fff}
+.shot{position:relative;display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.shot:focus-visible{outline:3px solid #1F6F4A;outline-offset:3px;border-radius:12px}
+.hl{position:absolute;border:3px solid #E07B00;border-radius:10px;box-shadow:0 0 0 4px rgba(224,123,0,.25);pointer-events:none}
+#zoom{border:0;padding:0;background:none;max-width:96vw;max-height:96vh;overflow:auto}
+#zoom::backdrop{background:rgba(17,19,17,.75)}
+#zoom .shot{width:min(1480px,94vw);cursor:zoom-out}
+figcaption{font-size:14px;color:#5B606B;margin-top:6px}
+.tip{background:#E8F3EC;border-radius:10px;padding:14px 16px;font-size:15px;margin-top:16px}
+dl{margin:8px 0 0}dt{font-weight:600;margin-top:12px}dd{margin:2px 0 0;color:#3A3E46}
+.foot{margin-top:56px;font-size:14px;color:#5B606B}
+</style>
+</head>
+<body>
+<nav aria-label="Main" class="pillnav"><div>
+    <a href="/" class="brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>Capfolder</a>
+    <div class="links">
+      <a href="/learn/" class="navlink">Learn</a>
+      <a href="/compare/" class="navlink">Compare</a>
+      <a href="/#pricing" class="navlink">Pricing</a>
+      <a href="https://github.com/MKBSP/capfolder" class="navlink">GitHub</a>
+    </div>
+    <div class="right">
+      <button type="button" class="linkbtn navlink talk" data-talk data-umami-event="book-call-nav">Book a call</button>
+      <a href="/#download" class="btn btn-d" data-umami-event="nav-download">Download</a>
+    </div>
+  </div></nav>
+<main>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/help/">Help</a> · Install</div>
+  <h1>Install the Capfolder beta</h1>
+  <p class="lead">Capfolder is in beta. We don't have Apple or Microsoft certificates yet, so your computer warns you the first time you open it. That warning is expected, and it takes about a minute to get past.</p>
+  <div class="tip"><b>Haven't downloaded it yet?</b> <a href="/#download">Get Capfolder here</a>.</div>
+
+  <h2>macOS</h2>
+  <ol class="steps">
+    <li>Open the downloaded <b>.dmg</b> file and drag <b>Capfolder</b> into <b>Applications</b>.</li>
+    <li>Open <b>Capfolder</b> from Applications. macOS warns you and doesn't open it yet. Close the warning.</li>
+    <li>Open <b>System Settings</b> and go to <b>Privacy &amp; Security</b>.</li>
+    <li>Scroll down to <b>Security</b> and click <b>Open Anyway</b> next to the message about Capfolder.</li>
+    <li>Confirm with your password or Touch ID. From now on it opens normally.</li>
+  </ol>
+  <p><b>If macOS says Capfolder "is damaged":</b> open <b>Terminal</b>, paste this line and press Enter, then open Capfolder again.</p>
+  <pre style="background:#fff;border:1px solid #E4E4E0;border-radius:8px;padding:10px 12px;overflow-x:auto">xattr -cr /Applications/Capfolder.app</pre>
+
+  <h2>Windows</h2>
+  <ol class="steps">
+    <li>Open the downloaded setup file.</li>
+    <li>If a blue window says <b>Windows protected your PC</b>, click <b>More info</b>.</li>
+    <li>Click <b>Run anyway</b>, then click through the installer.</li>
+  </ol>
+
+  <h2>Linux</h2>
+  <ol class="steps">
+    <li>Download the <b>AppImage</b>.</li>
+    <li>Right-click it, open <b>Properties</b> and allow it to run as a program.</li>
+    <li>Open it.</li>
+  </ol>
+
+  <h2>Why does this happen?</h2>
+  <p>Apple and Microsoft warn about any app that isn't signed with one of their paid certificates. The warning means the app is unsigned, not that it has been found to be harmful. Capfolder's code is <a href="https://github.com/MKBSP/capfolder">public on GitHub</a>, and each release lists <a href="https://github.com/MKBSP/capfolder/releases/latest">its files and checksums</a>.</p>
+
+  <p class="foot">Stuck? <a href="/#contact">Book a call</a> or tell us on <a href="https://github.com/MKBSP/capfolder/issues">GitHub</a> (please don't attach a real cap table). Capfolder isn't legal advice: check your documents with a lawyer.</p>
+</main>
+</body>
+</html>

@@ -127,6 +127,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
     .run();
 
   if (env.SHEETS_WEBHOOK_URL) waitUntil(copyToSheet(env, formId, schema, fields));
+  if (formId === "download" && env.RESEND_API_KEY) waitUntil(sendDownloadEmail(env, fields.email, fields.os));
   return json({ ok: true });
 }
 
@@ -150,6 +151,71 @@ async function copyToSheet(env, formId, schema, fields) {
     if (text !== "ok") console.error("sheet copy failed:", res.status, text.slice(0, 200));
   } catch (err) {
     console.error("sheet copy failed:", err);
+  }
+}
+
+const RELEASES = "https://github.com/MKBSP/capfolder/releases/latest";
+const HELP = "https://capfolder.com/help/install-beta/";
+const INSTALL_STEPS = {
+  macOS: [
+    "Open the downloaded file and drag Capfolder into Applications.",
+    "Open Capfolder. macOS warns you and doesn't open it yet.",
+    "Go to System Settings, then Privacy & Security, scroll down and click Open Anyway.",
+  ],
+  Windows: [
+    "Open the downloaded setup file.",
+    "If Windows says it protected your PC, click More info, then Run anyway.",
+    "Click through the installer.",
+  ],
+  Linux: [
+    "Download the AppImage.",
+    "Right-click it, open Properties and allow it to run as a program.",
+    "Open it.",
+  ],
+};
+
+// Everything here is fixed text: the only visitor input used is `os`, already checked against the form's options,
+// so nobody can make this email carry their own words to someone else's address.
+export function downloadEmail(os) {
+  const steps = INSTALL_STEPS[os];
+  const beta =
+    "Capfolder is in beta. We don't have Apple or Microsoft certificates yet, so your computer warns you the first time you open it. That warning is expected.";
+  const text = [
+    "Thanks for trying Capfolder.",
+    `Download it here: ${RELEASES}`,
+    beta,
+    `To install on ${os}:`,
+    ...steps.map((step, i) => `${i + 1}. ${step}`),
+    `Step-by-step help: ${HELP}`,
+    "Stuck, or found a bug? Reply to this email. Please don't attach a real cap table.",
+  ].join("\n\n");
+  const p = (html) => `<p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#3A3E46">${html}</p>`;
+  const html = `<div style="max-width:560px;margin:0 auto;padding:24px;font-family:'IBM Plex Sans',Helvetica,Arial,sans-serif;color:#111311">
+<h1 style="margin:0 0 16px;font-size:26px;line-height:1.2;letter-spacing:-.02em">Thanks for trying Capfolder.</h1>
+<p style="margin:0 0 24px"><a href="${RELEASES}" style="display:inline-block;background:#1F6F4A;color:#fff;font-weight:600;padding:13px 20px;border-radius:10px;text-decoration:none">Download Capfolder</a></p>
+<div style="background:#FFF8EC;border:1px solid #F0DDB8;border-radius:12px;padding:16px 18px;margin:0 0 24px;font-size:15px;line-height:1.55;color:#3A3E46">${beta}</div>
+${p(`<b style="color:#111311">To install on ${os}:</b>`)}
+<ol style="margin:0 0 20px;padding-left:22px;font-size:16px;line-height:1.6;color:#3A3E46">${steps.map((step) => `<li style="margin:0 0 6px">${step.replace("&", "&amp;")}</li>`).join("")}</ol>
+${p(`<a href="${HELP}" style="color:#1F6F4A">Step-by-step install help</a>`)}
+${p("Stuck, or found a bug? Reply to this email. Please don't attach a real cap table.")}
+</div>`;
+  return { subject: "Your Capfolder download and install steps", text, html };
+}
+
+async function sendDownloadEmail(env, to, os) {
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+        "User-Agent": "capfolder-website",
+      },
+      body: JSON.stringify({ from: "Capfolder <hello@capfolder.com>", to: [to], ...downloadEmail(os) }),
+    });
+    if (!res.ok) console.error("download email failed:", res.status, (await res.text()).slice(0, 200));
+  } catch (err) {
+    console.error("download email failed:", err);
   }
 }
 

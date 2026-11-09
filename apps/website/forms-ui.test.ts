@@ -115,3 +115,18 @@ test("waitForToken gives up with an empty token", async () => {
 test("submit waits for the token instead of reading it once", () => {
   expect(src).toContain("await waitForToken(");
 });
+
+test("the long forms pair their short fields; every form has its serif line", () => {
+  expect(FORMS["book-a-call"].fields.name.half).toBe(true);
+  expect(FORMS["book-a-call"].fields.email.half).toBe(true);
+  expect(FORMS["pro-waitlist"].fields.email.half).toBe(true);
+  expect(FORMS["pro-waitlist"].fields.company.half).toBe(true);
+  expect(FORMS.download.fields.email.half).toBeUndefined();
+  for (const f of Object.values(FORMS)) expect(typeof f.script).toBe("string");
+});
+
+test("the dialog is 720px wide and collapses to one column as a bottom sheet on phones", () => {
+  expect(src).toContain("width:min(720px,calc(100vw - 32px))");
+  expect(src).toMatch(/@media \(max-width:640px\)\{[^`]*grid-template-columns:1fr/);
+  expect(src).toMatch(/@media \(max-width:640px\)\{[^`]*font-size:16px/); // below 16px iOS zooms the page on focus
+});

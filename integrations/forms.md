@@ -95,6 +95,7 @@ Dashboard → Workers & Pages → `capfolder` → Settings → Variables and Sec
 | `IP_SALT` | any long random string (`openssl rand -hex 24`); IPs are stored as SHA-256(ip + salt) |
 | `SHEETS_WEBHOOK_URL` | the Apps Script `/exec` URL from step 2 |
 | `SHEETS_SECRET` | the same string as `SECRET` in the Apps Script |
+| `RESEND_API_KEY` | a Resend API key with sending access; the download form emails the visitor the links and install steps from hello@capfolder.com |
 
 Redeploy the Pages project after adding bindings or secrets (Deployments → latest → Retry deployment), or
 push a commit.
@@ -107,6 +108,13 @@ project → the deployment → Functions → Real-time logs, and submit again; l
 
 Submit each form once on capfolder.com. Expect three tabs in the Sheet, one row each, and three emails. Then
 delete the three Tally forms.
+
+## Download email
+
+After the download form, `functions/api/submit.js` sends one email (`downloadEmail`) through Resend with the
+links and the install steps for the visitor's computer. No `RESEND_API_KEY`, no email; the form still works. Failures
+show in the Pages real-time logs as `download email failed`. Replies go to hello@capfolder.com, so that address
+needs a route in Cloudflare Email Routing. Resend's free plan allows 100 emails a day, shared with the signing relay.
 
 ## Optional
 
