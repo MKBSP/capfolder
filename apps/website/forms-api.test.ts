@@ -1,4 +1,5 @@
 // /api/submit (functions/api/submit.js): the Pages Function behind the site's forms (integrations/forms.md).
+import { readFileSync } from "node:fs";
 import { afterEach, expect, test, vi } from "vitest";
 import { FORMS, onRequestPost } from "../../functions/api/submit.js";
 
@@ -197,4 +198,66 @@ test("prototype keys are not form ids → 400", async () => {
   for (const id of ["constructor", "__proto__", "toString"])
     expect((await h.post({ formId: id, fields: download, token: "t" })).status).toBe(400);
   expect((await h.post({ formId: 7, fields: download, token: "t" })).status).toBe(400);
+});
+
+// The Apps Script lives in integrations/forms.md (Mads pastes it into the Sheet), so the test runs that exact text.
+function appsScript(mail: (to: string, subject: string, body: string) => void = () => {}) {
+  const md = readFileSync(new URL("../../integrations/forms.md", import.meta.url), "utf8");
+  const code = md.match(/```js\n([\s\S]*?function doPost[\s\S]*?)```/)?.[1] ?? "";
+  const rows: unknown[][] = [];
+  const sheet = { getLastRow: () => rows.length, appendRow: (r: unknown[]) => void rows.push(r) };
+  const SpreadsheetApp = {
+    getActiveSpreadsheet: () => ({
+      getSheetByName: () => sheet,
+      insertSheet: () => sheet,
+      getUrl: () => "https://sheet",
+    }),
+  };
+  const ContentService = { createTextOutput: (s: string) => s };
+  const MailApp = { sendEmail: mail };
+  const doPost = new Function("SpreadsheetApp", "ContentService", "MailApp", `${code}; return doPost;`)(
+    SpreadsheetApp,
+    ContentService,
+    MailApp,
+  );
+  const send = (b: unknown) => doPost({ postData: { contents: JSON.stringify(b) } });
+  return { send, rows };
+}
+const row = {
+  secret: "<paste SHEETS_SECRET>",
+  form: "book-a-call",
+  created_at: "t",
+  columns: ["name", "email"],
+  values: ["Ada", "a@b.co"],
+};
+
+test("Apps Script: appends the row and emails every field", () => {
+  const mails: string[][] = [];
+  const s = appsScript((to, subject, body) => void mails.push([to, subject, body]));
+  expect(s.send(row)).toBe("ok");
+  expect(s.rows).toEqual([
+    ["created_at", "name", "email"],
+    ["t", "Ada", "a@b.co"],
+  ]);
+  expect(mails).toHaveLength(1);
+  expect(mails[0][1]).toContain("book-a-call");
+  expect(mails[0][2]).toContain("name: Ada");
+  expect(mails[0][2]).toContain("email: a@b.co");
+});
+
+test("Apps Script: a mail failure (quota) still keeps the row", () => {
+  const s = appsScript(() => {
+    throw new Error("quota");
+  });
+  expect(s.send(row)).toBe("ok");
+  expect(s.rows).toHaveLength(2);
+});
+
+test("Apps Script: wrong secret or unknown tab writes and mails nothing", () => {
+  const mails: string[] = [];
+  const s = appsScript((to) => void mails.push(to));
+  expect(s.send({ ...row, secret: "x" })).toBe("no");
+  expect(s.send({ ...row, form: "other" })).toBe("no");
+  expect(s.rows).toEqual([]);
+  expect(mails).toEqual([]);
 });

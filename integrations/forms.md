@@ -3,8 +3,8 @@
 The three forms on capfolder.com (download gate, Pro waitlist, Book a call) are our own `<dialog>` forms
 (`apps/website/forms.js`). Submissions go to `POST /api/submit` (`functions/api/submit.js`, a Pages
 Function), which checks Turnstile, validates, inserts into the D1 database `forms`, then copies the row to a
-Google Sheet. One Sheet tab per form id: `download`, `pro-waitlist`, `book-a-call`. The Sheet emails Mads on
-every new row (Google's own notification, no email service of ours).
+Google Sheet. One Sheet tab per form id: `download`, `pro-waitlist`, `book-a-call`. The Apps Script behind the
+Sheet emails Mads on every submission (no email service of ours).
 
 The Tally forms rjxQjR, aONDJb and 8NqXQ5 (`integrations/tally.md`) are retired. Keep them published until
 the Sheet has received one real row from each form on production, then delete them in Tally.
@@ -37,15 +37,23 @@ variable name `DB`, database `forms`. Add it for **Production** and **Preview**.
 2. Extensions → Apps Script. Replace the editor contents with:
    ```js
    const SECRET = "<paste SHEETS_SECRET>";
+   const NOTIFY = "<the email address that should get the notifications>";
+   const text = (s) => ContentService.createTextOutput(s);
    function doPost(e) {
      const b = JSON.parse(e.postData.contents);
-     if (b.secret !== SECRET) return ContentService.createTextOutput("no");
-     if (!["download", "pro-waitlist", "book-a-call"].includes(b.form)) return ContentService.createTextOutput("no");
+     if (b.secret !== SECRET) return text("no");
+     if (!["download", "pro-waitlist", "book-a-call"].includes(b.form)) return text("no");
      const ss = SpreadsheetApp.getActiveSpreadsheet();
      const sh = ss.getSheetByName(b.form) || ss.insertSheet(b.form);
      if (sh.getLastRow() === 0) sh.appendRow(["created_at", ...b.columns]);
      sh.appendRow([b.created_at, ...b.values]);
-     return ContentService.createTextOutput("ok");
+     try {
+       const lines = b.columns.map((c, i) => c + ": " + b.values[i]);
+       MailApp.sendEmail(NOTIFY, "New Capfolder submission: " + b.form, lines.join("\n") + "\n\n" + ss.getUrl());
+     } catch (err) {
+       console.error(err); // the row is saved; a mail quota error must not lose it
+     }
+     return text("ok");
    }
    ```
    `SECRET` is any long random string (for example `openssl rand -hex 24`). The same string becomes the
@@ -54,8 +62,9 @@ variable name `DB`, database `forms`. Add it for **Production** and **Preview**.
    Approve the permissions prompt. Copy the **Web app URL** (ends in `/exec`): it becomes `SHEETS_WEBHOOK_URL`.
    After any later edit to the script, Deploy → Manage deployments → edit → New version, or the URL keeps
    serving the old code.
-4. Notifications: in the Sheet, Tools → Notification settings → Edit notifications → "Any changes are made"
-   → "Email - right away" → Save. Google emails the account that owns the Sheet.
+   The script sends the notification email itself (`MailApp`), one per submission, so the permissions prompt
+   asks to send email as you. Google allows 100 such emails a day on a personal Gmail account and 1,500 on
+   Google Workspace; past that the row is still saved, only the email is skipped.
 
 Payload the function sends (for reference):
 `{ secret, form, created_at, columns: string[], values: string[] }`. Checkbox groups are joined with `, `,

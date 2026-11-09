@@ -222,7 +222,10 @@ export function open(formId, opts = {}) {
   dlg.addEventListener("click", (e) => {
     if (e.target === dlg) dlg.close();
   });
-  dlg.addEventListener("close", () => dlg.remove());
+  dlg.addEventListener("close", () => {
+    if (widget !== undefined) globalThis.turnstile.remove(widget);
+    dlg.remove();
+  });
   dlg.showModal();
 
   let widget;
@@ -252,7 +255,10 @@ export function open(formId, opts = {}) {
           token,
         }),
       });
-      if (!res.ok) return showError();
+      if (!res.ok) {
+        if (widget !== undefined) globalThis.turnstile.reset(widget); // a token works once; a retry needs a new one
+        return showError();
+      }
       form.replaceWith(
         Object.assign(document.createElement("div"), {
           className: "cf-done",
