@@ -20,6 +20,9 @@ the Sheet has received one real row from each form on production, then delete th
 
 ## One-off setup (Mads, in this order)
 
+Do steps 1 to 4 **before** this code reaches production. The deployed form needs the database, the secrets and
+the real Turnstile site key; without them every visitor gets an error, and Tally is already off the page.
+
 ### 1. D1 database
 
 ```bash
@@ -96,7 +99,11 @@ Dashboard → Workers & Pages → `capfolder` → Settings → Variables and Sec
 Redeploy the Pages project after adding bindings or secrets (Deployments → latest → Retry deployment), or
 push a commit.
 
-### 5. Check, then retire Tally
+### 5. Check, then retire Tally (not optional)
+
+This is the only check that notifications work. A wrong `SHEETS_SECRET`, a deployment not set to "Anyone" or a
+stale script version all fail quietly: the row is safe in D1 but no email arrives. To see why, open the Pages
+project → the deployment → Functions → Real-time logs, and submit again; look for `sheet copy failed`.
 
 Submit each form once on capfolder.com. Expect three tabs in the Sheet, one row each, and three emails. Then
 delete the three Tally forms.

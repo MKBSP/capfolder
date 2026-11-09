@@ -116,6 +116,16 @@ export function toFields(fd, schema, search) {
   return out;
 }
 
+// The bot check starts when the form opens and can take a few seconds; a fast (autofilled) submit waits for it.
+export async function waitForToken(read, timeoutMs = 15000, stepMs = 100) {
+  const end = Date.now() + timeoutMs;
+  for (;;) {
+    const token = read();
+    if (token || Date.now() >= end) return token || "";
+    await new Promise((r) => setTimeout(r, stepMs));
+  }
+}
+
 const CSS = `
 .cfdlg{font-family:'IBM Plex Sans',system-ui,sans-serif;color:#111311;background:#fff;border:1px solid #E4E4E0;border-radius:16px;padding:0;width:min(520px,calc(100vw - 32px));max-height:calc(100vh - 32px);box-shadow:0 30px 60px -30px rgba(14,18,15,.35)}
 .cfdlg::backdrop{background:rgba(14,18,15,.45)}
@@ -245,7 +255,8 @@ export function open(formId, opts = {}) {
     btn.disabled = true;
     btn.textContent = "Sending…";
     try {
-      const token = widget !== undefined ? globalThis.turnstile.getResponse(widget) : "";
+      const token =
+        widget !== undefined ? await waitForToken(() => globalThis.turnstile.getResponse(widget)) : "";
       const res = await fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

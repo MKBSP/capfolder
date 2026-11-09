@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { FORMS as API } from "../../functions/api/submit.js";
-import { ERROR_HTML, FORMS, toFields } from "./forms.js";
+import { ERROR_HTML, FORMS, toFields, waitForToken } from "./forms.js";
 
 const src = readFileSync(new URL("./forms.js", import.meta.url), "utf8");
 
@@ -96,4 +96,22 @@ test("forms.js never references tally.so and loads Turnstile explicitly, only wh
   expect(src).not.toContain("tally.so");
   expect(src).toContain("https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit");
   expect(src).toContain('appearance: "interaction-only"');
+});
+
+test("waitForToken returns a token that is already there", async () => {
+  expect(await waitForToken(() => "tok", 50, 1)).toBe("tok");
+});
+
+test("waitForToken waits for a slow bot check", async () => {
+  let reads = 0;
+  expect(await waitForToken(() => (++reads < 4 ? undefined : "late"), 500, 1)).toBe("late");
+  expect(reads).toBe(4);
+});
+
+test("waitForToken gives up with an empty token", async () => {
+  expect(await waitForToken(() => undefined, 10, 1)).toBe("");
+});
+
+test("submit waits for the token instead of reading it once", () => {
+  expect(src).toContain("await waitForToken(");
 });

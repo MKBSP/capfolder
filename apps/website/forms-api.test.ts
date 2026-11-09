@@ -261,3 +261,25 @@ test("Apps Script: wrong secret or unknown tab writes and mails nothing", () => 
   expect(s.rows).toEqual([]);
   expect(mails).toEqual([]);
 });
+
+test("sheet answering anything but ok is logged, and the visitor still gets ok", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
+  const h = harness({ sheet: async () => new Response("no") });
+  expect((await h.post({ formId: "book-a-call", fields: call, token: "t" })).status).toBe(200);
+  await Promise.all(h.pending);
+  expect(log.mock.calls[0]?.[0]).toBe("sheet copy failed:");
+  log.mockRestore();
+});
+
+test("sheet unreachable is logged too", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
+  const h = harness({
+    sheet: async () => {
+      throw new Error("sheet down");
+    },
+  });
+  await h.post({ formId: "book-a-call", fields: call, token: "t" });
+  await Promise.all(h.pending);
+  expect(log.mock.calls[0]?.[0]).toBe("sheet copy failed:");
+  log.mockRestore();
+});

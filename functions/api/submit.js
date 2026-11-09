@@ -126,23 +126,31 @@ export async function onRequestPost({ request, env, waitUntil }) {
     )
     .run();
 
-  if (env.SHEETS_WEBHOOK_URL) {
-    const columns = Object.keys(schema);
-    waitUntil(
-      fetch(env.SHEETS_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          secret: env.SHEETS_SECRET,
-          form: formId,
-          created_at: new Date().toISOString(),
-          columns,
-          values: columns.map((c) => cell(fields[c])),
-        }),
-      }).catch(() => {}), // the row is already in D1; the Sheet is a copy
-    );
-  }
+  if (env.SHEETS_WEBHOOK_URL) waitUntil(copyToSheet(env, formId, schema, fields));
   return json({ ok: true });
+}
+
+// The row is already in D1, so a failure here must not reach the visitor. Apps Script answers 200 even for a wrong
+// secret or a login page, so only the body "ok" counts. Failures show in the Pages real-time logs.
+async function copyToSheet(env, formId, schema, fields) {
+  try {
+    const columns = Object.keys(schema);
+    const res = await fetch(env.SHEETS_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        secret: env.SHEETS_SECRET,
+        form: formId,
+        created_at: new Date().toISOString(),
+        columns,
+        values: columns.map((c) => cell(fields[c])),
+      }),
+    });
+    const text = await res.text();
+    if (text !== "ok") console.error("sheet copy failed:", res.status, text.slice(0, 200));
+  } catch (err) {
+    console.error("sheet copy failed:", err);
+  }
 }
 
 async function sha256(s) {
