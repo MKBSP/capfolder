@@ -264,8 +264,8 @@ const sitePages = () =>
     }),
   ].sort();
 
-test("every page carries the shared nav from _nav.html, with its section marked", () => {
-  const shared = read("_nav.html").trim();
+test("every page carries the shared nav from _nav.fragment, with its section marked", () => {
+  const shared = read("_nav.fragment").trim();
   for (const p of sitePages()) {
     const nav = read(p).match(/<nav aria-label="Main"[\s\S]*?<\/nav>/)?.[0] ?? "";
     expect([p, nav.replace(' aria-current="page"', "")]).toEqual([p, shared]);
@@ -490,7 +490,7 @@ const allPages = () =>
     .toString()
     .trim()
     .split("\n")
-    .filter((f) => !f.startsWith("_")); // _nav.html is a fragment, not a page
+    .filter((f) => !f.startsWith("_")); // _nav.fragment is a fragment, not a page
 
 test("every page: a title, a description, a canonical URL, alt text on every image, and JSON-LD that parses", () => {
   for (const p of allPages()) {

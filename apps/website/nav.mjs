@@ -1,11 +1,11 @@
-// One navbar for every page. `node nav.mjs` writes _nav.html into each index.html (the homepage included),
+// One navbar for every page. `node nav.mjs` writes _nav.fragment into each index.html (the homepage included),
 // marking the current section; `node nav.mjs --check` lists the pages that differ and exits 1.
 // site.test.ts checks the same thing, so a page with a stale nav fails CI.
 import { globSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const here = new URL("./", import.meta.url);
-const shared = readFileSync(new URL("_nav.html", here), "utf8").trim();
+const shared = readFileSync(new URL("_nav.fragment", here), "utf8").trim();
 const NAV = /<nav aria-label="Main"[\s\S]*?<\/nav>/;
 const OLD_TOPBAR = /<header class="topbar">[\s\S]*?<\/header>/;
 
