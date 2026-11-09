@@ -119,6 +119,8 @@ Each default is a step the founder can change or delete. The page and the tool s
 
 Order of work: core → MCP/Ask AI tool (ships fastest, as a capfolder package release) → desktop screen → website page.
 
+Status (2026-11-09): core, the tool and the desktop screen are built (plans 1 and 2, `docs/superpowers/plans/`). The website page (plan 3, CAP-65) is parked by Mads; the "suggested split" question under "Left to Mads" is still open.
+
 ## Answering the three questions
 
 1. *"Two cofounders, raise at $2M, normal rounds, $200M exit."* Start empty; founders 50/50 (the founder can change it); a pre-seed SAFE at a $2M post-money cap for the amount the founder names (the AI asks; the page has a field); the default path; an exit at $200M. One table per step and the take-home line.
