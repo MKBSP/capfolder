@@ -21,7 +21,11 @@ function harness({ turnstile = true, sheet = async () => new Response("ok") } = 
     }),
   );
   const env = {
-    DB: { prepare: (sql: string) => ({ bind: (...args: unknown[]) => ({ run: async () => void inserts.push({ sql, args }) }) }) },
+    DB: {
+      prepare: (sql: string) => ({
+        bind: (...args: unknown[]) => ({ run: async () => void inserts.push({ sql, args }) }),
+      }),
+    },
     TURNSTILE_SECRET: "ts",
     IP_SALT: "salt",
     SHEETS_WEBHOOK_URL: SHEET,
@@ -33,7 +37,11 @@ function harness({ turnstile = true, sheet = async () => new Response("ok") } = 
       headers: { "CF-Connecting-IP": "203.0.113.9", "User-Agent": "UA/1" },
       body: typeof body === "string" ? body : JSON.stringify(body),
     });
-    const res = await onRequestPost({ request, env, waitUntil: (p: Promise<unknown>) => pending.push(p) } as never);
+    const res = await onRequestPost({
+      request,
+      env,
+      waitUntil: (p: Promise<unknown>) => pending.push(p),
+    } as never);
     return { status: res.status, body: await res.json() };
   };
   return { post, inserts, sheetCalls, pending };
@@ -54,12 +62,18 @@ const call = {
 
 test("unknown form id → 400", async () => {
   const h = harness();
-  expect(await h.post({ formId: "nope", fields: download, token: "t" })).toEqual({ status: 400, body: { error: "form" } });
+  expect(await h.post({ formId: "nope", fields: download, token: "t" })).toEqual({
+    status: 400,
+    body: { error: "form" },
+  });
 });
 
 test("honeypot filled → 200 ok, no insert, no sheet call", async () => {
   const h = harness();
-  expect(await h.post({ formId: "download", fields: { ...download, website: "spam" }, token: "t" })).toEqual({ status: 200, body: { ok: true } });
+  expect(await h.post({ formId: "download", fields: { ...download, website: "spam" }, token: "t" })).toEqual({
+    status: 200,
+    body: { ok: true },
+  });
   expect(h.inserts).toEqual([]);
   expect(h.sheetCalls).toEqual([]);
 });
@@ -72,23 +86,36 @@ test("turnstile failure → 403, no insert", async () => {
 
 test("download without os → 422 {error:'os'}", async () => {
   const h = harness();
-  expect(await h.post({ formId: "download", fields: { email: "a@b.co" }, token: "t" })).toEqual({ status: 422, body: { error: "os" } });
+  expect(await h.post({ formId: "download", fields: { email: "a@b.co" }, token: "t" })).toEqual({
+    status: 422,
+    body: { error: "os" },
+  });
 });
 
 test("stage outside the fixed options → 422 {error:'stage'}", async () => {
   const h = harness();
-  expect(await h.post({ formId: "book-a-call", fields: { ...call, stage: "Series Z" }, token: "t" })).toEqual({ status: 422, body: { error: "stage" } });
+  expect(await h.post({ formId: "book-a-call", fields: { ...call, stage: "Series Z" }, token: "t" })).toEqual(
+    { status: 422, body: { error: "stage" } },
+  );
 });
 
 test("book-a-call notes of 2000 chars accepted, 2001 rejected", async () => {
   const h = harness();
-  expect((await h.post({ formId: "book-a-call", fields: { ...call, notes: "x".repeat(2000) }, token: "t" })).status).toBe(200);
-  expect(await h.post({ formId: "book-a-call", fields: { ...call, notes: "x".repeat(2001) }, token: "t" })).toEqual({ status: 422, body: { error: "notes" } });
+  expect(
+    (await h.post({ formId: "book-a-call", fields: { ...call, notes: "x".repeat(2000) }, token: "t" }))
+      .status,
+  ).toBe(200);
+  expect(
+    await h.post({ formId: "book-a-call", fields: { ...call, notes: "x".repeat(2001) }, token: "t" }),
+  ).toEqual({ status: 422, body: { error: "notes" } });
 });
 
 test("valid download → one INSERT with normalised email, hashed ip, user agent", async () => {
   const h = harness();
-  expect(await h.post({ formId: "download", fields: download, token: "t" })).toEqual({ status: 200, body: { ok: true } });
+  expect(await h.post({ formId: "download", fields: download, token: "t" })).toEqual({
+    status: 200,
+    body: { ok: true },
+  });
   expect(h.inserts).toHaveLength(1);
   const [formId, data, email, ipHash, ua] = h.inserts[0].args as string[];
   expect(h.inserts[0].sql).toMatch(/INSERT INTO submissions/);
@@ -112,12 +139,24 @@ test("valid book-a-call → sheet POST carries secret, form, columns and joined 
   expect(body.columns).toEqual(Object.keys(FORMS["book-a-call"]));
   expect((body.values as string[]).length).toBe((body.columns as string[]).length);
   const row = Object.fromEntries((body.columns as string[]).map((c, i) => [c, (body.values as string[])[i]]));
-  expect(row).toMatchObject({ name: "Ada", help: "Demo Capfolder, Incorporating", company: "", utm_source: "hn" });
+  expect(row).toMatchObject({
+    name: "Ada",
+    help: "Demo Capfolder, Incorporating",
+    company: "",
+    utm_source: "hn",
+  });
 });
 
 test("sheet webhook rejecting → still 200 ok", async () => {
-  const h = harness({ sheet: async () => { throw new Error("sheet down"); } });
-  expect(await h.post({ formId: "book-a-call", fields: call, token: "t" })).toEqual({ status: 200, body: { ok: true } });
+  const h = harness({
+    sheet: async () => {
+      throw new Error("sheet down");
+    },
+  });
+  expect(await h.post({ formId: "book-a-call", fields: call, token: "t" })).toEqual({
+    status: 200,
+    body: { ok: true },
+  });
   expect(h.inserts).toHaveLength(1);
   await expect(Promise.allSettled(h.pending)).resolves.toBeDefined();
 });
@@ -129,7 +168,11 @@ test("body over 16000 bytes → 413", async () => {
 
 test("FORMS lists the three forms with the required fields", () => {
   expect(Object.keys(FORMS)).toEqual(["download", "pro-waitlist", "book-a-call"]);
-  expect(FORMS.download.os).toMatchObject({ type: "radio", required: true, options: ["macOS", "Windows", "Linux"] });
+  expect(FORMS.download.os).toMatchObject({
+    type: "radio",
+    required: true,
+    options: ["macOS", "Windows", "Linux"],
+  });
   expect(FORMS["book-a-call"].name.required).toBe(true);
   for (const f of Object.values(FORMS)) expect(Object.keys(f).slice(-2)).toEqual(["utm_source", "ref"]);
 });

@@ -82,7 +82,8 @@ export function validate(schema, input) {
   return { fields };
 }
 
-const cell = (v) => (Array.isArray(v) ? v.join(", ") : v === true ? "yes" : v === false ? "" : String(v ?? ""));
+const cell = (v) =>
+  Array.isArray(v) ? v.join(", ") : v === true ? "yes" : v === false ? "" : String(v ?? "");
 
 export async function onRequestPost({ request, env, waitUntil }) {
   const raw = await request.text();
@@ -109,8 +110,16 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (v.error) return json({ error: v.error }, 422);
   const { fields } = v;
 
-  await env.DB.prepare("INSERT INTO submissions (form_id, data, email, ip_hash, user_agent) VALUES (?, ?, ?, ?, ?)")
-    .bind(formId, JSON.stringify(fields), fields.email || null, await sha256(ip + env.IP_SALT), request.headers.get("User-Agent"))
+  await env.DB.prepare(
+    "INSERT INTO submissions (form_id, data, email, ip_hash, user_agent) VALUES (?, ?, ?, ?, ?)",
+  )
+    .bind(
+      formId,
+      JSON.stringify(fields),
+      fields.email || null,
+      await sha256(ip + env.IP_SALT),
+      request.headers.get("User-Agent"),
+    )
     .run();
 
   if (env.SHEETS_WEBHOOK_URL) {
