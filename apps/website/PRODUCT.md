@@ -55,7 +55,7 @@ Earlier selling points that still hold (Mads, 2026-10-26):
 - **Learn (`/learn/`) is the hub for everything readable:** explainers (`/learn/<slug>/`), founder guides (`/guides/<slug>/`) and what's new (`/blog/<slug>/`). The hub lists all of them; the site test checks every file in those folders appears.
 - **Blog (`/blog/`) is the "What's new" collection:** new features, fixes, events, campaigns, release posts. Linked from the hub and the footer, not the navbar.
 - **Help (`/help/`) stays separate:** step-by-step app instructions with screenshots, tied to app files by `help/pages.json` and `pnpm help:check`. Reached from the hub, the footer and the app.
-- Features, Compare, Roadmap and Migrate pages keep their URLs; Features and Roadmap are reached from the footer and the hub.
+- Features, Compare, Roadmap and Migrate pages keep their URLs; Features, Roadmap and Help are reached from the homepage footer and the Learn hub's footer line. On narrow screens the nav keeps only Learn (plus Download), so the hub is the way to everything else.
 
 ## Operating Context
 

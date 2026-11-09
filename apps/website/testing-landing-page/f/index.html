@@ -216,7 +216,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .steps,.tracks{grid-template-columns:repeat(2,minmax(0,1fr))}
   .plans{grid-template-columns:minmax(0,1fr);max-width:520px;margin-left:auto;margin-right:auto}
-  .pillnav .links{display:none}
+  .pillnav .links .navlink:not([href="/learn/"]){display:none}
 }
 @media (max-width:640px){
   .fgrid,.steps,.tracks,.faq{grid-template-columns:minmax(0,1fr)}
@@ -779,8 +779,7 @@ function showDownloads() {
 document.getElementById("getdl").addEventListener("click", () => openForm("rjxQjR", { autoClose: 800, onSubmit: () => { window.umami?.track("download-form-submitted"); showDownloads(); } }));
 document.getElementById("prowait").addEventListener("click", () => openForm("aONDJb", { onSubmit: () => window.umami?.track("pro-waitlist-submitted") })); // Pro waitlist (integrations/tally.md)
 document.getElementById("skipdl").addEventListener("click", showDownloads);
-// "Book a call" (Tally 8NqXQ5, integrations/tally.md)
-for (const b of document.querySelectorAll("[data-talk]")) b.addEventListener("click", () => openForm("8NqXQ5", { onSubmit: () => window.umami?.track("book-call-submitted") })); // Show HN: no signup required to try
+// "Book a call" is wired in track.js (shared with every page)
 // Tally is loaded only when someone asks for the download (no third-party request before that)
 function openForm(id, opts) {
   const popup = () =>

@@ -680,3 +680,18 @@ test("blog is the What's new collection: every post listed, crumbs lead back to 
   expect(index).toContain("What's new in Capfolder");
   expect(index).toContain('href="/learn/"');
 });
+
+// ---- from the final review (2026-11-09): each of these failed first ----
+
+test("narrow screens keep Learn in the nav on every page; anchors clear the sticky nav; Book a call is wired once", () => {
+  for (const css of [read("page.css"), read("index.html")]) {
+    expect(css).not.toMatch(/\.pillnav \.links\s*\{\s*display:\s*none/); // never hide the whole link row
+    expect(css).toMatch(/\.pillnav \.links \.navlink:not\(\[href="\/learn\/"\]\)\s*\{\s*display:\s*none/);
+    expect(css).toMatch(/scroll-padding-top/);
+  }
+  for (const f of execSync("git ls-files '*.html'", { cwd: new URL(".", import.meta.url) })
+    .toString()
+    .trim()
+    .split("\n"))
+    expect([f, read(f).includes('openForm("8NqXQ5"')]).toEqual([f, false]); // only track.js opens the call form
+});

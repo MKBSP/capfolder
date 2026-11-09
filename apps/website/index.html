@@ -25,6 +25,7 @@
 @font-face{font-family:'IBM Plex Mono';font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
 </style>
 <style>
+html{scroll-padding-top:84px}
 body{margin:0;background:#FAFAF8}
 a{color:#1F6F4A}a:hover{color:#16543A}
 :root{--ease-out:cubic-bezier(0.23,1,0.32,1)}
@@ -218,7 +219,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   .fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .steps,.tracks{grid-template-columns:repeat(2,minmax(0,1fr))}
   .plans{grid-template-columns:minmax(0,1fr);max-width:520px;margin-left:auto;margin-right:auto}
-  .pillnav .links{display:none}
+  .pillnav .links .navlink:not([href="/learn/"]){display:none}
 }
 @media (max-width:640px){
   .fgrid,.steps,.tracks,.faq{grid-template-columns:minmax(0,1fr)}

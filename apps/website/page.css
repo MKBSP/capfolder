@@ -25,7 +25,7 @@ a {
 a:hover {
   color: #16543a;
 }
-/* The shared navbar (_nav.html, written by nav.mjs). Same look as the homepage. */
+/* The shared navbar (_nav.fragment, written by nav.mjs). Same look as the homepage. */
 .pillnav {
   position: sticky;
   top: 12px;
@@ -105,8 +105,9 @@ a:hover {
   background: #16543a;
   color: #fff;
 }
+/* Narrow screens: Learn stays in the nav (the hub reaches everything else); the call button goes last. */
 @media (max-width: 960px) {
-  .pillnav .links {
+  .pillnav .links .navlink:not([href="/learn/"]) {
     display: none;
   }
 }
@@ -114,6 +115,9 @@ a:hover {
   .pillnav .talk {
     display: none;
   }
+}
+html {
+  scroll-padding-top: 84px; /* anchors land below the sticky pill nav */
 }
 main {
   max-width: 1040px;
@@ -255,14 +259,6 @@ ol.steps li {
   margin-top: 56px;
   font-size: 14px;
   color: #5b606b;
-}
-@media (max-width: 520px) {
-  .top {
-    gap: 6px 14px;
-  }
-  .top a[href^="https://github.com"] {
-    display: none;
-  }
 }
 /* Compare pages: centered hero, choose cards, at-a-glance rows, timeline, icon steps */
 .hero {
