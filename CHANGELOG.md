@@ -7,6 +7,8 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/en/1.
 - **Try a scenario from your AI:** founders, a SAFE, the typical rounds and an exit, with every number's math and its source. Nothing is recorded. (`run_scenario`, for Claude, Codex and Gemini.)
 - **Ask AI can run the same scenarios.**
 - **Try a scenario** in the app: from Welcome with no company, or from the cap table. Founders, a pool, SAFEs, the typical rounds with their sources, an exit. Nothing is saved until you choose Save as my cap table, which fills the setup for you.
+### Website
+- **One navbar on every page**, written from one file and checked by the site test. **Learn** is now the hub for explainers, founder guides and what's new; the **blog** is the "What's new" collection (features, fixes, events, campaigns).
 
 ## [0.1.5] — 2026-11-03
 ### Added

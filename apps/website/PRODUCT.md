@@ -49,6 +49,14 @@ Earlier selling points that still hold (Mads, 2026-10-26):
 4. You own your files. They're on your computer 24/7 and nobody can take them down.
 5. Signing is included: investors sign from a link, with no account.
 
+## Site map (2026-11-09)
+
+- **Navbar, one for every page:** `Learn · Compare · Pricing · GitHub | Book a call · Download`. It lives in `apps/website/_nav.fragment`; `pnpm --filter @capfolder/website nav` (`node nav.mjs`) writes it into every `index.html` and marks the current section (Learn for learn, guides and blog; Compare for compare and migrate). `site.test.ts` fails when any page's nav differs, so edit the fragment and run the script, never a page's nav by hand. "Book a call" is wired in `track.js` on every page.
+- **Learn (`/learn/`) is the hub for everything readable:** explainers (`/learn/<slug>/`), founder guides (`/guides/<slug>/`) and what's new (`/blog/<slug>/`). The hub lists all of them; the site test checks every file in those folders appears.
+- **Blog (`/blog/`) is the "What's new" collection:** new features, fixes, events, campaigns, release posts. Linked from the hub and the footer, not the navbar.
+- **Help (`/help/`) stays separate:** step-by-step app instructions with screenshots, tied to app files by `help/pages.json` and `pnpm help:check`. Reached from the hub, the footer and the app.
+- Features, Compare, Roadmap and Migrate pages keep their URLs; Features and Roadmap are reached from the footer and the hub.
+
 ## Operating Context
 
 - Founders evaluate it on the website, then download the desktop app.
