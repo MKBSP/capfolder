@@ -653,10 +653,10 @@ test("founder guides: SEO basics, PNG share image, Article markup, illustrations
   expect(read("package.json")).toMatch(/cp -r [^"]*\bguides\b/);
 });
 
-test("homepage test variants: /testing-landing-page/a-f are built, noindex and kept out of the sitemap", async () => {
-  for (const v of ["a", "b", "c", "d", "e", "f"])
-    expect(read(`testing-landing-page/${v}/index.html`)).toContain('<meta name="robots" content="noindex">');
-  expect(read("package.json")).toMatch(/cp -r [^"]* testing-landing-page /);
+test("homepage test variants: /testing-landing-page/* is not built and 301s to the homepage", async () => {
+  expect(read("package.json")).not.toMatch(/cp -r [^"]* testing-landing-page /);
+  expect(read("package.json")).toMatch(/cp -r [^"]* _redirects /);
+  expect(read("_redirects")).toContain("/testing-landing-page/* /  301");
   const { sitemap } = await import("./sitemap.mjs");
   expect(sitemap(["index.html", "testing-landing-page/c/index.html"])).not.toContain("testing-landing-page");
 });
