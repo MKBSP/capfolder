@@ -35,5 +35,8 @@ pnpm dev:web       # website (added in M8)
 pnpm dev:relay     # relay api + documenso via docker compose (added in M5)
 ```
 
+## Launch posts
+Sharing articles (daily.dev, Indie Hackers, Substack, X, Reddit…) runs from the launch canvas. Read `docs/launch/canvas/README.md` first.
+
 ## Marked items
 `[verify]` means a detail is not yet confirmed (an API flag, an endpoint name, an export column). Check the official docs or real files before relying on it, then remove the marker.

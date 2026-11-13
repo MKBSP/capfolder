@@ -1,0 +1,58 @@
+{
+  "title": "Launch: Capfolder (Pulley shutdown)",
+  "url": "https://capfolder.com/",
+  "date": "",
+  "tz": "Europe/Lisbon",
+  "source": "",
+  "notes": "",
+  "posts": [
+    {
+      "id": "hn-1",
+      "parent": null,
+      "channel": "hn",
+      "label": "Post",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "**Title:** Show HN: Capfolder – an open-source cap table that lives in a folder you own\n\n**URL:** https://capfolder.com/?ref=hn\n\n**Text:**\n\nPulley shuts down on December 8. We raised our seed on SAFEs, some signed in Pulley, some on investors' own paper, some by email, and when we needed the documents they were scattered or gone.\n\nCapfolder is a desktop app (Tauri, AGPL-3.0) that keeps the cap table as plain files in a folder on your computer:\n\n- `events.jsonl`: an append-only, hash-chained log of Open Cap Format (OCF) records. Mistakes are fixed by new entries, never edits.\n- `captable.csv`: regenerated on every change, opens in Excel without the app.\n- `docs/`: your signed documents, sorted by type and linked to the holdings they prove.\n\nWhat it does today:\n- Import a spreadsheet export (Pulley, Carta, Cake: you confirm the column mapping) or any OCF export. It checks the totals against the old tool's and makes you note any difference before saving.\n- Point it at a messy folder of PDFs and scans. It reads them locally (PDF.js, tesseract.js), files the ones it's sure of, and asks about the rest. When it isn't sure, it asks.\n- Vesting, the option pool, SAFEs, a \"what's missing\" checklist (83(b)s, IP assignments, board consents), exports for any date, and a zip for your lawyer.\n- Signatures go through a small relay in front of self-hosted Documenso. It's the only server that sees your documents, and it deletes each one within 7 days of signing. You can self-host it. (The app also sends an anonymous install count, which you can turn off.)\n- Optional local AI (Ollama/LM Studio) for documents the rules can't sort. It only proposes; you click.\n\nIt's free. Code, tests and the golden cap-table fixtures are on GitHub: https://github.com/MKBSP/capfolder\n\nNot legal advice, and not affiliated with Pulley or Carta. I'd love feedback from anyone migrating off Pulley this month, especially exports that don't import cleanly.",
+      "tips": "Show HN draft (Mads posts; check every claim the week of launch)",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "bookface-1",
+      "parent": null,
+      "channel": "bookface",
+      "label": "Post",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "**Title:** Pulley is shutting down Dec 8: free open-source tool to keep your cap table (and your signed docs)\n\nHi all, Mads here (Capfolder). Pulley closes on December 8. If your SAFEs and grants live there, export them now: Dashboard → Download Cap Table, and download every signed document.\n\nI built Capfolder because we lost track of our own SAFE paperwork. It's a free, open-source desktop app that keeps the cap table as plain files on your computer:\n- imports the Pulley spreadsheet export (you confirm the columns) and checks the totals against Pulley's, noting any difference, before saving;\n- sorts your folder of signed PDFs and scans, matches each to the right holding, and flags what's missing (83(b)s, IP assignments, consents);\n- sends new SAFEs for signature through a relay that deletes them once signed.\n\nDownload: https://capfolder.com/?ref=bookface · Source: https://github.com/MKBSP/capfolder\n\nIf your Pulley export doesn't import cleanly, send it to me (names removed, numbers kept) and I'll add support.",
+      "tips": "Bookface draft (Mads posts)",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "producthunt-1",
+      "parent": null,
+      "channel": "producthunt",
+      "label": "Launch",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "",
+      "tips": "To draft: tagline (60 chars), description, gallery, maker comment.",
+      "media": [
+        {
+          "need": "Gallery: 4–6 screenshots + the product video",
+          "file": "",
+          "alt": ""
+        }
+      ],
+      "notes": []
+    }
+  ]
+}

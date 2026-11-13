@@ -1,0 +1,214 @@
+{
+  "title": "Capfolder 0.1.3: try it on a sample company",
+  "url": "https://capfolder.com/blog/try-it-on-a-sample-company/",
+  "date": "2026-10-22",
+  "tz": "Europe/Lisbon",
+  "source": "index.html",
+  "notes": "",
+  "posts": [
+    {
+      "id": "linkedin-1",
+      "parent": null,
+      "channel": "linkedin",
+      "label": "Post",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Would you type your cap table into an app you met today?\n\nMost cap table tools ask exactly that on day one.\nShare counts. Every founder. Every SAFE.\nAll before you've seen a single useful screen.\n\nSo Capfolder 0.1.3 lets you look first:\n\n1. A sample company. Acme Inc. has 2 founders, 2 employees with options, an option pool and 3 SAFEs. Click anything. Nothing you do is saved.\n2. Three yes/no questions. SAFEs? Option pool? Priced round? The steps that don't apply disappear.\n3. A Get started list of 7 steps that ticks itself from what's in your cap table, so it never drifts out of date.\n4. A 6-stop tour, and a \"?\" next to valuation cap, discount, cliff, par value and vesting start.\n\nThe sample even has 11 gaps in \"What's missing\" on purpose: the signed documents a lawyer would ask for. You see that list on fake data before it's about your company.\n\nOne honest limit: the sample is read-only, so you can't try e-signing in it.\n\nCapfolder is free, open source, and keeps your cap table in a folder on your own computer.\n\nFounders: when you first set up your cap table, what took the longest?",
+      "tips": "Founder angle. 150–250 words, one screenshot, no link, no hashtags, ends with a question.\n• Mon–Thu, 11:00–13:00 Lisbon.\n• No link in the post. If someone asks, reply with it.\n• Attach one image: the sample company.\n• Be free for the next hour to reply to every comment with a full sentence.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v013-sample.jpg",
+          "alt": "The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What's missing list with 11 gaps."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-1",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 1",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Try a cap table app before you type in yours.\n\nCapfolder 0.1.3 opens a sample company: 2 founders, 2 employees, an option pool and 3 SAFEs. Click anything. Nothing is saved.",
+      "tips": "A 5-post thread. Each post ≤280 characters, a screenshot on posts 1–4, the link only in the first reply.\n• Weekdays, morning or midday.\n• Post the thread, then the link as a reply to post 1.\n• 0–1 hashtags (none used here).\n• Reply to every comment in the first hour: replies count most.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v013-sample.jpg",
+          "alt": "The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What's missing list with 11 gaps."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-2",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 2",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Before you set up your own: 3 yes/no questions.\n\nSAFEs? Option pool? Priced round?\n\nThe steps that don't apply disappear.",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v013-questions.jpg",
+          "alt": "Three quick questions: Do you have SAFEs or convertible notes? Do you have an option pool? Have you done a priced round? Each with Yes and No."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-3",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 3",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Then a Get started list: 7 steps.\n\nThe ticks are computed from the cap table, never stored, so the list can't drift out of date.",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v013-get-started.jpg",
+          "alt": "Capfolder's Get started list: 3 of 7 done. Company details, share classes and founders are Done; option pool, SAFEs, signed documents and Ask AI each have a button."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-4",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 4",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Plus a 6-stop tour, and a \"?\" next to valuation cap, discount, cliff, par value and vesting start.\n\nSettings → Tour runs it again.",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v013-tour.jpg",
+          "alt": "Capfolder's tour on the sample company: the cap table is highlighted with a popover, Your cap table, stop 2 of 6."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-5",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 5",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Honest limit: the sample is read-only, so you can't try e-signing in it.\n\nFounders: what took longest when you first set up your cap table?",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-6",
+      "parent": "x-1",
+      "channel": "x",
+      "label": "First reply (link)",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Free, open source, and your cap table stays in a folder on your own computer. What's new in 0.1.3, with screenshots: https://capfolder.com/blog/try-it-on-a-sample-company/",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "indiehackers-1",
+      "parent": null,
+      "channel": "indiehackers",
+      "label": "Post",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "text": "<h1>Let people try your app on fake data before they give you real data</h1>\n<p>I'm building Capfolder, an open-source cap table app. A cap table is about the most sensitive spreadsheet a startup has: who owns what, every investor, every SAFE amount.</p>\n<p>The first versions started you on an empty cap table. To find out if you liked it, you had to type all of that in first. That's a big ask from an app you've known for five minutes, and it's a lot of work before you've seen anything useful.</p>\n<h2>What we did</h2>\n<p>Version 0.1.3 lets you look first:</p>\n<ol>\n<li><b>A sample company.</b> One click opens a made-up company with 2 founders, 2 employees with options, an option pool and 3 SAFEs. Every screen works. Nothing you do is saved, and a banner on every screen says so.</li>\n<li><b>Three yes/no questions</b> before setup (SAFEs? option pool? priced round?), so the steps that don't apply never show up.</li>\n<li><b>A Get started list</b> of 7 steps that ticks itself from what's actually in your cap table.</li>\n<li><b>A 6-stop tour</b>, and a \"?\" next to the jargon (valuation cap, discount, cliff, par value, vesting start).</li>\n</ol>\n<figure><img src=\"../../../../apps/website/blog/img/v013-sample.jpg\" alt=\"The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What&#x27;s missing list with 11 gaps.\"><figcaption>Alt text: The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What&#x27;s missing list with 11 gaps. · <a href=\"../../../../apps/website/blog/img/v013-sample.jpg\" download>Download image</a></figcaption></figure>\n<h2>The lesson: your test data is your demo</h2>\n<p>The sample company took far less work than I expected, because it already existed. It's the same made-up company our tests use to check the math, to the share. The app copies it into its own folder the first time you open it and refuses every save to it.</p>\n<p>Two things I'd do again:</p>\n<ul>\n<li><b>Make the demo show the problem, not just the product.</b> The sample has 11 gaps in its \"What's missing\" list on purpose: the signed documents a lawyer would ask for. You see what the app catches before it's your company it's catching.</li>\n<li><b>Never store checklist ticks.</b> The Get started ticks are worked out from the cap table every time. A checklist you tick by hand goes out of date the day someone adds a SAFE somewhere else.</li>\n</ul>\n<h2>What I don't know yet</h2>\n<p>Whether it works. Your cap table never leaves your computer, so I can't watch people use it: I'll learn from people telling me. And the sample is read-only, so you can't try e-signing in it.</p>\n<p>The full write-up, with screenshots: <a href=\"https://capfolder.com/blog/try-it-on-a-sample-company/\">https://capfolder.com/blog/try-it-on-a-sample-company/</a></p>\n<p><b>If your product handles sensitive data, how do you let people try it before they trust it?</b></p>",
+      "tips": "Lesson first, product as context. 400–900 words, link at the end, ends with a question.\n• Tue–Thu.\n• Post in a relevant group (e.g. Building in Public), not as an ad.\n• Click Copy with formatting and paste into the IH editor; upload the image by hand if it doesn't come across.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "devto-1",
+      "parent": null,
+      "channel": "devto",
+      "label": "Front matter",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "---\ntitle: Building a read-only demo mode into a local-first Tauri app\npublished: false\ndescription: How Capfolder turned its golden test fixture into a sample company you can click around in, and why its checklist never stores a tick.\ntags: opensource, tauri, react, showdev\ncanonical_url: https://capfolder.com/blog/try-it-on-a-sample-company/\ncover_image: https://capfolder.com/blog/img/v013-sample.jpg\n---",
+      "tips": "The technical version: a full article with canonical_url pointing at capfolder.com, 4 tags.\n• Tue–Wed.\n• Wait until Google has indexed the original (Search Console → URL Inspection), usually 3–7 days.\n• Create the post in the Markdown editor: paste the front matter first, then the article. Upload each image with the editor's image button, because dev.to won't take local files.\n• published: false saves a draft; flip it when you're happy.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "devto-2",
+      "parent": "devto-1",
+      "channel": "devto",
+      "label": "Article",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "text": "<p><i>Originally published on <a href=\"https://capfolder.com/blog/try-it-on-a-sample-company/\">capfolder.com</a>.</i></p>\n<p>Capfolder is an open-source (AGPL) cap table app built with Tauri and React. Your cap table lives in a folder of plain files on your own computer: an append-only, hash-chained <code>events.jsonl</code> in the Open Cap Format, plus your signed PDFs.</p>\n<p>That design made the first-run experience awkward. A new user opened an empty app and had to type in real share counts before seeing anything useful. In 0.1.3 we added a sample company, a self-ticking checklist and a tour. Here's how, in very little code.</p>\n<h2>1. The sample company is the test fixture</h2>\n<p>We already had a golden test company in <code>fixtures/acme-vault/</code>: the event log the engine must turn into an expected cap table CSV, to the share. The sample company is that same file. Vite's <code>?raw</code> import bundles it as text, so no extra files ship:</p>\n<pre>import metaText from \"../../../fixtures/acme-vault/capfolder.json?raw\";\nimport eventsText from \"../../../fixtures/acme-vault/events.jsonl?raw\";</pre>\n<p>On first open it's copied into the app-data folder, with <code>\"sample\": true</code> added to <code>capfolder.json</code>. The event log is written last, so a half-made copy gets made again next time. Every document the events point to gets a one-page placeholder PDF from pdf-lib, so the Documents screen isn't full of \"missing file\" errors.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v013-start-choice.jpg\" alt=\"Capfolder&#x27;s How do you want to start? screen: Import from Pulley or Carta, Start from zero, I only have documents, and Try the sample company.\"><figcaption>Alt text: Capfolder&#x27;s How do you want to start? screen: Import from Pulley or Carta, Start from zero, I only have documents, and Try the sample company. · <a href=\"../../../../apps/website/blog/img/v013-start-choice.jpg\" download>Download image</a></figcaption></figure>\n<h2>2. Read-only in one place</h2>\n<p>Every write in the app goes through the same append function, so read-only is one check there, not one per screen:</p>\n<pre>if (v.meta.sample) return [SAMPLE_BLOCKED];\n// \"This is the sample company, so nothing here is saved. Use Start my own to set up your company.\"</pre>\n<p>A banner on every screen says \"Sample company · nothing here is real\" with a <b>Start my own</b> button.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v013-sample.jpg\" alt=\"The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What&#x27;s missing list with 11 gaps.\"><figcaption>Alt text: The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What&#x27;s missing list with 11 gaps. · <a href=\"../../../../apps/website/blog/img/v013-sample.jpg\" download>Download image</a></figcaption></figure>\n<h2>3. A checklist that never stores a tick</h2>\n<p>The Get started list has 7 steps. None of them is stored as done. Each one is worked out from the cap table state on every render:</p>\n<pre>{ label: \"Founders and their shares\", done: sec.some((x) => isFounder(s, x)) },\na.pool !== false &amp;&amp; { label: \"Option pool and grants\", done: s.plans.size &gt; 0 &amp;&amp; sec.some((x) =&gt; x.kind === \"equity\") },\na.safes !== false &amp;&amp; { label: \"SAFEs\", done: sec.some((x) =&gt; x.kind === \"convertible\") },</pre>\n<p>The <code>a.pool</code> and <code>a.safes</code> come from three yes/no questions asked before setup. Unanswered means \"show the step\", so skipping the questions never hides anything.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v013-get-started.jpg\" alt=\"Capfolder&#x27;s Get started list: 3 of 7 done. Company details, share classes and founders are Done; option pool, SAFEs, signed documents and Ask AI each have a button.\"><figcaption>Alt text: Capfolder&#x27;s Get started list: 3 of 7 done. Company details, share classes and founders are Done; option pool, SAFEs, signed documents and Ask AI each have a button. · <a href=\"../../../../apps/website/blog/img/v013-get-started.jpg\" download>Download image</a></figcaption></figure>\n<h2>4. The tour</h2>\n<p>The tour is <a href=\"https://driverjs.com/\">Driver.js</a> (MIT) with six stops. <code>skipMissingElement</code> handles an empty company that has no holding row yet, and focus goes back to where it was when the tour closes.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v013-tour.jpg\" alt=\"Capfolder&#x27;s tour on the sample company: the cap table is highlighted with a popover, Your cap table, stop 2 of 6.\"><figcaption>Alt text: Capfolder&#x27;s tour on the sample company: the cap table is highlighted with a popover, Your cap table, stop 2 of 6. · <a href=\"../../../../apps/website/blog/img/v013-tour.jpg\" download>Download image</a></figcaption></figure>\n<h2>What it doesn't do yet</h2>\n<p>The sample is read-only, so you can't try e-signing in it: signing goes through a relay, and we don't want fake envelopes there.</p>\n<p>The code is on <a href=\"https://github.com/MKBSP/capfolder\">GitHub</a>. If you've built a demo mode for a local-first app, how did you keep it from drifting away from the real thing?</p>",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "substack-1",
+      "parent": null,
+      "channel": "substack",
+      "label": "Post",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "text": "<h1>Try a cap table app before you type in yours</h1>\n<h3>Capfolder 0.1.3: a sample company, three quick questions, and a checklist that ticks itself</h3>\n<p>A new cap table tool opens empty. To find out whether you trust it, you have to type in your real company first: share counts, founders, every SAFE. That's a lot of sensitive numbers for an app you met five minutes ago.</p>\n<p>This week's release lets you look first.</p>\n<p><b>A sample company.</b> Pick \"Try the sample company\" and Capfolder opens Acme Inc.: 2 founders, 2 employees with options, an option pool and 3 SAFEs. Click any row to see how its vesting is worked out. Nothing you do is saved.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v013-sample.jpg\" alt=\"The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What&#x27;s missing list with 11 gaps.\"><figcaption>Alt text: The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What&#x27;s missing list with 11 gaps. · <a href=\"../../../../apps/website/blog/img/v013-sample.jpg\" download>Download image</a></figcaption></figure>\n<p>It even has 11 gaps in \"What's missing\" on purpose: the signed documents a lawyer would ask for in due diligence. Better to see that list on fake data first.</p>\n<p><b>Three quick questions.</b> SAFEs? Option pool? Priced round? The setup steps that don't apply disappear.</p>\n<p><b>A Get started list.</b> Seven steps that tick themselves from what's in your cap table, each with the button that does it.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v013-get-started.jpg\" alt=\"Capfolder&#x27;s Get started list: 3 of 7 done. Company details, share classes and founders are Done; option pool, SAFEs, signed documents and Ask AI each have a button.\"><figcaption>Alt text: Capfolder&#x27;s Get started list: 3 of 7 done. Company details, share classes and founders are Done; option pool, SAFEs, signed documents and Ask AI each have a button. · <a href=\"../../../../apps/website/blog/img/v013-get-started.jpg\" download>Download image</a></figcaption></figure>\n<p><b>A one-minute tour</b> with six stops, and a \"?\" next to valuation cap, discount, cliff, par value and vesting start.</p>\n<p><b>What it doesn't do yet:</b> the sample is read-only, so you can't try e-signing in it.</p>\n<p>Capfolder is free, open source, and keeps your cap table in a folder on your own computer. <a href=\"https://capfolder.com/blog/try-it-on-a-sample-company/\">The full post, with every screenshot.</a></p>\n<p><b>When you first set up your company's cap table, what took the longest?</b> Hit reply, I read every one.</p>",
+      "tips": "The newsletter version: shorter than the blog post, written to subscribers, links to the full post.\n• Send Tue–Thu morning.\n• Click Copy with formatting and paste into the Substack editor. Images come across once capfolder.com has the post live; otherwise drag them in.\n• Title and subtitle are the first two lines.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "substack-notes-1",
+      "parent": "substack-1",
+      "channel": "substack-notes",
+      "label": "Note",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Would you type your cap table into an app you met today?\n\nCapfolder 0.1.3 opens a sample company first: 2 founders, an option pool, 3 SAFEs. Click anything; nothing is saved. Free and open source.\n\nhttps://capfolder.com/blog/try-it-on-a-sample-company/",
+      "tips": "Short, with one image and the link.\n• Post after the Substack article (substack.html) is out, or on its own.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v013-sample.jpg",
+          "alt": "The sample company Acme Inc. in Capfolder: a banner says Sample company, nothing here is real. 8,000,000 shares fully diluted, Tim Apple 50%, Steve Jobs 37.5%, two employee grants, the option pool, SAFEs, and a What's missing list with 11 gaps."
+        }
+      ],
+      "notes": []
+    }
+  ]
+}

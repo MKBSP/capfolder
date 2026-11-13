@@ -7,3 +7,6 @@ dist/
 .vercel
 capfolder.mcpb
 .mcpb-build/
+
+# Python bytecode (docs/launch/canvas scripts)
+__pycache__/

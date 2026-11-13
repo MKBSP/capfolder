@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0C0C0D;--dots:#ffffff14;--card:#151517;--card2:#1B1B1E;--edge:#26262A;--ink:#EDEDEF;--mute:#8B8B92;--faint:#55555C;
+  --wire:#3A3A40;--accent:#6EE7B7;--todo:#A1A1AA;--soon:#FBBF24;--due:#F87171;--posted:#6EE7B7;--skip:#52525B;--shadow:0 8px 30px #0008}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F4F4F2;--dots:#0000001a;--card:#FFFFFF;--card2:#F7F7F5;--edge:#E4E4E0;--ink:#151517;--mute:#6B6B72;--faint:#A0A0A6;
+  --wire:#C9C9C4;--accent:#1F8A5B;--todo:#8B8B92;--soon:#C27C0E;--due:#D23F31;--posted:#1F8A5B;--skip:#B5B5BA;--shadow:0 8px 30px #0000001a}}
+:root[data-theme="light"]{--bg:#F4F4F2;--dots:#0000001a;--card:#FFFFFF;--card2:#F7F7F5;--edge:#E4E4E0;--ink:#151517;--mute:#6B6B72;--faint:#A0A0A6;--wire:#C9C9C4;--accent:#1F8A5B;--todo:#8B8B92;--soon:#C27C0E;--due:#D23F31;--posted:#1F8A5B;--skip:#B5B5BA;--shadow:0 8px 30px #0000001a}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font:13px/1.45 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.mono{font-family:"IBM Plex Mono",monospace}
+.mute{color:var(--mute)}
+
+#view{position:fixed;inset:0;overflow:hidden;cursor:grab;touch-action:none;background-image:radial-gradient(circle,var(--dots) 1px,transparent 1.2px)}
+#view.panning{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0}
+#wires{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+#wires path{fill:none;stroke:var(--wire);stroke-width:1.25}
+#wires path.due{stroke:var(--due);opacity:.7}#wires path.soon{stroke:var(--soon);opacity:.6}#wires path.posted{stroke:var(--posted);opacity:.45}
+
+.node{position:absolute;user-select:none}
+.cap{font-size:11px;color:var(--faint);margin:0 0 5px 2px;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:12px;padding:10px 12px;transition:border-color .15s}
+.node:hover .card{border-color:var(--faint)}
+.node.sel .card{border-color:var(--accent)}
+.node.is-due .card{box-shadow:0 0 0 1px var(--due)}
+.node.blog .card{width:280px;padding:0;overflow:hidden}
+.node.blog img{display:block;width:100%;height:140px;object-fit:cover;object-position:top;opacity:.9}
+.node.blog .body{padding:12px 14px}
+.node.blog h2{margin:0 0 4px;font-size:15px;font-weight:600;line-height:1.3}
+.node.hub .card{width:240px;display:flex;align-items:center;gap:8px}
+.node.hub .name{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.node.hub .sum{font-size:11px;color:var(--mute)}
+.chev{color:var(--faint);font-size:11px;width:10px}
+.node.post .card{width:250px;padding:0;overflow:hidden}
+.node.post img{display:block;width:100%;height:96px;object-fit:cover;object-position:top;border-bottom:1px solid var(--edge)}
+.node.post .body{padding:9px 12px 10px}
+.node.post .t{font-weight:500;margin:3px 0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.node.post .snip{color:var(--mute);font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
+.meta .sp{flex:1}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--todo)}
+.dot.soon{background:var(--soon)}.dot.due{background:var(--due)}.dot.posted{background:var(--posted)}.dot.skip{background:var(--skip)}
+.pill{font-size:10px;padding:1px 6px;border-radius:99px;background:var(--card2);color:var(--mute);border:1px solid var(--edge)}
+.pill.due{color:var(--due);border-color:color-mix(in srgb,var(--due) 40%,transparent)}
+.pill.soon{color:var(--soon);border-color:color-mix(in srgb,var(--soon) 40%,transparent)}
+.mini{border:none;background:none;color:var(--faint);padding:0 3px;font-size:13px;line-height:1}
+.mini:hover{color:var(--ink)}
+.node .mini.hov{opacity:0}.node:hover .mini.hov{opacity:1}
+
+.float{position:fixed;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(8px);border:1px solid var(--edge);border-radius:12px;box-shadow:var(--shadow);z-index:5}
+#bar{left:14px;top:14px;display:flex;gap:6px;align-items:center;padding:6px}
+#bar select,#bar button,#zoom button{background:none;border:1px solid transparent;border-radius:8px;padding:5px 8px;color:var(--ink)}
+#bar select:hover,#bar button:hover,#zoom button:hover{background:var(--card2)}
+#bar select{max-width:340px}
+#bar .brand{font-weight:600;padding:0 6px 0 4px;color:var(--mute)}
+#zoom{left:14px;bottom:14px;display:flex;align-items:center;padding:4px}
+#zoom span{min-width:46px;text-align:center;color:var(--mute);font-size:12px}
+#attend{right:14px;top:14px;width:360px;max-height:calc(100vh - 28px);overflow:auto;padding:12px;transition:right .2s}
+body.drawer-open #attend{right:488px}
+#attend h3{margin:0;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+#attend h4{margin:12px 0 4px;font-size:11px;font-weight:500;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.item{display:flex;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:none;border-radius:8px;padding:6px;color:var(--ink)}
+.item:hover{background:var(--card2)}
+.item .l{flex:1;min-width:0}.item .l div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item small{color:var(--mute);font-size:11px}
+#attend.min .list,body.drawer-open #attend .list{display:none}
+body.drawer-open #attend{width:240px}
+.step{border:1px solid var(--accent);border-radius:10px;padding:10px;margin-top:10px}
+.step .head{display:flex;gap:8px;align-items:baseline}.step .head b{flex:1}
+.step pre{white-space:pre-wrap;font:inherit;font-size:12px;line-height:1.5;background:var(--card2);border-radius:8px;padding:8px;max-height:220px;overflow:auto;margin:6px 0}
+.step img{max-width:100%;border-radius:6px;display:block;margin-top:6px}
+.step input{width:100%;background:var(--card2);border:1px solid var(--edge);border-radius:8px;padding:6px 8px;color:var(--ink);margin-top:8px}
+.step input.got{border-color:var(--accent)}
+.step small,.warn{font-size:12px;color:var(--mute);line-height:1.5}
+.step .row{margin-top:6px;flex-wrap:wrap}
+#attend .btn{background:var(--card2);border:1px solid var(--edge);border-radius:8px;padding:5px 9px;color:var(--ink);text-decoration:none;font-size:12px}
+#attend .btn.primary{background:var(--accent);border-color:var(--accent);color:#0C0C0D;font-weight:500}
+.warn{display:flex;gap:8px;align-items:center;background:var(--card2);border-left:3px solid var(--soon);border-radius:6px;padding:7px 9px;margin-top:8px}.warn span{flex:1}
+
+#drawer{right:14px;top:14px;bottom:14px;width:460px;overflow:auto;padding:16px 18px;transform:translateX(500px);transition:transform .2s}
+body.drawer-open #drawer{transform:none}
+#drawer h2{margin:0;font-size:15px;font-weight:600}
+#drawer label{display:block;font-size:11px;color:var(--mute);margin:12px 0 4px}
+#drawer input,#drawer textarea,#drawer select{width:100%;background:var(--card2);border:1px solid var(--edge);border-radius:8px;padding:7px 9px}
+#drawer textarea{min-height:220px;resize:vertical;line-height:1.5}
+#drawer .btn{background:var(--card2);border:1px solid var(--edge);border-radius:8px;padding:6px 10px}
+#drawer .btn.primary{background:var(--accent);border-color:var(--accent);color:#0C0C0D;font-weight:500}
+.row{display:flex;gap:8px;align-items:center}.row>.grow{flex:1}
+.tips{white-space:pre-wrap;font-size:12px;color:var(--mute);background:var(--card2);border-radius:8px;padding:9px 10px;margin-top:10px;line-height:1.5}
+.count.bad{color:var(--due);font-weight:600}
+.slot{border:1px dashed var(--edge);border-radius:10px;padding:8px;margin-top:8px}
+.slot img,.slot video{max-width:100%;border-radius:6px;display:block;margin-bottom:6px}
+.note{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--edge)}
+.note.done span{text-decoration:line-through;color:var(--mute)}
+#drawer .note input{width:auto;margin-top:3px}
+.preview{border:1px solid var(--edge);border-radius:8px;padding:8px 12px;max-height:400px;overflow:auto;margin-top:8px}
+.preview img{max-width:100%}
+.seg{display:flex;background:var(--card2);border:1px solid var(--edge);border-radius:8px;padding:2px}
+.seg button{flex:1;border:none;background:none;border-radius:6px;padding:5px;color:var(--mute)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px #0003}
+#banner{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--due);color:#fff;padding:7px 14px;border-radius:99px;display:none;z-index:9}
+</style>
+</head>
+<body>
+<div id="view"><div id="world"><svg id="wires"></svg></div></div>
+
+<div id="bar" class="float">
+  <span class="brand">Launch</span>
+  <select id="blogSel" aria-label="Primary post"></select>
+  <select id="addCh" aria-label="Add a channel"></select>
+  <button id="addArticle" title="Add a live article by its link; Claude plans its posts">+ Article</button>
+  <button id="tidy" title="Forget dragged positions">Tidy</button>
+</div>
+<div id="zoom" class="float">
+  <button id="zOut" title="Zoom out">−</button><span id="zPct">100%</span><button id="zIn" title="Zoom in">+</button><button id="zFit">Fit</button>
+</div>
+<div id="attend" class="float"></div>
+<aside id="drawer" class="float"></aside>
+<div id="banner"></div>
+
+<script>
+const S = { blogs: [], ch: {}, chList: [], cur: null, sel: null, drawer: false, open: new Set(['root']), view: { x: 60, y: 60, s: 1 }, timers: {}, attendMin: false };
+const $ = (q) => document.querySelector(q);
+const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids.filter((k) => k != null && k !== false)); return e; };
+const fill = (node, ...kids) => node.replaceChildren(...kids.filter((k) => k != null && k !== false));
+const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+const blog = () => S.blogs.find((b) => b.id === S.cur);
+const chName = (id) => S.ch[id]?.name || id;
+const GROUP = { reddit: 'Reddit', 'daily.dev': 'daily.dev' };
+const ACCESS = { post: { name: 'Can post', rank: 1 }, approval: { name: 'Needs approval', rank: 2 }, no: { name: "Can't post", rank: 3 } };
+const byWhen = (a, z) => (a.when || '9') < (z.when || '9') ? -1 : (a.when || '9') > (z.when || '9') ? 1 : 0;
+const DAY = 864e5;
+const today = () => new Date().toDateString();
+
+// todo posts become "soon" on their day and "due" once their time has passed.
+function state(p) {
+  if (p.status !== 'todo') return p.status;
+  if (!p.when) return 'todo';
+  const t = new Date(p.when);
+  return t <= new Date() ? 'due' : t.toDateString() === today() ? 'soon' : 'todo';
+}
+function fmt(w) {
+  if (!w) return 'no date';
+  const t = new Date(w), time = t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  if (t.toDateString() === today()) return 'Today ' + time;
+  if (t.toDateString() === new Date(Date.now() + DAY).toDateString()) return 'Tomorrow ' + time;
+  return t.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' }) + ' ' + time;
+}
+
+async function load() {
+  const [blogs, chans, logins] = await Promise.all([fetch('/api/blogs').then((r) => r.json()), fetch('/docs/launch/channels.json').then((r) => r.json()), fetch('/api/logins').then((r) => r.json())]);
+  S.blogs = blogs; S.logins = logins; S.chList = chans; S.ch = Object.fromEntries(chans.map((c) => [c.id, c]));
+  if (!blog()) switchBlog(store.get('blog') && blogs.some((b) => b.id === store.get('blog')) ? store.get('blog') : blogs[0]?.id, false);
+  render();
+}
+
+function switchBlog(id, draw = true) {
+  S.cur = id; store.set('blog', id); S.sel = null; S.drawer = false;
+  S.open = new Set(store.get('open:' + id) || ['root']);
+  const v = store.get('view:' + id); S.view = v || { x: 60, y: 60, s: 1 }; S.needFit = !v;
+  if (draw) render();
+}
+
+function save(b) {
+  clearTimeout(S.timers[b.id]);
+  S.timers[b.id] = setTimeout(async () => {
+    const r = await fetch('/api/blogs/' + b.id, { method: 'PUT', headers: { 'If-Match': b.version, 'Content-Type': 'application/json' }, body: JSON.stringify(b.data) });
+    if (r.ok) { b.version = (await r.json()).version; return; }
+    flash(r.status === 409 ? 'posts.json changed on disk. Reloaded it; redo your last edit.' : 'Save failed: ' + (await r.text()));
+    if (r.status === 409) load();
+  }, 500);
+}
+function flash(msg) { const n = $('#banner'); n.textContent = msg; n.style.display = 'block'; setTimeout(() => (n.style.display = 'none'), 7000); }
+
+function render() { renderBar(); renderCanvas(); renderDrawer(); renderAttend(); }
+
+function renderBar() {
+  fill($('#blogSel'), ...S.blogs.map((b) => el('option', { value: b.id, textContent: b.data.title, selected: b.id === S.cur })));
+  const b = blog(); if (!b) return;
+  const used = new Set(b.data.posts.map((p) => p.channel)), groups = {};
+  S.chList.filter((c) => !used.has(c.id)).forEach((c) => (groups[c.group] ??= []).push(c));
+  fill($('#addCh'), el('option', { value: '', textContent: '+ Channel' }),
+    ...Object.entries(groups).map(([g, cs]) => el('optgroup', { label: GROUP[g] || 'Platforms' }, ...cs.map((c) => el('option', { value: c.id, textContent: c.name + (c.members ? ` · ${c.members}` : '') })))));
+}
+
+// ---------- tree ----------
+function buildTree(b) {
+  const ids = new Set(b.data.posts.map((p) => p.id)), kids = new Map(), rank = (id) => (S.chList.findIndex((c) => c.id === id) + 1 || 999);
+  const add = (key, n) => { if (!kids.has(key)) kids.set(key, []); kids.get(key).push(n); };
+  const parentOf = (p) => p.parent && ids.has(p.parent) && p.parent !== p.id ? p.parent : null;
+  const nodes = { root: { key: 'root', kind: 'blog' } }, seen = new Set();
+  b.data.posts.forEach((p) => {
+    const g = S.ch[p.channel]?.group || 'core';
+    if (!parentOf(p) && !seen.has(p.channel)) {
+      seen.add(p.channel);
+      const c = nodes['c:' + p.channel] = { key: 'c:' + p.channel, kind: 'channel', id: p.channel, rank: rank(p.channel) };
+      if (g === 'core') { c.up = 'root'; add('root', c); }
+      else {
+        if (!nodes['g:' + g]) { nodes['g:' + g] = { key: 'g:' + g, kind: 'group', group: g, rank: rank(p.channel), up: 'root' }; add('root', nodes['g:' + g]); }
+        // daily.dev squads sit under what you can do there (channels.json "access", set by publish.py check).
+        const a = S.ch[p.channel]?.access, ak = 'g:' + g + ':' + a;
+        if (a && ACCESS[a]) {
+          if (!nodes[ak]) { nodes[ak] = { key: ak, kind: 'group', group: ACCESS[a].name, cap: GROUP[g], rank: ACCESS[a].rank, up: 'g:' + g }; add('g:' + g, nodes[ak]); }
+          c.up = ak; add(ak, c);
+        } else { c.up = 'g:' + g; add('g:' + g, c); }
+      }
+    }
+  });
+  // A thread shows flat: every reply on the same channel hangs off the thread's first post ("parent" still says what it replies to).
+  const byId = new Map(b.data.posts.map((p) => [p.id, p]));
+  const head = (p) => { const seen = new Set([p.id]); let q = p; while (parentOf(q) && byId.get(q.parent).channel === p.channel && !seen.has(q.parent)) { q = byId.get(q.parent); seen.add(q.id); } return q === p ? parentOf(p) : q.id; };
+  b.data.posts.forEach((p) => { const h = head(p); nodes['p:' + p.id] = { key: 'p:' + p.id, kind: 'post', p, up: h ? 'p:' + h : 'c:' + p.channel }; });
+  b.data.posts.forEach((p) => add(nodes['p:' + p.id].up, nodes['p:' + p.id]));
+  for (const list of kids.values()) list.sort((a, z) => a.kind === 'post' ? byWhen(a.p, z.p) : a.rank - z.rank);
+  const kidsOf = (n) => kids.get(n.key) || [];
+  const posts = (n) => [...(n.kind === 'post' ? [n.p] : []), ...kidsOf(n).flatMap(posts)];
+  return { nodes, kidsOf, posts };
+}
+let T;
+
+function summary(n) {
+  const ps = T.posts(n), st = ps.map(state);
+  return { n: ps.length, posted: st.filter((s) => s === 'posted').length, due: st.filter((s) => s === 'due').length, soon: st.filter((s) => s === 'soon').length };
+}
+const worst = (sm) => sm.due ? 'due' : sm.soon ? 'soon' : sm.n && sm.posted === sm.n ? 'posted' : '';
+
+const COLW = 320, GAP = 14;
+
+function renderCanvas() {
+  const b = blog(), world = $('#world');
+  world.querySelectorAll('.node').forEach((n) => n.remove());
+  if (!b) return;
+  T = buildTree(b);
+  const visible = [], walk = (n, depth) => { n.depth = depth; visible.push(n); if (S.open.has(n.key)) T.kidsOf(n).forEach((k) => walk(k, depth + 1)); };
+  walk(T.nodes.root, 0);
+  visible.forEach((n) => { n.el = drawNode(b, n); n.el.style.visibility = 'hidden'; world.append(n.el); });
+  visible.forEach((n) => { n.h = n.el.offsetHeight; n.w = n.el.offsetWidth; });
+
+  // Tidy left-to-right layout: leaves stack down, parents sit at the middle of their children.
+  let cursor = 0;
+  const place = (n) => {
+    const ks = S.open.has(n.key) ? T.kidsOf(n) : [];
+    if (!ks.length) { n.ay = cursor; cursor += n.h + GAP; }
+    else { ks.forEach(place); const a = ks[0], z = ks.at(-1); n.ay = (a.ay + a.h / 2 + z.ay + z.h / 2) / 2 - n.h / 2; cursor += GAP; }
+  };
+  place(T.nodes.root);
+  const saved = b.data.layout || {};
+  visible.forEach((n) => { [n.x, n.y] = saved[n.key] || [n.depth * COLW, n.ay]; Object.assign(n.el.style, { left: n.x + 'px', top: n.y + 'px', visibility: '' }); });
+  S.visible = visible;
+  drawWires();
+  if (S.needFit) { S.needFit = false; fit(); } else applyView();
+}
+
+function drawWires() {
+  const svg = $('#wires'); svg.replaceChildren();
+  const pos = Object.fromEntries(S.visible.map((n) => [n.key, n]));
+  S.visible.forEach((n) => {
+    const up = pos[n.up]; if (!up) return;
+    const cap = 21, x1 = up.x + up.w, y1 = up.y + cap + (up.h - cap) / 2, x2 = n.x, y2 = n.y + cap + (n.h - cap) / 2, mx = (x1 + x2) / 2;
+    const path = svg.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path'));
+    path.setAttribute('d', `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+    const w = worst(summary(n)); if (w) path.setAttribute('class', w);
+  });
+}
+
+function drawNode(b, n) {
+  const node = el('div', { className: 'node ' + (n.kind === 'group' || n.kind === 'channel' ? 'hub' : n.kind) });
+  node.dataset.key = n.key;
+  if (n.kind === 'blog') {
+    const cover = b.data.posts.flatMap((p) => p.media).find((m) => m.file && !/\.(mp4|mov|webm)$/i.test(m.file));
+    node.append(el('div', { className: 'cap', textContent: 'Primary post' + (b.data.date ? ' · ' + b.data.date : '') }),
+      el('div', { className: 'card' }, cover ? el('img', { src: resolve(cover.file), alt: '' }) : null,
+        el('div', { className: 'body' }, el('h2', { textContent: b.data.title }), el('div', { className: 'mute', textContent: b.data.url.replace('https://', '') }),
+          el('div', { className: 'meta', style: 'margin-top:8px' }, ...summaryBits(summary(n))))));
+    if (S.sel === 'blog') node.classList.add('sel');
+    return node;
+  }
+  if (n.kind === 'group' || n.kind === 'channel') {
+    const sm = summary(n), open = S.open.has(n.key), c = S.ch[n.id] || {};
+    node.append(el('div', { className: 'cap' }, n.kind === 'group' ? n.cap || 'Platform' : n.up === 'root' ? 'Channel' : GROUP[c.group] || 'Channel', c.members ? el('span', { textContent: '· ' + c.members + ' members' }) : null),
+      el('div', { className: 'card' }, el('span', { className: 'chev', textContent: open ? '▾' : '▸' }),
+        el('div', { className: 'name', textContent: n.kind === 'group' ? GROUP[n.group] || n.group : chName(n.id) }),
+        el('span', { className: 'sum', textContent: `${sm.posted}/${sm.n}` }),
+        sm.due ? el('span', { className: 'pill due', textContent: sm.due + ' due' }) : sm.soon ? el('span', { className: 'pill soon', textContent: 'today' }) : null,
+        n.kind === 'channel' ? el('button', { className: 'mini hov', title: 'Add a post here', textContent: '+', onclick: () => addPost(n.id) }) : null));
+    if (sm.due) node.classList.add('is-due');
+    return node;
+  }
+  const p = n.p, st = state(p), img = p.media.find((m) => m.file && !/\.(mp4|mov|webm)$/i.test(m.file));
+  const up = b.data.posts.find((x) => x.id === p.parent), kids = T.kidsOf(n).length;
+  const open = p.notes.filter((x) => !x.done).length, need = p.media.filter((m) => !m.file).length;
+  node.append(el('div', { className: 'cap' }, up && up.channel !== p.channel ? chName(p.channel) : p.label),
+    el('div', { className: 'card' }, img ? el('img', { src: resolve(img.file), alt: '' }) : null,
+      el('div', { className: 'body' },
+        el('div', { className: 'meta' }, el('span', { className: 'dot ' + st }), el('span', { className: 'mono', textContent: p.status === 'posted' ? (p.scheduled && new Date(p.when) > Date.now() ? 'scheduled ' + fmt(p.when) : p.publishNote?.startsWith('Sent for moderator') ? 'awaiting approval' : 'posted') : p.status === 'skip' ? 'skipped' : fmt(p.when) }), el('span', { className: 'sp' }),
+          open ? el('span', { className: 'pill', title: 'Notes for Claude', textContent: '✎ ' + open }) : null,
+          need ? el('span', { className: 'pill', title: 'Images still needed', textContent: '▢ ' + need }) : null,
+          kids ? el('span', { className: 'pill', title: 'Replies', textContent: (S.open.has(n.key) ? '▾ ' : '▸ ') + kids }) : null,
+          p.status === 'todo' ? el('button', { className: 'mini hov', title: 'Mark posted', textContent: '✓', onclick: () => setStatus(p, 'posted') }) : null),
+        el('div', { className: 't', textContent: p.title || p.label }),
+        el('div', { className: 'snip', textContent: (p.text || 'Empty: to draft').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() }))));
+  if (st === 'due') node.classList.add('is-due');
+  if (S.sel === p.id) node.classList.add('sel');
+  return node;
+}
+
+function summaryBits(sm) {
+  return [el('span', { textContent: `${sm.posted}/${sm.n} posted` }), el('span', { className: 'sp' }),
+    sm.due ? el('span', { className: 'pill due', textContent: sm.due + ' due' }) : null,
+    sm.soon ? el('span', { className: 'pill soon', textContent: sm.soon + ' today' }) : null];
+}
+
+function setStatus(p, s) { p.status = s; if (s === 'posted') p.postedAt ??= new Date().toISOString(); save(blog()); render(); }
+
+// Re-layout after expanding or collapsing, but keep the clicked node where it was on screen.
+function keepInPlace(key, change) {
+  const at = () => { const n = S.visible.find((v) => v.key === key); return n && [S.view.x + n.x * S.view.s, S.view.y + n.y * S.view.s]; };
+  const a = at(); change(); renderCanvas(); const z = at();
+  if (a && z) { S.view.x += a[0] - z[0]; S.view.y += a[1] - z[1]; applyView(); }
+}
+function toggle(key) { keepInPlace(key, () => { S.open.has(key) ? S.open.delete(key) : S.open.add(key); store.set('open:' + S.cur, [...S.open]); }); }
+
+function select(id) { S.sel = id; S.drawer = true; renderCanvas(); renderDrawer(); }
+
+function addPost(channel, parent = null) {
+  const b = blog(), n = b.data.posts.filter((p) => p.channel === channel).length;
+  let id = `${channel}-${n + 1}`; while (b.data.posts.some((p) => p.id === id)) id += 'b';
+  b.data.posts.push({ id, parent, channel, label: parent ? 'Comment' : 'Post', when: null, auto: (!parent || channel === 'substack-notes') && (S.ch[channel]?.group === 'daily.dev' || AUTO.has(channel)), status: 'todo', url: '', format: 'text', text: '', tips: '', media: [], notes: [] });
+  save(b); openPath(id); select(id); renderBar();
+}
+
+// Open every ancestor of a post so it's on the canvas.
+function openPath(id) {
+  T = buildTree(blog());
+  for (let k = T.nodes['p:' + id]?.up; k; k = T.nodes[k]?.up) S.open.add(k);
+  store.set('open:' + S.cur, [...S.open]);
+}
+function focusPost(blogId, id) {
+  if (S.cur !== blogId) switchBlog(blogId, false);
+  S.needFit = false; openPath(id); S.sel = id; S.drawer = true; render();
+  const n = S.visible.find((v) => v.key === 'p:' + id);
+  if (n) { const vw = innerWidth - 480; S.view.x = vw / 2 - (n.x + n.w / 2) * S.view.s; S.view.y = innerHeight / 2 - (n.y + n.h / 2) * S.view.s; applyView(); }
+}
+
+// ---------- pan, zoom, drag ----------
+function applyView() {
+  const { x, y, s } = S.view;
+  $('#world').style.transform = `translate(${x}px,${y}px) scale(${s})`;
+  const v = $('#view'); v.style.backgroundSize = `${22 * s}px ${22 * s}px`; v.style.backgroundPosition = `${x}px ${y}px`;
+  $('#zPct').textContent = Math.round(s * 100) + '%';
+  clearTimeout(S.viewTimer); S.viewTimer = setTimeout(() => store.set('view:' + S.cur, S.view), 300);
+}
+function zoomAt(f, cx = innerWidth / 2, cy = innerHeight / 2) {
+  const s = Math.min(2.5, Math.max(0.12, S.view.s * f));
+  S.view.x = cx - ((cx - S.view.x) / S.view.s) * s; S.view.y = cy - ((cy - S.view.y) / S.view.s) * s; S.view.s = s; applyView();
+}
+function fit() {
+  if (!S.visible?.length) return;
+  const xs = S.visible.flatMap((n) => [n.x, n.x + n.w]), ys = S.visible.flatMap((n) => [n.y, n.y + n.h]);
+  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  const vw = innerWidth - (S.drawer ? 480 : 360), vh = innerHeight - 120;
+  const s = Math.min(1.1, vw / (x1 - x0 + 80), vh / (y1 - y0 + 80));
+  S.view = { s, x: 40 + (vw - (x1 - x0) * s) / 2 - x0 * s, y: 70 + (vh - (y1 - y0) * s) / 2 - y0 * s }; applyView();
+}
+
+const view = $('#view');
+view.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  if (e.ctrlKey || e.metaKey) zoomAt(Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY);
+  else { S.view.x -= e.deltaX; S.view.y -= e.deltaY; applyView(); }
+}, { passive: false });
+
+let drag = null;
+view.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0 || e.target.closest('button,a,input,select,textarea')) return;
+  const nodeEl = e.target.closest('.node');
+  const n = nodeEl && S.visible.find((v) => v.key === nodeEl.dataset.key);
+  drag = { sx: e.clientX, sy: e.clientY, moved: false, n, ox: n ? n.x : S.view.x, oy: n ? n.y : S.view.y };
+  view.setPointerCapture(e.pointerId);
+  if (!n) view.classList.add('panning');
+});
+view.addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+  if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+  drag.moved = true;
+  if (drag.n) { drag.n.x = drag.ox + dx / S.view.s; drag.n.y = drag.oy + dy / S.view.s; Object.assign(drag.n.el.style, { left: drag.n.x + 'px', top: drag.n.y + 'px' }); drawWires(); }
+  else { S.view.x = drag.ox + dx; S.view.y = drag.oy + dy; applyView(); }
+});
+view.addEventListener('pointerup', () => {
+  const d = drag; drag = null; view.classList.remove('panning');
+  if (!d) return;
+  if (d.n && d.moved) { const b = blog(); (b.data.layout ??= {})[d.n.key] = [Math.round(d.n.x), Math.round(d.n.y)]; save(b); return; }
+  if (d.moved) return;
+  if (!d.n) { if (S.drawer) { S.drawer = false; S.sel = null; renderCanvas(); renderDrawer(); } return; }
+  const n = d.n;
+  if (n.kind === 'blog') select('blog');
+  else if (n.kind === 'post') { keepInPlace(n.key, () => { S.sel = n.p.id; S.drawer = true; if (T.kidsOf(n).length) { S.open.add(n.key); store.set('open:' + S.cur, [...S.open]); } }); renderDrawer(); }
+  else toggle(n.key);
+});
+
+// ---------- drawer ----------
+const resolve = (file) => new URL(file, `${location.origin}/docs/launch/posts/${S.cur}/`).href;
+const AUTO = new Set(['indiehackers', 'substack', 'substack-notes']);
+const TITLED = new Set(['hn', 'indiehackers', 'producthunt', 'lobsters', 'devto']);
+// Links that open the platform's composer with this post already filled in.
+function prefill(p, c, b) {
+  const e = encodeURIComponent, text = (p.text || '').replace(/<[^>]+>/g, '');
+  if (p.channel === 'hn' && p.title) return `https://news.ycombinator.com/submitlink?u=${e(b.data.url + '?ref=hn')}&t=${e(p.title)}`;
+  if (c.group === 'reddit' && c.name?.startsWith('r/') && p.title) return `https://www.reddit.com/${c.name}/submit?type=TEXT&title=${e(p.title)}&text=${e(text)}`;
+  if (p.channel === 'x' || p.channel === 'x-replies') {
+    // a reply opens under its parent once the parent's URL is filled in
+    const to = (b.data.posts.find((x) => x.id === p.parent)?.url || '').match(/status\/(\d+)/)?.[1];
+    if (!p.parent || to) return `https://x.com/intent/post?text=${e(text)}${to ? '&in_reply_to=' + to : ''}`;
+  }
+  return null;
+}
+// Clipboard only takes PNG, so other formats get redrawn first.
+async function copyImage(src) {
+  let blob = await fetch(src).then((r) => r.blob());
+  if (blob.type !== 'image/png') { const bmp = await createImageBitmap(blob); const cv = new OffscreenCanvas(bmp.width, bmp.height); cv.getContext('2d').drawImage(bmp, 0, 0); blob = await cv.convertToBlob({ type: 'image/png' }); }
+  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+}
+const field = (label, input) => [el('label', { textContent: label }), input];
+
+function renderDrawer() {
+  document.body.classList.toggle('drawer-open', S.drawer);
+  const b = blog(), d = $('#drawer');
+  if (!b || !S.drawer) return;
+  const close = el('button', { className: 'mini', textContent: '✕', title: 'Close (Esc)', onclick: () => { S.drawer = false; S.sel = null; renderCanvas(); renderDrawer(); } });
+  if (S.sel === 'blog') return renderBlogDrawer(b, d, close);
+  const p = b.data.posts.find((x) => x.id === S.sel);
+  if (!p) { S.drawer = false; return renderDrawer(); }
+  const c = S.ch[p.channel] || {};
+  const hasTitle = 'title' in p || TITLED.has(p.channel) || c.group === 'reddit' || c.group === 'daily.dev';
+  const pre = prefill(p, c, b);
+  const change = (k) => (e) => { p[k] = e.target.value || (k === 'when' || k === 'parent' ? null : ''); save(b); renderCanvas(); renderAttend(); };
+
+  const text = el('textarea', { value: p.text || '' }), count = el('span', { className: 'count' });
+  const recount = () => { const len = [...text.value].length, lim = c.max && p.format === 'text'; count.textContent = lim ? `${len}/${c.max}` : `${len} chars`; count.classList.toggle('bad', !!lim && len > c.max); };
+  text.oninput = (e) => { p.text = e.target.value; recount(); save(b); };
+  recount();
+  const preview = el('div', { className: 'preview', hidden: true });
+
+  const seg = el('div', { className: 'seg' }, ...['todo', 'posted', 'skip'].map((s) => el('button', { className: p.status === s ? 'on' : '', textContent: s === 'todo' ? 'To do' : s === 'posted' ? 'Posted' : 'Skip', onclick: () => setStatus(p, s) })));
+  const parent = el('select', { onchange: (e) => { change('parent')(e); openPath(p.id); renderCanvas(); } }, el('option', { value: '', textContent: `Straight on ${chName(p.channel)}` }),
+    ...b.data.posts.filter((x) => x.id !== p.id && x.parent !== p.id).map((x) => el('option', { value: x.id, selected: p.parent === x.id, textContent: `${chName(x.channel)} · ${x.title || x.label}` })));
+
+  const media = el('div');
+  const renderMedia = () => fill(media, ...p.media.map((m, mi) => {
+    const up = el('input', { type: 'file', accept: 'image/*,video/*', onchange: async (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      const r = await fetch(`/api/media/${b.id}?name=${encodeURIComponent(f.name)}`, { method: 'POST', body: f });
+      if (!r.ok) return flash('Upload failed: ' + (await r.json()).error);
+      m.file = (await r.json()).file; save(b); renderMedia(); renderCanvas();
+    } });
+    const isVid = /\.(mp4|mov|webm)$/i.test(m.file || '');
+    return el('div', { className: 'slot' },
+      m.file ? el(isVid ? 'video' : 'img', { src: resolve(m.file), alt: m.alt || '', controls: isVid }) : el('div', { className: 'mute', textContent: 'Empty slot' }),
+      ...field('What it should be', el('input', { value: m.need || '', placeholder: 'meme, diagram, screenshot…', oninput: (e) => { m.need = e.target.value; save(b); } })),
+      ...field('Alt text', el('input', { value: m.alt || '', oninput: (e) => { m.alt = e.target.value; save(b); } })),
+      m.file && !isVid ? el('div', { className: 'row', style: 'margin-top:8px' }, el('button', { className: 'btn', textContent: 'Copy image', onclick: async (e) => { const t = e.target; await copyImage(resolve(m.file)); t.textContent = 'Copied'; setTimeout(() => (t.textContent = 'Copy image'), 1200); } }),
+        el('a', { className: 'btn', href: resolve(m.file), download: m.file.split('/').pop(), textContent: 'Download', style: 'text-decoration:none' })) : null,
+      el('div', { className: 'row', style: 'margin-top:8px' }, up, el('button', { className: 'btn', textContent: 'Remove', onclick: () => { p.media.splice(mi, 1); save(b); renderMedia(); renderCanvas(); } })));
+  }));
+  renderMedia();
+
+  const notes = el('div');
+  const renderNotes = () => fill(notes, ...p.notes.map((n) => el('div', { className: 'note' + (n.done ? ' done' : '') },
+    el('input', { type: 'checkbox', checked: n.done, onchange: (e) => { n.done = e.target.checked; save(b); renderNotes(); renderCanvas(); } }),
+    el('span', { textContent: n.text }), el('small', { className: 'mute', textContent: n.at?.slice(5, 10) || '' }))));
+  renderNotes();
+  const noteIn = el('textarea', { placeholder: 'e.g. Make this shorter and lead with the Pulley date', style: 'min-height:64px' });
+
+  const copyBtn = el('button', { className: 'btn primary', textContent: p.format === 'html' ? 'Copy with formatting' : 'Copy text', onclick: async () => {
+    if (p.format === 'html' && window.ClipboardItem)
+      await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([text.value], { type: 'text/html' }), 'text/plain': new Blob([text.value.replace(/<[^>]+>/g, '')], { type: 'text/plain' }) })]);
+    else await navigator.clipboard.writeText(text.value);
+    const label = copyBtn.textContent; copyBtn.textContent = 'Copied'; setTimeout(() => (copyBtn.textContent = label), 1200);
+  } });
+  const del = el('button', { className: 'btn', textContent: 'Delete post', onclick: () => {
+    if (p.text && !del.dataset.armed) { del.dataset.armed = 1; del.textContent = 'Click again to delete'; return; }
+    b.data.posts.forEach((x) => { if (x.parent === p.id) x.parent = p.parent; });
+    b.data.posts.splice(b.data.posts.indexOf(p), 1); S.sel = null; S.drawer = false; save(b); render();
+  } });
+  const copyField = (k) => el('button', { className: 'mini', title: 'Copy', textContent: '⧉', onclick: () => navigator.clipboard.writeText(p[k] || '') });
+  // daily.dev, Indie Hackers and Substack post through publish.py (a real browser with your saved login).
+  const auto = c.group === 'daily.dev' || AUTO.has(p.channel);
+  // A future time goes to daily.dev's or Substack's own scheduler (moderated squads refuse it; publish.py says so).
+  const sched = c.group === 'daily.dev' ? 'daily.dev' : p.channel === 'substack' ? 'Substack' : null;
+  const later = sched && p.when && new Date(p.when) > Date.now() + 120000;
+  const pubBtn = el('button', { className: 'btn primary', textContent: later ? 'Schedule on ' + sched : 'Publish now', onclick: async () => {
+    if (!pubBtn.dataset.armed) { pubBtn.dataset.armed = 1; pubBtn.textContent = later ? `Click again to schedule for ${fmt(p.when)}` : `Click again to post to ${chName(p.channel)}`; return; }
+    pubBtn.disabled = true; pubBtn.textContent = 'Publishing…';
+    clearTimeout(S.timers[b.id]); // flush edits first, publish.py reads posts.json
+    await fetch('/api/blogs/' + b.id, { method: 'PUT', headers: { 'If-Match': b.version, 'Content-Type': 'application/json' }, body: JSON.stringify(b.data) }).then(async (r) => r.ok && (b.version = (await r.json()).version));
+    const out = await fetch(`/api/publish/${b.id}?post=${p.id}`, { method: 'POST' }).then((r) => r.json());
+    flash(out.error ? 'Publish failed: ' + out.error : 'Posted: ' + out.url);
+    await load();
+  } });
+  const autoBox = el('label', { className: 'grow', style: 'display:flex;gap:8px;align-items:center;margin:0;font-size:12px' },
+    el('input', { type: 'checkbox', style: 'width:auto;margin:0', checked: !!p.auto, onchange: (e) => { p.auto = e.target.checked; delete p.autoError; save(b); } }), 'Auto-publish at its time (canvas server must be running)');
+
+  fill(d,
+    el('div', { className: 'row' }, el('div', { className: 'grow' }, el('div', { className: 'mute', style: 'font-size:11px', textContent: (GROUP[c.group] ? GROUP[c.group] + ' · ' : '') + p.label }), el('h2', { textContent: chName(p.channel) })),
+      pre ? el('a', { href: pre, target: '_blank', title: 'Opens the composer with title and text filled in', textContent: 'Open prefilled ↗', style: 'color:var(--accent);text-decoration:none' }) : null,
+      c.compose ? el('a', { href: c.compose, target: '_blank', textContent: pre ? 'Open' : 'Open ↗', style: 'color:var(--mute);text-decoration:none' }) : null, close),
+    el('div', { style: 'margin-top:12px' }, seg),
+    auto && p.status !== 'posted' ? el('div', { className: 'row', style: 'margin-top:10px' }, pubBtn, autoBox) : null,
+    p.publishNote ? el('div', { className: 'tips', textContent: p.publishNote }) : null,
+    p.autoError ? el('div', { className: 'tips', style: 'color:var(--due)', textContent: 'Auto-publish failed: ' + p.autoError + ' (untick and tick the box to retry)' }) : null,
+    el('div', { className: 'row' },
+      el('div', { className: 'grow' }, ...field(`When (${b.data.tz || 'local'})`, el('input', { type: 'datetime-local', value: p.when || '', onchange: change('when') }))),
+      el('div', { className: 'grow' }, ...field('Label', el('input', { value: p.label, onchange: change('label') })))),
+    hasTitle ? el('label', {}, 'Title ', copyField('title')) : null,
+    hasTitle ? el('input', { value: p.title || '', placeholder: 'Post title', oninput: (e) => { p.title = e.target.value; save(b); } }) : null,
+    'subtitle' in p ? el('label', {}, 'Subtitle ', copyField('subtitle')) : null,
+    'subtitle' in p ? el('input', { value: p.subtitle, oninput: (e) => { p.subtitle = e.target.value; save(b); } }) : null,
+    el('label', {}, `Text${p.format === 'html' ? ' (HTML)' : ''} · `, count), text,
+    el('div', { className: 'row', style: 'margin-top:8px' }, copyBtn,
+      p.format === 'html' ? el('button', { className: 'btn', textContent: 'Preview', onclick: () => { preview.innerHTML = text.value; preview.querySelectorAll('img').forEach((i) => (i.src = resolve(i.getAttribute('src')))); preview.hidden = !preview.hidden; } }) : null,
+      el('span', { className: 'grow' }), el('button', { className: 'btn', title: 'Add a box for a comment or reply that goes under this post, e.g. the first comment with the link', textContent: '+ Comment under this', onclick: () => addPost(p.channel, p.id) })),
+    preview,
+    c.note ? el('div', { className: 'tips', textContent: c.note }) : null,
+    p.tips ? el('div', { className: 'tips', textContent: p.tips }) : null,
+    ...field('Link to the live post', el('input', { value: p.url || '', placeholder: 'https://…', onchange: change('url') })),
+    ...field('Comes from (reply to)', parent),
+    el('label', {}, c.group === 'daily.dev' || p.channel === 'indiehackers' ? 'Images (first one = cover / header image)' : 'Images and video'), media,
+    el('button', { className: 'btn', style: 'margin-top:8px', textContent: '+ Image slot', onclick: () => { p.media.push({ need: '', file: '', alt: '' }); save(b); renderMedia(); renderCanvas(); } }),
+    el('label', {}, 'Notes for Claude'), notes, noteIn,
+    el('div', { className: 'row', style: 'margin-top:8px' }, el('button', { className: 'btn', textContent: 'Add note', onclick: () => { if (!noteIn.value.trim()) return; p.notes.push({ text: noteIn.value.trim(), at: new Date().toISOString(), done: false }); noteIn.value = ''; save(b); renderNotes(); renderCanvas(); } }),
+      el('span', { className: 'grow' }), del));
+}
+
+function renderBlogDrawer(b, d, close) {
+  const planned = b.data.posts.filter((p) => p.planned), x = b.data, set = (k) => (e) => { x[k] = e.target.value; save(b); renderBar(); renderCanvas(); };
+  fill(d,
+    el('div', { className: 'row' }, el('div', { className: 'grow' }, el('div', { className: 'mute', style: 'font-size:11px', textContent: 'Primary post' }), el('h2', { textContent: x.title })), close),
+    ...field('Title', el('input', { value: x.title, onchange: set('title') })),
+    ...field('URL', el('input', { value: x.url, onchange: set('url') })),
+    ...field('Published', el('input', { type: 'date', value: x.date || '', onchange: set('date') })),
+    x.source ? el('p', {}, el('a', { href: `/docs/launch/posts/${b.id}/${x.source}`, target: '_blank', textContent: 'Open the original draft ↗', style: 'color:var(--accent)' })) : null,
+    ...field('Notes', el('textarea', { value: x.notes || '', oninput: (e) => { x.notes = e.target.value; save(b); } })),
+    // Claude reads the article and adds drafted, timed posts for the channels the canvas can post itself (plan.md).
+    el('label', {}, 'Plan with Claude'),
+    x.planNote ? el('p', { className: 'tip', textContent: x.planNote }) : null,
+    planned.length ? el('button', { className: 'btn primary', textContent: `Approve plan: auto-publish ${planned.length} posts`, onclick: () => {
+      planned.forEach((p) => { p.auto = true; delete p.planned; }); save(b); flash(`${planned.length} posts will publish at their times.`); render(); } }) : null,
+    el('div', { className: 'row', style: 'margin-top:8px' }, el('button', { className: 'btn', disabled: b.planning, textContent: b.planning ? 'Planning… (a few minutes)' : 'Plan posts for this article', onclick: async () => {
+      const r = await fetch('/api/plan/' + b.id, { method: 'POST' }); b.planning = r.ok; flash(r.ok ? 'Claude is planning. The posts appear here when it is done.' : 'Plan failed: ' + (await r.text())); render(); } })));
+}
+
+// ---------- attend first ----------
+function renderAttend() {
+  const now = Date.now(), all = [];
+  S.blogs.forEach((b) => b.data.posts.forEach((p) => { if (p.status === 'todo' && p.when) all.push({ b, p, t: new Date(p.when).getTime() }); }));
+  all.sort((a, z) => a.t - z.t);
+  // A thread (same channel, same minute) is one thing to do.
+  const grouped = [];
+  all.forEach((x) => { const g = grouped.find((y) => y.b === x.b && y.p.channel === x.p.channel && y.t === x.t); g ? g.more++ : grouped.push({ ...x, more: 0 }); });
+  const many = new Set(grouped.map((x) => x.b.id)).size > 1;
+  const over = grouped.filter((x) => x.t <= now), todayL = grouped.filter((x) => x.t > now && new Date(x.t).toDateString() === today()), next = grouped.filter((x) => x.t > now && new Date(x.t).toDateString() !== today() && x.t < now + 7 * DAY).slice(0, 6);
+  const item = ({ b, p, more }) => el('button', { className: 'item', onclick: () => focusPost(b.id, p.id) }, el('span', { className: 'dot ' + state(p) }),
+    el('div', { className: 'l' }, el('div', { textContent: `${chName(p.channel)} · ${more ? `thread of ${more + 1}` : p.title || p.label}` }), el('small', { textContent: (many ? b.data.title.slice(0, 32) + ' · ' : '') + fmt(p.when) })));
+  const a = $('#attend'); a.classList.toggle('min', S.attendMin);
+  const notif = 'Notification' in window && Notification.permission !== 'granted' ? el('button', { className: 'mini', title: 'Turn on desktop notifications', textContent: '🔔', onclick: () => Notification.requestPermission().then(renderAttend) }) : null;
+  fill(a,
+    el('h3', {}, el('span', { className: 'dot ' + (over.length ? 'due' : todayL.length ? 'soon' : 'posted') }), 'Attend first',
+      el('span', { className: 'mute', style: 'font-weight:400', textContent: over.length ? `${over.length} overdue` : todayL.length ? `${todayL.length} today` : 'all clear' }),
+      el('span', { style: 'flex:1' }), notif, el('button', { className: 'mini', textContent: S.attendMin ? '▸' : '▾', onclick: () => { S.attendMin = !S.attendMin; renderAttend(); } })),
+    el('div', { className: 'list' }, ...warnings(), stepCard(),
+      over.length ? el('h4', { textContent: 'Overdue' }) : null, ...over.map(item),
+      todayL.length ? el('h4', { textContent: 'Later today' }) : null, ...todayL.map(item),
+      next.length ? el('h4', { textContent: 'Next 7 days' }) : null, ...next.map(item),
+      all.length ? null : el('p', { className: 'mute', textContent: 'Nothing scheduled. Give posts a date to see them here.' })));
+}
+
+// ---------- what needs you: logins, the Notes queue, and the next post you do by hand ----------
+const SITE = { dailydev: 'daily.dev', indiehackers: 'Indie Hackers', substack: 'Substack' };
+function warnings() {
+  const out = Object.entries(S.logins || {}).filter(([, ok]) => !ok).map(([k]) => el('div', { className: 'warn' },
+    el('span', { textContent: `Not logged in to ${SITE[k]}, so its posts will fail.` }),
+    el('button', { className: 'btn', textContent: 'Log in', onclick: async () => { await fetch('/api/login/' + k, { method: 'POST' }); flash(`A ${SITE[k]} window opened. Log in, then close it.`); } })));
+  const notes = S.blogs.flatMap((b) => b.data.posts).filter((p) => p.channel === 'substack-notes' && p.status === 'todo' && p.when && new Date(p.when) > Date.now()).length;
+  if (notes < 3) out.push(el('div', { className: 'warn' }, el('span', { textContent: `${notes} Substack Note${notes === 1 ? '' : 's'} queued. Keep at least 3: plan an article, or add Notes.` })));
+  return out;
+}
+
+const canAuto = (p) => S.ch[p.channel]?.group === 'daily.dev' || AUTO.has(p.channel);
+// What a post's own link looks like, so it can be picked up from the clipboard.
+const LINK = /https:\/\/(?:x|twitter)\.com\/\w+\/status\/\d+|https:\/\/(?:www\.)?reddit\.com\/r\/\w+\/comments\/\w+\S*|https:\/\/news\.ycombinator\.com\/item\?id=\d+|https:\/\/www\.linkedin\.com\/feed\/update\/\S+/;
+// Posts you do by hand, by time, then in file order so a thread comes in order.
+function steps() {
+  const out = [];
+  S.blogs.forEach((b) => b.data.posts.forEach((p, i) => { if (p.status === 'todo' && p.when && !canAuto(p)) out.push({ b, p, i, t: new Date(p.when).getTime() }); }));
+  return out.sort((a, z) => a.t - z.t || a.i - z.i);
+}
+S.stepUrl = {};
+function stepCard() {
+  const all = steps(), s = all[0];
+  S.stepInput = null;
+  if (!s) return null;
+  const { b, p } = s, c = S.ch[p.channel] || {};
+  if (s.t > Date.now() + 12 * 3600e3) return el('div', { className: 'step' }, el('small', { textContent: `Next post by hand: ${chName(p.channel)} · ${p.title || p.label}, ${fmt(p.when)}` }));
+  const up = b.data.posts.find((x) => x.id === p.parent), left = all.filter((x) => x.t <= Date.now() + 12 * 3600e3).length;
+  const text = (p.text || '').replace(/<[^>]+>/g, ''), link = prefill(p, c, b) || c.compose;
+  const copyBtn = (label, get) => { const btn = el('button', { className: 'btn', textContent: label, onclick: async () => { await get(); btn.textContent = 'Copied ✓'; } }); return btn; };
+  const url = el('input', { placeholder: 'Your post\'s link (fills in from the clipboard)', value: S.stepUrl[p.id] || '', oninput: (e) => { S.stepUrl[p.id] = e.target.value; } });
+  S.stepInput = { p, url };
+  const finish = (status) => { p.status = status; if (status === 'posted') { p.url = url.value.trim(); p.postedAt = new Date().toISOString(); } delete S.stepUrl[p.id]; save(b); render(); };
+  const media = (p.media || []).filter((m) => m.file && !/\.(mp4|mov|webm)$/i.test(m.file)).map((m) => {
+    const src = new URL(m.file, `${location.origin}/docs/launch/posts/${b.id}/`).href;
+    return el('div', {}, el('img', { src, alt: m.alt || '' }), el('div', { className: 'row' }, copyBtn('Copy image', () => copyImage(src)), m.alt ? copyBtn('Copy alt text', () => navigator.clipboard.writeText(m.alt)) : null));
+  });
+  return el('div', { className: 'step' },
+    el('div', { className: 'head' }, el('b', { textContent: `${chName(p.channel)} · ${p.label || 'Post'}` }), el('small', { textContent: `1 of ${left} · ${fmt(p.when)}` })),
+    up ? el('small', { textContent: `Reply to ${up.label || up.title}` + (up.url ? '' : ': post that one first, its link makes this a reply') }) : null,
+    p.title ? el('div', { className: 'row' }, el('small', { className: 'grow', textContent: 'Title: ' + p.title }), copyBtn('Copy title', () => navigator.clipboard.writeText(p.title))) : null,
+    el('pre', { textContent: text }),
+    el('div', { className: 'row' }, copyBtn('Copy text', () => navigator.clipboard.writeText(text)),
+      link ? el('a', { className: 'btn primary', href: link, target: '_blank', textContent: `Open ${chName(p.channel)} ↗` }) : null,
+      el('button', { className: 'btn', textContent: 'Open in canvas', onclick: () => focusPost(b.id, p.id) })),
+    ...media,
+    url,
+    el('div', { className: 'row' }, el('button', { className: 'btn primary', textContent: 'Done ✓', onclick: () => finish('posted') }), el('button', { className: 'btn', textContent: 'Skip', onclick: () => finish('skip') })),
+    p.tips ? el('small', { textContent: p.tips.split('\n')[0] }) : null);
+}
+// Back from X (or Reddit, HN, LinkedIn) with the post's link copied: fill it in.
+addEventListener('focus', async () => {
+  const s = S.stepInput;
+  if (!s || s.url.value) return;
+  try {
+    const m = (await navigator.clipboard.readText()).match(LINK);
+    if (m) { s.url.value = S.stepUrl[s.p.id] = m[0]; s.url.classList.add('got'); }
+  } catch {} // clipboard permission not given: paste it instead
+});
+
+// Desktop notification when a post's time arrives while this tab is open; posts already due at load only show in Attend first.
+const notified = new Set();
+function tick() {
+  if (S.blogs.some((b) => b.planning)) load(); // pick up Claude's plan when it lands
+  S.blogs.forEach((b) => b.data.posts.forEach((p) => {
+    if (p.status !== 'todo' || !p.when || new Date(p.when) > new Date()) return;
+    const key = `${b.id}|${p.id}|${p.when}`;
+    if (notified.has(key)) return;
+    notified.add(key);
+    if (S.ticked && window.Notification?.permission === 'granted') {
+      const n = new Notification(`Time to post: ${chName(p.channel)}`, { body: p.title || p.label });
+      n.onclick = () => { window.focus(); focusPost(b.id, p.id); };
+    }
+  }));
+  if (S.ticked) { renderAttend(); renderCanvas(); }
+  S.ticked = true;
+}
+
+$('#blogSel').onchange = (e) => switchBlog(e.target.value);
+$('#addCh').onchange = (e) => { if (e.target.value) addPost(e.target.value); };
+$('#addArticle').onclick = async () => {
+  const url = prompt('Link to the live article. Claude reads it and plans its posts (a few minutes).');
+  if (!url) return;
+  const r = await fetch('/api/article?url=' + encodeURIComponent(url.trim()), { method: 'POST' }), out = await r.json();
+  if (!r.ok) return flash(out.error);
+  await load(); switchBlog(out.blog);
+};
+$('#tidy').onclick = () => { const b = blog(); delete b.data.layout; save(b); renderCanvas(); fit(); };
+$('#zIn').onclick = () => zoomAt(1.2);
+$('#zOut').onclick = () => zoomAt(1 / 1.2);
+$('#zFit').onclick = fit;
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && S.drawer) { S.drawer = false; S.sel = null; renderCanvas(); renderDrawer(); } });
+
+load().then(() => { tick(); setInterval(tick, 30000); });
+</script>
+</body>
+</html>

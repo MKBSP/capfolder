@@ -1,0 +1,363 @@
+{
+  "title": "Piece 1: Before you found a startup",
+  "url": "https://capfolder.com/guides/before-you-found/",
+  "date": "2026-10-29",
+  "tz": "Europe/Lisbon",
+  "source": "index.html",
+  "notes": "• Your words, tightened. STD line and \"fuck it\" kept. No byline.\n• Cofounders (your answer 5) is left out on purpose.\n• The company that did the $250 setup and your last startup are not named.\n\nClaude Design prompts:\nUpload 3 references first: brand/capfolder-assets/illustrations/capfolder-captable.svg, capfolder-safe.svg, capfolder-dilution.svg (and 2 files from brand/capfolder-assets/icons/ for icons). Then paste the style block, then one prompt at a time. Export SVG.\n\nSTYLE: ILLUSTRATIONS (paste first)\nMatch the attached Capfolder illustrations exactly. Isometric line illustration (true 30° isometric), one object or a small group of objects, floating above a dashed diamond ground plane, with a faint dotted grid fading out around it. Outlines in near-black #141C18, stroke 1–1.25px, sharp corners. Faces are flat fills: white #FFFFFF tops, dark green #175A3C and #1F6F4A sides, black #141C18 for the darkest side. Accent #2A8659, light green #CFE8D8, grey #9DA6A0 for dashed lines. Transparent background (it sits on light mint #EEF4F0). Labels are tiny uppercase Inter, letter-spaced, set along the isometric plane, like \"ANGELS 12%\" or \"SAFE\". No people, no faces, no gradients, no shadows, no glow, no 3D rendering. viewBox -200 -150 400 300.\n\nSTYLE: ICONS (paste first when making icons)\nMatch the attached Capfolder icons. 24×24 line icons, stroke 1.5px, round caps and joins, no fill. Main stroke #2A3630, one accent stroke in green #2A8659. Simple, one idea per icon, readable at 20px.\n\n1. HERO: \"BEFORE YOU FOUND\" (illustration)\nAn isometric path of five stepping-stone tiles rising from left to right. The first two tiles are cracked and grey (#9DA6A0 dashed outline). The next two are white with green sides. The last, highest tile holds a small dark-green folder (the Capfolder folder shape). Tiny labels on the tiles: \"HIGH SCHOOL\", \"LONDON\", \"COLOMBIA\", \"FINTECH\", \"YC\".\n\n2. \"THE MONEY CAME IN STEPS\" (illustration)\nFour isometric stacked blocks of rising height, like the cap-table stack: $70K, $200K, $500K, ~$750K. Each block is labelled on its side in tiny uppercase: \"FIRST INVESTORS\", \"ANGELS\", \"Y COMBINATOR\", \"AFTER YC\". A dashed bracket above all four: \"≈ $1.5M\".\n\n3. \"STAY SMALL\" (illustration)\nA small, solid isometric block standing next to a tall tower of hollow, dashed-outline floors labelled \"EXPECTED GROWTH\". The small block is labelled \"CUSTOMERS\".\n\n4. \"DON'T SET UP TOO EARLY\" (illustration)\nAn isometric document stack like the SAFE illustration, labelled \"INCORPORATION\", with the top sheet crossed out in grey and a fresh sheet beside it with a green seal.\n\n5. FIVE VALIDATION ICONS (icons, one per prompt or all five in one sheet)\nMarket: a small storefront or target. Tech: angle brackets . Team: two people outlines. Financial: a coin with a line chart. Legal: a scale or a document with a seal. Same weight, same accent rule.\n\n6. OG / SOCIAL CARD (1200×630)\nLight mint #EEF4F0 background. Left: title \"Before you found a startup\" in Inter Bold #141C18, subtitle \"What I'd do differently\" in #2A3630. Right: illustration 1 at about 45% of the width. Same layout as the capfolder.com/learn header.",
+  "posts": [
+    {
+      "id": "x-1",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 1",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "I've started companies since high school. The first two failed. The last one raised about $1.5M, including YC.\n\nHere's what I'd do differently before founding again.",
+      "tips": "6 posts, link only in the first reply. Weekday morning. Reply to every comment in the first hour.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-2",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 2",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "1. Trust your gut and take the fights early.\n\nI'd been grinding for years and was too ready to think hard work alone would pay off. Make the hard calls fast, while they're still small.",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-3",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 3",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "2. Find people with backbone.\n\nMy best early investors and hires were honest, shared my values, and challenged me. Healthy arguments. Nothing would have happened without them.",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-4",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 4",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "3. Stay small until customers tell you what to build.\n\nWe spent too much on tech and on growth we expected but didn't have. We should have sold first, then built exactly what clients needed. That's on me.",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-5",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 5",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "4. Don't set up the company before you need it, and don't cheap out when you do.\n\nOur $250 online setup was almost entirely redone when a proper lawyer looked at it after we got into YC.",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-6",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 6",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "5. Before anything, run five validations: market, tech, team, financial, legal.\n\nThey tell you whether to keep going or stop. The sooner you check them off, the better.\n\nFounders: which one did you skip?",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-7",
+      "parent": "x-1",
+      "channel": "x",
+      "label": "First reply (the link)",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "The full story, plus the mistakes I see founders make most often: https://capfolder.com/guides/before-you-found/",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "hn-1",
+      "parent": null,
+      "channel": "hn",
+      "label": "Title + URL",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Before you found a startup: what I'd do differently",
+      "tips": "Title = the article title. URL = https://capfolder.com/guides/before-you-found/. Leave the text field empty, then add the comment below as the first comment. Never ask for upvotes.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "hn-2",
+      "parent": "hn-1",
+      "channel": "hn",
+      "label": "First comment",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Author here. Two failed companies, then one that raised about $1.5M including YC. The lesson that cost the most was spending on tech and on expected growth before customers told us what to build. Happy to answer questions, especially about the $250 incorporation we had to redo.",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "reddit-startups-1",
+      "parent": null,
+      "channel": "reddit-startups",
+      "label": "Post",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Title: Two failed startups and one YC company later, here's what I'd do before founding again\n\nMy first two companies failed. My last one raised about $1.5M, including YC. Before starting again, this is what I'd do differently:\n\n1. Trust your gut and take the fights early. I was too ready to let things go. Hard calls get harder the longer you wait.\n\n2. Find people with backbone. My best early investors and hires challenged me. Healthy arguments saved the company more than once.\n\n3. Stay small until customers tell you what to build. We spent too much on tech and on growth we expected but didn't have. Sell first, then build exactly what clients need.\n\n4. Don't incorporate before you need to, and don't cheap out when you do. Our $250 online setup was almost entirely redone by a lawyer after we got into YC. I'd also set it up a year early, for nothing.\n\n5. Mistakes I keep seeing: raising before you have network or traction, entering a market you don't know, cofounders you've never worked with, giving early investors 30–40%, and a valuation that's too high or too low.\n\nBefore anything, I now tell people to run five validations: market, tech, team, financial, legal. They're quick, and they tell you whether to keep going or stop.\n\nWhich of these did you learn the hard way?",
+      "tips": "Text post, no link: r/startups removes self-promotion. If someone asks for the full version, reply with the link. Same post fits r/ycombinator; post it a few days apart, not both at once.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "linkedin-1",
+      "parent": null,
+      "channel": "linkedin",
+      "label": "Post",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Being a founder is a bit like an STD: once you have it, you never get rid of it.\n\nMy first two companies failed. My last one raised about $1.5M, including Y Combinator. If I were starting again, this is what I'd do first:\n\n1. Trust my gut, and take the fights early, while they're small.\n2. Find people with backbone. The people who challenged me were the ones who saved us.\n3. Stay small until customers say what to build. We spent too much on tech and on growth we only expected.\n4. Not set up the company a year too early, and not with a $250 online service. A lawyer redid almost all of it after YC.\n5. Run five validations before anything else: market, tech, team, financial, legal.\n\nThe sooner you check them off, the sooner you know whether to keep going or stop.\n\nFounders: which one would you add?",
+      "tips": "No link in the post (reply with it if asked). Mon–Thu, 11:00–13:00 Lisbon. One illustration when it's ready.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "substack-1",
+      "parent": null,
+      "channel": "substack",
+      "label": "Newsletter",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "text": "<h1>Before you found a startup</h1>\n<p><i>Two failed companies, one YC company, and what I'd do differently</i></p>\n<p>Being a founder is a bit like an STD: once you have it, you never get rid of it. My first company was in high school, the second in crypto while I studied in London. Both failed. My last one raised about $1.5M, including Y Combinator.</p>\n<p>Here's the short version of what I'd tell myself before starting it:</p>\n<ol>\n<li><b>Trust your gut, and take the fights early.</b> Hard calls get harder the longer you wait.</li>\n<li><b>Find people with backbone.</b> The ones who challenged me were the ones who mattered.</li>\n<li><b>Stay small until customers tell you what to build.</b> We spent too much on tech and on growth we only expected. That's on me.</li>\n<li><b>Don't set up the company before you need it.</b> Our $250 online setup was almost entirely redone after YC.</li>\n<li><b>Run five validations first:</b> market, tech, team, financial, legal.</li>\n</ol>\n<p>The full story, with the mistakes I see founders make most often: <a href=\"https://capfolder.com/guides/before-you-found/\">Before you found a startup: what I'd do differently</a>.</p>\n<p><i>I'm not a lawyer, and this isn't legal, tax or financial advice.</i></p>",
+      "tips": "Shorter than the original, links to it. Tue–Thu morning.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "substack-notes-1",
+      "parent": "substack-1",
+      "channel": "substack-notes",
+      "label": "Note",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Two failed startups, then one that got into YC. The thing I'd change first: stay small until customers tell you what to build. We spent on growth we only expected.\nhttps://capfolder.com/guides/before-you-found/",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "youtube-shorts-1",
+      "parent": null,
+      "channel": "youtube-shorts",
+      "label": "Script",
+      "when": null,
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "[ON SCREEN: 2 failed startups. 1 YC company.]\nMy first two companies failed. My third raised one and a half million dollars and got into Y Combinator. Here are five things I'd do before founding again.\n\n[1. Trust your gut]\nOne. Trust your gut, and take the fights early. Hard decisions only get harder the longer you wait.\n\n[2. Backbone]\nTwo. Find people with backbone. The people who told me I was wrong are the ones who saved us.\n\n[3. Stay small]\nThree. Stay small, and sell first. We spent too much on tech, and on growth we only expected. Let your customers tell you what to build. That one's on me.\n\n[4. Don't incorporate too early]\nFour. Don't set up the company before you need it, and don't cheap out when you do. We paid two hundred and fifty dollars online, and after YC a lawyer had to redo almost all of it.\n\n[5. Market · Tech · Team · Money · Legal]\nFive. Run five validations first: market, tech, team, money and legal. They tell you whether to keep going, or to stop.\n\n[Full story: link in description]\nBeing a founder is like an STD. Once you have it, you never get rid of it. So do it right. The full story is in the description.",
+      "tips": "About 80 seconds at a calm pace. Green lines are on-screen text. Description: the article link plus \"Not legal advice.\"",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "dd-indiestartups-1",
+      "parent": null,
+      "channel": "dd-indiestartups",
+      "label": "Post",
+      "when": "2026-11-23T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Two failed startups, then YC: what I'd do before founding again",
+      "text": "My first two startups failed. My last one raised about $1.5M, including Y Combinator. Before founding again, this is what I'd do differently:\n\n• Trust your gut and take the fights early, while they're still small.\n• Find people with backbone: investors and early hires who will tell you you're wrong.\n• Stay small until customers tell you what to build. Too much of our money went on tech, and on growth we expected but didn't have.\n• Don't set up the company before you need it. Our $250 online setup was done a year or more too early, and a lawyer redid almost all of it after YC.\n• Run five validations first: market, tech, team, financial, legal. They tell you whether to keep going or stop.\n\nWhich one did you learn the hard way?\n\nhttps://capfolder.com/guides/before-you-found/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nReview: founder lessons for a founder squad, no product pitch, link only at the end. Checked every fact against the guide (two failures, about $1.5M incl. YC, $250 setup a year to 18 months early).",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/guides/img/before-you-found.png",
+          "alt": "Share card: \"Before you found a startup: what I'd do differently. Lessons from raising $1.5M, including Y Combinator.\" Next to it, an isometric path of steps rising to a green folder; the first two steps are cracked and grey."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "dd-startuplauncher-1",
+      "parent": null,
+      "channel": "dd-startuplauncher",
+      "label": "Post",
+      "when": "2026-11-24T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Before you launch a startup: the mistakes I see founders make most",
+      "text": "I mentor founders at accelerators, and I led Founder Institute in Colombia as a volunteer. Every journey is different, but these mistakes come up again and again:\n\n• Raising too early, without the network or the traction to make it work for you\n• Going into a market where you have no context, no special insight and no network\n• Starting with cofounders you've never worked with, when you already know people you trust\n• Giving early investors 30–40% of the company, so there's no room left to raise the next round\n• Raising at a valuation that's too high, or too low\n\nIf a friend told me tomorrow they were quitting to start something, I'd tell them to run five validations first: market, tech, team, financial, legal. They're usually quick.\n\nWhich mistake would you add?\n\nhttps://capfolder.com/guides/before-you-found/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nReview: own title and opening (the mistakes list, section 5), not the Indie Startups text. Mentoring and Founder Institute are from the guide; dropped \"for years\", which it doesn't say.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/guides/img/before-you-found.png",
+          "alt": "Share card: \"Before you found a startup: what I'd do differently. Lessons from raising $1.5M, including Y Combinator.\" Next to it, an isometric path of steps rising to a green folder; the first two steps are cracked and grey."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "dd-vikings-1",
+      "parent": null,
+      "channel": "dd-vikings",
+      "label": "Post",
+      "when": "2026-11-25T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Build for the growth you have, not the growth you expect",
+      "text": "A product lesson from my last startup.\n\nIt raised about $1.5M, in steps: $70k from the first investors, $200k from angels, $500k from Y Combinator, and about $700–800k more after YC. Too much of it went on tech, and on the growth we expected instead of the growth we had.\n\nWhat I'd do now:\n• Stay small and focus on sales and on working with clients\n• Let the clients show you what to build\n• Then hire for exactly that, or hack it together yourself\n\nWe didn't, and that's 100% on me.\n\nWhat have you built before a customer asked for it?\n\nhttps://capfolder.com/guides/before-you-found/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nYour squad.\nReview: product angle only (lesson 3) for a product squad. The funding steps match the guide exactly.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/guides/img/before-you-found.png",
+          "alt": "Share card: \"Before you found a startup: what I'd do differently. Lessons from raising $1.5M, including Y Combinator.\" Next to it, an isometric path of steps rising to a green folder; the first two steps are cracked and grey."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "dd-sidehustle-1",
+      "parent": null,
+      "channel": "dd-sidehustle",
+      "label": "Post",
+      "when": "2026-11-30T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Side project turning into a company? Don't incorporate too early",
+      "text": "Side project starting to look like a company? One thing I'd do differently: don't set up the company before you need it, and don't cheap out when you do.\n\nFor my last startup I used a US online service, about $250, and set it up a year to a year and a half before we really started. It looked fine. When we got into YC, a proper lawyer reviewed everything, and almost all of it had to be redone.\n\n• Paying for a company you don't use yet, with paperwork you'll redo anyway, is the wrong order\n• When you do set it up, have a lawyer look at it before the first cheque comes in, not after\n\nMy own experience, not legal advice.\n\nWhen did you set up yours, and would you do it the same way again?\n\nhttps://capfolder.com/guides/before-you-found/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nYour squad. Monday after US Thanksgiving: Thu 11-26 and Fri 11-27 skipped as quiet days.\nReview: one lesson (lesson 4) for side-project builders. Added \"not legal advice\" because it's about incorporation; the lawyer line is the guide's own.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/guides/img/before-you-found.png",
+          "alt": "Share card: \"Before you found a startup: what I'd do differently. Lessons from raising $1.5M, including Y Combinator.\" Next to it, an isometric path of steps rising to a green folder; the first two steps are cracked and grey."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "indiehackers-1",
+      "parent": null,
+      "channel": "indiehackers",
+      "label": "Post",
+      "when": "2026-11-25T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "title": "What I'd tell myself before founding a startup",
+      "subtitle": "Two failed companies, then one that raised about $1.5M including Y Combinator. Five lessons, and the mistakes I see founders make most.",
+      "text": "<p>Being a founder is a bit like an STD: once you have it, you never get rid of it. My first company was in high school. It failed. The second was in crypto, while I studied in London. That failed too. My last one raised about $1.5M, including Y Combinator.</p>\n<p>Along the way I led Founder Institute in Colombia as a volunteer, and I still mentor at accelerators. This is what I'd tell myself before starting again, and what I'd tell any founder I mentor.</p>\n<h2>1. Trust your gut, and take the fights early</h2>\n<p>By the time I started, I'd been grinding for years. I was too ready to let things go, too ready to think \"I've worked hard enough, success should come now.\" If I did it again, I'd be braver: make the hard decisions quickly, and take the fights while they're still small.</p>\n<p>In Colombia there's a phrase, <i>malicia indígena</i>: the street smarts to know that not everyone has your best interests at heart. Most people are fine, but you will meet some who aren't. Better to expect it than to learn it late.</p>\n<h2>2. Find people with backbone</h2>\n<p>The best thing I did was find a few really good people: some investors, some early employees. Honest, hard-working, sharing my values, and with enough backbone to challenge me. We had healthy arguments, and nothing would have happened without them. Look for people who will tell you you're wrong.</p>\n<h2>3. Stay small until customers tell you what to build</h2>\n<p>I spent almost a year trying things and looking for the right people to start with. Then the money came in steps:</p>\n<ol>\n<li>$70k from the first investors</li>\n<li>$200k from angels</li>\n<li>$500k from Y Combinator</li>\n<li>About $700–800k more on the back of YC</li>\n</ol>\n<p>Roughly $1.5M in total. Too much of it went on tech, and on the growth we expected instead of the growth we had. We should have stayed small and focused on sales and on working with clients. Once the clients showed us what to build, we should have hired for exactly that, or hacked it together ourselves. We didn't, and that's 100% on me.</p>\n<h2>4. Don't set up the company before you need it, and don't cheap out when you do</h2>\n<p>We used a US online service to set up the company for about $250. It looked fine. It wasn't. When we got into YC, a proper lawyer reviewed everything, and almost all of it had to be redone.</p>\n<p>Worse, I'd set it up a year to a year and a half before we really started. Paying for a company you don't use yet, with paperwork you'll redo anyway, is the wrong order. When you do set it up, have a lawyer look at it before the first cheque comes in, not after.</p>\n<h2>5. The mistakes I see most</h2>\n<ol>\n<li>Raising too early, without the network, the traction or anything else that makes it work for you.</li>\n<li>Going into a market where you have no context, no special insight and no network to lean on.</li>\n<li>Starting with cofounders you've never worked with, when you already know people you trust.</li>\n<li>Giving early investors 30–40% of the company. Then there isn't enough room left to raise the next round.</li>\n<li>Raising at a valuation that's too high, or too low.</li>\n</ol>\n<h2>What I'd tell a friend who's quitting tomorrow</h2>\n<p>Run five validations first: market, tech, people, financial and legal. They're usually quick. Whether you do them now or six months in, they're what tell you whether to keep going or stop. So the sooner you check them off, the better.</p>\n<p>I'm building Capfolder now, a free, open-source cap table app. The full guide: <a href=\"https://capfolder.com/guides/before-you-found/\">https://capfolder.com/guides/before-you-found/</a></p>\n<p><i>I'm not a lawyer, and this isn't legal, tax or financial advice. It's my own experience.</i></p>\n<p><b>Which of these did you learn the hard way?</b></p>",
+      "tips": "Editor fields: title, subtitle (the grey line under the title), header image (the share card), body. Post in a group if the editor offers one (Building in Public). Reply to every comment the first day.\nReview: lesson post, not an announcement: Capfolder appears once, at the end. Left out \"The next guide walks through each one\" from the draft, because it isn't on the live page. Disclaimer kept.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/guides/img/before-you-found.png",
+          "alt": "Share card: \"Before you found a startup: what I'd do differently. Lessons from raising $1.5M, including Y Combinator.\" Next to it, an isometric path of steps rising to a green folder; the first two steps are cracked and grey."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "substack-2",
+      "parent": null,
+      "channel": "substack",
+      "label": "Post",
+      "when": "2026-11-24T09:00",
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "title": "Before you found a startup",
+      "text": "<h1>Before you found a startup</h1>\n<h3>Two failed companies, one YC company, and what I'd do differently</h3>\n<p>Being a founder is a bit like an STD: once you have it, you never get rid of it. My first company was in high school, the second in crypto while I studied in London. Both failed. My last one raised about $1.5M, including Y Combinator.</p>\n<figure><img src=\"../../../../apps/website/guides/img/before-you-found.png\" alt=\"Share card: &quot;Before you found a startup: what I'd do differently. Lessons from raising $1.5M, including Y Combinator.&quot; Next to it, an isometric path of steps rising to a green folder; the first two steps are cracked and grey.\"></figure>\n<p>I wrote down what I'd tell myself before starting it. The short version:</p>\n<ol>\n<li><b>Trust your gut, and take the fights early.</b> Hard calls get harder the longer you wait.</li>\n<li><b>Find people with backbone.</b> The ones who challenged me were the ones who mattered.</li>\n<li><b>Stay small until customers tell you what to build.</b> We spent too much on tech and on growth we only expected. That's on me.</li>\n<li><b>Don't set up the company before you need it, and don't cheap out when you do.</b> Our $250 online setup was almost entirely redone after YC.</li>\n<li><b>Run five validations first:</b> market, tech, people, financial, legal. They tell you whether to keep going or stop.</li>\n</ol>\n<p>The full story has how the money came in, step by step, and the mistakes I see founders make most often: <a href=\"https://capfolder.com/guides/before-you-found/\">Before you found a startup: what I'd do differently</a>.</p>\n<p><i>I'm not a lawyer, and this isn't legal, tax or financial advice. It's my own experience.</i></p>\n<p><b>If you could tell yourself one thing before founding, what would it be?</b> Hit reply, I read every one.</p>",
+      "tips": "The newsletter version: shorter than the guide, written to subscribers, links to it. Title and subtitle are the first two lines.\n• A week after the 0.1.4 newsletter (Tue 11-17), so subscribers don't get two in a row.\n• substack-1 above is your earlier hand draft of this; delete it once you approve this one.\nReview: built on your substack-1 draft. Subtitle moved to <h3>, added the share card and a reply question, list item 5 now says why the validations matter. Every fact is in the guide.",
+      "media": [],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "substack-notes-2",
+      "parent": "substack-2",
+      "channel": "substack-notes",
+      "label": "Note",
+      "when": "2026-11-24T10:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "",
+      "text": "Our $250 company setup looked fine. After we got into YC, a lawyer redid almost all of it.\n\nDon't set up the company before you need it, and don't cheap out when you do.\n\nFour more things I'd do differently before founding again:\n\nhttps://capfolder.com/guides/before-you-found/",
+      "tips": "Short, with one image and the link, an hour after the newsletter. substack-notes-1 above is the earlier hand draft.\nReview: a different angle from the newsletter (the $250 setup, lesson 4) so it isn't a repeat. Facts from the guide.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/guides/img/before-you-found.png",
+          "alt": "Share card: \"Before you found a startup: what I'd do differently. Lessons from raising $1.5M, including Y Combinator.\" Next to it, an isometric path of steps rising to a green folder; the first two steps are cracked and grey."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    }
+  ],
+  "planNote": "Picked 4 daily.dev squads that fit a founder-lessons guide: Indie Startups and Launch Startup Squad (founders), Product Vikings (the stay-small product lesson) and Sidehustle (when to incorporate).\nOne a day from Mon 11-23, the first free 15:00 slot after the 0.1.4 posts; Thu 11-26 and Fri 11-27 skipped (US Thanksgiving). Indie Hackers gets the lesson post Wed 11-25; Substack goes Tue 11-24, a week after the 0.1.4 newsletter, with its Note at 10:00.\nSkipped Watercooler, Dev Squad, The Dev Craft, Open Source, Project board, Share your builds and controversy.dev (dev or showcase squads, weak fit), Build With GenAI (no AI angle), Meme Monday (not a meme) and the no-access squads."
+}

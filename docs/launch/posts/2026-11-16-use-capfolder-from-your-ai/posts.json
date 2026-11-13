@@ -1,0 +1,213 @@
+{
+  "title": "Run your cap table from the AI you already use",
+  "url": "https://capfolder.com/blog/use-capfolder-from-your-ai/",
+  "date": "2026-11-16",
+  "tz": "Europe/Lisbon",
+  "source": "../../../../apps/website/blog/use-capfolder-from-your-ai/index.html",
+  "notes": "Capfolder 0.1.5 release post. Images: apps/website/blog/img/v015-chat.jpg, v015-connect.jpg, v015-connect.gif; demo video apps/website/img/home/demo.mp4 (first SAFE). Don't post before the v0.1.5 release is published on GitHub.",
+  "posts": [
+    {
+      "id": "dd-buildwithgenai-1",
+      "parent": null,
+      "channel": "dd-buildwithgenai",
+      "label": "Post",
+      "when": "2026-11-16T15:10",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Letting an AI write to your cap table: the rules it can't get around",
+      "text": "Capfolder 0.1.5 works from Claude Code, Claude Desktop, Codex and Gemini CLI. Your AI reads the cap table and shows a preview of every change.\n\nThe catch is trust. An AI that adds up shares on its own, or writes to your records without asking, is worse than no AI. So your AI uses Capfolder, and Capfolder keeps the math and the final say:\n\n• Preview, then yes. A change is written only after you confirm the exact preview you were shown. A preview expires after 10 minutes, and it's refused if the folder changed in between.\n• Capfolder does the math. Your AI never adds up shares itself.\n• Every record is checked against the Open Cap Table Format before it's written, and every write is logged in events.jsonl.\n• Documents are data. If a PDF contains instructions, your AI tells you instead of following them.\n\nOne honest limit: with a cloud AI, what it reads to answer you goes to that AI company. With a local model, nothing leaves your computer.\n\nWhat rule would you add before you let an AI write to real records?\n\nhttps://capfolder.com/blog/use-capfolder-from-your-ai/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nRelease day. 15:00 is taken by the 0.1.4 Indie Hackers squad post, so 15:10.\nReview: AI angle only, as the squad note asks: the four rules and the local-model line, no feature list. Every rule is quoted from the article's \"A few rules your AI can't get around\".",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v015-chat.jpg",
+          "alt": "An example conversation: asked to give Steve Wozniak 40,000 options, the AI calls Capfolder's add_grant tool and shows a preview, nothing recorded yet: 40,000 options from the 2026 Plan at a $0.42 strike, and a table of holders with Tim Apple at 50.0%, Steve Jobs 37.5%, Steve Wozniak 0.5% and 960,000 options left in the pool. After 'Yes.', it confirms the grant is recorded."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "dd-sidehustle-1",
+      "parent": null,
+      "channel": "dd-sidehustle",
+      "label": "Post",
+      "when": "2026-11-17T15:10",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Side project update: Capfolder 0.1.5 runs from the AI you already use",
+      "text": "Side project update: Capfolder is a free, open-source cap table app that keeps your cap table in a folder on your own computer.\n\n0.1.5 is out. You can now run it from Claude Code, Claude Desktop, Codex or Gemini CLI:\n• Ask in plain words: \"Give Steve Wozniak 40,000 options, 4 years with a 1-year cliff, from today.\"\n• Your AI shows a preview: the exact grant and the cap table after it. Nothing is written until you say yes.\n• Not incorporated yet? Record the shares you promise each founder. Once the company is incorporated, one step turns them into real Common shares.\n• One command sets it up: npx capfolder install finds the AIs on your computer.\n\nOne thing I'd tell other side-project builders: write down what it doesn't do yet. Here, ChatGPT and claude.ai in the browser can't connect yet, and the post says so.\n\nhttps://capfolder.com/blog/use-capfolder-from-your-ai/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nYour squad. 15:00 is taken by the 0.1.4 Open Source post, so 15:10.\nReview: release update like the 0.1.4 Sidehustle post, with its own title and opening. The example prompt, the pre-incorporation shares and the ChatGPT limit are all in the article.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v015-connect.jpg",
+          "alt": "Capfolder's Connect your AI panel in Settings: tabs for Claude Code, Claude Desktop, Codex, Gemini CLI and Other, with the Claude Code commands to paste and a Copy button."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "dd-vikings-1",
+      "parent": null,
+      "channel": "dd-vikings",
+      "label": "Post",
+      "when": "2026-11-18T15:10",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Meet users in the tool they already use, and keep the final say with them",
+      "text": "Product lesson from Capfolder 0.1.5.\n\nMost cap table questions are small: who owns what after this grant, what does the pool have left, is anything missing before a round. Each one meant opening the app and clicking through forms. If you already spend your day in Claude or Codex, the faster way is to ask.\n\nSo 0.1.5 lets your AI use Capfolder. But an AI that writes to your records without asking is worse than no AI. So:\n• The AI is a new way in, not a new source of numbers. Capfolder still does the math.\n• Every change is a preview first: the exact grant and the cap table after it. Nothing is written until you say yes.\n\nWhere do your users already spend their day, and could your product meet them there?\n\nhttps://capfolder.com/blog/use-capfolder-from-your-ai/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nYour squad. 15:00 is taken by the 0.1.4 Project board post, so 15:10.\nReview: product angle (meet users where they work, keep the decision with them), not the GenAI rules list or the Sidehustle feature list. Dropped a lock-file line so it doesn't repeat the Open Source post.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v015-chat.jpg",
+          "alt": "An example conversation: asked to give Steve Wozniak 40,000 options, the AI calls Capfolder's add_grant tool and shows a preview, nothing recorded yet: 40,000 options from the 2026 Plan at a $0.42 strike, and a table of holders with Tim Apple at 50.0%, Steve Jobs 37.5%, Steve Wozniak 0.5% and 960,000 options left in the pool. After 'Yes.', it confirms the grant is recorded."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "dd-opensourcesquad-1",
+      "parent": null,
+      "channel": "dd-opensourcesquad",
+      "label": "Post",
+      "when": "2026-11-24T15:10",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "An AGPL cap table app your AI can use, set up with one npx command",
+      "text": "Capfolder is an AGPL-3.0 cap table app for macOS, Windows and Linux. Your cap table stays in a folder on your own computer, and every write is logged in events.jsonl.\n\n0.1.5 lets Claude Code, Claude Desktop, Codex and Gemini CLI use it. With Node 22 or newer, one command finds the AIs on your computer and sets up each one:\n\nnpx capfolder install\n\nDesign choices worth a look in the code:\n• Every change is a preview first, written only after you say yes to that exact preview.\n• Every record is checked against the Open Cap Table Format before it's written.\n• The desktop app and your AI open the same folder. A lock file makes one wait while the other saves, so they can't overwrite each other's work.\n\nCode: https://github.com/MKBSP/capfolder\nWrite-up: https://capfolder.com/blog/use-capfolder-from-your-ai/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nNeeds moderator approval: it goes to the moderators at its time. A week after the 0.1.4 Open Source post (11-17), so the moderators don't see two in a few days. 15:00 is taken by the guide's Launch Startup Squad post, so 15:10.\nReview: technical angle (AGPL, npx install, OCF checks, the lock file), code link first. Its own title and opening; no AI-rules list, which the GenAI post already has.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v015-connect.jpg",
+          "alt": "Capfolder's Connect your AI panel in Settings: tabs for Claude Code, Claude Desktop, Codex, Gemini CLI and Other. The Claude Code tab shows its two commands and a Copy button."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "indiehackers-1",
+      "parent": null,
+      "channel": "indiehackers",
+      "label": "Post",
+      "when": "2026-11-19T14:10",
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "title": "If an AI can write to your users' records, give it a preview step",
+      "subtitle": "What I learned letting Claude, Codex and Gemini work on a cap table: the AI asks, the app does the math, and nothing is saved until the founder says yes.",
+      "text": "<p>I'm building Capfolder, a free, open-source cap table app. Most cap table questions are small: who owns what after this grant, what does the pool have left, is anything missing before a round. Each one used to mean opening the app and clicking through forms. If you already spend your day in Claude or Codex, the faster way is to ask.</p>\n<p>So version 0.1.5 works from Claude Code, Claude Desktop, Codex and Gemini CLI. The catch is trust. An AI that adds up shares on its own, or writes to your records without asking, is worse than no AI.</p>\n<h2>What we did</h2>\n<p>Your AI uses Capfolder, and Capfolder keeps the math and the final say. You ask in plain words: \"Give Steve Wozniak 40,000 options, 4 years with a 1-year cliff, from today.\" The AI reads the cap table and the latest 409A, then shows a preview: the exact grant and the cap table after it. Nothing is recorded yet. Say yes and it's written to your folder.</p>\n<h2>The lesson: rules the AI can't get around</h2>\n<ol>\n<li><b>Preview, then yes.</b> A change is written only after you confirm the exact preview you were shown. A preview expires after 10 minutes, and it's refused if the folder changed in between.</li>\n<li><b>The app does the math.</b> The AI never adds up shares itself. Every number comes from Capfolder.</li>\n<li><b>Every record is checked.</b> Each one is checked against the Open Cap Table Format before it's written, and every write is logged.</li>\n<li><b>Documents are data.</b> Text inside a PDF can't make the AI do anything. If a document contains instructions, the AI tells you instead of following them.</li>\n</ol>\n<p>If your product holds records people can't afford to get wrong, these come before any clever feature.</p>\n<h2>Make setup one step</h2>\n<p>One command, <code>npx capfolder install</code>, finds the AIs on your computer and sets up each one. In the app, the same setup is one tab per AI, each with its command and a Copy button. Then you ask \"What's on my cap table?\"</p>\n<h2>Say what it doesn't do yet</h2>\n<p>ChatGPT and claude.ai in the browser can't connect yet; that connection is being built. And if you use a cloud AI, what it reads to answer you goes to that AI company. The folder stays on your computer, and with a local model nothing leaves it. Both limits are in the release post, not in the small print.</p>\n<p>The full write-up, with screenshots: <a href=\"https://capfolder.com/blog/use-capfolder-from-your-ai/\">https://capfolder.com/blog/use-capfolder-from-your-ai/</a></p>\n<p><b>If your product holds data people can't afford to get wrong, what would you let an AI change without asking?</b></p>",
+      "tips": "Editor fields: title, subtitle (the grey line under the title), header image (the chat example), body. Post in a group if the editor offers one (Building in Public). Reply to every comment the first day.\nFirst week, a week after the 0.1.4 Indie Hackers post. Every 14:00 slot that week is taken by Reddit posts, so 14:10.\nReview: lesson post (trust rules for an AI that writes records), not an announcement; Capfolder is the example, one link at the end. Every rule and limit is from the article; no numbers beyond its own.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v015-chat.jpg",
+          "alt": "An example conversation: asked to give Steve Wozniak 40,000 options, the AI calls Capfolder's add_grant tool and shows a preview, nothing recorded yet: 40,000 options from the 2026 Plan at a $0.42 strike, and a table of holders with Tim Apple at 50.0%, Steve Jobs 37.5%, Steve Wozniak 0.5% and 960,000 options left in the pool. After 'Yes.', it confirms the grant is recorded."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "substack-1",
+      "parent": null,
+      "channel": "substack",
+      "label": "Post",
+      "when": "2026-12-01T09:00",
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "title": "Run your cap table from the AI you already use",
+      "text": "<h1>Run your cap table from the AI you already use</h1>\n<h3>Capfolder 0.1.5 works from Claude Code, Claude Desktop, Codex and Gemini CLI. Every change is previewed; nothing is saved until you say yes.</h3>\n<p>Most cap table questions are small: who owns what after this grant, what does the pool have left, is anything missing before a round. Each one used to mean opening the app and clicking through forms. If you already spend your day in Claude or Codex, the faster way is to ask.</p>\n<p>The new release lets you. Ask in plain words, and your AI reads your cap table from Capfolder and shows a preview: the exact change and the cap table after it. Nothing is recorded until you say yes.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v015-chat.jpg\" alt=\"An example conversation: asked to give Steve Wozniak 40,000 options, the AI calls Capfolder&#x27;s add_grant tool and shows a preview, nothing recorded yet: 40,000 options from the 2026 Plan at a $0.42 strike, and a table of holders with Tim Apple at 50.0%, Steve Jobs 37.5%, Steve Wozniak 0.5% and 960,000 options left in the pool. After &#x27;Yes.&#x27;, it confirms the grant is recorded.\"></figure>\n<p><b>Rules your AI can't get around.</b> A change is written only after you confirm the exact preview you were shown. Capfolder does the math: your AI never adds up shares itself. Every record is checked against the Open Cap Table Format before it's written. And text inside a PDF can't make your AI do anything: if a document contains instructions, your AI tells you instead of following them.</p>\n<p><b>One command to set it up.</b> <code>npx capfolder install</code> finds the AIs on your computer and sets up each one (it needs Node 22 or newer). In the app, it's Settings → AI → Connect your AI.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v015-connect.gif\" alt=\"Capfolder&#x27;s Connect your AI panel in Settings, stepping through the tabs Claude Code, Claude Desktop, Codex, Gemini CLI and Other, each with the command to paste and a Copy button.\"></figure>\n<p><b>Not incorporated yet?</b> Your AI can record the shares you promise each founder. When the company is incorporated, one step turns them into real Common shares, after a preview and your yes.</p>\n<p><b>What it doesn't do yet:</b> ChatGPT and claude.ai in the browser can't connect yet. And with a cloud AI, what it reads to answer you goes to that AI company. The folder stays on your computer, and with a local model nothing leaves it.</p>\n<p>Capfolder is free, open source, and keeps your cap table in a folder on your own computer. <a href=\"https://capfolder.com/blog/use-capfolder-from-your-ai/\">The full post, with screenshots.</a></p>\n<p><b>What's the first thing you'd ask your AI about your cap table?</b> Hit reply, I read every one.</p>",
+      "tips": "The newsletter version: shorter than the blog post, written to subscribers, links to it. Title and subtitle are the first two lines.\n• Tue 12-01: a week after the guide's newsletter (11-24), which is a week after 0.1.4's (11-17), so subscribers get one a week. Want it sooner? Thu 11-19 09:00 is free, but that's two newsletters in three days.\nReview: every section is from the article (preview, rules, setup, pre-incorporation, limits); two images, the chat example and the Connect your AI panel; ends with the article's own question.",
+      "media": [],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "substack-notes-1",
+      "parent": "substack-1",
+      "channel": "substack-notes",
+      "label": "Note 1",
+      "when": "2026-12-01T10:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "",
+      "text": "Most cap table questions are small. Who owns what after this grant? What does the pool have left?\n\nNow you can ask the AI you already use. It shows a preview of the change, and nothing is saved until you say yes.\n\nhttps://capfolder.com/blog/use-capfolder-from-your-ai/",
+      "tips": "Short, with one image and the link, an hour after the newsletter.\nReview: the ask-and-preview angle, with the chat example. Facts from the article's opening and section 1.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v015-chat.jpg",
+          "alt": "An example conversation: asked to give Steve Wozniak 40,000 options, the AI calls Capfolder's add_grant tool and shows a preview, nothing recorded yet: 40,000 options from the 2026 Plan at a $0.42 strike, and a table of holders with Tim Apple at 50.0%, Steve Jobs 37.5%, Steve Wozniak 0.5% and 960,000 options left in the pool. After 'Yes.', it confirms the grant is recorded."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "substack-notes-2",
+      "parent": "substack-1",
+      "channel": "substack-notes",
+      "label": "Note 2",
+      "when": "2026-12-03T10:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "",
+      "text": "One command to run your cap table from Claude Code, Codex or Gemini CLI:\n\nnpx capfolder install\n\nIt finds the AIs on your computer and sets up each one. Then ask: \"What's on my cap table?\"\n\nhttps://capfolder.com/blog/use-capfolder-from-your-ai/",
+      "tips": "Short, with one image and the link, two days after the newsletter.\nReview: the setup angle (section 2), a different image from Note 1. Static screenshot rather than the GIF, since Notes image upload is still marked [verify] in publish.py.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v015-connect.jpg",
+          "alt": "Capfolder's Connect your AI panel in Settings: tabs for Claude Code, Claude Desktop, Codex, Gemini CLI and Other. The Claude Code tab shows its two commands and a Copy button."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    },
+    {
+      "id": "substack-notes-3",
+      "parent": "substack-1",
+      "channel": "substack-notes",
+      "label": "Note 3",
+      "when": "2026-12-05T10:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "",
+      "text": "Cofounders often agree on a split long before there's a company.\n\nYour AI can now record the shares you promise each founder. When the company is incorporated, one step turns them into real Common shares, after a preview and your yes.\n\nhttps://capfolder.com/blog/use-capfolder-from-your-ai/",
+      "tips": "Short, with one image and the link, four days after the newsletter (a Saturday).\nReview: the not-incorporated-yet angle (section 3), worded as the article words it. Image: the article's demo video poster, the cap table with two founders on Common shares.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/img/home/demo-poster.jpg",
+          "alt": "Capfolder's desktop app on the sample company, Acme Inc.: founders Tim Apple (50.00%) and Steve Jobs (37.50%) with Common shares, the option pool, Bill Gates' $50,000 SAFE, and a What's missing list."
+        }
+      ],
+      "notes": [],
+      "auto": false,
+      "planned": true
+    }
+  ],
+  "planNote": "Picked 4 daily.dev squads that fit an AI release: Build With GenAI (the AI angle: rules the AI can't get around), Sidehustle (release update), Product Vikings (meet users where they already work) and Open Source (AGPL, npx install, OCF checks). Indie Hackers gets the trust lesson; Substack the newsletter plus 3 Notes (setup, ask-and-preview, pre-incorporation).\nOne squad a day from Mon 11-16 at 15:10 (15:00 is taken by earlier blogs); Open Source waits until Tue 11-24, a week after 0.1.4's post there. Indie Hackers Thu 11-19 at 14:10 (every 14:00 that week is taken). Substack Tue 12-01, a week after the guide's newsletter, Notes 12-01, 12-03, 12-05.\nv0.1.5 is still a draft release on GitHub (checked 11-13): publish it before you approve.\nSkipped Indie Startups (gets the guide on 11-23), Share your builds and Project board (had 0.1.4 last week), Dev Squad, The Dev Craft, Watercooler, Launch Startup Squad and controversy.dev (weak fit), Meme Monday (not a meme) and the no-access squads."
+}

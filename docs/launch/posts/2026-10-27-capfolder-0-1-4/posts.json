@@ -1,0 +1,573 @@
+{
+  "title": "Capfolder 0.1.4: see who owns what, and when",
+  "url": "https://capfolder.com/blog/see-your-vesting/",
+  "date": "2026-10-27",
+  "tz": "Europe/Lisbon",
+  "source": "index.html",
+  "notes": "",
+  "posts": [
+    {
+      "id": "linkedin-1",
+      "parent": null,
+      "channel": "linkedin",
+      "label": "Post",
+      "when": "2026-11-11T09:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "How much of your equity has vested?\n\nIt's a simple question. Answering it usually means opening a spreadsheet and doing some math by hand.\n\nSo Capfolder 0.1.4 puts it on one screen:\n\n1. A Vesting screen. The option pool at a glance: total, granted, vested, still available. A row per grant. Open one and you see its graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves.\n2. A person page you can read in five seconds. Vested, next vest and fully vested, right next to the name.\n3. An import check. Moving from Pulley, Carta or Cake? Type in the old tool's totals and Capfolder checks them to the share. A grant with more vested than granted blocks the import.\n4. \"What needs my attention?\" Up to 3 things to do next, each with a Take me there button. It works with no AI connected.\n\nOne honest limit: the import check compares totals, not every row, so you still check a few people by hand.\n\nCapfolder is free, open source, and keeps your cap table in a folder on your own computer.\n\nFounders: when someone on your team asks how much of theirs has vested, how do you answer today?",
+      "tips": "Founder angle. 150–250 words, one screenshot, no link, no hashtags, ends with a question.\n• Mon–Thu, 11:00–13:00 Lisbon.\n• No link in the post. If someone asks, reply with it.\n• Attach one image: the Person page.\n• Be free for the next hour to reply to every comment with a full sentence.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-person.jpg",
+          "alt": "Tim Apple's page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-1",
+      "parent": null,
+      "channel": "x",
+      "label": "Post 1",
+      "when": "2026-11-11T14:00",
+      "status": "posted",
+      "url": "",
+      "format": "text",
+      "text": "See who owns what, and when.\n\nCapfolder 0.1.4 adds a Vesting screen: the option pool at a glance, and a row per grant that opens to its graph. The cliff, the monthly steps, today, and where vesting stops if someone leaves.\n\n#startup #BuildInPublic #carta #pulley #entrepreneur",
+      "tips": "A 5-post thread. Each post ≤280 characters, a screenshot on posts 1–4, the link only in the first reply.\n• Weekdays, morning or midday.\n• Post the thread, then the link as a reply to post 1.\n• Hashtags go at the end of post 1 only.\n• Paste post 1's URL in its URL field: posts 2–5 and the link reply then open as replies.\n• Reply to every comment in the first hour: replies count most.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-vesting.jpg",
+          "alt": "Capfolder's Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak's grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-2",
+      "parent": "x-1",
+      "channel": "x",
+      "label": "Post 2",
+      "when": "2026-11-11T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Click a name and the 3 numbers people ask about sit right next to it: vested, next vest, fully vested.\n\nGraph on the left, the holding and its history on the right.",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-person.jpg",
+          "alt": "Tim Apple's page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-3",
+      "parent": "x-2",
+      "channel": "x",
+      "label": "Post 3",
+      "when": "2026-11-11T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Moving from Pulley, Carta or Cake? Type in the old tool's totals and Capfolder checks them to the share.\n\nMore vested than granted in the file? The import stops.",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-import-compare.jpg",
+          "alt": "The Compare with Pulley step of Capfolder's import: fully diluted, common shares and pool available typed in from Pulley each show Match; options outstanding, SAFE total and stakeholders are optional."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-4",
+      "parent": "x-3",
+      "channel": "x",
+      "label": "Post 4",
+      "when": "2026-11-11T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "New in Ask AI: \"What needs my attention?\"\n\nUp to 3 things to do next, each with a Take me there button. It's plain code, not a model, so it works with no AI connected.",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-attention.jpg",
+          "alt": "Capfolder's Ask AI panel with no AI connected, answering What needs my attention? with three things, most urgent first, each with a Take me there button."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "x-5",
+      "parent": "x-4",
+      "channel": "x",
+      "label": "Post 5",
+      "when": "2026-11-11T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Honest limit: the import check compares totals, not every row. You still check a few people by hand.\n\nFounders: how do you answer \"how much of mine has vested?\" today?",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-6",
+      "parent": "x-1",
+      "channel": "x",
+      "label": "First reply (link)",
+      "when": "2026-11-11T14:02",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Free, open source, and your cap table stays in a folder on your own computer. What's new in 0.1.4, with screenshots: https://capfolder.com/blog/see-your-vesting/",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "indiehackers-1",
+      "parent": null,
+      "channel": "indiehackers",
+      "label": "Post",
+      "when": "2026-11-12T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "text": "<p>I'm building Capfolder, an open-source cap table app. A cap table answers \"who owns what?\". It took me a while to notice that founders and employees almost never ask that. They ask \"how much of mine has vested, and when is the rest mine?\"</p>\n<p>Until this release, Capfolder answered that one holding at a time. You clicked into a row and read the math. Correct, but slow, and nobody does it.</p>\n<h2>What we did</h2>\n<p>Version 0.1.4 puts the time question first:</p>\n<ol>\n<li><b>A Vesting screen.</b> The option pool at a glance (total, granted, vested, available), and a row per grant that opens to its graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves.</li>\n<li><b>A person page you can read in five seconds.</b> Vested, next vest and fully vested sit next to the name. The graph is on the left, the holding and its history on the right.</li>\n<li><b>An import check.</b> Coming from Pulley, Carta or Cake? Type in the old tool's totals and Capfolder checks them to the share.</li>\n<li><b>\"What needs my attention?\"</b> Up to 3 things to do next, each with a Take me there button.</li>\n</ol>\n<figure><img src=\"../../../../apps/website/blog/img/v014-person.jpg\" alt=\"Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right.\"><figcaption>Alt text: Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right. · <a href=\"../../../../apps/website/blog/img/v014-person.jpg\" download>Download image</a></figcaption></figure>\n<h2>The lesson: put the answer where the question starts</h2>\n<p>The numbers on the new screens aren't new. The engine already worked out every vest, to the share. What changed is where they show up: next to the name, before you click anything.</p>\n<p>Two things I'd do again:</p>\n<ul>\n<li><b>One engine, many screens.</b> The Vesting screen, the person page and the Excel export all draw from the same vesting math. A screen can't drift from the others, because none of them does its own math.</li>\n<li><b>Ship the useful part without the fancy part.</b> \"What needs my attention?\" sounds like an AI feature. It isn't: it's a short list built from the app's own list of missing documents and open signatures. It works with no AI connected, which is how most people will first meet it.</li>\n</ul>\n<h2>What I don't know yet</h2>\n<p>Whether people find the Vesting tab without being told. Your cap table never leaves your computer, so I can't watch: I'll learn from people telling me. And the import check compares totals, not every row, so you still check a few people by hand.</p>\n<p>The full write-up, with screenshots: <a href=\"https://capfolder.com/blog/see-your-vesting/\">https://capfolder.com/blog/see-your-vesting/</a></p>\n<p><b>What's the question your users ask that your product answers too slowly?</b></p>",
+      "tips": "Editor fields: title, subtitle (the grey line under the title), header image, body.\nPaste the body with Copy with formatting. Add the header image first (the person-page screenshot).\nLesson post, not an announcement: IH is relaxed about self-promotion if the post teaches something. One link at the end.\nPick a group if the editor offers one (Building in Public / Growth). Reply to every comment the first day.\nLesson first, product as context. 400–900 words, link at the end, ends with a question.\n• Tue–Thu.\n• Post in a relevant group (e.g. Building in Public), not as an ad.\n• Click Copy with formatting and paste into the IH editor; upload the image by hand if it doesn't come across.",
+      "media": [
+        {
+          "need": "Header image",
+          "file": "../../../../apps/website/blog/img/v014-person.jpg",
+          "alt": "Tim Apple's page in Capfolder: vested, next vest and fully vested next to his name."
+        }
+      ],
+      "notes": [],
+      "title": "Answer the question your users actually ask",
+      "subtitle": "What shipping Capfolder 0.1.4 taught me: the numbers weren't new, only where they show up.",
+      "auto": true,
+      "autoError": "Timeout 30000ms exceeded while waiting for event \"filechooser\"\n=========================== logs ===========================\nwaiting for event \"filechooser\"\n============================================================"
+    },
+    {
+      "id": "devto-1",
+      "parent": null,
+      "channel": "devto",
+      "label": "Front matter",
+      "when": "2026-11-17T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "---\ntitle: One vesting engine, four screens: what we shipped in Capfolder 0.1.4\npublished: false\ndescription: How Capfolder draws vesting, checks imports against Pulley, Carta or Cake, and answers \"What needs my attention?\" without an AI.\ntags: opensource, tauri, react, showdev\ncanonical_url: https://capfolder.com/blog/see-your-vesting/\ncover_image: https://capfolder.com/blog/img/v014-vesting.jpg\n---",
+      "tips": "The technical version: a full article with canonical_url pointing at capfolder.com, 4 tags.\n• Tue–Wed.\n• Wait until Google has indexed the original (Search Console → URL Inspection), usually 3–7 days.\n• Create the post in the Markdown editor: paste the front matter first, then the article. Upload each image with the editor's image button, because dev.to won't take local files.\n• published: false saves a draft; flip it when you're happy.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "devto-2",
+      "parent": "devto-1",
+      "channel": "devto",
+      "label": "Article",
+      "when": "2026-11-17T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "html",
+      "text": "<p><i>Originally published on <a href=\"https://capfolder.com/blog/see-your-vesting/\">capfolder.com</a>.</i></p>\n<p>Capfolder is an open-source (AGPL) cap table app built with Tauri and React. Your cap table lives in a folder of plain files on your own computer: an append-only, hash-chained <code>events.jsonl</code> in the Open Cap Format, plus your signed PDFs.</p>\n<p>0.1.4 is about time: who owns what, and when. Here's how the pieces fit, in very little new math.</p>\n<h2>1. One vesting engine, every screen</h2>\n<p>The vesting math already existed: the golden tests check it to the share. The new Vesting screen, the person page and the Excel export's Overview and Vesting by month tabs all read from that one engine. None of them does its own math, so they can't disagree.</p>\n<p>The graph shows the cliff, the monthly steps (or a straight line), today, and where vesting stops when someone leaves. The 409A price behind \"vested value\" is stored as an OCF <code>VALUATION</code>, not a setting.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v014-vesting.jpg\" alt=\"Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant.\"><figcaption>Alt text: Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant. · <a href=\"../../../../apps/website/blog/img/v014-vesting.jpg\" download>Download image</a></figcaption></figure>\n<h2>2. The person page</h2>\n<p>Vested, next vest and fully vested moved next to the name. The graph went left, the holding and its history right, stacking on narrow windows. Y-axis labels got short (40K, 4M), which fixed labels being cut off.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v014-person.jpg\" alt=\"Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right.\"><figcaption>Alt text: Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right. · <a href=\"../../../../apps/website/blog/img/v014-person.jpg\" download>Download image</a></figcaption></figure>\n<h2>3. Checking an import to the share</h2>\n<p>The last import step puts each total next to a box for the old tool's number. Fully diluted is required; each class, options outstanding, pool available, SAFE total and stakeholders are optional. If the file has a vested-so-far column, each grant is checked against our own schedule as of the export date:</p>\n<pre>const ours = vested === null ? null : vestedAt(qty, terms.get(key)!.data, start, p.exportDate).vested;\n// 1 share of rounding allowed (tools round months differently)</pre>\n<p>More vested than granted blocks the import outright.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v014-import-compare.jpg\" alt=\"The Compare with Pulley step of Capfolder&#x27;s import: fully diluted, common shares and pool available typed in from Pulley each show Match; options outstanding, SAFE total and stakeholders are optional.\"><figcaption>Alt text: The Compare with Pulley step of Capfolder&#x27;s import: fully diluted, common shares and pool available typed in from Pulley each show Match; options outstanding, SAFE total and stakeholders are optional. · <a href=\"../../../../apps/website/blog/img/v014-import-compare.jpg\" download>Download image</a></figcaption></figure>\n<h2>4. \"What needs my attention?\" without a model</h2>\n<p>Ask AI routes this one question to plain code before any model is called:</p>\n<pre>const ATTENTION = /needs? (my )?attention|what('s| is) urgent|what should i do/i;\n// in askChat:\nif (ATTENTION.test(question)) return attention(d);</pre>\n<p><code>attention()</code> takes open and signed-but-not-wired envelopes, then the What's missing gaps (red first, grouped by kind), and keeps at most 3. Each <b>Take me there</b> target passes a whitelist: only certain screens, a person who exists, a row id that's a holding, a plan or an envelope.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v014-attention.jpg\" alt=\"Capfolder&#x27;s Ask AI panel with no AI connected, answering What needs my attention? with three things, most urgent first, each with a Take me there button.\"><figcaption>Alt text: Capfolder&#x27;s Ask AI panel with no AI connected, answering What needs my attention? with three things, most urgent first, each with a Take me there button. · <a href=\"../../../../apps/website/blog/img/v014-attention.jpg\" download>Download image</a></figcaption></figure>\n<h2>5. A date bug</h2>\n<p>\"As of\" was set once, when the app opened. Leave it open overnight and a SAFE signed today was hidden behind yesterday's date. Now it follows the calendar (the founder's local day, not UTC) until you pick a date yourself.</p>\n<h2>What it doesn't do yet</h2>\n<p>The import check compares totals, not every row. The Before you cancel checklist asks you to check 3 people by hand.</p>\n<p>The code is on <a href=\"https://github.com/MKBSP/capfolder\">GitHub</a>. If you've built an app where several screens show the same numbers, how do you keep them from drifting apart?</p>",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "substack-1",
+      "parent": null,
+      "channel": "substack",
+      "label": "Post",
+      "when": "2026-11-17T09:00",
+      "status": "posted",
+      "url": "https://mkbsp.substack.com/p/see-who-owns-what-and-when",
+      "format": "html",
+      "text": "<h1>See who owns what, and when</h1>\n<h3>Capfolder 0.1.4: a Vesting screen, a clearer person page, and an import check against Pulley, Carta or Cake</h3>\n<p>A cap table tells you who owns what today. The question people actually ask is about time: how much has vested, when is the next vest, when is it all mine? Until now, Capfolder answered that one holding at a time.</p>\n<p>The new release puts the answer on one screen.</p>\n<p><b>A Vesting screen.</b> The option pool at a glance: total, granted, vested and still available. A row per grant opens to its graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves. Key dates and signed documents sit next to it.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v014-vesting.jpg\" alt=\"Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant.\"><figcaption>Alt text: Capfolder&#x27;s Vesting screen on the sample company: cards for the 1,000,000-share option pool, 80,000 allocated, 10,000 vested, 920,000 available, and Steve Wozniak&#x27;s grant opened to its vesting graph with the cliff and today marked, key dates and his signed option grant. · <a href=\"../../../../apps/website/blog/img/v014-vesting.jpg\" download>Download image</a></figcaption></figure>\n<p><b>A person page you can read in five seconds.</b> Vested, next vest and fully vested sit next to the name, with the graph beside the holding and its history.</p>\n<figure><img src=\"../../../../apps/website/blog/img/v014-person.jpg\" alt=\"Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right.\"><figcaption>Alt text: Tim Apple&#x27;s page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right. · <a href=\"../../../../apps/website/blog/img/v014-person.jpg\" download>Download image</a></figcaption></figure>\n<p><b>An import check.</b> Coming from Pulley, Carta or Cake? Type in the old tool's totals and Capfolder checks them to the share. A grant with more vested than granted blocks the import.</p>\n<p><b>\"What needs my attention?\"</b> Up to 3 things to do next, each with a Take me there button. It works with no AI connected.</p>\n<p>Also: the Excel export opens on an Overview tab with real charts, \"As of\" now follows the calendar if you leave the app open overnight, and free signing is 5 requests a month.</p>\n<p><b>What it doesn't do yet:</b> the import check compares totals, not every row, so you still check a few people by hand.</p>\n<p>Capfolder is free, open source, and keeps your cap table in a folder on your own computer. <a href=\"https://capfolder.com/blog/see-your-vesting/\">The full post, with every screenshot.</a></p>\n<p><b>When someone on your team asks how much of theirs has vested, how do you answer today?</b> Hit reply, I read every one.</p>",
+      "tips": "The newsletter version: shorter than the blog post, written to subscribers, links to the full post.\n• Send Tue–Thu morning.\n• Click Copy with formatting and paste into the Substack editor. Images come across once capfolder.com has the post live; otherwise drag them in.\n• Title and subtitle are the first two lines.",
+      "media": [],
+      "notes": [],
+      "auto": true,
+      "postedAt": "2026-11-13T09:52:43.990Z",
+      "publishNote": "Scheduled on Substack for 2026-11-17T09:00 (emails subscribers then). Edits made here after that don't reach Substack.",
+      "scheduled": true
+    },
+    {
+      "id": "substack-notes-1",
+      "parent": "substack-1",
+      "channel": "substack-notes",
+      "label": "Note",
+      "when": "2026-11-17T10:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "How much of your equity has vested?\n\nCapfolder 0.1.4 answers on one screen: the option pool, each grant's graph, and vested, next vest and fully vested next to every name. Free and open source.\n\nhttps://capfolder.com/blog/see-your-vesting/",
+      "tips": "Short, with one image and the link.\n• Post after the Substack article (substack.html) is out, or on its own.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-person.jpg",
+          "alt": "Tim Apple's page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name; his vesting graph on the left; his shares and their history on the right."
+        }
+      ],
+      "notes": [],
+      "auto": true
+    },
+    {
+      "id": "dd-vikings-1",
+      "parent": null,
+      "channel": "dd-vikings",
+      "label": "Post",
+      "when": "2026-11-11T15:00",
+      "status": "posted",
+      "url": "",
+      "format": "text",
+      "text": "Product lesson from Capfolder 0.1.4: a cap table answers \"who owns what?\". But founders and employees actually ask \"how much of mine has vested, and when is the rest mine?\"\n\nSo 0.1.4 puts that answer next to every name: vested, next vest, fully vested. Plus a Vesting screen where each grant opens to its graph: the cliff, the monthly steps, today.\n\nNo new math. Same engine, better placement.\n\nWhat question does your product answer one click too late?\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nYour squad. Share the link; this text is the commentary.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-person.jpg",
+          "alt": "Tim Apple's page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name."
+        }
+      ],
+      "notes": [],
+      "postedAt": "2026-11-11T15:05:18.949Z",
+      "title": "Answer the question your users actually ask"
+    },
+    {
+      "id": "dd-sidehustle-1",
+      "parent": null,
+      "channel": "dd-sidehustle",
+      "label": "Post",
+      "when": "2026-11-11T15:15",
+      "status": "posted",
+      "url": "https://daily.dev/posts/side-project-update-capfolder-0-1-4-shows-everyone-s-vesting-on-one-screen-iogafp2ij",
+      "format": "text",
+      "text": "Side project update: Capfolder is a free, open-source cap table app that keeps everything in a folder on your own computer.\n\n0.1.4 is out:\n• A Vesting screen: each grant's cliff, monthly steps and today on one graph\n• Vested, next vest and fully vested next to every name\n• An import check against Pulley, Carta or Cake, to the share\n\nOne thing I'd tell other side-project builders: ship the useful part without the fancy part. \"What needs my attention?\" looks like an AI feature. It's plain code, and it works with no AI connected.\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nYour squad.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-vesting.jpg",
+          "alt": "Capfolder's Vesting screen on the sample company: option pool cards and Steve Wozniak's grant opened to its vesting graph with the cliff and today marked."
+        }
+      ],
+      "notes": [],
+      "title": "Side project update: Capfolder 0.1.4 shows everyone's vesting on one screen",
+      "postedAt": "2026-11-11T17:15:39.721Z"
+    },
+    {
+      "id": "dd-indiestartups-1",
+      "parent": null,
+      "channel": "dd-indiestartups",
+      "label": "Post",
+      "when": "2026-11-12T16:00",
+      "status": "posted",
+      "url": "https://app.daily.dev/squads/indiestartups",
+      "format": "text",
+      "text": "Pulley shuts down on Dec 8. If you're moving your cap table, the scary part is \"did everything come across right?\"\n\nCapfolder 0.1.4 (free, open source) checks it: type in the old tool's totals (fully diluted, each class, the pool, SAFEs) and it compares them to the share. More vested than granted in the file? The import stops.\n\nHonest limit: it compares totals, not every row, so still spot-check a few people.\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-import-compare.jpg",
+          "alt": "The Compare with Pulley step of Capfolder's import: fully diluted, common shares and pool available each show Match."
+        }
+      ],
+      "notes": [],
+      "title": "Moving off Pulley before Dec 8? Check the import to the share",
+      "auto": true,
+      "postedAt": "2026-11-11T17:30:29.571Z",
+      "publishNote": "Sent for moderator approval",
+      "scheduled": false
+    },
+    {
+      "id": "dd-shareyourbuilds-1",
+      "parent": null,
+      "channel": "dd-shareyourbuilds",
+      "label": "Post",
+      "when": "2026-11-13T15:00",
+      "status": "posted",
+      "url": "https://app.daily.dev/squads/shareyourbuilds",
+      "format": "text",
+      "text": "Built: a Vesting screen for Capfolder, my open-source cap table app (Tauri + React).\n\nPool cards on top: total, granted, vested, available. A row per grant that opens to its graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves.\n\nThe Vesting screen, the person page and the Excel export all read the same vesting engine, so they can't disagree.\n\nFeedback welcome, especially on the graph.\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-vesting.jpg",
+          "alt": "Capfolder's Vesting screen on the sample company: option pool cards and Steve Wozniak's grant opened to its vesting graph with the cliff and today marked."
+        }
+      ],
+      "notes": [],
+      "title": "Built: a vesting screen for my open-source cap table app",
+      "auto": true,
+      "postedAt": "2026-11-11T17:31:48.092Z",
+      "publishNote": "Sent for moderator approval",
+      "scheduled": false
+    },
+    {
+      "id": "dd-indiedevelopers-1",
+      "parent": null,
+      "channel": "dd-indiedevelopers",
+      "label": "Post",
+      "when": "2026-11-16T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Answer the question your users actually ask.\n\nI'm building Capfolder, an open-source cap table app. A cap table answers \"who owns what?\". Founders and employees almost never ask that. They ask \"how much of mine has vested?\"\n\nUntil 0.1.4 you had to click into a holding and read the math. Now the answer sits next to the name, before you click anything. The numbers aren't new; only where they show up.\n\nWhat does your product answer one click too late?\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.",
+      "media": [],
+      "notes": [],
+      "title": "Put the answer where the question starts"
+    },
+    {
+      "id": "dd-opensourcesquad-1",
+      "parent": null,
+      "channel": "dd-opensourcesquad",
+      "label": "Post",
+      "when": "2026-11-17T15:00",
+      "status": "posted",
+      "url": "https://app.daily.dev/squads/opensourcesquad",
+      "format": "text",
+      "text": "Capfolder is an AGPL-3.0 cap table app where your cap table is a folder of plain files: an append-only, hash-chained events.jsonl in the Open Cap Format, plus your signed PDFs.\n\n0.1.4 adds vesting screens. The design choice I'm happiest with: one vesting engine feeds the Vesting screen, the person page and the Excel export, and golden tests check it to the share.\n\nCode: https://github.com/MKBSP/capfolder\nWrite-up: https://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\nSame day as dev.to; technical angle.",
+      "media": [],
+      "notes": [],
+      "title": "An AGPL cap table app where your data is plain files",
+      "auto": true,
+      "postedAt": "2026-11-11T17:32:38.062Z",
+      "publishNote": "Sent for moderator approval",
+      "scheduled": false
+    },
+    {
+      "id": "dd-projectboard-1",
+      "parent": null,
+      "channel": "dd-projectboard",
+      "label": "Post",
+      "when": "2026-11-18T15:00",
+      "status": "posted",
+      "url": "https://app.daily.dev/squads/projectboard",
+      "format": "text",
+      "text": "Project: Capfolder, a free, open-source cap table app. Your data stays in a folder on your computer.\n\nShipped in 0.1.4: a Vesting screen, a person page with vested / next vest / fully vested, an import check against Pulley, Carta or Cake, and \"What needs my attention?\".\nSince then: 0.1.5 lets Claude, Codex or Gemini read your cap table and preview changes. Nothing is written until you say yes.\n\nLooking for: founders moving off Pulley before Dec 8 to try the import and tell me what breaks.\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.",
+      "media": [],
+      "notes": [],
+      "title": "Capfolder: open-source cap table app, 0.1.4 update",
+      "auto": true,
+      "postedAt": "2026-11-11T17:33:27.732Z",
+      "publishNote": "Sent for moderator approval",
+      "scheduled": false
+    },
+    {
+      "id": "dd-devsquad-1",
+      "parent": null,
+      "channel": "dd-devsquad",
+      "label": "Post",
+      "when": "2026-11-19T15:00",
+      "status": "posted",
+      "url": "https://app.daily.dev/squads/devsquad",
+      "format": "text",
+      "text": "A bug from Capfolder 0.1.4 worth knowing about: Ask AI crashed, but only in newer Chrome-based engines (Windows' WebView2).\n\nScrolling to the latest answer returned a value there, and our React effect passed it straight back. React took that return value for a cleanup function and crashed when it tried to call it.\n\nLesson: in useEffect, don't let an arrow function implicitly return whatever the call gives you. Use braces.\n\nThe rest of 0.1.4: https://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.\n[verify] Check the fix commit before posting so the explanation matches the code exactly.",
+      "media": [],
+      "notes": [],
+      "title": "The useEffect return value that crashed our app in WebView2",
+      "auto": true,
+      "postedAt": "2026-11-11T17:34:18.322Z",
+      "publishNote": "Sent for moderator approval",
+      "scheduled": false
+    },
+    {
+      "id": "dd-startingastartup-1",
+      "parent": null,
+      "channel": "dd-startingastartup",
+      "label": "Post",
+      "when": "2026-11-20T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Starting a startup? The first question your early team asks about equity usually isn't \"what % do I own?\". It's \"how much has vested, and when is the rest mine?\"\n\nHave an answer ready on day one. Capfolder (free, open source, runs on your own computer) shows it for every person: vested, next vest, fully vested, and a graph with the cliff and today.\n\nHow do you track vesting today?\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=dailydev",
+      "tips": "daily.dev: Free form post. Title above, text below, first image as cover. Tick Auto-publish to post it at the time shown here, or schedule it yourself in the composer (clock icon, top right) and mark it Posted.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-person.jpg",
+          "alt": "Tim Apple's page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name."
+        }
+      ],
+      "notes": [],
+      "title": "The equity question your first hires will actually ask"
+    },
+    {
+      "id": "reddit-saas-1",
+      "parent": null,
+      "channel": "reddit-saas",
+      "label": "Post",
+      "when": "2026-11-12T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "I built a free, open-source cap table app. 0.1.4 answers \"how much has vested?\" on one screen",
+      "text": "I build Capfolder, a free, open-source cap table app. Your cap table lives in a folder on your own computer, not in someone's SaaS.\n\n0.1.4 is about one question: \"how much of mine has vested?\"\n\n• A Vesting screen: pool at a glance, and each grant's graph (cliff, monthly steps, today, where vesting stops if someone leaves)\n• Vested, next vest and fully vested next to every name\n• Moving from Pulley, Carta or Cake? Type in the old tool's totals and it checks them to the share\n\nHonest limit: the import check compares totals, not every row.\n\nWrite-up with screenshots: https://capfolder.com/blog/see-your-vesting/?ref=reddit\n\nHow do you answer the vesting question for your team today?",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-vesting.jpg",
+          "alt": "Capfolder's Vesting screen on the sample company: option pool cards and Steve Wozniak's grant opened to its vesting graph with the cliff and today marked."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "reddit-sideproject-1",
+      "parent": null,
+      "channel": "reddit-sideproject",
+      "label": "Post",
+      "when": "2026-11-13T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "My side project: an open-source cap table that lives in a folder on your computer. New: everyone's vesting on one screen",
+      "text": "Capfolder is my side project: an open-source cap table app (Tauri + React) that keeps the cap table as plain files in a folder you own.\n\nNew in 0.1.4: a Vesting screen. The option pool at a glance, and every grant opens to its graph: the cliff, the monthly steps, today, and where vesting stops if someone leaves. Click a person and vested, next vest and fully vested sit right by their name.\n\nFree. Feedback very welcome: https://capfolder.com/blog/see-your-vesting/?ref=reddit",
+      "tips": "Image post: upload the screenshot, put the text as the first comment if the sub prefers.",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-vesting.jpg",
+          "alt": "Capfolder's Vesting screen on the sample company: option pool cards and Steve Wozniak's grant opened to its vesting graph with the cliff and today marked."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "reddit-sideprojects-1",
+      "parent": null,
+      "channel": "reddit-sideprojects",
+      "label": "Post",
+      "when": "2026-11-14T15:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Shipped 0.1.4 of my open-source cap table app: see who owns what, and when",
+      "text": "Capfolder 0.1.4 is out: a free, open-source cap table app where your data is plain files on your own computer.\n\nThis release: a Vesting screen (cliff, monthly steps, today on one graph), vested / next vest / fully vested next to each name, and an import check against Pulley, Carta or Cake.\n\nWhat would you want to see next? https://capfolder.com/blog/see-your-vesting/?ref=reddit",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-person.jpg",
+          "alt": "Tim Apple's page in Capfolder: 3,000,000 of 4,000,000 vested, next vest 83,333 shares, fully vested Oct 2027 next to his name."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "reddit-indiehackers-1",
+      "parent": null,
+      "channel": "reddit-indiehackers",
+      "label": "Post",
+      "when": "2026-11-16T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Lesson from my last release: answer the question users actually ask, not the one your product was built for",
+      "text": "I'm building Capfolder, an open-source cap table app. A cap table answers \"who owns what?\". It took me a while to notice founders and employees almost never ask that. They ask \"how much of mine has vested, and when is the rest mine?\"\n\nUntil 0.1.4, you got that answer by clicking into a holding and reading the math. Correct, but slow, and nobody did it.\n\nWhat changed: nothing in the math. Only where the answer shows up. Vested, next vest and fully vested now sit next to the name, before you click anything.\n\nTwo things I'd do again:\n1. One engine, many screens. The Vesting screen, person page and Excel export all read the same vesting math, so they can't drift.\n2. Ship the useful part without the fancy part. \"What needs my attention?\" sounds like AI. It's plain code and works with no AI connected.\n\nFull write-up: https://capfolder.com/blog/see-your-vesting/?ref=reddit\n\nWhat question does your product answer one click too late?",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "reddit-opensource-1",
+      "parent": null,
+      "channel": "reddit-opensource",
+      "label": "Post",
+      "when": "2026-11-18T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Capfolder: an AGPL cap table app where your data is plain files (OCF event log + PDFs). 0.1.4 adds vesting",
+      "text": "Capfolder is an AGPL-3.0 desktop app (Tauri + React) for startup cap tables. The design rule: the folder is the source of truth.\n\n• events.jsonl: an append-only, hash-chained log of Open Cap Format (OCF) records. Mistakes are fixed with new entries, never edits.\n• captable.csv: regenerated on every change, opens without the app.\n• docs/: your signed PDFs, linked to the holdings they prove.\n\n0.1.4 adds vesting: a Vesting screen, a person page and Excel tabs, all reading one vesting engine that golden tests check to the share.\n\nCode: https://github.com/MKBSP/capfolder\nWrite-up: https://capfolder.com/blog/see-your-vesting/?ref=reddit\n\nContributions and issues welcome.",
+      "tips": "",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "reddit-startups-1",
+      "parent": null,
+      "channel": "reddit-startups",
+      "label": "Share Your Startup comment",
+      "when": "2026-11-19T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "What life cycle stage is your startup at? Live product, pre-revenue. Free and open source (AGPL), desktop app.\nYour role? Founder.\nWhat goals are you trying to reach this month? Get founders who are moving off Pulley before it shuts down on Dec 8 to try the import and tell me what breaks.\nHow could r/startups help? If you have a Pulley, Carta or Cake export, import it and tell me where the totals don't match. Capfolder checks them to the share before saving.\n\nCapfolder keeps your cap table and signed documents in a folder on your own computer. New this release: everyone's vesting on one screen (cliff, monthly steps, today).\nhttps://capfolder.com/?ref=reddit\nPreferred contact method: DM",
+      "tips": "r/startups allows promotion only inside its pinned 'Share Your Startup' thread (it has run quarterly). Template from that thread: life cycle stage · your role · goals this month · how r/startups can help (+ preferred contact). Unverified: Reddit blocked my lookup, so copy the stage name from the list in the current thread before posting. If there is no open thread, skip this one.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "reddit-legaltech-1",
+      "parent": null,
+      "channel": "reddit-legaltech",
+      "label": "Post",
+      "when": "2026-11-20T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "Open-source cap table tool that checks a Pulley/Carta import to the share. What would you need before trusting it?",
+      "text": "Capfolder is a free, open-source cap table app for startups. It keeps the cap table as plain files plus the signed documents, on the founder's own computer.\n\nTwo things in 0.1.4 that might interest people who handle equity:\n• An import check: moving from Pulley, Carta or Cake, you type in the old tool's totals (fully diluted, each class, pool, SAFEs) and it compares them to the share. More vested than granted blocks the import.\n• A vesting view per grant: cliff, monthly steps, today, and where vesting stops on termination, with key dates and the signed grant next to it.\n\nIt isn't legal advice and doesn't replace a lawyer. I'd love to hear what you'd want to see before trusting a tool like this.\n\nhttps://capfolder.com/blog/see-your-vesting/?ref=reddit",
+      "tips": "",
+      "media": [
+        {
+          "need": "",
+          "file": "../../../../apps/website/blog/img/v014-import-compare.jpg",
+          "alt": "The Compare with Pulley step of Capfolder's import: fully diluted, common shares and pool available each show Match."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "reddit-entrepreneur-1",
+      "parent": null,
+      "channel": "reddit-entrepreneur",
+      "label": "Post",
+      "when": "2026-11-23T14:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "title": "The question my customers actually ask isn't the one my product was built to answer",
+      "text": "I build a cap table app. For months I polished the answer to \"who owns what?\". Then I noticed nobody asks that.\n\nFounders and employees ask \"how much of mine has vested, and when is the rest mine?\". The answer was in the app, but behind a click and a page of math, so nobody read it.\n\nThe fix wasn't new features. I moved the answer to where the question starts: next to the person's name, before they click anything.\n\nIf you have a product: what question do your customers ask that you answer one click too late?",
+      "tips": "No self-promotion here: no link, no product pitch. Only give the link if someone asks in the comments.",
+      "media": [],
+      "notes": []
+    },
+    {
+      "id": "x-replies-1",
+      "parent": null,
+      "channel": "x-replies",
+      "label": "Reply template",
+      "when": "2026-11-16T16:00",
+      "status": "todo",
+      "url": "",
+      "format": "text",
+      "text": "Moving off Pulley before Dec 8? Export the cap table and every signed doc first.\n\nCapfolder (free, open source) imports the export and checks the totals against Pulley's to the share, before saving: https://capfolder.com/migrate/from-pulley/",
+      "tips": "Search 'Pulley shutting down' / 'Pulley alternative' (Live). Reply only where someone asks where to move. Copy, then tweak to their question. Mark each reply you send as its own box (+ Reply under this).",
+      "media": [],
+      "notes": []
+    }
+  ]
+}

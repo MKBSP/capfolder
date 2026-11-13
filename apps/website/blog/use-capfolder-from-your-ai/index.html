@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1F6F4A">
+<title>Run your cap table from the AI you already use · Capfolder</title>
+<meta name="description" content="Capfolder 0.1.5: run your cap table from Claude Code, Claude Desktop, Codex or Gemini CLI. Every change is previewed; nothing is saved until you say yes.">
+<link rel="canonical" href="https://capfolder.com/blog/use-capfolder-from-your-ai/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Run your cap table from the AI you already use">
+<meta property="og:description" content="Capfolder 0.1.5: run your cap table from Claude Code, Claude Desktop, Codex or Gemini CLI. Every change is previewed; nothing is saved until you say yes.">
+<meta property="og:url" content="https://capfolder.com/blog/use-capfolder-from-your-ai/">
+<meta property="og:image" content="https://capfolder.com/blog/img/v015-chat.jpg">
+<link rel="stylesheet" href="/page.css">
+<script defer src="/stats/script.js" data-host-url="/stats" data-website-id="b6219e39-5b52-4856-a3aa-e587d7a38d92"></script>
+<script defer src="/track.js"></script>
+<style>
+figure{margin:20px 0 0}
+figure img,figure video{display:block;width:100%;height:auto;border:1px solid #E4E4E0;border-radius:12px;background:#fff}
+figure.small img{max-width:600px}
+figcaption{font-size:14px;color:#5B606B;margin-top:6px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}
+pre.cmd{background:#F4F4F2;border:1px solid #E4E4E0;border-radius:10px;padding:10px 14px;overflow-x:auto;font-size:15px}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Run your cap table from the AI you already use", "datePublished": "2026-11-13", "dateModified": "2026-11-13", "author": {"@type": "Organization", "name": "Capfolder", "url": "https://capfolder.com/"}, "image": "https://capfolder.com/blog/img/v015-chat.jpg", "mainEntityOfPage": "https://capfolder.com/blog/use-capfolder-from-your-ai/"}</script>
+</head>
+<body>
+<nav aria-label="Main" class="pillnav"><div>
+    <a href="/" class="brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="#1F6F4A" aria-hidden="true"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h4.1a2 2 0 0 1 1.5.7L12 7h7.5A2.5 2.5 0 0 1 22 9.5v9a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5z"></path><rect x="13.2" y="4.6" width="1.8" height="1.6" rx="0.5"></rect><rect x="15.8" y="3.0" width="1.8" height="3.2" rx="0.5"></rect><rect x="18.4" y="1.4" width="1.8" height="4.8" rx="0.5"></rect></svg>Capfolder</a>
+    <div class="links">
+      <a href="/learn/" aria-current="page" class="navlink">Learn</a>
+      <a href="/compare/" class="navlink">Compare</a>
+      <a href="/#pricing" class="navlink">Pricing</a>
+      <a href="https://github.com/MKBSP/capfolder" class="navlink">GitHub</a>
+    </div>
+    <div class="right">
+      <button type="button" class="linkbtn navlink talk" data-talk data-umami-event="book-call-nav">Book a call</button>
+      <a href="/#download" class="btn btn-d" data-umami-event="nav-download">Download</a>
+    </div>
+  </div></nav>
+<section class="lhero"><div class="lhero-in"><div>
+  <div class="crumb"><a href="/">Capfolder</a> · <a href="/learn/">Learn</a> · <a href="/blog/">What's new</a> · Capfolder 0.1.5</div>
+  <h1>Run your cap table from the AI you already use</h1>
+  <p class="meta">November 13, 2026 · Capfolder 0.1.5 · 4 min read</p>
+</div><img src="/img/ill/network.svg" width="400" height="300" alt=""></div></section>
+<main class="narrow">
+  <div class="short"><b>In short:</b> <a href="https://github.com/MKBSP/capfolder/releases/tag/v0.1.5">Capfolder 0.1.5</a> works from Claude Code, Claude Desktop, Codex and Gemini CLI. Your AI reads your cap table and shows a preview of every change. Nothing is written until you say yes.</div>
+
+  <h2>The problem</h2>
+  <p>Most cap table questions are small: who owns what after this grant, what does the pool have left, is anything missing before a round. Each one used to mean opening the app and clicking through forms. If you already spend your day in Claude or Codex, the faster way is to ask.</p>
+  <p>The catch is trust. An AI that adds up shares on its own, or writes to your records without asking, is worse than no AI. So 0.1.5 lets your AI use Capfolder, while Capfolder keeps the math and the final say with you.</p>
+
+  <h2>1. Ask, see a preview, say yes</h2>
+  <p>Ask in plain words: "Give Steve Wozniak 40,000 options, 4 years with a 1-year cliff, from today." Your AI reads the cap table and the latest 409A from Capfolder, then shows a preview: the exact grant and the cap table after it. Nothing is recorded yet. Say yes and it's written to your folder.</p>
+  <figure><img src="/blog/img/v015-chat.jpg" width="1376" height="1117" alt="An example conversation: asked to give Steve Wozniak 40,000 options, the AI calls Capfolder's add_grant tool and shows a preview, nothing recorded yet: 40,000 options from the 2026 Plan at a $0.42 strike, and a table of holders with Tim Apple at 50.0%, Steve Jobs 37.5%, Steve Wozniak 0.5% and 960,000 options left in the pool. After 'Yes.', it confirms the grant is recorded." loading="lazy"><figcaption>An example from the sample company: the preview first, then "Recorded" only after the yes.</figcaption></figure>
+  <p>A few rules your AI can't get around:</p>
+  <ul>
+    <li><b>Preview, then yes.</b> A change is written only after you confirm the exact preview you were shown. A preview expires after 10 minutes, and it's refused if the folder changed in between.</li>
+    <li><b>Capfolder does the math.</b> Your AI never adds up shares itself. Every number comes from Capfolder.</li>
+    <li><b>Every record is checked.</b> Each one is checked against the Open Cap Table Format before it's written, and every write is logged in <code>events.jsonl</code>.</li>
+    <li><b>Documents are data.</b> Text inside a PDF can't make your AI do anything. If a document contains instructions, your AI tells you instead of following them.</li>
+  </ul>
+
+  <h2>2. Set it up with one command</h2>
+  <p>Needs Node 22 or newer, which Claude Code, Codex and Gemini CLI already use. Run this and it finds the AIs on your computer and sets up each one:</p>
+  <pre class="cmd"><code>npx capfolder install</code></pre>
+  <p>In the app, the same setup is in <b>Settings → AI → Connect your AI</b>: pick your AI and copy its command. Claude Desktop installs from a file on the releases page instead.</p>
+  <figure class="small"><img src="/blog/img/v015-connect.gif" width="832" height="315" alt="Capfolder's Connect your AI panel in Settings, stepping through the tabs Claude Code, Claude Desktop, Codex, Gemini CLI and Other, each with the command to paste and a Copy button." loading="lazy"><figcaption>Settings → AI → Connect your AI: one tab per AI, each with its command and a Copy button.</figcaption></figure>
+  <p>Then ask your AI "What's on my cap table?"</p>
+
+  <h2>3. Not incorporated yet?</h2>
+  <p>Cofounders often agree on a split long before there's a company. Your AI can now record the shares you promise each founder. When the company is incorporated, one step turns them into real Common shares, after a preview and your yes.</p>
+
+  <h2>4. The app and your AI share the folder</h2>
+  <p>The desktop app and your AI open the same folder. A lock file in the folder makes one wait while the other saves, so they can't overwrite each other's work.</p>
+
+  <h2>What it doesn't do yet</h2>
+  <ul>
+    <li>ChatGPT and claude.ai in the browser can't connect yet. That connection is being built.</li>
+    <li>Sending and chasing signatures from chat, and investors or employees reading their own holdings from their own AI, are coming next. See the <a href="/roadmap/">roadmap</a>.</li>
+    <li>If you use a cloud AI, what it reads to answer you goes to that AI company. The folder stays on your computer, and with a local model nothing leaves it.</li>
+  </ul>
+
+  <h2>Try it</h2>
+  <p>Capfolder is free and open source (AGPL-3.0), and runs on macOS, Windows and Linux. Your cap table stays in a folder on your own computer, and there's no account to create. New to Capfolder? Here's a first SAFE in the desktop app, from the cap table to signed:</p>
+  <figure><video autoplay muted loop playsinline preload="metadata" poster="/img/home/demo-poster.jpg" width="1440" height="900" aria-label="Capfolder: a first SAFE, from the cap table to signed"><source src="/img/home/demo.webm" type="video/webm"><source src="/img/home/demo.mp4" type="video/mp4"></video></figure>
+  <div class="ctas"><a class="btn" href="/#download">Download Capfolder, free</a><a href="/features/ai/">Everything your AI can do</a><a href="/help/local-ai/">Ask AI with a local model</a></div>
+  <p>What's the first thing you'd ask your AI about your cap table? <a href="https://github.com/MKBSP/capfolder/issues">Tell us on GitHub</a>.</p>
+  <p class="foot">Screenshots from Capfolder 0.1.5 and capfolder.com/features/ai, with the sample company. Full list of changes: <a href="https://github.com/MKBSP/capfolder/blob/main/CHANGELOG.md">CHANGELOG</a>. Capfolder isn't legal advice.</p>
+</main>
+</body>
+</html>
